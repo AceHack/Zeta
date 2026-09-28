@@ -1,0 +1,12 @@
+{
+  "pr_number": 17747,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17747-fix-installer-an-extra-disk-that-already-carries-data-is-not-wiped-without-conse.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T07:04:34.832Z",
+  "schema_version": "v1",
+  "commit_sha": "8d3e496090e6487a8df607be4117c59bb3a1acf4",
+  "title": "fix(installer): an extra disk that already carries data is not wiped without consent",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T07:03:45Z",
+  "head_ref": "claude/installer-extra-disk-consent"
+}
