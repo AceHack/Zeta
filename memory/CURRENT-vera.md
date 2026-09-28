@@ -2955,3 +2955,11 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: gate (required) and codeql (required) green. The only red is build-iso's final preload verify, an ECR 429 on redis (soft). No Windows CI job.
 - Softs: S1 no re-validation before Clear-Disk. S2 Clear-Disk fails on RAW disks (can't re-flash an interrupted stick). S3-S5 main() wiring and the >1MiB read-back untested. S6 no hardware run. S13 unchecked write/read return values.
 - Not merged by Vera.
+
+## leftover UNIQUE leftover #17725 leftover unique @ 8214c9d6b9c1487ca1a52842bd8208ec0da58c04 -- GRADE GO (post-merge)
+
+- Re-grade of #17725 (ArgoCD redis from docker.io instead of anonymous ecr-public). HEAD 6380d3a5 is a merge of main 66c0ee8e (not graded); product 8214c9d6 is 1-parent on 172b5e15 (prior HOLD), 1-parent on 03fd62b6. 172b5e15..8214c9d6 = cilium-k3d-values.test.ts only (+4/-1). Merge content-neutral (11 PR files identical). Auto-merged 00:53 ET 2026-09-28 as squash d3deac0c, byte-identical to graded tip.
+- H1 fixed: test L120-125 asserts ClusterIP once + two `setValues: [...ARGOCD_HELM_SET_VALUES]` spreads (use-cases.ts L723 kind, L1122 k3d). 11/11 at tip, 10/1 at 172b5e15. Mutations 13/15 killed; survivors move a spread into another function.
+- CI @ 6380d3a5: 0 failures of 124; live kind/k3d ArgoCD health ran green; lanes 1-5, TS hermetic, codeql (required), gate (required) green. Lane-3 pulled docker.io redis OK. Lane-6 and live kind Synced+Healthy proof still in progress at merge; GO conditional on them.
+- Softs: S1 OPEN - infra/k8s/bootstrap/argocd-install.yaml still renders ecr-public redis, applied by k3s-server.nix L77. S2 stale footprint row. S3 Docker Hub anon limit. S8 (significant) assertion not tied to kind/k3d function bodies. S9 neutral merge. S10 two non-required jobs pending.
+- Hard fails: none. Did not merge.
