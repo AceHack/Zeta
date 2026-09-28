@@ -1,0 +1,12 @@
+{
+  "pr_number": 17717,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17717-feat-cluster-pr-time-guard-for-gitlab-s-required-upgrade-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T00:01:22.819Z",
+  "schema_version": "v1",
+  "commit_sha": "1d9c235032f51e39730e7678861d71d8daac557f",
+  "title": "feat(cluster): PR-time guard for GitLab's required upgrade path",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T00:00:35Z",
+  "head_ref": "claude/gitlab-upgrade-path-ci-guard"
+}
