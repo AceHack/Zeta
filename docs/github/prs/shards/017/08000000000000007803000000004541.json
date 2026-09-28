@@ -1,0 +1,12 @@
+{
+  "pr_number": 17729,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17729-fix-platform-gmod-unturned-blueprints-let-the-ich777-entrypoint-install-the-game.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T04:46:41.806Z",
+  "schema_version": "v1",
+  "commit_sha": "93881d0ce180b4d69c94993cb588bc6cca39ac12",
+  "title": "fix(platform): gmod/unturned Blueprints let the ich777 entrypoint install the game",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T04:45:59Z",
+  "head_ref": "claude/blueprint-steamcmd-path"
+}

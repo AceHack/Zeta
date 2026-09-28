@@ -1,0 +1,15 @@
+{
+  "pr_number": 17726,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17726-fix-zflash-windows-flasher-flashes-removable-media-again.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM71ewlC",
+    "thread:PRRT_kwDOSF9kNM6miG6T"
+  ],
+  "fetched_at": "2026-09-28T04:43:29.915Z",
+  "schema_version": "v1",
+  "commit_sha": "87c23ed59ac71a64e73d7280f11c466ca9a633ba",
+  "title": "fix(zflash): Windows flasher flashes removable media again",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T04:42:50Z",
+  "head_ref": "claude/windows-flasher-removable-media"
+}
