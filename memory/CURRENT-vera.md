@@ -2926,3 +2926,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests 89/89; 17/22 mutations caught. CI at 132301e6: 0 failed; gate and codeql pending at 12:30 AM ET.
 - Softs: S1 three recursive walks plus a validate pass each start. S2 suggest UID/GID 1000 or OnRootMismatch. S4 RocketMod download is broken and the comment is wrong. S5 (significant) VALIDATE unpinned, no env allowlist. S6 the sftp sidecar exits 3, so the pod is never Ready (pre-existing). S9 blueprint-agent still proposes the old path and :gmod.
 - Not merged by Vera.
+
+## leftover UNIQUE leftover #17722 leftover unique @ 6ab0a837f64ea78f8cd5f52828cb20c3d02e0f14 -- GRADE GO
+
+- GO (post-merge), re-grade of the #17722 HOLD @ 71d572ea (gmod SFTP sidecar opt-in). The delta is one line: gmod-sftp-keys.test.ts L47 is now 'return args[0] ?? "";'. 1-parent on 71d572ea. Head 023f890f is a neutral merge of main (not graded).
+- H1 fixed: tsc is clean at the tip and reproduces TS2322 at 71d572ea. The fallback is fail-closed (the tests require positive markers; mutations removing args give 3 fail / 1 pass). bun 4/4.
+- CI: lint (TS), test (TS hermetic), codeql (required) and gate (required) are green. The one failure is the live kind Synced+Healthy proof, an ECR 429 on redis (soft, not a gate input).
+- Merged at 00:37 AM ET as squash 0a9e808f; the 4 PR blobs are identical to the tip.
+- Softs S1-S7 carried (SIGTERM, keys read at start, mutation survivors, blueprint atmoz sidecars exit 3). S8 neutral merge. S9 a ?? fallback rather than a throw.
+- Not merged by Vera.
