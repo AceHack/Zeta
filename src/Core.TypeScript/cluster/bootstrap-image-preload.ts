@@ -41,6 +41,9 @@
  *     ghcr.io (5), registry.k8s.io (2), cgr.dev (1), ecr-public (1). The
  *     bootstrap set is almost exactly the part of the 134 the mirror does not
  *     cover, which is why 1 GB here buys more than 1 GB anywhere else.
+ *     (2026-09-28: the ecr-public one — argocd's redis — now comes from
+ *     docker.io, the same bytes, after anonymous ecr-public refused CI lanes
+ *     with `toomanyrequests: Data limit exceeded`. 081M3K1K20Y087G0R00088W4DD.)
  *
  * -- k3s's OWN IMAGES: ONE IS IN, THE REST ARE NOT, AND A CLAIM IS CORRECTED
  * An earlier version of this header said k3s's built-ins "ship inside the k3s

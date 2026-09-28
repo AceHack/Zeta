@@ -25,7 +25,7 @@
       "quay.io/argoproj/workflow-controller:v4.1.2"
     ],
     "full-ai-cluster/argocd": [
-      "ecr-public.aws.com/docker/library/redis:8.6.4-alpine",
+      "docker.io/library/redis:8.6.4-alpine",
       "ghcr.io/dexidp/dex:v2.45.1",
       "quay.io/argoproj/argocd:v3.5.2"
     ],
@@ -362,6 +362,9 @@
     "docker.io/library/busybox:1.38.0": {
       "compressedBytes": 2226786
     },
+    "docker.io/library/redis:8.6.4-alpine": {
+      "compressedBytes": 34485719
+    },
     "docker.io/longhornio/longhorn-manager:v1.12.1": {
       "compressedBytes": 134261317
     },
@@ -388,9 +391,6 @@
     },
     "docker:dind": {
       "compressedBytes": 141072577
-    },
-    "ecr-public.aws.com/docker/library/redis:8.6.4-alpine": {
-      "compressedBytes": 34485719
     },
     "gcr.io/cockroachlabs-helm-charts/cockroach-self-signer-cert:1.5": {
       "compressedBytes": 170028269

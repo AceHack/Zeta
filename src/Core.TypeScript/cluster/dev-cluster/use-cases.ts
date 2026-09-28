@@ -720,7 +720,7 @@ export function bringUpKindCiCluster(ports: DevClusterPorts, options: KindCiBrin
       // the failure that cached the seaweedfs manifest error.
       version: "10.8.0",
       namespace: "argocd",
-      setValues: ["server.service.type=ClusterIP"],
+      setValues: [...ARGOCD_HELM_SET_VALUES],
       wait: true,
     });
   }
@@ -932,6 +932,23 @@ export function applyK3dCoreDnsUpstreamOverride(ports: DevClusterPorts): void {
  */
 export const DEV_COREDNS_UPSTREAM_FORWARD = "forward . 1.1.1.1 8.8.8.8";
 
+/**
+ * The `--set` list for the kind and k3d ArgoCD bootstrap installs. ONE list,
+ * so the two lanes cannot drift apart from each other.
+ *
+ * `redis.image.repository` moves the chart's redis off its default,
+ * `ecr-public.aws.com/docker/library/redis`, which failed k8s-lane-partition
+ * run 36364582440 with `toomanyrequests: Data limit exceeded` (a data quota on
+ * anonymous ecr-public; retries do not clear it). docker.io serves the same
+ * bytes. Must equal the value in k8s/bootstrap/argocd-install.yaml and the
+ * self-managed Application, which carries it forward after wave -90
+ * (081M3K1K20Y087G0R00088W4DD; pinned in bootstrap-image-preload.test.ts).
+ */
+export const ARGOCD_HELM_SET_VALUES: readonly string[] = [
+  "server.service.type=ClusterIP",
+  "redis.image.repository=docker.io/library/redis",
+];
+
 const KIND_CILIUM_COREDNS_FALLBACK_COREFILE = [
   ".:53 {",
   "    errors",
@@ -1102,7 +1119,7 @@ export function bringUpK3dDevCluster(ports: DevClusterPorts, options: K3dDevBrin
       // reasons, and the harness reaches ArgoCD through kubectl in both cases, so
       // no lane needs an externally-routable ArgoCD. Matching kind removes a
       // difference rather than adding one.
-      setValues: ["server.service.type=ClusterIP"],
+      setValues: [...ARGOCD_HELM_SET_VALUES],
       wait: true,
     });
   }

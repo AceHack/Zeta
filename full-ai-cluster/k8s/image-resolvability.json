@@ -40,27 +40,6 @@
       "resolvedAt": "2026-09-22"
     },
     {
-      "reference": "ecr-public.aws.com/docker/library/redis:8.6.4-alpine",
-      "status": "ok",
-      "httpStatus": 200,
-      "arches": [
-        "linux/386",
-        "linux/amd64",
-        "linux/arm",
-        "linux/arm",
-        "linux/arm64",
-        "linux/ppc64le",
-        "linux/riscv64",
-        "linux/s390x"
-      ],
-      "requiredArchesMissing": [],
-      "reason": "",
-      "isDockerHub": false,
-      "isLatestOrUntagged": false,
-      "hasDigest": false,
-      "resolvedAt": "2026-09-22"
-    },
-    {
       "reference": "ghcr.io/acemod/arma-reforger@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c",
       "status": "ok",
       "httpStatus": 200,
@@ -1582,6 +1561,27 @@
       "isLatestOrUntagged": false,
       "hasDigest": false,
       "resolvedAt": "2026-09-22"
+    },
+    {
+      "reference": "registry-1.docker.io/library/redis:8.6.4-alpine",
+      "status": "ok",
+      "httpStatus": 200,
+      "arches": [
+        "linux/386",
+        "linux/amd64",
+        "linux/arm",
+        "linux/arm",
+        "linux/arm64",
+        "linux/ppc64le",
+        "linux/riscv64",
+        "linux/s390x"
+      ],
+      "requiredArchesMissing": [],
+      "reason": "",
+      "isDockerHub": true,
+      "isLatestOrUntagged": false,
+      "hasDigest": false,
+      "resolvedAt": "2026-09-28"
     },
     {
       "reference": "registry-1.docker.io/longhornio/longhorn-manager:v1.12.1",

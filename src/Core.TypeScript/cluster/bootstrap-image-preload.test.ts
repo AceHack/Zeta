@@ -19,6 +19,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { describe, expect, test } from "bun:test";
+import { parse as parseYaml } from "yaml";
+
+import { ARGOCD_HELM_SET_VALUES } from "./dev-cluster/use-cases.ts";
 
 import {
   archivePlan,
@@ -287,7 +290,12 @@ describe("the committed snapshot", () => {
   test("the set is mostly UNMIRRORED — which is the reason it is worth carrying", () => {
     const rows = hostCoverage(snapshot);
     const unmirroredBytes = rows.filter((r) => !r.mirrored).reduce((sum, r) => sum + r.bytes, 0);
-    expect(unmirroredBytes / snapshot.totalCompressedBytes).toBeGreaterThan(0.9);
+    // 0.916 -> 0.883 on 2026-09-28, on purpose: argocd's redis (34.5 MB) moved
+    // from anonymous ecr-public to docker.io, the mirrored registry
+    // (081M3K1K20Y087G0R00088W4DD). An image LEAVING an unmirrored registry
+    // lowers this and is good; the floor guards the opposite drift — the
+    // preload filling up with images the mirror already covers.
+    expect(unmirroredBytes / snapshot.totalCompressedBytes).toBeGreaterThan(0.85);
   });
 });
 
@@ -654,5 +662,51 @@ describe("--verify: a rate limit is COULD-NOT-CHECK, never a moved digest", () =
   test("withTransientRetry returns at once on a non-transient answer", async () => {
     const r = await withTransientRetry(() => Promise.resolve(new Response("", { status: 200 })), NO_WAIT);
     expect(r).toMatchObject({ attempts: 1, transient: false });
+  });
+});
+
+// 081M3K1K20Y087G0R00088W4DD. MEASURED 2026-09-28: k8s-lane-partition run
+// 36364582440 (jobs 108748845153 lane-3, 108748845232 lane-4, 108748845261
+// lane-6) failed pulling the argo-cd chart's default redis,
+// `ecr-public.aws.com/docker/library/redis:8.6.4-alpine`, with
+// `toomanyrequests: Data limit exceeded`. That is a DATA QUOTA on anonymous
+// ecr-public, not a burst limit, so a retry cannot clear it — and kind nodes
+// pull the image themselves, so a runner-side pre-pull cannot either. The
+// docker.io image is the same bytes (its linux/amd64 manifest is the
+// sha256:c64af41b... digest this snapshot pinned for the ecr-public ref), and
+// docker.io is the one bootstrap registry the metal pull-through covers. So the
+// fix is the SOURCE, and these pin it at every surface that chooses it.
+describe("no bootstrap image is sourced from anonymous ecr-public", () => {
+  const ECR_PUBLIC = /^(ecr-public\.aws\.com|public\.ecr\.aws)\//;
+  const DOCKER_HUB_REDIS = "docker.io/library/redis";
+
+  function redisRepository(values: unknown): unknown {
+    return (values as { redis?: { image?: { repository?: unknown } } } | null)?.redis?.image?.repository;
+  }
+  function readYaml(rel: string): unknown {
+    return parseYaml(readFileSync(join(REPO_ROOT, rel), "utf8"));
+  }
+
+  test("the committed preload snapshot holds no ecr-public reference", () => {
+    const onEcrPublic = loadSnapshot()
+      .images.map((i) => i.reference)
+      .filter((r) => ECR_PUBLIC.test(r));
+    expect(onEcrPublic).toEqual([]);
+  });
+
+  test("the k3s bootstrap HelmChart points argocd's redis at docker.io", () => {
+    const cr = readYaml("full-ai-cluster/k8s/bootstrap/argocd-install.yaml") as { spec: { valuesContent: string } };
+    expect(redisRepository(parseYaml(cr.spec.valuesContent))).toBe(DOCKER_HUB_REDIS);
+  });
+
+  test("the self-managed Application AGREES with the bootstrap — else wave -90 moves redis back", () => {
+    const app = readYaml("full-ai-cluster/k8s/applications/argocd/Application.yaml") as {
+      spec: { source: { helm: { valuesObject: unknown } } };
+    };
+    expect(redisRepository(app.spec.source.helm.valuesObject)).toBe(DOCKER_HUB_REDIS);
+  });
+
+  test("the kind and k3d installs set the same repository — they install with --set, not these files", () => {
+    expect(ARGOCD_HELM_SET_VALUES).toContain(`redis.image.repository=${DOCKER_HUB_REDIS}`);
   });
 });

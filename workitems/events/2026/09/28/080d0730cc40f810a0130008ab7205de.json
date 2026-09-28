@@ -1,0 +1,14 @@
+{
+  "id": "080d0730cc40f810a0130008ab7205de",
+  "at": "2026-09-28T03:40:28.063Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K1K20Y087G0R00088W4DD",
+    "type": "bug",
+    "title": "argocd redis pulled from anonymous ecr-public hits toomanyrequests Data limit exceeded in CI lanes",
+    "slug": "argocd-redis-pulled-from-anonymous-ecr-public-hits-toomanyre",
+    "priority": "P2",
+    "filename": "081M3K1K20Y087G0R00088W4DD-argocd-redis-pulled-from-anonymous-ecr-public-hits-toomanyre.md"
+  }
+}

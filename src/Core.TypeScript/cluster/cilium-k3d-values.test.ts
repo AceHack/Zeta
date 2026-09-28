@@ -119,7 +119,10 @@ describe("the k3d lane installs metal's Cilium configuration", () => {
     // 2026-08-31, the run after the CNI was corrected.
     const code = codeWithoutComments(readFileSync(USE_CASES, "utf8"));
     expect(code).not.toContain("server.service.type=LoadBalancer");
-    expect(code.match(/server\.service\.type=ClusterIP/g)?.length ?? 0).toBe(2);
+    // Both installs now share ONE list (ARGOCD_HELM_SET_VALUES, 2026-09-28), so
+    // the literal appears once and the list is spread at both call sites.
+    expect(code.match(/server\.service\.type=ClusterIP/g)?.length ?? 0).toBe(1);
+    expect(code.match(/setValues: \[\.\.\.ARGOCD_HELM_SET_VALUES\]/g)?.length ?? 0).toBe(2);
   });
 
   test("both helm installs read the Application pin — a restated chart version would desync ArgoCD adopt", () => {

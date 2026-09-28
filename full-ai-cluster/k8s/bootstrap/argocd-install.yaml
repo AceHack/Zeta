@@ -334,6 +334,21 @@ spec:
           cpu: 250m
           memory: 512Mi
     redis:
+      # REPOSITORY MOVED OFF ANONYMOUS ecr-public (081M3K1K20Y087G0R00088W4DD).
+      # The chart default is `ecr-public.aws.com/docker/library/redis`. MEASURED
+      # 2026-09-28: k8s-lane-partition run 36364582440 (lanes 3, 4, 6) failed to
+      # pull it with `toomanyrequests: Data limit exceeded` -- a data QUOTA on
+      # anonymous ecr-public, so retrying does not clear it, and kind nodes pull
+      # it themselves. docker.io/library/redis is the SAME image (its
+      # linux/amd64 manifest is the sha256:c64af41b... digest that
+      # bootstrap-preload-images.json had pinned for the ecr-public ref), and
+      # docker.io is the one registry the metal pull-through covers
+      # (registry-mirrors.json -> mirror.gcr.io). The TAG stays the chart's, so a
+      # chart bump still moves redis. Must EQUAL the self-managed Application and
+      # ARGOCD_HELM_SET_VALUES (dev-cluster/use-cases.ts, the kind/k3d installs);
+      # bootstrap-image-preload.test.ts pins all three.
+      image:
+        repository: docker.io/library/redis
       resources:
         requests:
           cpu: 100m

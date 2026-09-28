@@ -262,6 +262,11 @@ spec:
               cpu: 250m
               memory: 512Mi
         redis:
+          # Off anonymous ecr-public (`toomanyrequests: Data limit exceeded`,
+          # measured 2026-09-28) onto the byte-identical, mirror-covered docker.io
+          # image. Must EQUAL the bootstrap copy, which carries the measurement.
+          image:
+            repository: docker.io/library/redis
           resources:
             requests:
               cpu: 100m
