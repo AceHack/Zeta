@@ -2842,3 +2842,14 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Ask 4 nothing still needed from #17707 dropped; no live dangling refs; #17707 work item stale (S6); exemption count unpinned (S7).
 - S1 borderline: metal-secret-production.ts:202 ignores doc.errors, broken cluster.yaml still credits the Secret. S4 brittle regex. S8 image invisible to audits. S9 CodeQL #1058 false positive red. S10 blocked/auto-merge/in progress. S11 neutral merge.
 - Re-grade path: fix H1-H3; fold in doc.errors check and pin btree_gin/TLS. I did not merge.
+
+## leftover UNIQUE leftover #17718 leftover unique @ 4ed59e9f46b950cc77d36defc76fde09591a272f -- GRADE HOLD
+
+- Re-grade of the fix tip after HOLD @ fb04a68a. Tip 4ed59e9f is 1-parent on 1a9d1974 (neutral merge of main onto fb04a68a). Live head 14794f07 is a content-neutral merge of main (diff equals main d9c403a6..1845c7cd; all 34 PR files identical). Merge not graded. Not merged; auto-merge armed.
+- H1 fixed: deps-graph-parse pins 30/50/50 (:100,:216,:240), re-derived with the test regexes (tip 30/50/50, base 29/49/49). ace-suite green.
+- H2 fixed: one snapshot entry added for full-ai-cluster/temporal/postgres (no-chart-yaml), no churn. plan + unit green.
+- H3 fixed and [] is honest: footprints are container images only (lane-partition.ts:490-517); the measurer collects image: keys and CNPG uses imageName, so the collector yields [] for cluster.yaml + database.yaml. Same rule as kubevirt/cdi/cloudnativepg.
+- CodeQL fix correct: exact group postgresql.cnpg.io; lookalikes rejected; narrowed pre-filter fails closed (mutations caught).
+- NEW HARD FAIL H4: CI 'derive the lane matrix' red at 14794f07 (job 108740049833, 56/57), green on base (3fa2bc32, main 1d9c2350). lane-partition.test.ts:597-599 still asserts temporal -> cockroachdb, but the PR changed sync-wave-dependency-graph.yaml:577 to dependsOn: [temporal-postgres]. Previously masked because the missing footprint made buildModel throw. Fix: retarget or delete those assertions.
+- Softs: S1 doc.errors still ignored at metal-secret-production.ts:207 (significant, new guard; HOLD if strict). S3 temporal-datastore test still does not pin btree_gin, TLS or image. S10 CNPG postgres image (154.6 MiB) not counted in lane disk. S11 latent laneRootExclude (lane-partition.ts:964-971) leaves temporal/postgres in lane-1 root-exclude output.
+- Re-grade path: 1-parent fix on 4ed59e9f turning derive-the-lane-matrix green, ideally with S1 and S3. Sit leftover; not merged.
