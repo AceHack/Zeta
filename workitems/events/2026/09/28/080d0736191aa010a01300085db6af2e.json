@@ -1,0 +1,14 @@
+{
+  "id": "080d0736191aa010a01300085db6af2e",
+  "at": "2026-09-28T06:45:43.380Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3KC68TK087G0R002NT64S8",
+    "type": "bug",
+    "title": "kubelet reservations must scale with node memory: static 3Gi reservation refuses to start k3s on small nodes",
+    "slug": "kubelet-reservations-must-scale-with-node-memory-static-3gi",
+    "priority": "P2",
+    "filename": "081M3KC68TK087G0R002NT64S8-kubelet-reservations-must-scale-with-node-memory-static-3gi.md"
+  }
+}

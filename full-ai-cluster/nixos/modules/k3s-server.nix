@@ -45,10 +45,10 @@
 
     # 081M3K1K1SY087G0R0010A76XY: kernel-level protection for the k3s PROCESS
     # (systemd MemoryLow / CPUWeight / OOMScoreAdjust on k3s.service and
-    # system.slice) plus the kubelet image-pull and soft-eviction flags. The
-    # reservations below are accounting; that module is the enforcement. Its
-    # `memoryLow` is set to this file's kube-reserved memory, just after the
-    # imports.
+    # system.slice), the kubelet image-pull flags, and the boot-time generator
+    # that sizes the reservations and eviction thresholds to the node. The
+    # reservations are accounting; that module is the enforcement. This file's
+    # targets are set just after the imports.
     ./k3s-process-protection.nix
 
     # WP20 (081M34R7P99087G0R000H77GX9): drops k3s.service's After=/Wants=
@@ -90,9 +90,14 @@
     ./k3s-datastore-bootstrap-recovery.nix
   ];
 
-  # Equal to `kube-reserved` memory below (2Gi): what the scheduler withholds
-  # from pods and what the kernel protects from reclaim are the same bytes.
-  zeta.k3sProcessProtection.memoryLow = "2G";
+  # The server's reservation TARGETS (see "NODE RESERVATIONS" below for the
+  # derivation). They are applied at boot by k3s-process-protection.nix, scaled
+  # down on a node too small to hold them (081M3KC68TK087G0R002NT64S8) -- as
+  # static flags they made the kubelet refuse to start below ~3 GiB. The kube
+  # target is also k3s.service's MemoryLow: what the scheduler withholds from
+  # pods and what the kernel protects from reclaim are the same bytes.
+  zeta.k3sProcessProtection.kubeReservedCpuMillis = 500;
+  zeta.k3sProcessProtection.kubeReservedMemoryMi = 2048;
 
   services.k3s = {
     enable = true;
@@ -300,9 +305,17 @@
       # SET ON BOTH SERVER AND AGENT for the same reason `max-pods` is, with one
       # difference recorded in k3s-agent.nix: an agent runs no apiserver, so its
       # `kube-reserved` covers kubelet and containerd alone and is smaller.
-      "--kubelet-arg=kube-reserved=cpu=500m,memory=2Gi"
-      "--kubelet-arg=system-reserved=cpu=250m,memory=512Mi"
-      "--kubelet-arg=eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%,nodefs.inodesFree<5%"
+      #
+      # NO LONGER STATIC FLAGS (081M3KC68TK087G0R002NT64S8). The numbers above
+      # are now TARGETS (`zeta.k3sProcessProtection.*`, set near the top of this
+      # file). "One absolute number" held for the two profiles in the table and
+      # failed below them: 2Gi + 512Mi + 500Mi = 3060Mi is MORE than a 2560 MB
+      # VM has, and the kubelet refuses to start when reservations exceed
+      # capacity -- every k3s NixOS VM test failed that way in build-ai-cluster-iso
+      # run 36379743833. k3s-kubelet-reservations.sh writes the four eviction and
+      # reservation flags at boot: these exact values on any node >= ~12 GiB,
+      # scaled proportionally into 25% of the node below that. The eviction-hard
+      # map it writes still restates all four signals, for the reason above.
 
       # Cluster CIDRs — DERIVED from the cluster's identity, not hardcoded.
       #

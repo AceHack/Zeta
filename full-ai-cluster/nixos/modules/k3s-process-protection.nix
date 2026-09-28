@@ -52,7 +52,10 @@
 # mount carries no `memory_recursiveprot` (measured: `rw,nosuid,nodev,noexec,relatime`),
 # so a k3s.service value alone would be clamped to system.slice's 0.
 # The value EQUALS the role's `kube-reserved` memory, so the scheduler's
-# accounting and the kernel's protection describe the same bytes.
+# accounting and the kernel's protection describe the same bytes. The build-time
+# value is the role TARGET; at boot the reservation generator below re-sets it
+# (`systemctl set-property --runtime`) to the kube-reserved actually granted on
+# THIS node, so on a small node it shrinks with the reservation.
 #
 # CPUWeight 1000 (k3s.service AND system.slice). cpu.weight is proportional and
 # WORK-CONSERVING: it changes nothing until the CPU is saturated, and then gives
@@ -93,48 +96,111 @@
 # ── SOFT EVICTION ─────────────────────────────────────────────────────────────
 #
 # `eviction-hard` (memory.available<500Mi, #17666) is a last line: it evicts
-# immediately with no grace. A soft threshold at 1Gi held for 1m lets the
-# kubelet evict in QoS order while the node still has room to do it cleanly,
-# and caps a soft-evicted pod's termination grace at 60s so the relief is not
-# postponed by a pod's own long terminationGracePeriodSeconds.
+# immediately with no grace. A soft threshold (1Gi on a big node) held for 1m
+# lets the kubelet evict in QoS order while the node still has room to do it
+# cleanly, and caps a soft-evicted pod's termination grace at 60s so the relief
+# is not postponed by a pod's own long terminationGracePeriodSeconds.
 # (`--eviction-soft` has no kubelet defaults, so unlike `--eviction-hard` it
 # cannot silently delete other signals.)
+#
+# ── RESERVATIONS ARE SIZED AT BOOT, TO THE NODE (081M3KC68TK087G0R002NT64S8) ──
+#
+# kube-reserved, system-reserved, eviction-hard and eviction-soft are NOT
+# static `--kubelet-arg` flags. The kubelet REFUSES TO START ("Failed to start
+# ContainerManager ... invalid Node Allocatable configuration") when
+# kube-reserved + system-reserved + eviction-hard exceeds node memory. #17728's
+# server values (2Gi + 512Mi + 500Mi = 3060Mi) exceeded the 2560 MB NixOS test
+# VMs, and k3s.service exited 1 in every k3s VM test of build-ai-cluster-iso
+# run 36379743833 -- and would on any real node under ~3 GiB. One image boots
+# on nodes from 2 GiB to 256 GiB, so only the booted node can size them.
+#
+# `zeta-k3s-kubelet-reservations` (k3s-kubelet-reservations.sh) runs before
+# k3s, reads MemTotal and the core count, and writes the four flags into a k3s
+# config file that k3s.service is pointed at with K3S_CONFIG_FILE. The options
+# below are the role TARGETS: used unchanged when they fit in 25% of the node
+# (every node >= ~12 GiB, so #17728's big-node values stand), scaled down
+# proportionally when they do not. The script header carries the full rule.
+#
+# WHY K3S_CONFIG_FILE, CHECKED IN SOURCE, NOT ASSUMED. k3s's
+# pkg/configfilearg/parser.go reads the file named by `K3S_CONFIG_FILE` (before
+# `--config` and the /etc/rancher/k3s/config.yaml default), inserts its values
+# BEFORE the command-line flags so slice flags like `--kubelet-arg` APPEND
+# rather than replace, and returns the arguments unchanged when the file does
+# not exist. nixpkgs' k3s module (26.05, rancher/default.nix) passes no
+# `--config` unless `configPath` is set, which nothing here sets.
+#
+# WHY `wantedBy`, NOT `requiredBy`. A failed generator must not stop k3s:
+# k3s then starts without the file, i.e. with kubelet defaults -- an
+# unprotected node, which is recoverable, instead of no node. The script also
+# exits 0 on every path for the same reason.
 
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   cfg = config.zeta.k3sProcessProtection;
+
+  # Under /run: regenerated every boot, never a stale size from another disk.
+  reservationConfig = "/run/zeta/k3s-kubelet-reservations.yaml";
+
+  target = description: default: lib.mkOption {
+    type = lib.types.ints.unsigned;
+    inherit default description;
+  };
 in
 {
   options.zeta.k3sProcessProtection = {
-    memoryLow = lib.mkOption {
-      type = lib.types.strMatching "^[0-9]+[KMG]$";
-      description = ''
-        systemd MemoryLow for k3s.service (and system.slice, which must carry at
-        least as much for the child's protection to be effective). Set by the
-        role module to its `kube-reserved` memory so accounting and enforcement
-        agree.
-      '';
-    };
+    kubeReservedCpuMillis = target "kube-reserved CPU target (millicores); scaled down on small nodes." 250;
+    kubeReservedMemoryMi = target ''
+      kube-reserved memory target (MiB); scaled down on small nodes. Also the
+      build-time MemoryLow of k3s.service and system.slice, re-set at boot to
+      the value actually granted.
+    '' 512;
+    systemReservedCpuMillis = target "system-reserved CPU target (millicores); scaled down on small nodes." 250;
+    systemReservedMemoryMi = target "system-reserved memory target (MiB); scaled down on small nodes." 512;
+    evictionHardMemoryMi = target "eviction-hard memory.available ceiling (MiB); 5% of the node below it." 500;
+    evictionSoftMemoryMi = target "eviction-soft memory.available ceiling (MiB); 10% of the node below it." 1024;
   };
 
   config = {
     systemd.services.k3s.serviceConfig = {
-      MemoryLow = cfg.memoryLow;
+      MemoryLow = "${toString cfg.kubeReservedMemoryMi}M";
       CPUWeight = 1000;
       OOMScoreAdjust = -999;
     };
 
     systemd.slices.system.sliceConfig = {
-      MemoryLow = cfg.memoryLow;
+      MemoryLow = "${toString cfg.kubeReservedMemoryMi}M";
       CPUWeight = 1000;
     };
+
+    systemd.services.zeta-k3s-kubelet-reservations = {
+      description = "Size the kubelet's node reservations to this node's memory and CPU";
+      before = [ "k3s.service" ];
+      wantedBy = [ "k3s.service" ];
+      environment = {
+        ZETA_KUBE_RESERVED_CPU_MILLIS = toString cfg.kubeReservedCpuMillis;
+        ZETA_KUBE_RESERVED_MEMORY_MI = toString cfg.kubeReservedMemoryMi;
+        ZETA_SYSTEM_RESERVED_CPU_MILLIS = toString cfg.systemReservedCpuMillis;
+        ZETA_SYSTEM_RESERVED_MEMORY_MI = toString cfg.systemReservedMemoryMi;
+        ZETA_EVICTION_HARD_MEMORY_MI = toString cfg.evictionHardMemoryMi;
+        ZETA_EVICTION_SOFT_MEMORY_MI = toString cfg.evictionSoftMemoryMi;
+        ZETA_K3S_RESERVATION_CONFIG = reservationConfig;
+        ZETA_APPLY_MEMORY_LOW = "1";
+      };
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.bash}/bin/bash ${./k3s-kubelet-reservations.sh}";
+        StandardOutput = "journal+console";
+        StandardError = "journal+console";
+      };
+    };
+
+    systemd.services.k3s.environment.K3S_CONFIG_FILE = reservationConfig;
 
     services.k3s.extraFlags = [
       "--kubelet-arg=registry-qps=20"
       "--kubelet-arg=registry-burst=50"
-      "--kubelet-arg=eviction-soft=memory.available<1Gi"
-      "--kubelet-arg=eviction-soft-grace-period=memory.available=1m"
       "--kubelet-arg=eviction-max-pod-grace-period=60"
     ];
   };

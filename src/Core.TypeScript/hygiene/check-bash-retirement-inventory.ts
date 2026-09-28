@@ -90,6 +90,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
+  "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh",
   "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
@@ -181,6 +182,13 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // this inventory AND can be EXECUTED by
   // `lint-k3s-join-intent-preflight.test.ts`, which runs every branch in CI.
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh": "host-service wrappers",
+  // 081M3KC68TK087G0R002NT64S8: a oneshot ordered before k3s.service that sizes
+  // the kubelet's reservations to the booted node's MemTotal (a static
+  // reservation larger than a small node made the kubelet refuse to start).
+  // Same retained-shell edge: boot path, no bun in the node's closure. A
+  // tracked `.sh` so `k3s-process-protection.test.ts` EXECUTES it over node
+  // sizes from 2 GiB to 256 GiB in CI.
+  "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh": "host-service wrappers",
   // 081M3K23YCP087G0R003BVDS1P: zeta-dev-toolchain.service's ExecStart. It is
   // the unit that INSTALLS bun (tools/setup/install.sh), so it cannot be bun;
   // it moved the dev toolchain out of zeta-install.sh (already retained, same

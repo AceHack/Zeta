@@ -51,9 +51,10 @@
     ./k3s-process-protection.nix
   ];
 
-  # Equal to this role's `kube-reserved` memory (512Mi): an agent runs no
-  # apiserver or etcd, so it protects less than the server's 2G.
-  zeta.k3sProcessProtection.memoryLow = lib.mkDefault "512M";
+  # The agent's reservation targets are k3s-process-protection.nix's defaults
+  # (kube 250m/512Mi, system 250m/512Mi, eviction-hard 500Mi): an agent runs no
+  # apiserver or etcd, so it reserves and protects less than the server's 2Gi.
+  # They are applied at boot, scaled to the node (081M3KC68TK087G0R002NT64S8).
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
   # question). Nothing below implements a join; the observer only reports
@@ -122,9 +123,11 @@
       # Same honest limit as the server copy: without `--kube-reserved-cgroup`
       # these are ACCOUNTING, not ENFORCEMENT -- they stop the scheduler
       # over-committing the node, and do not guarantee shares under contention.
-      "--kubelet-arg=kube-reserved=cpu=250m,memory=512Mi"
-      "--kubelet-arg=system-reserved=cpu=250m,memory=512Mi"
-      "--kubelet-arg=eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%,nodefs.inodesFree<5%"
+      #
+      # The values themselves are no longer flags here: k3s-process-protection.nix
+      # writes them at boot from this role's targets, scaled to the node, because
+      # a static reservation larger than a small node's memory makes the kubelet
+      # refuse to start (081M3KC68TK087G0R002NT64S8).
     ];
   };
 
