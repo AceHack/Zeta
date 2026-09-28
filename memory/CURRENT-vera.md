@@ -3018,3 +3018,14 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Softs: S1 significant, 10/21 mutants survive the new test; S2 CI outer timeouts shorter than 3 h; S3 misattribution of OOM/125-127; S4 nixos-install messages omit the wipe; S5 orphans; S6 stripped prompt var at :2626; S7 other post-wipe steps unbounded; S8 merged before build-iso/QEMU.
 - Path to GO: follow-up PR validating both vars against ^[1-9][0-9]*$ before the wipe, with tests for 0/inf/abc/empty.
 - Side note: #17734 landed as e71efca5; all 17 files equal graded 0d7edb11, GO holds post-merge.
+
+## leftover UNIQUE leftover #17745 leftover unique @ f29e9ed14d5e46daba4ccc57d64b8f3fc9a0980b -- GRADE GO (post-merge)
+
+- Topic: installer with undeclared role; a discovery probe that yields no result now halts and asks c/w instead of founding a new cluster (split-brain guard). ZETA_DISCOVERY_REQUIRED defaults to 1.
+- Product f29e9ed1 1-parent on fccc9a2d; 4 files +179/-13. HEAD aba6cfbc neutral merge of main 90020bc3. Auto-merged 2026-09-28 02:30 EDT as squash c3ecfaa3, blobs identical to product.
+- Env: only exact '0' restores founding; every other value (empty, true, yes, 2, no, 01, ' 1', off) halts. Base was inverse. No fail-open.
+- Every non-result path (missing binary, exit 1/2/137, probe-failed, dwell-too-short, empty, garbled, 0:refuse, 3:bootstrap) halts; all founded on base. tty1 read blocks at 0 CPU; no stdin drops to a shell and never reaches zeta-install. Halt is before the wipe.
+- Tests: 8 new real-block tests, 8/8 product, 0/8 base; 23 related suites 874/874. Mutants 22: 12 caught, 2 equivalent, 8 survive (6 restore founding).
+- CI: 89 runs pass; build-iso NixOS k3s 'invalid Node Allocatable' red is pre-existing on main (#17728 class), not this PR.
+- Softs: S1 significant test gaps; S2 zflash harness lacks HALTED marker; S3 off+REQUIRED=1 now founds (intended); S4 no re-prompt/flush, read without -r; S5 w no join URL; S6 no VM/metal halt run; S7 merged before build-iso scenario-2 QEMU; S8 neutral merge; S9 probe has no outer timeout; S10 main k3s red.
+- Watch: scenario 2 / main push run for c3ecfaa3 must reach BOOTSTRAP, not HALTED.
