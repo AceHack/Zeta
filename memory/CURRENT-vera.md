@@ -3068,3 +3068,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Landed: auto-merge squash 88b688444eb25ce70761382d53dd2d3705f7123b at 2026-09-28 05:51 ET, tree 5120a369 identical to tip. Closes the #17728 k3s regression on main.
 - Significant softs: S1 unreadable MemTotal/nproc writes no reservations; S2 runtime MemoryLow untested. Others S3-S11 (no metal evidence, daemon-reload revert, config shadowing, count-only exceptions, merged before non-gating jobs finished).
 - Watch main push runs on 88b68844. Sent to CoS. Sit leftover; Vera did not merge.
+
+## leftover UNIQUE leftover #17751 leftover unique @ ac35cf25bb22feea4627b8febc6e095d9b42ed89 -- GRADE HOLD
+
+- Single commit, parent 2c0ecbc3 (base); no merge. Open, auto-merge armed at 2026-09-28 08:25 ET; asked CoS to consider disarming.
+- udev rules correct (install-label-single-device.nix :105-107, wired :111/:112); isohybrid whole disk excluded, verified on real udev 257.
+- H1: fix inert. nix eval of installer fileSystems."/iso".device is /dev/disk/by-label/ZETA_INSTALL on base AND product. installation-cd-base.nix:36 sets fileSystems with mkImageMediaOverride (prio 60), discarding the nested mkForce at :116. Working form: fileSystems = lib.mkImageMediaOverride { "/iso" = lib.mkImageMediaOverride { device = lib.mkForce "/dev/disk/zeta-install-medium"; }; };
+- H2: tests vacuous. install-medium-selection.ts:209-213 regex-parses source; qemu test :1834 pins the ineffective string. Mutant M11 (working pin) turns both suites red.
+- Softs: S3 significant, M4 (any-fs partition) survives; S1 two same-label partitions; S2 Ventoy/findiso/loop time out once fixed; S4 never nix-evaluated by author; S5 CI in progress; S6 no metal; S7 source-text pins.
+- Path to GO: working override, eval-based assertion, M4 fixture, ISO USB lanes boot-medium=/dev/sda1 repeatedly.
+- Sent to CoS. Sit leftover; Vera did not merge.
