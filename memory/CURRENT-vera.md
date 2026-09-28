@@ -2906,3 +2906,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Softs carried: S1 (significant) is the 1000:100 fallback at zeta-install.sh L4346-4351, against the PR body. S2 is uid 0 accepted and the sweep crossing mounts. S3 is creds-restore running as root with HOME=/home/zeta. S4 is the mutation survivors, including M6.
 - New S12: the stub only silences the error. No eval property covers the tmpfiles rules; dropping them, or adding a hostile Z root rule, still passes. Follow-up: add a property for the .kube zeta rule.
 - Not merged by Vera.
+
+## leftover UNIQUE leftover #17724 leftover unique @ 983310c315d6c6f607a9eab3b04959b6f4b3f776 -- GRADE GO
+
+- GO (post-merge). QEMU harness bail marker changed from 'bail' to '\nERROR: '. 1 commit on base 03fd62b6, 5 files +147/-10. It auto-merged at 12:24 AM ET as squash f1cf04a6; the PR files and zeta-install.sh are byte-identical to the tip.
+- bail() (zeta-install.sh L94) echoes 'ERROR: ' to stderr, which the tee and first-boot put on serial. Real proof: job 107952349331 had the bail line, the old marker missed it and it timed out after 30 minutes.
+- No false positives: non-fatal installer ERRORs are indented or prefixed, and the 126-file scan is clean.
+- Test is real: it reads the bail() prefix and the real marker arrays. 9/9 at tip, 3/6 on base. Mutations 11/15 caught.
+- CI: 103 runs, 0 failed; gate (required) and codeql (required) green.
+- Softs: S1 no live QEMU run exercised the marker, so watch post-merge Scenario 2. S2 harness wiring is untested and nothing enforces a single emitter. S3 the non-fatal install.sh tail could false-fire. S4 edge misses (a baseline ending on a newline, a no-newline prompt). S5 the retention list lacks the Install failed backstop.
+- Not merged by Vera.
