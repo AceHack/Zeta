@@ -2981,3 +2981,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI @ f8a5b791: 0 failures, codeql (required) green; gate (required), build-iso, aarch64 qemu-boot and online-VM boot still running.
 - Softs: S1 (significant) 4 product-side survivors (gmod JSON, latch, diag setting ROSTER_OK, no-marker path). S2 no live WP11 run. S3 no journalctl timeout. S4 systemctl show on missing unit. S5-S11 minor (stale comment, flag help text, neutral merges, module-level eval, rethrow untested).
 - Hard fails: none. Did not merge.
+
+## leftover UNIQUE leftover #17736 leftover unique @ 0df1120f0a3687e4c0ce5b10addf329ad7b3182b -- GRADE HOLD
+
+- #17736 makes the gmod/unturned/arma-reforger Blueprint atmoz/sftp sidecars opt-in (follow-up to #17722 S4). Product 0df1120f is 1-parent on 132301e6 (#17729 branch merge); live HEAD c4f8a9bd is a content-neutral merge of main (6 PR files identical). +254/-13. Open, auto-merge armed, not merged at ~01:18 ET 2026-09-28.
+- H1 (hard): crd-blueprint.yaml:97-117 never declares sidecar.configMaps. The platform Application uses ServerSideApply=true; a real kube-apiserver v1.31 rejects the product blueprints.yaml for all three Blueprints (`.spec.sidecars[0].configMaps: field not declared in schema`); base applies cleanly. Client-side apply would silently drop the field, so SFTP could never be enabled. CI is blind: no Blueprint-vs-CRD test, and platform is excluded from the live-kind lanes.
+- The rest is correct: optional full-volume ConfigMap mount, 30s idle loop, atmoz /entrypoint exec zeta::99:100 (arma 1000:1000), no new fail-open, removed helpers unused elsewhere. bun 105/0, tsc strict clean, mutations 19/24.
+- CI @ c4f8a9bd: 0 failures, codeql (required) green, gate pending.
+- Softs: S1 (significant) test gaps (loop/pickup, exact uid, Deployment path). S2 no Service/port for SFTP. S3 arma write access. S4 restart for key rotation. S5 ConfigMap-create grants SFTP. S6 no live pod. S7 auto-merge armed.
+- Path to GO: add configMaps to the CRD sidecar schema plus a Blueprint-vs-CRD validation test. Did not merge.
