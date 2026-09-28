@@ -43,6 +43,19 @@ const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const PLATFORM_APPLICATION = "full-ai-cluster/k8s/applications/platform/Application.yaml";
 export const PUBLIC_TLS_TEMPLATE = "full-ai-cluster/k8s/public-tls/argocd-application.yaml.in";
 export const PUBLIC_TLS_NIX_MODULE = "full-ai-cluster/nixos/modules/injected-public-tls.nix";
+export const ROOT_APPLICATION = "full-ai-cluster/k8s/bootstrap/root-application.yaml";
+/**
+ * The one field of `Application/gitlab` that `platform-public-tls` owns in the SET state
+ * (its `gitlab-public-hosts` Job merge-patches it) and `zeta-root` therefore ignores.
+ * Helm parameters override the git-owned `valuesObject`, so the LAN default stays in git
+ * and the public external URL arrives only when a public domain was configured.
+ */
+export const GITLAB_APPLICATION_PARAMETERS_POINTER = "/spec/source/helm/parameters";
+
+/** The public names GitLab is published under when a public domain is configured. */
+export function gitlabPublicHostnames(publicDomain: string): { readonly web: string; readonly registry: string } {
+  return { web: `gitlab.${publicDomain}`, registry: `registry.${publicDomain}` };
+}
 /** Tokens the Nix module replaces. Exactly these two; the test pins the Nix side. */
 export const ACME_EMAIL_TOKEN = "@ZETA_ACME_EMAIL@";
 export const PUBLIC_DOMAIN_TOKEN = "@ZETA_PUBLIC_DOMAIN@";

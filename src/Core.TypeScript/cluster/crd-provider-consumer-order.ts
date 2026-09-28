@@ -1126,30 +1126,11 @@ export function acknowledgementKey(v: Violation): string {
   return `${v.kind}|${v.app}|${v.group}|${v.resourceKind}`;
 }
 
-export const ACKNOWLEDGED_FINDINGS: ReadonlyMap<string, Acknowledged> = new Map([
-  [
-    "NO-PROVIDER|gitlab|extensions|Ingress",
-    {
-      reason:
-        "NOT a CRD-ordering defect -- a DIFFERENT and more serious bug this analyzer surfaced as a side effect. " +
-        "`helm template gitlab --include-crds` (chart 8.7.0, this Application's own valuesObject) renders FOUR " +
-        "Ingress objects (gitlab-kas, gitlab-webservice-default, gitlab-minio, gitlab-registry) under " +
-        "`apiVersion: extensions/v1beta1` -- a group REMOVED from Kubernetes entirely at 1.22 (not merely " +
-        "deprecated), so these four objects would be REJECTED by the API server on any current cluster, " +
-        "independent of any sync-wave ordering. `extensions` is deliberately NOT added to BUILTIN_API_GROUPS: " +
-        "doing so would hide this finding behind 'this group always exists', which is false. gitlab is already " +
-        "excluded from every CI lane (argocd-health-test.ts's DEV_EXCLUDED_REASONS: chart-size deferral -- " +
-        "~40 subcharts and a Postgres/Redis/Gitaly/MinIO stack a kind runner cannot schedule inside the lane's " +
-        "assertion budget; the SEPARATE root-password gap that entry also once named was closed by WP24, " +
-        "081M35K4PV6087G0R001Z3E0P8), so nothing today applies this " +
-        "chart and this defect has not yet reached a real cluster. Root cause is almost certainly a chart-version " +
-        "or values gap (a newer chart major, or an `ingress.apiVersion`/class override this Application's " +
-        "valuesObject does not set) rather than anything this PR's scope (CRD provider/consumer ordering) covers. " +
-        "LIFTS WHEN: gitlab is un-deferred (its own DEV_EXCLUDED_REASONS entry names the condition) and a render " +
-        "confirms the Ingress objects use a served apiVersion.",
-    },
-  ],
-]);
+// EMPTY. The one entry was `NO-PROVIDER|gitlab|extensions|Ingress` (the chart's Ingress
+// objects); gitlab now renders no Ingress at all (`global.ingress.enabled: false`, exposure is
+// Gateway API -- 081M3K253BR087G0R001151P2A, cluster/gitlab-exposure.test.ts (a)), so the
+// finding it excused no longer exists and the entry would be reported stale.
+export const ACKNOWLEDGED_FINDINGS: ReadonlyMap<string, Acknowledged> = new Map();
 
 export interface CrdOrderAudit {
   readonly index: AppManifestIndex;

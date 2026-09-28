@@ -31,6 +31,9 @@ import {
   placeholderFindings,
   platformObjects,
   publicTlsObjects,
+  GITLAB_APPLICATION_PARAMETERS_POINTER,
+  ROOT_APPLICATION,
+  gitlabPublicHostnames,
   renderPublicTlsApplicationText,
   type K8sObject,
 } from "./public-tls.ts";
@@ -123,7 +126,7 @@ describe("(b) SET: issuers carry the email, public routes carry portal.<domain>"
     const [gw] = kinds(pub, "Gateway");
     const https = (gw!["spec"] as { listeners: Array<Record<string, unknown>> }).listeners.find((l) => l["protocol"] === "HTTPS");
     expect(https?.["hostname"]).toBe(host);
-    const routes = kinds(pub, "HTTPRoute");
+    const routes = kinds(pub, "HTTPRoute").filter((r) => name(r) === "portal-public");
     expect(routes.length).toBe(1);
     expect((routes[0]!["spec"] as Record<string, unknown>)["hostnames"]).toEqual([host]);
   });
@@ -161,5 +164,80 @@ describe("(b) SET: issuers carry the email, public routes carry portal.<domain>"
     expect(tmpl.match(/@ZETA_[A-Z_]+@/g)?.filter((t) => t !== ACME_EMAIL_TOKEN && t !== PUBLIC_DOMAIN_TOKEN) ?? []).toEqual([]);
     expect(nix).toContain("/etc/zeta/acme-email");
     expect(nix).toContain("/etc/zeta/public-domain");
+  });
+});
+
+describe("(d) GitLab follows the install-time public domain", () => {
+  const ns = (o: K8sObject) => (o["metadata"] as Record<string, unknown>)["namespace"];
+  const listeners = (g: K8sObject) => (g["spec"] as { listeners: Array<Record<string, unknown>> }).listeners;
+  const hosts = gitlabPublicHostnames(SET.publicDomain);
+
+  test("the public hostnames are gitlab.<domain> and registry.<domain>", () => {
+    expect(hosts).toEqual({ web: "gitlab.zeta-cluster-fixture.net", registry: "registry.zeta-cluster-fixture.net" });
+  });
+
+  test("UNSET: nothing public exists for gitlab (its LAN Gateway ships in the gitlab release itself)", () => {
+    expect(appliedObjects(null).filter((o) => ns(o) === "gitlab" || name(o) === "gitlab-public-hosts")).toEqual([]);
+  });
+
+  test("SET: each public host has its own HTTPS listener on the public Gateway, with its own certificate", () => {
+    const [gw] = kinds(publicTlsObjects(SET), "Gateway");
+    const https = listeners(gw!).filter((l) => l["protocol"] === "HTTPS");
+    const byHost = new Map(https.map((l) => [String(l["hostname"]), l]));
+    for (const h of [portalHostname(SET.publicDomain), hosts.web, hosts.registry]) expect(byHost.has(h)).toBe(true);
+    const secrets = https.map((l) => ((l["tls"] as { certificateRefs: Array<Record<string, unknown>> }).certificateRefs[0]!)["name"]);
+    expect(new Set(secrets).size).toBe(secrets.length);
+  });
+
+  test("SET: gitlab.<domain> routes to the webservice and registry.<domain> to the registry, in namespace gitlab", () => {
+    const routes = kinds(publicTlsObjects(SET), "HTTPRoute").filter((r) => ns(r) === "gitlab");
+    const edge = (r: K8sObject) => {
+      const spec = r["spec"] as { hostnames: string[]; rules: Array<{ backendRefs: unknown[] }>; parentRefs: Array<{ name: string }> };
+      return { hostnames: spec.hostnames, backend: spec.rules[0]!.backendRefs[0], parent: spec.parentRefs[0]!.name };
+    };
+    const got = routes.map(edge).sort((a, b) => (a.hostnames[0]! < b.hostnames[0]! ? -1 : 1));
+    expect(got).toEqual([
+      { hostnames: [hosts.web], backend: { name: "gitlab-webservice-default", port: 8181 }, parent: "zeta-public-gateway" },
+      { hostnames: [hosts.registry], backend: { name: "gitlab-registry", port: 5000 }, parent: "zeta-public-gateway" },
+    ]);
+  });
+
+  test("SET: GitLab's external URL becomes https://gitlab.<domain> -- the Application's helm parameters are patched", () => {
+    const cm = kinds(publicTlsObjects(SET), "ConfigMap").find((c) => name(c) === "gitlab-public-hosts");
+    const patch = JSON.parse(String(((cm?.["data"] ?? {}) as Record<string, unknown>)["patch.json"])) as {
+      spec: { source: { helm: { parameters: Array<{ name: string; value: string }> } } };
+    };
+    const params = Object.fromEntries(patch.spec.source.helm.parameters.map((p) => [p.name, p.value]));
+    expect(params).toEqual({
+      "global.hosts.domain": SET.publicDomain,
+      "global.hosts.https": "true",
+      "global.hosts.gitlab.name": hosts.web,
+      "global.hosts.registry.name": hosts.registry,
+    });
+  });
+
+  test("SET: the patching Job may patch only Application/gitlab", () => {
+    const pub = publicTlsObjects(SET);
+    const role = kinds(pub, "Role").find((r) => name(r) === "gitlab-public-hosts");
+    const patchRules = ((role?.["rules"] ?? []) as Array<Record<string, unknown>>).filter((r) => (r["verbs"] as string[]).includes("patch"));
+    expect(patchRules).toEqual([{ apiGroups: ["argoproj.io"], resources: ["applications"], resourceNames: ["gitlab"], verbs: ["patch"] }]);
+    expect(kinds(pub, "Job").map(name)).toEqual(["gitlab-public-hosts"]);
+  });
+
+  test("root ignores exactly the patched field on Application/gitlab, so selfHeal does not revert it", () => {
+    const root = parseYaml(readFileSync(join(REPO_ROOT, ROOT_APPLICATION), "utf8")) as {
+      spec: { ignoreDifferences?: unknown; syncPolicy: { syncOptions: string[] } };
+    };
+    expect(root.spec.ignoreDifferences).toEqual([
+      { group: "argoproj.io", kind: "Application", name: "gitlab", namespace: "argocd", jsonPointers: [GITLAB_APPLICATION_PARAMETERS_POINTER] },
+    ]);
+    expect(root.spec.syncPolicy.syncOptions).toContain("RespectIgnoreDifferences=true");
+  });
+
+  test("UNSET leaves the gitlab Application with no helm parameters, so its valuesObject (the LAN default) wins", () => {
+    const app = parseYaml(readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/applications/gitlab/Application.yaml"), "utf8")) as {
+      spec: { source: { helm: Record<string, unknown> } };
+    };
+    expect(app.spec.source.helm["parameters"]).toBeUndefined();
   });
 });

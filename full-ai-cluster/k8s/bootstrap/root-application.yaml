@@ -39,6 +39,20 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  # ONE FIELD OF ONE CHILD IS NOT ROOT'S: `Application/gitlab`'s helm parameters.
+  # They carry GitLab's external URL when an install-time public domain is set, and only
+  # the node knows that domain -- so `platform-public-tls` (rendered by
+  # nixos/modules/injected-public-tls.nix) merge-patches them in, and root must neither
+  # report that as drift nor selfHeal it away. With no public domain the field is simply
+  # absent and gitlab/Application.yaml's valuesObject (the LAN default) applies.
+  # 081M3K253BR087G0R001151P2A; pinned by cluster/public-tls.test.ts (d).
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      name: gitlab
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/parameters
   syncPolicy:
     automated:
       prune: true
@@ -46,3 +60,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true

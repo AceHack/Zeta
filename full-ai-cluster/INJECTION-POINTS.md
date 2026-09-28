@@ -449,9 +449,19 @@ the Application's inline patches: the issuers' `spec.acme.email`, the HTTPS list
 Application with no sync waves inside it, an issuer or Certificate that cannot go Ready never
 gates `platform` again.
 
+**GitLab rides the same values** (081M3K253BR087G0R001151P2A). SET adds two more HTTPS
+listeners (`gitlab.<domain>`, `registry.<domain>`, one certificate each), the `gitlab-public` /
+`gitlab-registry-public` HTTPRoutes, and Job `gitlab-public-hosts`, which merge-patches the
+`gitlab` Application's `spec.source.helm.parameters` so GitLab's external URL is
+`https://gitlab.<domain>` (`zeta-root` ignores exactly that field). UNSET: GitLab is LAN-only at
+**`http://192.168.1.250/`** — its own hostname-less `gitlab-lan` Gateway pinned to the last
+address of `cilium-lb-ipam/ip-pool.yaml`; the registry is the same address (`/v2/`). Adjusting
+the pool means adjusting that pin (see `gitlab/Application.yaml`).
+
 **The operator step when SET** (also printed in the installer's completion banner):
 
-1. **DNS:** an `A` record `portal.<domain>` → your public IP.
+1. **DNS:** an `A` record `portal.<domain>` → your public IP (and `gitlab.<domain>`,
+   `registry.<domain>` → the same IP to publish GitLab).
 2. **Router:** forward TCP **80** and **443** to the public gateway's LoadBalancer IP —
    `sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'`.
 3. Watch `sudo k3s kubectl -n zeta-platform get certificate portal-tls` go Ready. HTTP-01

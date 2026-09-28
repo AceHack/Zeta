@@ -590,6 +590,22 @@ describe("scope and drift", () => {
     }
   });
 
+  test("a Helm template expression in `image:` is not a reference; a literal beside it still is", () => {
+    const fx = makeTree(
+      {
+        "fixture/k8s/app.yaml":
+          "kind: Pod\nspec:\n  containers:\n    - image: '{{ include \"gitlab.kubectl.image\" . }}'\n    - image: postgres:16-alpine\n",
+      },
+      [entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 } })],
+    );
+    try {
+      expect(collectImageUses(fx.root).uses.map((u) => u.image)).toEqual(["postgres:16-alpine"]);
+      expect(hardFindings(fx.root)).toEqual([]);
+    } finally {
+      fx.dispose();
+    }
+  });
+
   test("a ledger row for an image the tree no longer references is a finding", () => {
     const fx = makeTree({ "fixture/k8s/app.yaml": "kind: Pod\nspec:\n  containers:\n    - image: postgres:16-alpine\n" }, [
       entry({ repository: "registry-1.docker.io/library/postgres", tags: { "16-alpine": 200 } }),

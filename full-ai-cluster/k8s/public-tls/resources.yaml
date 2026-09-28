@@ -20,6 +20,9 @@
 # HTTP-01 through the public Gateway's :80 listener: no DNS API, no Cloudflare —
 # only that `portal.<domain>` resolves to the forwarded public IP and 80/443 are
 # forwarded to this Gateway's LoadBalancer address (INJECTION-POINTS.md §10).
+# GitLab is published here too, as `gitlab.<domain>` and `registry.<domain>`: each
+# needs its own DNS record to the same address, and each has its own listener and
+# certificate, so a missing record costs only that name.
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -93,6 +96,28 @@ spec:
           - { kind: Secret, name: portal-tls }
       allowedRoutes:
         namespaces: { from: All }
+    # :443 for GitLab — one listener PER public name, each with its OWN certificate, so a
+    # GitLab name that has not issued (no DNS record yet, say) can never hold the portal's
+    # certificate hostage, and vice versa. Index 2 gets gitlab.<domain>, index 3
+    # registry.<domain> (/spec/listeners/N/hostname, the Application's patches).
+    - name: https-gitlab
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: gitlab-tls }
+      allowedRoutes:
+        namespaces: { from: All }
+    - name: https-registry
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: gitlab-registry-tls }
+      allowedRoutes:
+        namespaces: { from: All }
 ---
 # The public portal route. `hostnames` is added by the Application's patch.
 apiVersion: gateway.networking.k8s.io/v1
@@ -106,3 +131,134 @@ spec:
   rules:
     - backendRefs:
         - { name: portal, port: 80 }
+# ═════════════════════════════ GitLab, published ═════════════════════════════
+# The routes live in namespace `gitlab`, next to the Services they point at, so no
+# ReferenceGrant is needed; the public Gateway admits routes from All namespaces.
+# `hostnames` of each is added by the Application's patch. Nothing in the `gitlab`
+# Application waits on any of this: when no public domain is configured none of it
+# exists, and GitLab is served on the LAN by its own `gitlab-lan` Gateway.
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gitlab-public
+  namespace: gitlab
+spec:
+  parentRefs:
+    - { name: zeta-public-gateway, namespace: zeta-platform }
+  rules:
+    - backendRefs:
+        - { name: gitlab-webservice-default, port: 8181 }
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gitlab-registry-public
+  namespace: gitlab
+spec:
+  parentRefs:
+    - { name: zeta-public-gateway, namespace: zeta-platform }
+  rules:
+    - backendRefs:
+        - { name: gitlab-registry, port: 5000 }
+# GitLab's EXTERNAL URL for this install. The gitlab Application is git-owned by
+# `zeta-root` and its valuesObject carries the LAN default; the public names can only be
+# known here, where the domain is. So this Job merge-patches that Application's
+# `spec.source.helm.parameters` (helm parameters override valuesObject) with the content of
+# ConfigMap `gitlab-public-hosts`, whose `patch.json` is added by the Application's patch.
+# bootstrap/root-application.yaml ignores exactly that one field (`ignoreDifferences` +
+# `RespectIgnoreDifferences=true`), so root's selfHeal neither reverts nor fights it.
+# Same shell-less kubectl image and posture as bootstrap/internal-secret-seeding.yaml; the
+# only write it can make is `patch` on Application `gitlab`.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-public-hosts
+  namespace: zeta-platform
+data: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-public-hosts
+  namespace: zeta-platform
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitlab-public-hosts
+  namespace: argocd
+rules:
+  # `kubectl wait --for=create` lists+watches; the only WRITE is the next rule.
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    resourceNames: ["gitlab"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitlab-public-hosts
+  namespace: argocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gitlab-public-hosts
+subjects:
+  - kind: ServiceAccount
+    name: gitlab-public-hosts
+    namespace: zeta-platform
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitlab-public-hosts
+  namespace: zeta-platform
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      serviceAccountName: gitlab-public-hosts
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: patch
+          configMap: { name: gitlab-public-hosts }
+      initContainers:
+        # The gitlab Application is created by zeta-root at its own sync wave, which can
+        # be long after this Application first syncs on a fresh node.
+        - name: wait-for-gitlab-application
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+          command: ["/bin/kubectl"]
+          args: ["wait", "--for=create", "applications.argoproj.io/gitlab", "-n", "argocd", "--timeout=24h"]
+      containers:
+        - name: patch
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: patch, mountPath: /patch, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "applications.argoproj.io", "gitlab", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/patch.json"]

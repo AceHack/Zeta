@@ -19,9 +19,59 @@ spec:
       valuesObject:
         global:
           edition: ce
+          # EXTERNAL URL -- WHAT A LAN CLIENT CAN ACTUALLY REACH, WITH NO DNS.
+          #
+          # This was `domain: gitlab.zeta.local` with the chart's default `https: true`, so GitLab
+          # advertised https://gitlab.gitlab.zeta.local (clone URLs, OAuth redirects, the
+          # registry's token realm, the runner's CI_SERVER_URL) -- a name nothing on the LAN
+          # resolves, over TLS nothing terminates. MEASURED 2026-09-27 on a fresh node: the only
+          # objects carrying that name were three Ingresses of class `gitlab-nginx`, which no
+          # controller serves (the cluster's one IngressClass is `cilium`), so GitLab was
+          # reachable from nowhere outside the cluster.
+          #
+          # UNSET (no install-time public domain) -- THE LAN DEFAULT: GitLab is served by its own
+          # hostname-less Gateway `gitlab-lan` (`gitlab-runner.extraObjects` below) whose
+          # LoadBalancer address is PINNED to 192.168.1.250, the LAST address of the cluster's LB
+          # pool (cilium-lb-ipam/ip-pool.yaml -- LB-IPAM allocates lowest-first, so the pin does
+          # not race automatic allocations). An address is the only identity a LAN client reaches
+          # without DNS, and pinning it is what lets GitLab know its own URL at render time:
+          #   web       http://192.168.1.250/
+          #   registry  192.168.1.250 (same address; `/v2/` routes to the registry -- GitLab
+          #             serves nothing under /v2/). Plain HTTP: docker clients need it listed
+          #             under `insecure-registries`.
+          # A dedicated Gateway rather than a route on `zeta-gateway`: that Gateway's single
+          # hostname-less :80 listener is the portal's catch-all, and two catch-all routes on
+          # one listener cannot both win. If ip-pool.yaml is adjusted to another subnet, adjust
+          # these two names and the Gateway's `addresses` with it -- cluster/gitlab-exposure.test.ts
+          # (c) fails until all three agree and the pin lies inside the pool.
+          #
+          # `domain` only feeds the chart's ASSEMBLED names for things this install neither runs
+          # nor exposes (pages, smartcard, minio, the e-mail sender domain): RFC 2606 `.invalid`
+          # says exactly that -- it is guaranteed never to resolve, instead of looking like a name
+          # somebody forgot to register.
+          #
+          # SET (install-time public domain) -- `platform-public-tls` merge-patches this
+          # Application's `spec.source.helm.parameters` to gitlab.<domain> / registry.<domain> over
+          # https (full-ai-cluster/k8s/public-tls/resources.yaml, Job `gitlab-public-hosts`), and
+          # bootstrap/root-application.yaml ignores exactly that field so selfHeal keeps it.
+          # Helm parameters override this valuesObject, so these values are the UNSET state only.
+          # Keep `spec.source.helm.parameters` ABSENT here (public-tls.test.ts pins it).
           hosts:
-            domain: gitlab.zeta.local
+            domain: gitlab.invalid
+            https: false
+            gitlab: { name: "192.168.1.250" }
+            registry: { name: "192.168.1.250" }
+          # KAS (GitLab agent for Kubernetes) is OFF: its only exposure was the unserved
+          # `gitlab-kas` Ingress, nothing in this cluster registers an agent, and it was two more
+          # always-on pods. Re-enable together with a route for it.
+          kas:
+            enabled: false
           ingress:
+            # NO INGRESS. Nothing serves class `gitlab-nginx`, and an Ingress with no controller
+            # never gets an address -- ArgoCD's health check then holds the whole sync at
+            # Progressing ("waiting for healthy state of networking.k8s.io/Ingress/gitlab-kas and
+            # 2 more resources", measured live). Exposure is Gateway API, see `extraObjects`.
+            enabled: false
             # `configureCertmanager: false` IS THE VALUE THAT MAKES THIS APP
             # RENDER, measured 2026-08-21. Without it gitlab 8.7.0 refuses to
             # template at all: charts/certmanager-issuer/templates/cert-manager.yml:14
@@ -126,7 +176,209 @@ spec:
         upgradeCheck:   { enabled: false }
         gitlab-runner:
           install: true
-          runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
+          # IN-CLUSTER URL, NOT THE EXTERNAL ONE. Measured live: the runner registered against
+          # the external URL (then https://gitlab.gitlab.zeta.local) and PANICked on DNS. Talking
+          # to the webservice Service (Workhorse, :8181) never depends on DNS, TLS, the Gateway or
+          # the install-time domain; `clone_url` below keeps job checkouts in-cluster too.
+          gitlabUrl: http://gitlab-webservice-default.gitlab.svc:8181
+          # AUTHENTICATION-TOKEN FLOW. The registration-token flow is disabled by default since
+          # GitLab 17 (and removed in 18); the runner chart switches its register script to the
+          # glrt- form only when `runnerRegistrationToken` is PRESENT AND EMPTY
+          # (charts/gitlab-runner/templates/_helpers.tpl `gitlab-runner.isAuthToken`) -- that
+          # branch drops --tag-list/--run-untagged/--locked, which GitLab refuses alongside a
+          # glrt- token. The token itself is minted in-cluster by Job `gitlab-runner-token`
+          # (extraObjects below) into the chart's own Secret `gitlab-gitlab-runner-secret`.
+          # Tags now live on the runner record (set by that Job), not in these values.
+          runnerRegistrationToken: ""
+          # An auth-token runner is a record created ONCE; the chart's default preStop
+          # `unregister --all-runners` on every pod stop is the registration-token-era lifecycle.
+          unregisterRunners: false
+          # Created only after the token Job (wave 5) has run, so the first pod reads a real
+          # token instead of burning its 30 register attempts on an empty one and crash-looping.
+          deploymentAnnotations:
+            argocd.argoproj.io/sync-wave: "10"
+          runners:
+            privileged: false
+            # The chart default, plus `clone_url` (see gitlabUrl above). This REPLACES the
+            # chart's `runners.config`, whose only other content is a minio cache block gated on
+            # `global.minio.enabled`, which is false here.
+            config: |
+              [[runners]]
+                clone_url = "http://gitlab-webservice-default.gitlab.svc:8181"
+                [runners.kubernetes]
+                image = "ubuntu:22.04"
+          # EXTRA OBJECTS OF THE GITLAB RELEASE. The umbrella chart has no values coordinate that
+          # adds arbitrary objects; the runner subchart's `extraObjects`
+          # (charts/gitlab-runner/templates/extra-manifests.yaml, rendered through `tpl` -- so no
+          # double braces below except the one deliberate image helper call) is the one that does, and it keeps these objects in the same
+          # ArgoCD Application, sync and prune scope as the Services they route to.
+          extraObjects:
+            # --- LAN exposure (see global.hosts above) ------------------------------------
+            - apiVersion: gateway.networking.k8s.io/v1
+              kind: Gateway
+              metadata:
+                name: gitlab-lan
+                namespace: gitlab
+              spec:
+                gatewayClassName: cilium
+                # Cilium LB-IPAM honours spec.addresses (IPAddress type only). Must equal
+                # global.hosts.gitlab.name / registry.name and lie inside ip-pool.yaml.
+                addresses:
+                  - { type: IPAddress, value: "192.168.1.250" }
+                listeners:
+                  - name: http
+                    protocol: HTTP
+                    port: 80
+                    allowedRoutes:
+                      namespaces: { from: Same }
+            - apiVersion: gateway.networking.k8s.io/v1
+              kind: HTTPRoute
+              metadata:
+                name: gitlab-web
+                namespace: gitlab
+              spec:
+                parentRefs:
+                  - { name: gitlab-lan }
+                rules:
+                  - matches:
+                      - path: { type: PathPrefix, value: / }
+                    backendRefs:
+                      - { name: gitlab-webservice-default, port: 8181 }
+            - apiVersion: gateway.networking.k8s.io/v1
+              kind: HTTPRoute
+              metadata:
+                name: gitlab-registry
+                namespace: gitlab
+              spec:
+                parentRefs:
+                  - { name: gitlab-lan }
+                rules:
+                  # Longest prefix wins, so the registry API is carved out of the web route.
+                  - matches:
+                      - path: { type: PathPrefix, value: /v2/ }
+                    backendRefs:
+                      - { name: gitlab-registry, port: 5000 }
+            # --- runner authentication token ----------------------------------------------
+            # Creates (or finds) ONE instance runner `zeta-cluster` through GitLab's own service
+            # object in the toolbox pod -- no admin personal access token is ever minted, so none
+            # can leak or outlive this Job -- and writes its glrt- token into the Secret the
+            # runner chart already reads. Idempotent: an existing token is left alone, and an
+            # existing `zeta-cluster` runner is reused rather than duplicated. The token is never
+            # printed: it moves from the exec's stdout into a shell variable and a tmpfs file.
+            # NON-BLOCKING by design: any failure prints the operator step and exits 0, because a
+            # failed Sync hook would block every later gitlab sync (upgrades included) over the
+            # one optional component; the runner then crash-loops exactly as it did before.
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-runner-token
+                namespace: gitlab
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-runner-token
+                namespace: gitlab
+              rules:
+                - apiGroups: [apps]
+                  resources: [deployments]
+                  resourceNames: [gitlab-toolbox]
+                  verbs: [get]
+                - apiGroups: [""]
+                  resources: [pods]
+                  verbs: [get, list]
+                - apiGroups: [""]
+                  resources: [pods/exec]
+                  verbs: [create]
+                - apiGroups: [""]
+                  resources: [secrets]
+                  resourceNames: [gitlab-gitlab-runner-secret]
+                  verbs: [get, patch]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-runner-token
+                namespace: gitlab
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-runner-token
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-runner-token
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-runner-token
+                namespace: gitlab
+                annotations:
+                  # Sync phase, wave 5: after every wave-0 object (toolbox, webservice,
+                  # migrations) is Healthy, before the runner Deployment (wave 10).
+                  argocd.argoproj.io/hook: Sync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+                  argocd.argoproj.io/sync-wave: "5"
+              spec:
+                backoffLimit: 1
+                activeDeadlineSeconds: 900
+                template:
+                  spec:
+                    serviceAccountName: gitlab-runner-token
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                    containers:
+                      - name: mint
+                        # The chart's OWN kubectl image (bash + kubectl), resolved by the chart's own
+                        # helper -- the ONE deliberate template expression in these extraObjects -- so
+                        # it is exactly the image the shared-secrets Job runs and moves with every
+                        # chart/gitlabVersion bump instead of going stale as a literal tag. It adds
+                        # nothing to the image set.
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                        resources:
+                          requests: { cpu: 50m, memory: 64Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            SECRET=gitlab-gitlab-runner-secret
+                            operator_step() {
+                              echo "runner token NOT minted: $1"
+                              echo "Operator step: Admin > CI/CD > Runners > New instance runner (tags kubernetes,zeta-cluster), then"
+                              echo "  kubectl -n gitlab patch secret $SECRET --type merge -p '{\"stringData\":{\"runner-token\":\"<glrt-...>\",\"runner-registration-token\":\"\"}}'"
+                              echo "  kubectl -n gitlab rollout restart deploy/gitlab-gitlab-runner"
+                              exit 0
+                            }
+                            current=$(kubectl -n gitlab get secret "$SECRET" -o jsonpath='{.data.runner-token}') || operator_step "cannot read Secret $SECRET"
+                            if [ -n "$current" ]; then echo "runner-token already present in $SECRET; nothing to do"; exit 0; fi
+                            read -r -d '' RUBY <<'RB'
+                            root = User.find_by_username('root') || raise('no root user')
+                            runner = Ci::Runner.instance_type.find_by(description: 'zeta-cluster')
+                            unless runner
+                              result = Ci::Runners::CreateRunnerService.new(user: root, params: { runner_type: 'instance_type', description: 'zeta-cluster', tag_list: %w[kubernetes zeta-cluster], run_untagged: false }).execute
+                              raise(result.message.to_s) unless result.success?
+                              runner = result.payload[:runner]
+                            end
+                            print "\n" + runner.token
+                            RB
+                            out=$(kubectl -n gitlab exec deploy/gitlab-toolbox -c toolbox -- gitlab-rails runner "$RUBY" 2>/dev/null) || operator_step "gitlab-rails runner failed in deploy/gitlab-toolbox"
+                            token=$(printf '%s\n' "$out" | grep -o 'glrt-[A-Za-z0-9_-]*' | tail -n 1)
+                            [ -n "$token" ] || operator_step "the Rails call returned no glrt- token"
+                            printf '{"data":{"runner-token":"%s","runner-registration-token":""}}' "$(printf '%s' "$token" | base64 | tr -d '\n')" > /tmp/patch.json
+                            kubectl -n gitlab patch secret "$SECRET" --type merge --patch-file /tmp/patch.json >/dev/null || operator_step "patching $SECRET was refused"
+                            echo "minted a glrt- runner token into $SECRET"
           # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED (helm pull
           # gitlab 8.7.0 --untar) that charts/gitlab-runner/templates/deployment.yaml
           # renders `livenessProbe` with no `startupProbe` key anywhere in the
@@ -274,5 +526,19 @@ spec:
     namespace: gitlab
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true, SkipDryRunOnMissingResource=true ]
+    # CLIENT-SIDE APPLY -- `ServerSideApply=true` WAS REMOVED, MEASURED 2026-09-27 on a fresh
+    # node: StatefulSet `gitlab-gitaly` was NEVER CREATED. ArgoCD reported "failed to create typed
+    # patch object (gitlab/gitlab-gitaly; apps/v1, Kind=StatefulSet): .spec.template.spec.
+    # containers[name="gitaly"].env: duplicate entries for key [name="TZ"]" -- chart 8.7.0's
+    # charts/gitlab/charts/gitaly/templates/_statefulset_spec.yaml includes `gitlab.timeZone.env`
+    # at both ends of the gitaly container's `env`, unconditionally, and SSA's structured merge
+    # refuses a list-map with a repeated key. No values coordinate removes either copy. With no
+    # Gitaly, GitLab cannot store a single repository. Client-side apply accepts the object (the
+    # API server only warns on the shadowed env var). It also closes the other two OutOfSync rows
+    # seen live -- StatefulSets gitlab-postgresql / gitlab-redis-master, the SSA
+    # volumeClaimTemplates prediction drift (argo-cd#11143) documented in
+    # cluster/ssa-volumeclaimtemplate-drift.ts, whose closure #1 is exactly this. Nothing here
+    # needs SSA: the chart renders no CRD, and no object approaches the 262144-byte
+    # last-applied-configuration cap. Falsifier: cluster/gitlab-exposure.test.ts (e).
+    syncOptions: [ CreateNamespace=true, SkipDryRunOnMissingResource=true ]
     retry: { limit: 5, backoff: { duration: 30s, factor: 2, maxDuration: 5m } }

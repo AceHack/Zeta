@@ -37,6 +37,17 @@ spec:
           patch: '[{"op":"add","path":"/spec/listeners/1/hostname","value":"portal.@ZETA_PUBLIC_DOMAIN@"}]'
         - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: portal-public }
           patch: '[{"op":"add","path":"/spec/hostnames","value":["portal.@ZETA_PUBLIC_DOMAIN@"]}]'
+        # GitLab (081M3K253BR087G0R001151P2A): its two public names, and the helm parameters
+        # that make GitLab's own external URL https://gitlab.<domain> -- applied to the git-owned
+        # gitlab Application by Job `gitlab-public-hosts` (see resources.yaml).
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/2/hostname","value":"gitlab.@ZETA_PUBLIC_DOMAIN@"},{"op":"add","path":"/spec/listeners/3/hostname","value":"registry.@ZETA_PUBLIC_DOMAIN@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: gitlab-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["gitlab.@ZETA_PUBLIC_DOMAIN@"]}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: gitlab-registry-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["registry.@ZETA_PUBLIC_DOMAIN@"]}]'
+        - target: { version: v1, kind: ConfigMap, name: gitlab-public-hosts }
+          patch: '[{"op":"add","path":"/data/patch.json","value":"{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"global.hosts.domain\",\"value\":\"@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"global.hosts.https\",\"value\":\"true\"},{\"name\":\"global.hosts.gitlab.name\",\"value\":\"gitlab.@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"global.hosts.registry.name\",\"value\":\"registry.@ZETA_PUBLIC_DOMAIN@\"}]}}}}"}]'
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-platform

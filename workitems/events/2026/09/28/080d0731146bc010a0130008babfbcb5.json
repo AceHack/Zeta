@@ -1,0 +1,14 @@
+{
+  "id": "080d0731146bc010a0130008babfbcb5",
+  "at": "2026-09-28T03:50:19.256Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K253BR087G0R001151P2A",
+    "type": "bug",
+    "title": "GitLab unreachable on a fresh install: unserved Ingresses, zeta.local external URL, runner registration-token crash loop, gitaly SSA refusal",
+    "slug": "gitlab-unreachable-on-a-fresh-install-unserved-ingresses-zet",
+    "priority": "P2",
+    "filename": "081M3K253BR087G0R001151P2A-gitlab-unreachable-on-a-fresh-install-unserved-ingresses-zet.md"
+  }
+}

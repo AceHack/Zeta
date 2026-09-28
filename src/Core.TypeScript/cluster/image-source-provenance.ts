@@ -272,6 +272,13 @@ export function collectImageUses(
       continue;
     }
     for (const image of imagesInDocuments(documents)) {
+      // A HELM TEMPLATE EXPRESSION IS NOT A REFERENCE. An `image:` value such as
+      // `{{ include "gitlab.kubectl.image" . }}` (gitlab/Application.yaml's runner
+      // extraObjects, rendered through the chart's `tpl`) names no registry, so
+      // "measuring" it would only ever produce a ledger row for a string no client
+      // pulls. What it RENDERS to is a chart image, measured where every chart image
+      // is: image-resolvability.json (which renders the chart). Skipped, not passed.
+      if (image.includes("{{")) continue;
       const list = byImage.get(image);
       if (list === undefined) byImage.set(image, [rel]);
       else if (!list.includes(rel)) list.push(rel);
