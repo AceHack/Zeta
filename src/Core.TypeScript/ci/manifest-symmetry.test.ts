@@ -342,8 +342,14 @@ test("NixOS and USB installer surfaces delegate agent/runtime drift to install g
   // than CI). full-ai-cluster/flake.nix is now the single definition — asserted here
   // so this test can never be satisfied by a re-added duplicate.
   expect(existsSync(join(repoRoot, "full-ai-cluster", "usb-nixos-installer", "flake.nix"))).toBe(false);
-  expect(zetaInstall).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
-  expect(zetaInstall).toContain("ZETA_INSTALL_FULL=1");
+  // 081M3K23YCP087G0R003BVDS1P: the install.sh call itself now runs after first
+  // boot, from zeta-dev-toolchain.service's runner — same entry, same overrides.
+  const devToolchain = readFileSync(
+    join(repoRoot, "full-ai-cluster", "nixos", "modules", "zeta-dev-toolchain.sh"),
+    "utf8",
+  );
+  expect(devToolchain).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
+  expect(devToolchain).toContain("ZETA_INSTALL_FULL=1");
   expect(zetaInstall).toContain("tools/setup/manifests/from-bun-global");
   expect(zetaInstall).toContain("tools/setup/manifests/from-installer");
 

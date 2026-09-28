@@ -1411,63 +1411,131 @@ export function assertUefiKeyfileRestoreWrongPassphraseContract(serial: string):
 }
 
 /**
- * Serial markers zeta-install.sh emits around the first-boot install.sh step.
+ * 081M3K23YCP087G0R003BVDS1P — where the dev toolchain went, and the markers
+ * the lanes read about it.
  *
- * These are LITERALS DUPLICATED from `zeta-install.sh` (the START echo and the
- * post-retry WARN). Nothing in the type system ties them to their producer, so
- * `qemu-full-install-test.test.ts` asserts that zeta-install.sh actually contains
- * both — otherwise rewording the shell echo would silently turn the contract
- * below into a test that can never fail, which is precisely the defect class this
- * contract exists to close (Kira, PR #10196 review).
+ * `tools/setup/install.sh` (tier full) USED to run inside zeta-install.sh before
+ * the reboot, and 081KZETP6AT's contract asserted on it in the PHASE-1 serial.
+ * It now runs on the INSTALLED system after first boot as
+ * `zeta-dev-toolchain.service` (full-ai-cluster/nixos/modules/zeta-dev-toolchain.nix),
+ * so its verdict is in the INSTALLED-DISK serial, and the phase-1 contract is
+ * about what the installer still does: defer (positive evidence) and bootstrap
+ * bun for its own helpers.
+ *
+ * All of these are LITERALS DUPLICATED from their producers — zeta-install.sh
+ * and zeta-dev-toolchain.sh. `qemu-full-install-test.test.ts` asserts each
+ * producer still emits them, otherwise rewording an echo silently turns the
+ * contract into a test that can never fail (Kira, PR #10196 review).
  */
-export const INSTALL_SH_START_MARKER = "running tools/setup/install.sh";
-export const INSTALL_SH_FINAL_FAILURE_MARKER = "WARN: install.sh FAILED rc=";
+/** zeta-install.sh 6.95a: positive evidence the installer reached the step and deferred. */
+export const DEV_TOOLCHAIN_DEFERRED_MARKER = "dev toolchain DEFERRED to zeta-dev-toolchain.service";
+/** zeta-install.sh 6.95a: the bounded bun bootstrap did not produce bun. */
+export const BUN_BOOTSTRAP_FAILED_MARKER = "WARN: bun bootstrap";
+/** The pre-change installer's own start echo. Present means install.sh ran PRE-REBOOT again. */
+export const LEGACY_INSTALL_SH_PRE_REBOOT_MARKER = "running tools/setup/install.sh";
+/** zeta-dev-toolchain.sh — the three states the installed-disk serial can show. */
+export const DEV_TOOLCHAIN_START_MARKER = "zeta-dev-toolchain: START";
+export const DEV_TOOLCHAIN_SUCCEEDED_MARKER = "zeta-dev-toolchain: SUCCEEDED";
+export const DEV_TOOLCHAIN_FAILED_MARKER = "zeta-dev-toolchain: FAILED";
 
 /**
- * 081KZETP6AT — first-boot provisioning contract.
+ * Phase-1 (installer) half of the provisioning contract.
  *
- * `zeta-install.sh` treats a failed `tools/setup/install.sh` as non-fatal, which
- * is correct for the ARTIFACT (a node without agent CLIs is still recoverable)
- * but left the TEST with nothing to assert on: a fully-provisioned node and a
- * node with no toolchain at all both reported success. This closes that hole —
- * grace in the artifact, strict in the test.
- *
- * Deliberately matches only the FINAL (post-retry) failure marker, so a genuine
- * transient blip that the retry-with-backoff recovers from stays green — the
- * retry exists precisely so transient faults self-heal.
+ * Requires POSITIVE evidence — the deferral line — rather than the absence of a
+ * failure string; an assertion that only convicts passes green on a truncated
+ * serial or a VM that died before Step 6.95a (Kira, PR #10196 review). Convicts
+ * when the installer ran install.sh pre-reboot again (the ~30-minute silent
+ * console this moved away from) or when the bun bootstrap failed (every helper
+ * downstream — the wifi NM-profile converter first — then cannot run).
  */
 export function assertFirstBootProvisioningContract(phase1Serial: string):
   | {
       readonly ok: true;
     }
   | { readonly ok: false; readonly reason: string } {
-  // Require POSITIVE evidence, do not merely look for a failure string. An
-  // assertion that only convicts and never acquits passes green on a truncated
-  // serial, a VM that died before Step 6.95a, or an install.sh that was never
-  // invoked at all — the same "absence of bad news = good news" hole this
-  // contract was added to close (Kira, PR #10196 review).
-  if (!phase1Serial.includes(INSTALL_SH_START_MARKER)) {
+  if (phase1Serial.includes(LEGACY_INSTALL_SH_PRE_REBOOT_MARKER)) {
     return {
       ok: false,
       reason:
-        `first-boot never reached the install.sh step (start marker "${INSTALL_SH_START_MARKER}" ` +
-        "absent from the phase-1 serial). Either the serial was truncated, the VM died before " +
-        "Step 6.95a, or the runtime-bootstrap block was skipped — all of which previously passed " +
-        "green because the contract only looked for a failure string.",
+        `the installer ran tools/setup/install.sh BEFORE the reboot ("${LEGACY_INSTALL_SH_PRE_REBOOT_MARKER}" ` +
+        "is in the phase-1 serial). The dev toolchain belongs to zeta-dev-toolchain.service after first " +
+        "boot (081M3K23YCP087G0R003BVDS1P); pre-reboot it held a silent console for ~30 minutes on metal.",
     };
   }
-  if (!phase1Serial.includes(INSTALL_SH_FINAL_FAILURE_MARKER)) return { ok: true };
+  if (!phase1Serial.includes(DEV_TOOLCHAIN_DEFERRED_MARKER)) {
+    return {
+      ok: false,
+      reason:
+        `the installer never reached the dev-toolchain step (marker "${DEV_TOOLCHAIN_DEFERRED_MARKER}" ` +
+        "absent from the phase-1 serial). Either the serial was truncated, the VM died before " +
+        "Step 6.95a, or the runtime-bootstrap block was skipped.",
+    };
+  }
+  if (!phase1Serial.includes(BUN_BOOTSTRAP_FAILED_MARKER)) return { ok: true };
   return {
     ok: false,
     reason:
-      "tools/setup/install.sh failed on first boot after exhausting its retries " +
-      `(marker: "${INSTALL_SH_FINAL_FAILURE_MARKER}"). The node is only PARTIALLY ` +
-      "provisioned: mise toolchains and/or agent CLIs are absent, so anything " +
-      "downstream that needs bun/node/python (e.g. the iter-5-wifi NM-profile " +
-      "converter) cannot run. On NixOS the usual cause is a missing FHS loader — " +
-      "see full-ai-cluster/nixos/modules/foreign-binaries.nix (programs.nix-ld) " +
-      "and the 081KZETP6AT diag block in the serial log for the exact error lines.",
+      `the installer's bounded bun bootstrap failed (marker "${BUN_BOOTSTRAP_FAILED_MARKER}"). Every ` +
+      "TypeScript helper after it (the iter-5-wifi NM-profile converter, the iSerial probe, the credential " +
+      "picker) cannot run, and neither can the first-boot credential units. On NixOS the usual cause is a " +
+      "missing FHS loader — see full-ai-cluster/nixos/modules/foreign-binaries.nix (programs.nix-ld).",
   };
+}
+
+/** What the installed-disk serial says about zeta-dev-toolchain.service. */
+export type DevToolchainState = "succeeded" | "failed" | "did-not-run" | "running";
+
+/**
+ * THREE terminal states plus the honest fourth: `running` means it started and
+ * the serial ended before it concluded — that is NOT a pass and not a failure
+ * of the toolchain, it is a verdict the lane did not wait for.
+ */
+export function classifyDevToolchain(serial: string): DevToolchainState {
+  if (serial.includes(DEV_TOOLCHAIN_FAILED_MARKER)) return "failed";
+  if (serial.includes(DEV_TOOLCHAIN_SUCCEEDED_MARKER)) return "succeeded";
+  if (serial.includes(DEV_TOOLCHAIN_START_MARKER)) return "running";
+  return "did-not-run";
+}
+
+/**
+ * Installed-disk half, for a lane whose first boot HAS a network (WP11). Only
+ * `succeeded` passes: a unit that never ran on a networked first boot is the
+ * "check that did not run" class, and `running` at the harness bound means the
+ * verdict never arrived.
+ */
+export function assertDevToolchainContract(installedSerial: string):
+  | { readonly ok: true }
+  | { readonly ok: false; readonly state: DevToolchainState; readonly reason: string } {
+  const state = classifyDevToolchain(installedSerial);
+  switch (state) {
+    case "succeeded":
+      return { ok: true };
+    case "failed":
+      return {
+        ok: false,
+        state,
+        reason:
+          "zeta-dev-toolchain.service FAILED on the installed disk's first boot — the node is only " +
+          "PARTIALLY provisioned (mise toolchains and/or agent CLIs absent). The named cause, when " +
+          "recognised, follows the FAILED line on serial as 'zeta-dev-toolchain:   CAUSE: ...'.",
+      };
+    case "running":
+      return {
+        ok: false,
+        state,
+        reason:
+          `zeta-dev-toolchain.service STARTED ("${DEV_TOOLCHAIN_START_MARKER}") but the serial ended before ` +
+          "it concluded — no verdict, which is not a pass.",
+      };
+    case "did-not-run":
+      return {
+        ok: false,
+        state,
+        reason:
+          `zeta-dev-toolchain.service never started ("${DEV_TOOLCHAIN_START_MARKER}" absent) on a first boot ` +
+          "that had a network. Look at the timer (OnBootSec) and ConditionPathExists=!~/.zeta/dev-toolchain.ok.",
+      };
+  }
 }
 
 /**
@@ -2162,10 +2230,36 @@ async function waitForInstalledLoginThenK3sVerdict(
       "SAME boot continues into the WP11 k3s verdict (no reboot, so no half-initialised datastore)",
   );
   const verdict = await waitForK3sFirstBootVerifyVerdict(serialLogPath);
+  // 081M3K23YCP087G0R003BVDS1P: the dev toolchain now runs in the background on
+  // this SAME first boot. Keep the guest alive until it concludes (or the bound
+  // expires) so the verdict is in this serial — killing the VM at the k3s
+  // verdict would turn every run into `running`, a verdict nobody waited for.
+  await waitForDevToolchainConclusion(serialLogPath);
   return {
     ...verdict,
     ...(login.hostname !== undefined ? { hostname: login.hostname } : {}),
   };
+}
+
+/** Bound on waiting for zeta-dev-toolchain.service AFTER the k3s verdict. */
+const DEV_TOOLCHAIN_WAIT_SECONDS = Number(process.env.QEMU_DEV_TOOLCHAIN_WAIT_SECONDS ?? "1200");
+
+async function waitForDevToolchainConclusion(serialLogPath: string): Promise<void> {
+  const start = Date.now();
+  const deadline = start + DEV_TOOLCHAIN_WAIT_SECONDS * 1000;
+  let lastReportedMinute = -1;
+  while (Date.now() < deadline) {
+    const state = classifyDevToolchain(readSerial(serialLogPath));
+    if (state === "succeeded" || state === "failed") return;
+    const elapsedMin = Math.floor((Date.now() - start) / 60000);
+    if (elapsedMin > lastReportedMinute) {
+      console.log(
+        `[qemu-full-install-test] ${elapsedMin} min after the k3s verdict; zeta-dev-toolchain is ${state}`,
+      );
+      lastReportedMinute = elapsedMin;
+    }
+    await Bun.sleep(POLL_INTERVAL_MS);
+  }
 }
 
 async function waitForRestoreRefusal(serialLogPath: string): Promise<InstallResult> {
@@ -2935,6 +3029,11 @@ async function main(): Promise<never> {
   // Note `build-iso` is not in the required gate floor (build-and-test /
   // cross-verify / full-verify / lint(semgrep)), so this makes the job loudly
   // red without blocking merges — notice fast, do not wedge the fleet.
+  //
+  // 081M3K23YCP087G0R003BVDS1P: the toolchain itself moved to the installed
+  // disk (zeta-dev-toolchain.service). What phase 1 still owes is the DEFERRAL
+  // and the bun bootstrap its helpers need; the toolchain's own three-state
+  // verdict is read from the installed-disk serial further down.
   const provisioning = assertFirstBootProvisioningContract(phase1Serial);
   if (!provisioning.ok) {
     writeArtifactSerialLog(phase1Serial, "");
@@ -3217,6 +3316,37 @@ async function main(): Promise<never> {
 
   const phase2Serial = readSerial(phase2SerialLogPath);
   writeArtifactSerialLog(phase1Serial, phase2Serial);
+
+  // 081M3K23YCP087G0R003BVDS1P — the dev toolchain's verdict, from the boot
+  // that ran it. Only the WP11 lane's first boot has a network; every other
+  // lane boots the installed disk offline and stops at the login banner, long
+  // before the unit's OnBootSec, so `did-not-run` there is EXPECTED and is
+  // reported as dormant — not a pass.
+  // Asserted only once the k3s verdict itself passed, so a toolchain failure
+  // never masks the k3s summary the WP11 block below reports; the state is
+  // logged either way.
+  const devToolchain = classifyDevToolchain(phase2Serial);
+  console.log(`[qemu-full-install-test] zeta-dev-toolchain on the installed disk: ${devToolchain}`);
+  if (combinedFirstBoot && phase2.exitCode === 0) {
+    const contract = assertDevToolchainContract(phase2Serial);
+    if (!contract.ok) {
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `dev-toolchain contract failed (${contract.state}) — ${contract.reason}`,
+          serialLogTail: phase2Serial.slice(-3000),
+          ...(phase2.elapsedSeconds !== undefined ? { elapsedSeconds: phase2.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
+    console.log("[qemu-full-install-test] dev-toolchain contract ok — zeta-dev-toolchain.service SUCCEEDED on first boot");
+  } else if (!combinedFirstBoot) {
+    console.log(
+      `[qemu-full-install-test] dev-toolchain contract DORMANT on this lane (offline installed-disk boot) — ` +
+        `zeta-dev-toolchain is ${devToolchain}. This is not a pass.`,
+    );
+  }
 
   if (requireUefiKeyfileRestore) {
     const restoreContract = assertUefiKeyfileRestoreContract(phase2Serial);

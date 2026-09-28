@@ -90,6 +90,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
+  "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "githooks/pre-push",
@@ -180,6 +181,12 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // this inventory AND can be EXECUTED by
   // `lint-k3s-join-intent-preflight.test.ts`, which runs every branch in CI.
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh": "host-service wrappers",
+  // 081M3K23YCP087G0R003BVDS1P: zeta-dev-toolchain.service's ExecStart. It is
+  // the unit that INSTALLS bun (tools/setup/install.sh), so it cannot be bun;
+  // it moved the dev toolchain out of zeta-install.sh (already retained, same
+  // edge) to after first boot. A tracked `.sh` so
+  // `dev-toolchain-post-boot.test.ts` EXECUTES every branch in CI.
+  "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message

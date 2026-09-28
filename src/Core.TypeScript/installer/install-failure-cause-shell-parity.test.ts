@@ -15,7 +15,9 @@
  * cause at all.
  *
  * This file extracts `zeta_install_failure_cause` VERBATIM from the real
- * `zeta-install.sh` (between the ZETA-INSTALL-FAILURE-CAUSE-BEGIN/END markers)
+ * `full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh` (it lived in
+ * `zeta-install.sh` until 081M3K23YCP087G0R003BVDS1P moved the install it
+ * classifies to after first boot; between the ZETA-INSTALL-FAILURE-CAUSE-BEGIN/END markers)
  * and runs it under a real bash — same harness and same reason as
  * `longhorn-capacity-preflight-shell-parity.test.ts`: the installer ISO ships
  * no bun and no nodejs, and the repo is not cloned until after the wipe, so
@@ -46,7 +48,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const REPO_ROOT = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
-const INSTALLER_PATH = join(REPO_ROOT, "full-ai-cluster/usb-nixos-installer/zeta-install.sh");
+// 081M3K23YCP087G0R003BVDS1P: the classifier moved, verbatim, with the install
+// it classifies — from zeta-install.sh (pre-reboot) to the installed system's
+// zeta-dev-toolchain.service runner (post-first-boot).
+const INSTALLER_PATH = join(REPO_ROOT, "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh");
 const SRC = readFileSync(INSTALLER_PATH, "utf8");
 const BEGIN = "# ZETA-INSTALL-FAILURE-CAUSE-BEGIN";
 const END = "# ZETA-INSTALL-FAILURE-CAUSE-END";
@@ -54,9 +59,9 @@ const END = "# ZETA-INSTALL-FAILURE-CAUSE-END";
 function extractParityBlock(): string {
   const b = SRC.indexOf(BEGIN);
   const e = SRC.indexOf(END);
-  if (b < 0) throw new Error("ZETA-INSTALL-FAILURE-CAUSE-BEGIN marker missing from zeta-install.sh");
-  if (e < 0) throw new Error("ZETA-INSTALL-FAILURE-CAUSE-END marker missing from zeta-install.sh");
-  if (e < b) throw new Error("ZETA-INSTALL-FAILURE-CAUSE markers out of order in zeta-install.sh");
+  if (b < 0) throw new Error("ZETA-INSTALL-FAILURE-CAUSE-BEGIN marker missing from zeta-dev-toolchain.sh");
+  if (e < 0) throw new Error("ZETA-INSTALL-FAILURE-CAUSE-END marker missing from zeta-dev-toolchain.sh");
+  if (e < b) throw new Error("ZETA-INSTALL-FAILURE-CAUSE markers out of order in zeta-dev-toolchain.sh");
   return SRC.slice(b, e + END.length);
 }
 

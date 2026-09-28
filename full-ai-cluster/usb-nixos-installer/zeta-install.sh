@@ -4378,178 +4378,52 @@ if [ -d "$ZETA_HOME" ]; then
       echo "[iter-5.5.0]   WARN: clone of github.com/Lucent-Financial-Group/Zeta failed or timed out after 600s — target runtime/agent bootstrap cannot run; can retry post-reboot"
   fi
 
-  # 6.95a-bootstrap — invoke the canonical install entry from the
-  # pre-cloned repo. tools/setup/install.sh is the single install graph
-  # dev laptops + CI runners + devcontainers use (GOVERNANCE §24), now
-  # extended to installed-target bootstrap from the live ISO.
+  # 6.95a-bootstrap — 081M3K23YCP087G0R003BVDS1P: the DEV TOOLCHAIN is no
+  # longer installed here. tools/setup/install.sh at tier full (~18 mise
+  # toolchains, several GB) ran at this point BEFORE the reboot -- up to three
+  # unbounded attempts, output hidden behind `| tail -40`. On the 2026-09-27
+  # bare-metal reinstall that held a silent console for ~30 minutes, and none of
+  # it is needed for k3s, ArgoCD or the roster. It now runs on the INSTALLED
+  # system after first boot, in the background, niced and idle-IO, bounded:
+  # zeta-dev-toolchain.service (full-ai-cluster/nixos/modules/zeta-dev-toolchain.nix),
+  # which keeps the durable log, the PARTIAL-PROVISION marker, the retry and
+  # the ZETA-INSTALL-FAILURE-CAUSE classifier this block used to carry. The
+  # canonical install entry is unchanged: install.sh with
+  # ZETA_INSTALL_NIXOS_MODE=installed ZETA_INSTALL_FULL=1, reading
+  # tools/setup/manifests/from-bun-global and tools/setup/manifests/from-installer.
   #
-  # Important: this shell still runs in the LIVE ISO namespace where
-  # /etc/NIXOS + /iso or /run/initramfs are present. Without the explicit
-  # ZETA_INSTALL_NIXOS_MODE=installed override, install.sh intentionally
-  # routes to the live-USB guard and exits 2. The override is scoped to
-  # this target-runtime bootstrap call only; direct operator calls to
-  # install.sh on the live ISO still get the safety guard.
-  #
-  # ZETA_INSTALL_FULL=1 opts into the one-liner registry even when the
-  # install is launched non-interactively (first-boot flow), so the
-  # installed system picks up the same declarative agent CLI surface as
-  # an interactive dev shell.
+  # What DOES still happen here, bounded: `mise install bun`, and nothing else.
+  # This block's own helpers (bao consume, seal-path detect, the wifi-ESP -> NM
+  # converter, the iSerial probe, the UEFI keyfile writer, the credential
+  # picker) are TypeScript run under the repo-pinned bun, and so are the
+  # installed system's creds-restore / creds-to-k8s units, which resolve bun
+  # from ~/.local/share/mise/installs/bun/ on the node's very first boot --
+  # before the background toolchain could possibly have finished. One tool, a
+  # few tens of MB, 600s bound; a failure is named and non-fatal, and each
+  # helper already reports "bun not on PATH" in its own words.
   if [ -d "$ZETA_HOME/Zeta" ]; then
-    echo "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)..."
+    echo "[iter-5.5.0] dev toolchain DEFERRED to zeta-dev-toolchain.service (runs after first boot; follow with: journalctl -u zeta-dev-toolchain -f)"
+    echo "[iter-5.5.0] bootstrapping ONLY the repo-pinned bun (bounded 600s) for this installer's helpers and the first-boot credential units..."
     ZETA_TARGET_PATH="/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/bin:/usr/bin:/bin"
-    # NON-FATAL BY DESIGN — but this script runs under `set -euo pipefail` (line 29), so
-    # an UNGUARDED failing pipeline trips errexit and ABORTS zeta-install.sh right here,
-    # before the rc-capture / WARN / PARTIAL-PROVISION marker below can run. That is
-    # exactly what turned this intended-non-fatal step into a first-boot HARD FAIL
-    # (`[zeta-first-boot] Install failed`) and reded build-iso from 2026-08-01: #9937
-    # removed the old `| tail -10 || echo WARN` whose `||` had been suppressing errexit
-    # for this pipeline. Scope errexit OFF around the pipeline only (the same
-    # subshell-local pattern used for node-registration above), capture the REAL
-    # install.sh rc via PIPESTATUS[0], then restore errexit. `tail -40` (was -10) keeps
-    # enough of the mise/toolchain error to diagnose WHY install.sh fails (the separate
-    # latent bug 081KZETP6AT08QG0R003MG1VYN).
-    # 081KZETP6AT diagnosis instrumentation: the first-boot install.sh failure is INTERMITTENT
-    # (fails rc=1 some runs, succeeds others) and the last capture had NO `mise ERROR` line, so the
-    # cause is not necessarily mise and can sit ABOVE tail's window. Two additive changes (no
-    # success-path behavior change): (1) MISE_VERBOSE=1 so a mise-side failure is fully explained;
-    # (2) tee the FULL output to a durable log and, on failure, grep the actual error lines to the
-    # console (which reaches the CI serial log) so the rc=1 cause is captured regardless of source
-    # or position. Remove the extra grep once the root cause is fixed.
     set +e
     sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
-    install_log="$ZETA_HOME/.zeta/install-sh-firstboot.log"
-    # 081KZETP6AT: the first-boot install.sh fails rc=1 INTERMITTENTLY (~1 in 4 dispatch runs) —
-    # a transient network/toolchain-fetch blip in mise's toolchain download, not a deterministic
-    # bug (the same code succeeds on the other runs). tools/setup/install.sh is idempotent (mise
-    # trust/install and bun installs are upserts — discipline #6), so a re-run after a short
-    # backoff clears a transient blip without side effects. Retry up to 3 attempts with linear
-    # backoff; only the FINAL failure takes the non-fatal WARN + diag + PARTIAL-PROVISION path.
-    # This is deliberately scoped to the first-boot path — the shared tools/setup/install.sh (also
-    # consumed by CI runners + devcontainers, GOVERNANCE §24) is left untouched.
-    # ZETA-INSTALL-FAILURE-CAUSE-BEGIN -- pure text processing over the install
-    # log: no network, no globals, no side effects. Shell-parity tested against
-    # a real bash in
-    # src/Core.TypeScript/installer/install-failure-cause-shell-parity.test.ts,
-    # same discipline as longhorn-capacity-preflight-shell-parity.test.ts.
-    #
-    # 081M3BVERK0087G0R001GVH1QP. MEASURED, run 36110246885: the first-boot
-    # install failed after all three attempts, and everything the operator was
-    # given was
-    #
-    #     WARN: install.sh FAILED rc=1 after 3 attempts
-    #     Location: src/toolset/toolset_install.rs:244
-    #
-    # -- a Rust source location in a tool they did not know they were running.
-    # The actual cause was GitHub's UNAUTHENTICATED API rate limit (60/hour PER
-    # SOURCE IP) refusing the artifact-attestation verification that
-    # `.mise.toml`'s trust policy requires. Nothing about the machine was wrong
-    # and nothing the operator could read said so.
-    #
-    # A cause they cannot act on is the same as no cause at all, so this turns
-    # the known signatures into a sentence that names the dependency and what
-    # to do about it. Anything unrecognised prints NOTHING and falls through to
-    # the existing generic error-line diag below -- this narrows the message
-    # when it CAN, and never replaces evidence with a guess.
-    zeta_install_failure_cause() {
-      # $1 = the install log. stdout: a named, actionable diagnosis, or nothing.
-      [ -f "$1" ] || return 0
-      if grep -qiE 'API rate limit exceeded|rate limit exceeded for' "$1" 2>/dev/null; then
-        # Which tools, by name, so the operator can see it is one dependency
-        # and not their hardware.
-        # The same tool appears on two lines in mise's output -- once as
-        # `mise ERROR Failed to install X` and once as `0: Failed to install X:`
-        # -- and the trailing colon on the second makes `sort -u` keep BOTH,
-        # so the operator was told two tools were blocked when one was. Strip
-        # trailing punctuation before deduping. (Found by this block's own
-        # parity test, not in the field.)
-        _blocked=$(grep -oE 'Failed to install [A-Za-z0-9:@./_-]+' "$1" 2>/dev/null \
-          | sed -e 's/^Failed to install //' -e 's/[:.,]*$//' | sort -u | tr '\n' ' ')
-        _reset=$(grep -oE '"?x-ratelimit-reset"?[": ]+[0-9]+' "$1" 2>/dev/null | grep -oE '[0-9]+$' | head -1)
-        echo "CAUSE: GitHub's UNAUTHENTICATED API rate limit (60 requests/hour PER SOURCE IP) refused the artifact-attestation verification that this repo's mise trust policy requires before installing a pinned tool."
-        echo "CAUSE: NOTHING IS WRONG WITH THIS MACHINE. The limit is shared by every device on your public IP -- an office NAT, a CGNAT ISP or a campus network may have spent it before you started."
-        [ -n "$_blocked" ] && echo "CAUSE: blocked tool(s): ${_blocked}"
-        if [ -n "$_reset" ]; then
-          echo "CAUSE: the limit resets at $(date -u -d "@$_reset" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "epoch $_reset")."
-        else
-          echo "CAUSE: the reset time was not in the response; GitHub's window is one hour from your first request."
-        fi
-        echo "REMEDY: wait for the reset and re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh', or re-run from a network with a different public IP, or export GITHUB_TOKEN=<a token> first (raises the limit to 5000/hour)."
-        echo "REMEDY: do NOT disable attestation verification to get past this. The policy catches real supply-chain regressions; the fix is to verify EARLIER (pre-staged at image-build time), not to verify LESS."
-        return 0
-      fi
-      if grep -qiE 'could not resolve host|temporary failure in name resolution|name or service not known' "$1" 2>/dev/null; then
-        echo "CAUSE: DNS resolution failed during the install -- this node could not look up a hostname it needed."
-        echo "REMEDY: check connectivity (the role prompt offers nmtui), then re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'."
-        return 0
-      fi
-      if grep -qiE 'connection refused|connection timed out|network is unreachable|failed to connect' "$1" 2>/dev/null; then
-        echo "CAUSE: a network connection failed during the install -- a host this node needed was unreachable."
-        echo "REMEDY: check connectivity (the role prompt offers nmtui), then re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'."
-        return 0
-      fi
-      if grep -qiE 'no space left on device|disk quota exceeded' "$1" 2>/dev/null; then
-        echo "CAUSE: the disk filled during the install."
-        echo "REMEDY: free space under \$HOME and /nix, then re-run 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'."
-        return 0
-      fi
-      return 0
-    }
-    # ZETA-INSTALL-FAILURE-CAUSE-END
-
-    install_rc=1
-    install_max_attempts=3
-    install_attempt=1
-    while [ "$install_attempt" -le "$install_max_attempts" ]; do
-      { echo "=== 081KZETP6AT install.sh attempt ${install_attempt}/${install_max_attempts} @ $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
-        sudo -u "#$ZETA_UID" \
-          HOME="$ZETA_HOME" \
-          BUN_INSTALL="$ZETA_HOME/.bun" \
-          PATH="$ZETA_TARGET_PATH" \
-          ZETA_INSTALL_NIXOS_MODE=installed \
-          ZETA_INSTALL_FULL=1 \
-          MISE_VERBOSE=1 \
-          bash -c "cd $ZETA_HOME/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh" 2>&1
-      } | sudo -u "#$ZETA_UID" tee -a "$install_log" | tail -40
-      install_rc=${PIPESTATUS[0]}
-      [ "$install_rc" -eq 0 ] && break
-      if [ "$install_attempt" -lt "$install_max_attempts" ]; then
-        install_backoff=$((install_attempt * 12))
-        echo "[iter-5.5.0]   install.sh attempt ${install_attempt}/${install_max_attempts} FAILED rc=$install_rc — retrying in ${install_backoff}s (081KZETP6AT transient-blip backoff)"
-        sleep "$install_backoff"
-      fi
-      install_attempt=$((install_attempt + 1))
-    done
+    # ZETA-BUN-BOOTSTRAP-BEGIN
+    timeout --kill-after=15 600 sudo -u "#$ZETA_UID" \
+      HOME="$ZETA_HOME" \
+      PATH="$ZETA_TARGET_PATH" \
+      MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
+      MISE_YES=1 \
+      bash -c "cd $ZETA_HOME/Zeta && mise install bun" 2>&1 | tail -15
+    bun_bootstrap_rc=${PIPESTATUS[0]}
+    # ZETA-BUN-BOOTSTRAP-END
     set -e
-      # Non-fatal is right: a node that boots without agent CLIs is still recoverable, and
-      # hard-failing a first-boot install is worse. But "do not fail" and "do not notice"
-      # are different instructions — #9937's rc-capture + marker (below) keep the "notice".
-      if [ "$install_rc" -ne 0 ]; then
-        echo "[iter-5.5.0]   WARN: install.sh FAILED rc=$install_rc after ${install_max_attempts} attempts — runtimes/agent CLIs may be partial; retry post-reboot via 'cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh'"
-        # 081M3BVERK0087G0R001GVH1QP: the NAMED cause first, when there is one.
-        # It goes ABOVE the generic error-line grep deliberately -- the grep
-        # below is 40 lines of everything matching /error|fail|cannot/, and the
-        # one sentence that tells the operator what to do must not be buried in
-        # it. Prints nothing when the cause is not recognised, so the generic
-        # diag remains the floor and never the ceiling.
-        zeta_install_failure_cause "$install_log" | while IFS= read -r _cause_line; do
-          [ -n "$_cause_line" ] && echo "[iter-5.5.0]   ${_cause_line}"
-        done
-        # 081KZETP6AT: surface the actual error lines from the FULL log (verbose output can bury the
-        # failure above tail's window). Regardless of whether the cause is mise, bun, nix, or a script.
-        echo "[iter-5.5.0]   --- install.sh error lines (081KZETP6AT diag) ---"
-        grep -iE 'error|fatal|fail|cannot|not found|no such|denied|refused|traceback|exit code|command not' "$install_log" 2>/dev/null | tail -40 || true
-        echo "[iter-5.5.0]   --- end install.sh error lines (full log at ~/.zeta/install-sh-firstboot.log) ---"
-        # Durable marker, not just a line that scrolls past on a first-boot console. The
-        # full tier carries k3d/kubectl/helm (.mise.full.toml, base tier has none), so
-        # without it this node cannot host the ARC runners — and that must be discoverable
-        # ON the node, not only in whichever terminal happened to be watching.
-        sudo -u "#$ZETA_UID" mkdir -p "$ZETA_HOME/.zeta" 2>/dev/null || true
-        printf 'install.sh rc=%s after %s attempts at %s\nPARTIAL PROVISION: agent CLIs and/or the full mise tier (k3d/kubectl/helm) may be absent.\nretry: cd ~/Zeta && ZETA_HOST_TIER=full tools/setup/install.sh\n' \
-          "$install_rc" "$install_max_attempts" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-          | sudo -u "#$ZETA_UID" tee "$ZETA_HOME/.zeta/PARTIAL-PROVISION" >/dev/null 2>&1 || true
-      elif [ "$install_attempt" -gt 1 ]; then
-        echo "[iter-5.5.0]   install.sh succeeded on attempt ${install_attempt}/${install_max_attempts} (081KZETP6AT transient-blip recovered by retry)"
-      fi
+    if [ "$bun_bootstrap_rc" -eq 0 ]; then
+      echo "[iter-5.5.0]   bun bootstrap ok"
+    elif [ "$bun_bootstrap_rc" -eq 124 ]; then
+      echo "[iter-5.5.0]   WARN: bun bootstrap TIMED OUT after 600s -- installer helpers below will report 'bun not on PATH'; zeta-dev-toolchain.service installs it after first boot"
+    else
+      echo "[iter-5.5.0]   WARN: bun bootstrap FAILED rc=$bun_bootstrap_rc -- installer helpers below will report 'bun not on PATH'; zeta-dev-toolchain.service installs it after first boot"
+    fi
   fi
 
   # install.sh owns the manifest-driven agent CLI installs. Keep the
@@ -4561,7 +4435,7 @@ if [ -d "$ZETA_HOME" ]; then
   # ── 081M1W1NCDT087G0R002H3VG6Y: named bao bun consume ──────────
   #
   # Pickup exported both names (or neither) before bun existed.
-  # tools/setup/install.sh has now run; bun/mise may be on PATH.
+  # The bounded bun bootstrap (6.95a) has run; bun may be on PATH.
   # Invoke firstboot-bao-env.ts the same way wifi/iserial helpers
   # run. Epoch is named installer-iso here (this block runs on the
   # live ISO after nixos-install into /mnt). Do not infer epoch
@@ -5084,7 +4958,7 @@ if [ -d "$ZETA_HOME" ]; then
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME"
   echo "[iter-5.5.0] ownership sweep: everything under ${ZETA_HOME#/mnt} is now $ZETA_UID:$ZETA_GID"
 
-  echo "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes + declarative agent CLIs on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated when available; ~/.bun/bin on PATH ──"
+  echo "[iter-5.5.0] ── DONE — ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated when available; ~/.bun/bin on PATH; runtimes + agent CLIs arrive via zeta-dev-toolchain.service after first boot ──"
 else
   echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
 fi
@@ -5169,6 +5043,15 @@ else
   echo "    LoadBalancer IP, port 80, any hostname. See INJECTION-POINTS.md §10 to add it."
   echo
 fi
+# 081M3K23YCP087G0R003BVDS1P — say where the dev toolchain went, so an operator
+# who logs in to a node with no dotnet/go/claude yet is not left guessing.
+echo "  DEV TOOLCHAIN: continues in the BACKGROUND after first boot (mise toolchains +"
+echo "    agent CLIs, several GB; niced so k3s comes first). It is not needed for the"
+echo "    cluster to come up. Follow it with:"
+echo "      journalctl -u zeta-dev-toolchain -f"
+echo "    Done when ~/.zeta/dev-toolchain.ok exists; ~/.zeta/PARTIAL-PROVISION means"
+echo "    it failed (named cause in the journal). Retry: sudo systemctl start zeta-dev-toolchain"
+echo
 # 081M3BKQFNC087G0R003MDGSAX — some Applications CANNOT converge without a human,
 # by design (OpenBao's init ceremony, an external API key). They declare
 # `zeta.io/sync-policy: converges-only-after-an-operator-action` with the action in

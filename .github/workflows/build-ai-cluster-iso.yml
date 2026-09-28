@@ -185,7 +185,7 @@ jobs:
     # cancelling useful work at the boundary.
     #
     # WP11 (2026-09-22): schedule/workflow_dispatch runs now also carry the
-    # installed-disk first-boot k3s verify step (own timeout-minutes: 100,
+    # installed-disk first-boot k3s verify step (own timeout-minutes: 120,
     # on top of the existing dispatch-only scenario 3/4/wifi/keyfile steps
     # already budgeted at 90m each) — bumped from 240 to 330 so a cold ISO
     # build plus every dispatch-only step has room to finish rather than
@@ -1128,7 +1128,11 @@ jobs:
       # detection between deliberate dispatches.
       - name: WP11 — installed-disk first-boot k3s verify (workflow_dispatch/schedule only)
         if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
-        timeout-minutes: 100
+        # 100 -> 120 (081M3K23YCP087G0R003BVDS1P): the dev toolchain moved from
+        # phase 1 (pre-reboot) to this boot's background unit, and the harness
+        # waits up to QEMU_DEV_TOOLCHAIN_WAIT_SECONDS (1200) after the k3s
+        # verdict for its SUCCEEDED/FAILED line.
+        timeout-minutes: 120
         working-directory: full-ai-cluster
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-k3s-first-boot-verify-serial.log

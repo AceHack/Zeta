@@ -6,8 +6,14 @@ import { DEFAULT_QEMU_PASSPHRASE, DEFAULT_QEMU_WIFI_PASSWORD } from "../zflash/t
 import { validateSelfRegCiCoherent } from "./self-reg-serial.ts";
 import {
   assertFirstBootProvisioningContract,
-  INSTALL_SH_FINAL_FAILURE_MARKER,
-  INSTALL_SH_START_MARKER,
+  assertDevToolchainContract,
+  BUN_BOOTSTRAP_FAILED_MARKER,
+  classifyDevToolchain,
+  DEV_TOOLCHAIN_DEFERRED_MARKER,
+  DEV_TOOLCHAIN_FAILED_MARKER,
+  DEV_TOOLCHAIN_START_MARKER,
+  DEV_TOOLCHAIN_SUCCEEDED_MARKER,
+  LEGACY_INSTALL_SH_PRE_REBOOT_MARKER,
   assertGeneratedNodeHostnameContract,
   assertUefiKeyfilePhase1Contract,
   assertUefiKeyfilePickerContract,
@@ -825,68 +831,96 @@ describe("qemu-full-install-test phase 3 first-session markers", () => {
   });
 });
 
-// ── 081KZETP6AT: first-boot provisioning contract ─────────────────────────────
-describe("assertFirstBootProvisioningContract (081KZETP6AT)", () => {
-  it("passes when install.sh never emitted a final failure", () => {
-    const serial = [
-      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
-      "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes",
-    ].join("\n");
+// ── 081M3K23YCP087G0R003BVDS1P: provisioning contract, split across the reboot ──
+describe("assertFirstBootProvisioningContract — the installer's half (081M3K23YCP087G0R003BVDS1P)", () => {
+  const deferred = `[iter-5.5.0] ${DEV_TOOLCHAIN_DEFERRED_MARKER} (runs after first boot; follow with: journalctl -u zeta-dev-toolchain -f)`;
+
+  it("passes when the installer deferred the toolchain and bun bootstrapped", () => {
+    const serial = [deferred, "[iter-5.5.0]   bun bootstrap ok"].join("\n");
     expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
   });
 
-  it("passes when a transient failure was RECOVERED by the retry (retry must stay green)", () => {
-    // Attempt 1 failed, attempt 2 succeeded -> no final-failure marker. This is
-    // exactly the transient case the backoff exists to absorb; it must not fail.
+  it("FAILS when the installer ran install.sh pre-reboot again (the ~30-minute silent console)", () => {
     const serial = [
+      deferred,
       "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
-      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s (081KZETP6AT transient-blip backoff)",
-      "[iter-5.5.0]   install.sh succeeded on attempt 2/3 (081KZETP6AT transient-blip recovered by retry)",
-    ].join("\n");
-    expect(assertFirstBootProvisioningContract(serial).ok).toBe(true);
-  });
-
-  it("FAILS when install.sh exhausted every retry (the false green this closes)", () => {
-    // Verbatim shape from run 31323533516, where scenario 2 reported PASS while
-    // the toolchain install had failed all three attempts.
-    const serial = [
-      "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)...",
-      "[iter-5.5.0]   install.sh attempt 1/3 FAILED rc=1 — retrying in 12s",
-      "[iter-5.5.0]   install.sh attempt 2/3 FAILED rc=1 — retrying in 24s",
-      "[iter-5.5.0]   WARN: install.sh FAILED rc=1 after 3 attempts — runtimes/agent CLIs may be partial",
     ].join("\n");
     const result = assertFirstBootProvisioningContract(serial);
     expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.reason).toContain("PARTIALLY");
-      expect(result.reason).toContain("nix-ld");
+    if (!result.ok) expect(result.reason).toContain("BEFORE the reboot");
+  });
+
+  it("FAILS when the bun bootstrap failed — every TypeScript helper after it is dead", () => {
+    const serial = [deferred, "[iter-5.5.0]   WARN: bun bootstrap TIMED OUT after 600s -- ..."].join("\n");
+    const result = assertFirstBootProvisioningContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("nix-ld");
+  });
+
+  it("a serial with NO deferral line at all FAILS (assertion must acquit, not only convict)", () => {
+    const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toContain("never reached the dev-toolchain step");
+  });
+});
+
+describe("classifyDevToolchain / assertDevToolchainContract — the installed disk's half", () => {
+  it("distinguishes the three terminal states plus an unconcluded run", () => {
+    expect(classifyDevToolchain("boot\nlogin:")).toBe("did-not-run");
+    expect(classifyDevToolchain(`${DEV_TOOLCHAIN_START_MARKER} (tools/setup/install.sh ...)`)).toBe("running");
+    expect(
+      classifyDevToolchain(`${DEV_TOOLCHAIN_START_MARKER}\n${DEV_TOOLCHAIN_SUCCEEDED_MARKER} on attempt 1/3`),
+    ).toBe("succeeded");
+    expect(
+      classifyDevToolchain(`${DEV_TOOLCHAIN_START_MARKER}\n${DEV_TOOLCHAIN_FAILED_MARKER} rc=1 after 3 attempts`),
+    ).toBe("failed");
+  });
+
+  it("a retried-then-recovered run is SUCCEEDED (the retry exists so transient faults self-heal)", () => {
+    const serial = [
+      DEV_TOOLCHAIN_START_MARKER,
+      "zeta-dev-toolchain: attempt 1/3 FAILED rc=1",
+      `${DEV_TOOLCHAIN_SUCCEEDED_MARKER} on attempt 2/3`,
+    ].join("\n");
+    expect(assertDevToolchainContract(serial).ok).toBe(true);
+  });
+
+  it("only SUCCEEDED passes — running and did-not-run are not passes", () => {
+    for (const serial of ["login:", DEV_TOOLCHAIN_START_MARKER, `${DEV_TOOLCHAIN_FAILED_MARKER} result=timeout`]) {
+      const r = assertDevToolchainContract(serial);
+      expect(r.ok).toBe(false);
     }
   });
 });
 
-// Kira (PR #10196): the two markers above are literals duplicated from
-// zeta-install.sh with nothing tying them to their producer. Reword the shell
-// echo and the contract silently becomes a test that can never fail — the exact
-// defect class the contract exists to close, reintroduced one level up. These
-// bind the constants to the actual script.
-describe("provisioning markers stay coupled to zeta-install.sh (081KZETP6AT)", () => {
+// Kira (PR #10196): the markers above are literals duplicated from their
+// producers with nothing tying them together. Reword an echo and the contract
+// silently becomes a test that can never fail — the exact defect class the
+// contract exists to close, reintroduced one level up. These bind the constants
+// to the actual scripts.
+describe("provisioning markers stay coupled to their producers (081M3K23YCP087G0R003BVDS1P)", () => {
   const installScript = readFileSync(
     resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
     "utf8",
   );
+  const devToolchainScript = readFileSync(
+    resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh"),
+    "utf8",
+  );
 
-  it("zeta-install.sh still emits the START marker the contract requires", () => {
-    expect(installScript).toContain(INSTALL_SH_START_MARKER);
+  it("zeta-install.sh emits the deferral and the bun-bootstrap failure markers", () => {
+    expect(installScript).toContain(DEV_TOOLCHAIN_DEFERRED_MARKER);
+    expect(installScript).toContain(BUN_BOOTSTRAP_FAILED_MARKER);
   });
 
-  it("zeta-install.sh still emits the final-failure marker the contract matches", () => {
-    expect(installScript).toContain(INSTALL_SH_FINAL_FAILURE_MARKER);
+  it("zeta-install.sh no longer emits the pre-reboot install.sh start line", () => {
+    expect(installScript).not.toContain(LEGACY_INSTALL_SH_PRE_REBOOT_MARKER);
   });
 
-  it("a serial with NO install.sh step at all FAILS (assertion must acquit, not only convict)", () => {
-    const result = assertFirstBootProvisioningContract("ZETA CLUSTER NODE INSTALL COMPLETE\n");
-    expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.reason).toContain("never reached the install.sh step");
+  it("zeta-dev-toolchain.sh emits all three states", () => {
+    expect(devToolchainScript).toContain(DEV_TOOLCHAIN_START_MARKER);
+    expect(devToolchainScript).toContain(DEV_TOOLCHAIN_SUCCEEDED_MARKER);
+    expect(devToolchainScript).toContain(DEV_TOOLCHAIN_FAILED_MARKER);
   });
 });
 

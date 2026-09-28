@@ -234,11 +234,14 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(INSTALL_SCRIPT).toContain("invalid ZETA_INSTALL_NIXOS_MODE");
   });
 
-  test("zeta-install calls install.sh as installed target, with full declarative CLI graph", () => {
-    expect(ITER_595_BLOCK).toContain("tools/setup/install.sh");
-    expect(ITER_595_BLOCK).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
-    expect(ITER_595_BLOCK).toContain("ZETA_INSTALL_FULL=1");
-    expect(ITER_595_BLOCK).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
+  test("the installed system calls install.sh as installed target, with full declarative CLI graph", () => {
+    // 081M3K23YCP087G0R003BVDS1P: the call moved from zeta-install.sh (pre-reboot)
+    // to zeta-dev-toolchain.service's runner (post-first-boot). Same entry, same env.
+    const runner = readFileSync(resolve(ROOT, "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh"), "utf8");
+    expect(runner).toContain("tools/setup/install.sh");
+    expect(runner).toContain("ZETA_INSTALL_NIXOS_MODE=installed");
+    expect(runner).toContain("ZETA_INSTALL_FULL=1");
+    expect(runner).toContain("BUN_INSTALL=\"$ZETA_HOME/.bun\"");
   });
 
   test("6.95-picker sudo trusts the cloned .mise.toml (same as wifi / iSerial / keyfile)", () => {

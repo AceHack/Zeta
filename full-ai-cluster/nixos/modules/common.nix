@@ -194,6 +194,11 @@
     # harness's zeta-install.sh probe ever writes, so this import is a no-op
     # (unit never starts) on every real install.
     ./zeta-first-boot-k3s-verify.nix
+    # 081M3K23YCP087G0R003BVDS1P: the operator's dev toolchain (install.sh,
+    # tier full) runs HERE, after first boot, niced + idle-IO, bounded --
+    # not in the installer before the reboot, where it held a silent console
+    # for ~30 minutes and nothing k3s/ArgoCD/the roster needs came from it.
+    ./zeta-dev-toolchain.nix
     # WP34 (081M3BZ111D087G0R000YBMKRY): own /var/lib/rancher/k3s/agent/images/
     # -- the directory k3s imports container images from BEFORE it pulls
     # anything -- and report a named PRESENT/ABSENT verdict about the bootstrap

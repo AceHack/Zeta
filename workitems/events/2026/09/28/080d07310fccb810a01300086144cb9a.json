@@ -1,0 +1,14 @@
+{
+  "id": "080d07310fccb810a01300086144cb9a",
+  "at": "2026-09-28T03:49:41.399Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K23YCP087G0R003BVDS1P",
+    "type": "bug",
+    "title": "The dev toolchain (install.sh, 18 mise toolchains) blocks the USB install pre-reboot, silent and unbounded; run it as a post-first-boot unit",
+    "slug": "the-dev-toolchain-install-sh-18-mise-toolchains-blocks-the-u",
+    "priority": "P2",
+    "filename": "081M3K23YCP087G0R003BVDS1P-the-dev-toolchain-install-sh-18-mise-toolchains-blocks-the-u.md"
+  }
+}
