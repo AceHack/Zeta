@@ -1,0 +1,12 @@
+{
+  "pr_number": 17737,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17737-fix-cluster-make-gitlab-reachable-on-a-fresh-install-gateway-routes-real-externa.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T05:33:48.803Z",
+  "schema_version": "v1",
+  "commit_sha": "d4a8dbc82066ed304f73c2ac3e655e28ed52e5ec",
+  "title": "fix(cluster): make GitLab reachable on a fresh install -- Gateway routes, real external URL, auth-token runner",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T05:33:05Z",
+  "head_ref": "claude/gitlab-gateway-and-runner"
+}
