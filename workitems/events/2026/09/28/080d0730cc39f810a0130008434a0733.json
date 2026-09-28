@@ -1,0 +1,14 @@
+{
+  "id": "080d0730cc39f810a0130008434a0733",
+  "at": "2026-09-28T03:40:27.839Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K1K1SY087G0R0010A76XY",
+    "type": "bug",
+    "title": "k3s control plane starves under workload load: pods get 8.3x system.slice CPU weight and nothing protects k3s.service memory",
+    "slug": "k3s-control-plane-starves-under-workload-load-pods-get-8-3x",
+    "priority": "P1",
+    "filename": "081M3K1K1SY087G0R0010A76XY-k3s-control-plane-starves-under-workload-load-pods-get-8-3x.md"
+  }
+}

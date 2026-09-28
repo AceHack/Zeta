@@ -45,7 +45,15 @@
     # under this SAME path on a server too (its embedded agent), so the
     # zero-length-file defect and the fix are identical on both roles.
     ./k3s-agent-tls-self-heal.nix
+
+    # 081M3K1K1SY087G0R0010A76XY: same kernel-level protection as the server
+    # (k3s.service here holds the kubelet and containerd every pod depends on).
+    ./k3s-process-protection.nix
   ];
+
+  # Equal to this role's `kube-reserved` memory (512Mi): an agent runs no
+  # apiserver or etcd, so it protects less than the server's 2G.
+  zeta.k3sProcessProtection.memoryLow = lib.mkDefault "512M";
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
   # question). Nothing below implements a join; the observer only reports
@@ -105,7 +113,7 @@
       #   what is actually there rather than copying a number sized for a
       #   process this node does not run.
       #
-      # Reserving the server's 500m/1Gi here would withhold half a core from
+      # Reserving the server's 500m/2Gi here would withhold half a core from
       # pods on every worker to protect a control plane that is not on it --
       # which is how a reservation becomes a tax. `system-reserved` and the
       # eviction threshold ARE the same on both: the OS and the kernel's OOM

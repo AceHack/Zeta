@@ -43,6 +43,14 @@
     # fail that would otherwise succeed).
     ./k3s-registry-mirrors.nix
 
+    # 081M3K1K1SY087G0R0010A76XY: kernel-level protection for the k3s PROCESS
+    # (systemd MemoryLow / CPUWeight / OOMScoreAdjust on k3s.service and
+    # system.slice) plus the kubelet image-pull and soft-eviction flags. The
+    # reservations below are accounting; that module is the enforcement. Its
+    # `memoryLow` is set to this file's kube-reserved memory, just after the
+    # imports.
+    ./k3s-process-protection.nix
+
     # WP20 (081M34R7P99087G0R000H77GX9): drops k3s.service's After=/Wants=
     # network-online.target (root-cause work for run 35717757526: k3s.service
     # never reached active in 4201s on the real installed disk) and adds a
@@ -81,6 +89,10 @@
     # one-way property this pair guarantees.
     ./k3s-datastore-bootstrap-recovery.nix
   ];
+
+  # Equal to `kube-reserved` memory below (2Gi): what the scheduler withholds
+  # from pods and what the kernel protects from reclaim are the same bytes.
+  zeta.k3sProcessProtection.memoryLow = "2G";
 
   services.k3s = {
     enable = true;
@@ -234,10 +246,19 @@
       #
       # WHAT EACH PROFILE PAYS
       #                                    4-vCPU/12288Mi guest    16-core/62942Mi node
-      #   kube-reserved    500m / 1Gi            12.5% / 8.3%           3.1% / 1.6%
+      #   kube-reserved    500m / 2Gi            12.5% / 16.7%          3.1% / 3.3%
       #   system-reserved  250m / 512Mi           6.3% / 4.2%           1.6% / 0.8%
       #   eviction-hard            500Mi                / 4.1%                 / 0.8%
-      #   total                                 18.8% / 16.6%           4.7% / 3.2%
+      #   total                                 18.8% / 25.0%           4.7% / 4.9%
+      #
+      # kube-reserved memory was 1Gi until 081M3K1K1SY087G0R0010A76XY. MEASURED
+      # on node-5b2dfa (2026-09-27, freshly reinstalled, full roster): the
+      # k3s-server process alone held 3.1 GiB RSS, containerd 0.36 GiB. 1Gi
+      # promised pods memory the control plane was already using. 2Gi is still
+      # below that metal figure (Go's heap grows into available RAM, so the
+      # 62 GiB node overstates what the 12 GiB guest needs), and it is also the
+      # MemoryLow that k3s-process-protection.nix gives k3s.service, so the
+      # accounting and the kernel protection name the same bytes.
       #
       # On the big node this is rounding error. On the guest it is real, and it
       # is the correct trade: 18.8% of the CPU withheld from pods is how the
@@ -279,7 +300,7 @@
       # SET ON BOTH SERVER AND AGENT for the same reason `max-pods` is, with one
       # difference recorded in k3s-agent.nix: an agent runs no apiserver, so its
       # `kube-reserved` covers kubelet and containerd alone and is smaller.
-      "--kubelet-arg=kube-reserved=cpu=500m,memory=1Gi"
+      "--kubelet-arg=kube-reserved=cpu=500m,memory=2Gi"
       "--kubelet-arg=system-reserved=cpu=250m,memory=512Mi"
       "--kubelet-arg=eviction-hard=memory.available<500Mi,nodefs.available<10%,imagefs.available<15%,nodefs.inodesFree<5%"
 
