@@ -1829,6 +1829,10 @@ describe("081M3B7Z38Q087G0R003F9X7HM — the boot medium must be a partition, ne
     expect(nix).toContain('OPTIONS+="link_priority=-100"');
     expect(nix).toContain("boot.initrd.services.udev.rules = zetaInstallLabelOnePartition;");
     expect(nix).toContain("services.udev.extraRules = zetaInstallLabelOnePartition;");
+    // The mount itself must go through the single-claimant symlink, not by-label
+    // (install-medium-selection.test.ts shows by-label races the systemd initrd).
+    expect(nix).toContain('fileSystems."/iso".device = lib.mkForce "/dev/disk/zeta-install-medium";');
+    expect(nix).toContain('SYMLINK+="disk/zeta-install-medium"');
     const installer = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix"),
       "utf8",

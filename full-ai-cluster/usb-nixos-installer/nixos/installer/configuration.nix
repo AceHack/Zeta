@@ -16,9 +16,10 @@
     # execve without an interpreter — the deterministic first-boot failure.
     ../modules/foreign-binaries.nix
     # 081M3B7Z38Q087G0R003F9X7HM: the isohybrid whole disk and its LBA-0
-    # partition 1 both carry ZETA_INSTALL; a udev link_priority makes the
-    # partition own the by-label link, so the /iso mount can no longer claim the
-    # whole disk O_EXCL and lock the ESP (where zflash's injections live) out.
+    # partition 1 both carry ZETA_INSTALL; /iso mounts through a udev symlink
+    # only the partition (or an optical/unpartitioned medium) ever claims, so the
+    # mount can no longer take the whole disk O_EXCL and lock the ESP (where
+    # zflash's injections live) out -- whatever order udev processes them in.
     ../modules/install-label-single-device.nix
   ];
 

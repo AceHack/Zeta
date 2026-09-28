@@ -595,8 +595,10 @@ export function assertEspFirstbootConfWasRead(phase1Serial: string):
 // picked between them by udev event order. Mounted from the WHOLE disk, /iso
 // holds it O_EXCL and every partition -- the ESP included -- is unopenable for
 // the rest of the install (measured, 081M39CJP96087G0R001T4J2R3). The installer
-// now pins the label to the partition with a udev link_priority
-// (nixos/modules/install-label-single-device.nix). This is that fix's falsifier,
+// now mounts /iso through `/dev/disk/zeta-install-medium`, a udev symlink a
+// partitioned whole disk never claims (nixos/modules/install-label-single-device.nix;
+// the by-label link_priority alone lost a race to the systemd initrd, run
+// 36406378420). This is that fix's falsifier,
 // and it reads what the GUEST reported rather than what the Nix says.
 //
 // Three outcomes, never two: a partition is a pass, a whole disk is a failure,
@@ -3230,10 +3232,10 @@ async function main(): Promise<never> {
           exitCode: 1,
           reason:
             `boot medium mounted from the WHOLE disk (${medium.device}) — the ZETA_INSTALL ` +
-            "by-label link resolved to the disk instead of its LBA-0 partition, so /iso holds the " +
-            "disk O_EXCL and the ESP is unopenable for the whole install. The udev link_priority " +
-            "in nixos/modules/install-label-single-device.nix exists to make this impossible; " +
-            "either it is not in this ISO or it did not take effect.",
+            "medium resolved to the disk instead of its LBA-0 partition, so /iso holds the " +
+            "disk O_EXCL and the ESP is unopenable for the whole install. The /dev/disk/zeta-install-medium " +
+            "symlink in nixos/modules/install-label-single-device.nix (never claimed by a partitioned " +
+            "whole disk) exists to make this impossible; either it is not in this ISO or it did not take effect.",
           serialLogTail: phase1Serial.slice(-3000),
           ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
         },
