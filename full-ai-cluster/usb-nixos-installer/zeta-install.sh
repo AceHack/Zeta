@@ -727,15 +727,15 @@ if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
 fi
 
 echo
-echo "About to FULL-WIPE the following disks:"
+echo "About to FULL-WIPE the BOOT disk:"
 echo "  BOOT: $BOOT_DISK   (ESP 1G + root ${ZETA_ROOT_FLOOR_GIB}G floor + longhorn1 ${LONGHORN1_TAIL})"
 if [[ ${#DATA_DISKS[@]} -eq 0 ]]; then
   echo "  DATA: (none — single-disk install; only longhorn1 on boot disk)"
 else
-  data_i=2
+  # 081M3K3DVBA087G0R002XTMMVW: a CANDIDATE, not a verdict. Step 2.55 below
+  # adopts an extra disk only when it probes blank or the operator consents.
   for d in "${DATA_DISKS[@]}"; do
-    echo "  DATA: $d   (whole disk → longhorn${data_i})"
-    data_i=$((data_i + 1))
+    echo "  DATA candidate: $d   (adopted as a whole-disk Longhorn path ONLY if blank or consented — decided after the probe below)"
   done
 fi
 echo
@@ -1645,6 +1645,109 @@ for d in "$BOOT_DISK" "${DATA_DISKS[@]+"${DATA_DISKS[@]}"}"; do
   echo "$d|$(zeta_pf_classify < "$ZETA_PF_FACTDIR/$(echo "$d" | tr "/" "_")")" >> "$ZETA_PF_DISPFILE"
 done
 echo
+
+# ── Step 2.55: consent for EXTRA (non-boot) disks (081M3K3DVBA087G0R002XTMMVW) ──
+#
+# MEASURED on the 2026-09-27 bare-metal reinstall (node-5b2dfa, two 931 GiB
+# NVMe): the installer put the OS + longhorn1 on one drive and WIPED THE WHOLE
+# OTHER DRIVE as /var/lib/longhorn-disk2 without asking. The documented intent
+# ("this installer formats every non-boot internal disk whole as
+# longhorn2..N", the capacity refusal's remedy (1)) is kept for what it was
+# written for -- a BLANK drive the operator added for capacity. A drive that
+# already carries a partition table, filesystems or labels is somebody's data
+# until someone says otherwise, and the boot-disk choice is not that someone.
+#
+# Consent, cheapest first:
+#   ZETA_LONGHORN_EXTRA_DISKS  env or ESP /zeta-firstboot.conf: a comma/space
+#                              list of device paths and/or SERIALS (serials
+#                              survive nvme0/nvme1 renumbering between boots),
+#                              or `all`, or `none`.
+#   a keypress                 on a real terminal: `y` within
+#                              ZETA_EXTRA_DISK_PROMPT_SECS (30) adopts that one
+#                              disk; any other key or the timeout leaves it.
+# Default for a non-blank disk with no consent: LEFT UNTOUCHED -- not wiped, not
+# partitioned, not mounted, and dropped from the R7 wipe scope below.
+#
+# ZETA-EXTRA-DISK-BEGIN -- pure decisions, no I/O. Shell-parity tested in
+# src/Core.TypeScript/installer/extra-disk-consent-shell-parity.test.ts.
+#
+# $1 = the consent list, $2 = device path, $3 = device serial ("" if unknown).
+# stdout: "yes" (named or `all`), "none" (the list says `none`), or "no".
+zeta_extra_disk_consent() {
+  local list="$1" dev="$2" serial="$3" tok
+  for tok in ${list//,/ }; do
+    case "$tok" in
+      all) echo "yes"; return 0 ;;
+      none) echo "none"; return 0 ;;
+    esac
+    [ "$tok" = "$dev" ] && { echo "yes"; return 0; }
+    [ -n "$serial" ] && [ "$tok" = "$serial" ] && { echo "yes"; return 0; }
+  done
+  echo "no"
+}
+# $1 = R6 disposition (blank | prior-zeta-install | foreign-data |
+#      indeterminate | installer-medium), $2 = consent (yes|no|none),
+# $3 = interactive (1 when a human can answer a prompt, else 0).
+# stdout: adopt | skip | ask.
+zeta_extra_disk_decision() {
+  local disp="$1" consent="$2" interactive="$3"
+  # The medium we booted from is never an install target, consent or not.
+  [ "$disp" = "installer-medium" ] && { echo "skip"; return 0; }
+  [ "$consent" = "none" ] && { echo "skip"; return 0; }
+  [ "$consent" = "yes" ] && { echo "adopt"; return 0; }
+  # Blank = no partition table, no partitions, no labels: nothing to lose. This
+  # is the documented adopt-every-extra-disk intent, scoped to where it is safe.
+  [ "$disp" = "blank" ] && { echo "adopt"; return 0; }
+  # Anything else carries structure (or could not be read, which is not blank).
+  if [ "$interactive" = "1" ]; then echo "ask"; else echo "skip"; fi
+}
+# ZETA-EXTRA-DISK-END
+
+ZETA_LONGHORN_EXTRA_DISKS="${ZETA_LONGHORN_EXTRA_DISKS:-}"
+ZETA_EXTRA_DISK_PROMPT_SECS="${ZETA_EXTRA_DISK_PROMPT_SECS:-30}"
+ZETA_EXTRA_DISKS_SKIPPED=""
+if [[ ${#DATA_DISKS[@]} -gt 0 ]]; then
+  echo "── Extra disks (non-boot): adopted as Longhorn data ONLY with consent or when blank ──"
+  ZETA_EXTRA_INTERACTIVE=0
+  [ -t 0 ] && ZETA_EXTRA_INTERACTIVE=1
+  KEPT_DATA=()
+  for d in "${DATA_DISKS[@]}"; do
+    d_disp="$(sed -n "s#^${d}|##p" "$ZETA_PF_DISPFILE" | head -1)"
+    d_serial="$(lsblk -d -n -o SERIAL "$d" 2>/dev/null | tr -d '[:space:]')"
+    d_model="$(lsblk -d -n -o MODEL "$d" 2>/dev/null | tr -s ' ')"
+    d_size="$(lsblk -d -n -o SIZE "$d" 2>/dev/null | tr -d ' ')"
+    d_consent="$(zeta_extra_disk_consent "$ZETA_LONGHORN_EXTRA_DISKS" "$d" "$d_serial")"
+    d_decision="$(zeta_extra_disk_decision "${d_disp:-indeterminate}" "$d_consent" "$ZETA_EXTRA_INTERACTIVE")"
+    echo "  $d  ${d_size:-?}  ${d_model:-?}  serial=${d_serial:-?}  probe=${d_disp:-indeterminate}  consent=${d_consent}"
+    if [ "$d_decision" = "ask" ]; then
+      echo "    This disk ALREADY CARRIES DATA (findings above). Adopting it as Longhorn storage"
+      echo "    WIPES THE WHOLE DISK. Press 'y' within ${ZETA_EXTRA_DISK_PROMPT_SECS}s to wipe and adopt it;"
+      echo "    any other key, or the timeout, leaves it untouched."
+      d_key=""
+      read -r -n 1 -s -t "$ZETA_EXTRA_DISK_PROMPT_SECS" d_key 2>/dev/null || d_key=""
+      echo
+      case "$d_key" in y|Y) d_decision="adopt" ;; *) d_decision="skip" ;; esac
+    fi
+    if [ "$d_decision" = "adopt" ]; then
+      echo "    -> ADOPT: whole disk becomes a Longhorn data disk (wiped)"
+      KEPT_DATA+=("$d")
+    else
+      echo "    -> LEFT UNTOUCHED: not wiped, not partitioned, not mounted"
+      ZETA_EXTRA_DISKS_SKIPPED="${ZETA_EXTRA_DISKS_SKIPPED} $d"
+      # Out of the R7 wipe scope too: a disk we will not touch must neither be
+      # listed as wiped nor flip the cancel default with its foreign data.
+      sed -i "\#^${d}|#d" "$ZETA_PF_DISPFILE"
+    fi
+  done
+  DATA_DISKS=("${KEPT_DATA[@]+"${KEPT_DATA[@]}"}")
+  if [ -n "$ZETA_EXTRA_DISKS_SKIPPED" ]; then
+    echo "  To adopt a left disk without typing: ZETA_LONGHORN_EXTRA_DISKS=<device-or-serial>[,...]"
+    echo "  (or =all) in the environment or on the USB ESP /zeta-firstboot.conf, then re-run."
+    echo "  If the Longhorn capacity check below refuses, that is the usual reason."
+  fi
+  echo
+fi
+
 # ── Step 2.6: circuit breaker (R9, filed P0 2026-06-09) ───────────
 #
 # Aaron: "reformat-with-broken-remembered -> infinite destructive loop,

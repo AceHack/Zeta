@@ -1021,6 +1021,11 @@ export ZETA_ALLOW_REPO_DRIFT="${ZETA_ALLOW_REPO_DRIFT:-}"
 # ships on every USB, so a value there would clear the guard for every operator
 # install as well, which is the guard deleting itself.
 export ZETA_ALLOW_LONGHORN_UNDERSIZED="${ZETA_ALLOW_LONGHORN_UNDERSIZED:-}"
+# 081M3K3DVBA087G0R002XTMMVW: zero-typing consent to adopt NON-BLANK extra disks
+# as Longhorn storage (device paths and/or serials, comma/space separated, or
+# `all` / `none`). Same pass-through as above; zeta-install decides. Unset means
+# a disk that already carries data is left untouched.
+export ZETA_LONGHORN_EXTRA_DISKS="${ZETA_LONGHORN_EXTRA_DISKS:-}"
 # 081M3JG74G0087G0R001XJC837: the public-TLS pair zflash --acme-email /
 # --public-domain baked into the ESP conf. Same pass-through as the lines above
 # -- sourced vars need an explicit export to reach zeta-install, which validates

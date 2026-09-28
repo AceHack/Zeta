@@ -1,0 +1,14 @@
+{
+  "id": "080d0731b76b6010a0130008cf559c63",
+  "at": "2026-09-28T04:12:34.540Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K3DVBA087G0R002XTMMVW",
+    "type": "bug",
+    "title": "The USB installer wipes every non-boot disk as Longhorn storage without consent, including disks that already carry data",
+    "slug": "the-usb-installer-wipes-every-non-boot-disk-as-longhorn-stor",
+    "priority": "P2",
+    "filename": "081M3K3DVBA087G0R002XTMMVW-the-usb-installer-wipes-every-non-boot-disk-as-longhorn-stor.md"
+  }
+}
