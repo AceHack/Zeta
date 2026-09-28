@@ -2916,3 +2916,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: 103 runs, 0 failed; gate (required) and codeql (required) green.
 - Softs: S1 no live QEMU run exercised the marker, so watch post-merge Scenario 2. S2 harness wiring is untested and nothing enforces a single emitter. S3 the non-fatal install.sh tail could false-fire. S4 edge misses (a baseline ending on a newline, a no-newline prompt). S5 the retention list lacks the Install failed backstop.
 - Not merged by Vera.
+
+## leftover UNIQUE leftover #17729 leftover unique @ 7de69edf51891eef5fc3a8630d0730abfe2d5a43 -- GRADE GO
+
+- gmod/unturned Blueprints drop the /opt/steamcmd install/command/args, so the ich777 start.sh entrypoint runs. 1-parent on dedf8f4d, 4 files +152/-47. The live head 132301e6 is a neutral merge of main (not graded).
+- The env contract is checked against scripts extracted from the pinned image layers: GAME_ID 4020/1110390, GAME_NAME (gmod only), GAME_PARAMS, GAME_PORT 27015, VALIDATE. No dead vars. The PVC mounts at SERVER_DIR /serverdata/serverfiles exactly.
+- #17721 invariant kept: pod securityContext is exactly {fsGroup:1000}, no runAsUser.
+- Identity: the container starts as root, start.sh chowns the PVC to 99:100, and su steam runs as 99:100, so the PVC is writable. start.sh needs root, so no runAsUser is required. fsGroup 1000 is inert. The #17708 guard doesn't scan Blueprints, and its rendered findings are false positives here.
+- Tests 89/89; 17/22 mutations caught. CI at 132301e6: 0 failed; gate and codeql pending at 12:30 AM ET.
+- Softs: S1 three recursive walks plus a validate pass each start. S2 suggest UID/GID 1000 or OnRootMismatch. S4 RocketMod download is broken and the comment is wrong. S5 (significant) VALIDATE unpinned, no env allowlist. S6 the sftp sidecar exits 3, so the pod is never Ready (pre-existing). S9 blueprint-agent still proposes the old path and :gmod.
+- Not merged by Vera.
