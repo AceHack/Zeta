@@ -2963,3 +2963,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI @ 6380d3a5: 0 failures of 124; live kind/k3d ArgoCD health ran green; lanes 1-5, TS hermetic, codeql (required), gate (required) green. Lane-3 pulled docker.io redis OK. Lane-6 and live kind Synced+Healthy proof still in progress at merge; GO conditional on them.
 - Softs: S1 OPEN - infra/k8s/bootstrap/argocd-install.yaml still renders ecr-public redis, applied by k3s-server.nix L77. S2 stale footprint row. S3 Docker Hub anon limit. S8 (significant) assertion not tied to kind/k3d function bodies. S9 neutral merge. S10 two non-required jobs pending.
 - Hard fails: none. Did not merge.
+
+## leftover UNIQUE leftover #17734 leftover unique @ 0d7edb11ac6085a6939a0b23b0a1037832408a26 -- GRADE GO
+
+- #17734 moves the dev toolchain to a post-boot zeta-dev-toolchain.service plus timer. Product 0d7edb11 is 1-parent on e5e35031 (delta 2 files, +13/-4: stage0 baseline exception for zeta-dev-toolchain.sh, test read-or-null). Live HEAD 32b47e89 is a content-neutral merge of main (17 PR files identical). Not merged at 01:03 ET 2026-09-28; auto-merge armed.
+- 13/13 claims hold: nothing runs pre-reboot; warn-only bun bootstrap; MISE_TRUSTED_CONFIG_PATHS on every helper; timer wantedBy timers.target, stamp only on rc 0; per-attempt 3600s bound, TimeoutStartSec 11160 above the worst case; QEMU contract passes only on succeeded.
+- nix eval of all 4 roles rc 0; systemd-analyze verify rc 0; new test 17/0 (red on base); mutations 26/34 caught, every fail-open mutant caught.
+- CI @ 32b47e89: 0 failures, codeql (required) green; gate (required) and build-iso still pending.
+- Softs: S1 (significant) claude/codex pre-reboot logins now always skip. S2 toolchain arrives up to ~3h after boot. S3 (significant) 8 new-test gaps (timer wantedBy, TimeoutStartSec, runuser, network-online...). S4 no real boot. S5 stage0 ratchet counts only. S6 bare catch. S7-S9 minor.
+- Hard fails: none. Did not merge.
