@@ -3041,3 +3041,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: 108/112 green, no reds; required checks green.
 - Softs S1-S12 (S2 kept disks still mounted rw/ro pre-wipe; S3 lsblk crash under set -e; S8 significant test gaps).
 - Path to GO: whole-disk signatures count as data and blkid errors fail closed; reject contradictory lists and disable globbing; probe/runtime tests; fix S2/S3.
+
+## leftover UNIQUE leftover #17748 leftover unique @ dce8e0f2ae65cd8b923ba3bc83b4d6e03f7cbe1c -- GRADE HOLD
+
+- Topic: k3s kubelet reservations sized from MemTotal and nproc by a oneshot generator before k3s.service; fixes the #17728 3060Mi regression that broke 2560 MB NixOS VM tests.
+- Product = head dce8e0f2, 1-parent on 13b0a973, 9 files +507/-60. Open, auto-merge armed.
+- H1: cross-verify (stage0-independence) red at tip, green on base: new k3s-kubelet-reservations.sh not in stage0-independence.baseline.json exceptions (25 vs 18+6). gate (required) needs it. One-line fix.
+- Correct: VM 2471 Mi gets 740 Mi total (Allocatable ~1731 Mi); >=12 GiB exactly #17728's 3060; no cliffs 256 MiB-300 GB; no static flags left on 7 hosts; atomic write; no fallback to 3060; Wants so failure can't block k3s. build-iso k3s VM steps 10-18 green at tip (red on main d4a8dbc8).
+- Tests: real script, 30/30 tip, 22 fail on base; mutants 19/26 caught.
+- Softs: S1 significant unreadable MemTotal/nproc writes no reservations; S2 significant runtime MemoryLow untested; S4 system.slice MemoryLow may revert on daemon-reload; S6 write failure logs success; S7 K3S_CONFIG_FILE disables config.yaml.d; others S3,S5,S8-S10.
+- Path to GO: add the baseline exception, re-run CI.
