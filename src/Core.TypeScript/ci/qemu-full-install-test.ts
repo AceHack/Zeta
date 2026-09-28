@@ -50,6 +50,7 @@ import {
   assertRepoPinHonouredSerial,
   assertUsbISerialGuestSerial,
   assertWifiEspInstallSerial,
+  INSTALLER_BAIL_SERIAL_MARKER,
   serialFirstBootInProgress,
 } from "../zflash/test-harness/serial-markers";
 import { isFullGitCommitSha } from "../installer/repo-pin.ts";
@@ -121,18 +122,19 @@ const NIXOS_INSTALL_PROGRESS_MARKER = "[iter-5.1]";
 // successfully in every one of those runs. The bump did not break the image; it
 // broke this marker.
 //
-// STILL SUSPECT, left alone deliberately: "bail". The installer's `bail()` emits
-// `ERROR: $*` (zeta-install.sh:72) and never the literal word, so this marker
-// cannot catch the thing it is named for -- it is false-positive surface with no
-// true-positive behind it. Narrowing it is a change to DETECTION semantics and
-// wants its own evidence about what should replace it, so it is reported here
-// rather than guessed at.
-const FAILURE_MARKERS: readonly string[] = [
+// "bail" WAS the other broad one, and it was worse: it could ONLY false-positive.
+// The installer's `bail()` prints `ERROR: <reason>` and never the literal word,
+// so the marker named for it had no true positive behind it. It is replaced by
+// INSTALLER_BAIL_SERIAL_MARKER (newline + `ERROR: `, line-anchored so the installer's
+// non-fatal `PROBE ERROR:` / `[iter-5.4.1]   ERROR:` lines do not trip it), shared
+// with the zflash harness. Falsifier, deriving the prefix from bail() itself:
+// `zflash/test-harness/installer-bail-marker.test.ts` (081M3K1K24B087G0R003XXKEMX).
+export const FULL_INSTALL_FAILURE_MARKERS: readonly string[] = [
   "Kernel panic",
   "FATAL",
   "Refusing to wipe",
   "no internet",
-  "bail",
+  INSTALLER_BAIL_SERIAL_MARKER,
   "[zeta-first-boot] Install failed",
 ];
 
@@ -1900,7 +1902,7 @@ function readSerial(serialLogPath: string): string {
 }
 
 function checkFailureMarkers(content: string): string | null {
-  for (const failMarker of FAILURE_MARKERS) {
+  for (const failMarker of FULL_INSTALL_FAILURE_MARKERS) {
     if (content.includes(failMarker)) {
       return failMarker;
     }

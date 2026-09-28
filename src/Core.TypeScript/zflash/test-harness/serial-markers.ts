@@ -107,6 +107,20 @@ export const INSTALL_COMPLETE_SERIAL_MARKER = "ZETA CLUSTER NODE INSTALL COMPLET
 export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [INSTALL_COMPLETE_SERIAL_MARKER];
 
 /**
+ * What zeta-install.sh's `bail()` prints: `ERROR: <reason>` at the START of a line, then
+ * exit 1. Every bail is fatal, so this is a failure marker.
+ *
+ * It replaces the literal marker "bail", which `bail()` never prints -- that marker had no
+ * true positive and could only false-positive on a healthy line containing the substring.
+ * Line-anchored because the installer ALSO prints non-fatal `ERROR:` text mid-line
+ * (`      PROBE ERROR: ...`, `[iter-5.4.1]   ERROR: ...`), and a bare `ERROR: ` would stop
+ * a healthy run on those. The leading newline also matches a CRLF serial stream. Falsifier,
+ * which reads the prefix out of bail()'s own definition: `installer-bail-marker.test.ts`
+ * (081M3K1K24B087G0R003XXKEMX).
+ */
+export const INSTALLER_BAIL_SERIAL_MARKER = "\nERROR: ";
+
+/**
  * Substring-scanned over the WHOLE serial log, so a broad marker fails GOOD installs.
  *
  * "Kernel panic", never bare "panic": nixpkgs 26.05 ships a stock systemd unit whose
@@ -121,7 +135,7 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "FATAL",
   "Refusing to wipe",
   "no internet",
-  "bail",
+  INSTALLER_BAIL_SERIAL_MARKER,
 ];
 
 /**

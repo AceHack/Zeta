@@ -1,0 +1,14 @@
+{
+  "id": "080d0730cc446010a01300086abe03d2",
+  "at": "2026-09-28T03:40:28.172Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K1K24B087G0R003XXKEMX",
+    "type": "bug",
+    "title": "QEMU harness bail failure marker can never match what bail prints",
+    "slug": "qemu-harness-bail-failure-marker-can-never-match-what-bail-p",
+    "priority": "P2",
+    "filename": "081M3K1K24B087G0R003XXKEMX-qemu-harness-bail-failure-marker-can-never-match-what-bail-p.md"
+  }
+}
