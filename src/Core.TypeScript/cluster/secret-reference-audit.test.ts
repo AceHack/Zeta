@@ -24,8 +24,9 @@ const KNOWN_UNPRODUCED = [
   "kubevirt-operator-certs",
   "openbao-unseal-shares",
   "opensearch-admin-credentials",
-  "temporal-default-store",
-  "temporal-visibility-store",
+  // `temporal-{default,visibility}-store` LEFT 2026-09-27: temporal now reads
+  // `temporal-postgres-app`, which the CNPG operator generates from a committed
+  // Cluster CR -- see `operatorGeneratedSecrets` and the last test below.
   "zeta-blob-store",
 ] as const;
 
@@ -49,9 +50,15 @@ describe("B8 — Secrets referenced by the metal catalogue vs Secrets produced",
     // producer files. 2026-09-09: OpenBao's optional Shamir cache
     // (`openbao-unseal-shares`) is a tenth unproduced name. The finding is
     // real; its arithmetic ages. A number in a roster ages; a number a check
-    // recomputes does not.
-    expect(audit.referenced.length).toBe(10);
+    // recomputes does not. 2026-09-27: NINE -- temporal's two store names became
+    // one, `temporal-postgres-app`, and that one is operator-generated.
+    expect(audit.referenced.length).toBe(9);
     expect(audit.producerFiles.length).toBe(0);
+  });
+
+  it("counts a CNPG Cluster's generated `<name>-app` Secret as produced", () => {
+    expect(audit.operatorGenerated).toContain("temporal-postgres-app");
+    expect(audit.unproduced).not.toContain("temporal-postgres-app");
   });
 
   it("the operators that would produce Secrets are deployed and declare none", () => {

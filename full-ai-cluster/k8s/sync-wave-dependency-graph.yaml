@@ -66,10 +66,12 @@ spec:
   # produces a partition coarser than the tree warrants.
   #
   # WHY A MAP AND NOT A GREP. The citations already say which edges are intent,
-  # in prose. Matching that prose is wrong in a way this very file demonstrates:
-  # `temporal -> cockroachdb`'s citation reads "was a DECLARED INTENT until
-  # 2026-08-22 ... and is now a live connection", so a substring match convicts
-  # an edge that has since become real. So the phrase ENUMERATES candidates and
+  # in prose. Matching that prose is wrong in a way this very file demonstrated:
+  # the former `temporal -> cockroachdb` citation read "was a DECLARED INTENT until
+  # 2026-08-22 ... and is now a live connection", so a substring match convicted
+  # an edge that had become real. (That edge is gone since 2026-09-27 — temporal
+  # moved to `temporal-postgres` — and its map entry went with it, exactly as the
+  # join below requires.) So the phrase ENUMERATES candidates and
   # this map ANSWERS them. `lane-partition.ts` derives the candidate set from
   # the citations on every run and REFUSES on any candidate this map does not
   # answer — so an edge cannot be added with intent-language and quietly left
@@ -107,16 +109,6 @@ spec:
         environment wiring is COMMENTED in
         applications/hindsight/Application.yaml and the bundled PostgreSQL is
         the default. hindsight brings up without CockroachDB today.
-    temporal -> cockroachdb:
-      class: observed
-      reason: >-
-        Adjudicated OBSERVED even though its citation contains the phrase, and
-        this is the case the map exists for. The citation says the edge "was a
-        DECLARED INTENT until 2026-08-22" and "is now a live connection in a
-        manifest that renders": both persistence stores set
-        `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
-        `driver: postgres12`, and temporal holds no local durable state. A
-        pattern match on the prose would have got this one backwards.
 
   dependsOn:
     # ── Layer 0: the reconciler itself ───────────────────────────────────────
@@ -567,20 +559,33 @@ spec:
           `url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"`.
 
     # ── Layer 9: database consumers ──────────────────────────────────────────
-    - chart: temporal
-      dependsOn: [cockroachdb]
+    - chart: temporal-postgres
+      dependsOn: [cloudnativepg]
       citations:
-        cockroachdb: >-
-          full-ai-cluster/k8s/applications/temporal/Application.yaml:145,161 —
-          BOTH persistence stores set
-          `host: cockroachdb-public.cockroachdb.svc.cluster.local` with
-          `driver: postgres12` on port 26257 (`default` -> database `temporal`,
-          `visibility` -> database `temporal_visibility`). This edge was a
-          DECLARED INTENT until 2026-08-22 — the wiring was a YAML comment and
-          the chart would not even template — and is now a live connection in a
-          manifest that renders. Temporal holds no local durable state (0 PVCs,
-          0 StatefulSets in the render), so this is a total dependency, not a
-          cache.
+        cloudnativepg: >-
+          full-ai-cluster/k8s/applications/temporal/postgres/cluster.yaml and
+          database.yaml are `postgresql.cnpg.io/v1` `Cluster` and `Database` CRs.
+          Their CRDs and the admission webhook that defaults/validates them ship
+          with the cloudnativepg Application; applied first, the CRs are refused
+          as an unknown kind.
+      # NO longhorn edge: the volume is `zeta-block-local` (rancher.io/local-path,
+      # a bootstrap StorageClass, not an Application), per CNPG's local-storage
+      # guidance -- see cluster.yaml. An edge that does not exist is as wrong to
+      # declare as a real one is to omit.
+
+    - chart: temporal
+      dependsOn: [temporal-postgres]
+      citations:
+        temporal-postgres: >-
+          full-ai-cluster/k8s/applications/temporal/Application.yaml — BOTH
+          persistence stores set `host: temporal-postgres-rw.temporal.svc`, port
+          5432, `driver: postgres12`, and `existingSecret: temporal-postgres-app`,
+          all three produced by the CNPG Cluster that Application declares.
+          Temporal holds no local durable state (0 PVCs, 0 StatefulSets in the
+          render), so this is a total dependency, not a cache. Replaced the
+          `temporal -> cockroachdb` edge on 2026-09-27: temporal's SQL visibility
+          schema cannot apply to CockroachDB (btree_gin, UDFs in generated
+          columns), so that connection could never converge.
 
     - chart: hindsight
       dependsOn: [longhorn, cockroachdb]
@@ -592,7 +597,8 @@ spec:
           full-ai-cluster/k8s/applications/hindsight/Application.yaml:62 —
           `postgresql://hindsight:$(PG_PASSWORD)@cockroachdb-public.cockroachdb.svc.cluster.local:26257/hindsight`.
           Commented today (the bundled PostgreSQL is the default), so this is a
-          declared intent like temporal's above.
+          declared intent, as temporal's former CockroachDB edge was until
+          2026-08-22.
 
     # ── Layer 10: GPU model servers ──────────────────────────────────────────
     - chart: ollama

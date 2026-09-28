@@ -217,6 +217,7 @@
       "temporalio/server:1.27.2",
       "temporalio/ui:2.36.1"
     ],
+    "full-ai-cluster/temporal/postgres": [],
     "full-ai-cluster/trust-manager": [
       "quay.io/jetstack/trust-manager:v0.24.0"
     ],

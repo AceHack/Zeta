@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-23",
+  "measuredOn": "2026-09-27",
   "clusterDefaultStorageClass": "zeta-block-local",
   "rendered": [
     {
@@ -458,6 +458,19 @@
       "count": 1
     },
     {
+      "appId": "full-ai-cluster/temporal/postgres",
+      "origin": "operatorStorageSpec",
+      "name": "pgdata/temporal-postgres",
+      "workload": "Cluster/temporal-postgres",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "size": "10Gi",
+      "gibibytes": 10,
+      "count": 1
+    },
+    {
       "appId": "full-ai-cluster/vllm",
       "origin": "PersistentVolumeClaim",
       "name": "vllm-cache",
@@ -485,5 +498,5 @@
     }
   ],
   "unrenderable": [],
-  "appsDiscovered": 49
+  "appsDiscovered": 50
 }

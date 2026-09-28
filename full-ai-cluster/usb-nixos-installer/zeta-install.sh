@@ -375,7 +375,7 @@ ZETA_LONGHORN_MIN_TAIL_GIB=1
 # consumes the bytes WRITTEN and nothing more. Reserving it would starve the
 # Longhorn pool for bytes nobody has written. It is PRINTED because it is
 # still the first thing that fills root.
-ZETA_LOCAL_PATH_ADVISORY_GIB=220
+ZETA_LOCAL_PATH_ADVISORY_GIB=230
 
 # The longhorn1 tail for a boot disk of <disk_gib>, under LONGHORN1_TAIL=auto:
 # root takes a computed FLOOR and longhorn1 takes the REST.

@@ -161,6 +161,12 @@ NEVER_APPLIED_COVERAGE.set("temporal", {
   reason: "excluded on lane cost; nothing renders or applies it in CI",
 });
 
+NEVER_APPLIED_COVERAGE.set("temporal/postgres", {
+  coveredBy: null,
+  reason:
+    "temporal's CNPG database (2026-09-27), nested under `temporal/` so the `temporal/**` exclude defers it with its only consumer -- applying a database for an app the lane never runs would buy 512Mi of nothing. Offline checks cover its wiring (temporal-datastore.test.ts); no CI job applies it",
+});
+
 NEVER_APPLIED_COVERAGE.set("platform", {
   coveredBy: null,
   reason:

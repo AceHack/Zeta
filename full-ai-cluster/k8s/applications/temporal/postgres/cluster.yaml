@@ -1,0 +1,54 @@
+# The CNPG Cluster behind temporal. See Application.yaml beside this file for why.
+#
+# Services the operator creates from this (CNPG 1.30): `temporal-postgres-rw`
+# (primary, read-write — the one temporal dials), `-ro`, `-r`. Secrets:
+# `temporal-postgres-app` (role `temporal`'s credentials), `temporal-postgres-ca`
+# and `temporal-postgres-server` (the TLS material it serves with).
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: temporal-postgres
+  namespace: temporal
+spec:
+  # One instance: a single-node substrate. See the storage note below for why
+  # durability grows by instances, not by the volume class.
+  instances: 1
+  # PostgreSQL 17 — the major gitlab 19.x also requires, so one image serves both
+  # CNPG consumers. `minimal` = the server plus Debian's contrib modules, which is
+  # where `btree_gin` (temporal's visibility schema) lives. Pinned by tag, like the
+  # operator image. NOT YET SEEN by the image audits: image-footprint.ts and
+  # image-source-provenance.ts read `image:` keys, and CNPG spells it `imageName`.
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.11-minimal-trixie
+  bootstrap:
+    initdb:
+      database: temporal
+      owner: temporal
+      # No `secret:` — the operator generates `temporal-postgres-app`, and that
+      # generated Secret is the ONE source of the password (see Application.yaml).
+  postgresql:
+    parameters:
+      # temporal 0.59.0 opens up to maxConns per service per store: 4 server
+      # Deployments x (20 default + 10 visibility) = 120, plus the schema Job and
+      # admin-tools. The PostgreSQL default of 100 would refuse the 101st.
+      max_connections: "200"
+  # Explicit: an unset request is BestEffort QoS, first evicted under pressure.
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+  # NODE-LOCAL, deliberately, and this is CNPG's own recommendation rather than a
+  # shortcut: CloudNativePG is a shared-nothing design that replicates at the
+  # PostgreSQL level (streaming replicas, `instances: N`), and its storage guidance
+  # prefers local volumes over replicated block storage, whose replication
+  # duplicates what PostgreSQL already does and costs write latency. On today's
+  # single node there is nothing to replicate to either way; raising durability is
+  # `instances: 2+` on a second node, not a Longhorn class under one instance.
+  # `zeta-block-local` is `rancher.io/local-path`, WaitForFirstConsumer, provisioned
+  # at bootstrap (not by an Application), and outside the Longhorn pool that
+  # storage-profiles.json and the installer's capacity preflight account for.
+  # rendered-storage-claims.ts reads this block as the PVC the operator will create.
+  storage:
+    storageClass: zeta-block-local
+    size: 10Gi

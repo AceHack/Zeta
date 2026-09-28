@@ -1286,6 +1286,25 @@
       }
     },
     {
+      "id": "full-ai-cluster/temporal/postgres/postgres",
+      "dir": "temporal/postgres",
+      "path": "full-ai-cluster/k8s/applications/temporal/postgres/cluster.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN: a CloudNativePG `Cluster` CR, not a chart. It renders no pod template; the CNPG operator creates one `postgres` pod per `spec.instances` (1) sized by `spec.resources`, which rendered-resource-requests.ts reads from the CR since 2026-09-27 so the instance is not a 0m/0Mi consumer. Tree value 250m / 512Mi; `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean.",
+      "consequence": "temporal's only datastore (both persistence stores). Memory is the same at both rungs: an under-request on the incompressible axis makes PostgreSQL the first eviction candidate, and evicting it stalls every temporal workflow. Dev-excluded with temporal (the `temporal/**` glob), so the dev figure buys nothing in the dev lane today.",
+      "cpuMillis": {
+        "dev": 250,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 512,
+        "metal": 512
+      }
+    },
+    {
       "id": "full-ai-cluster/temporal/schema",
       "dir": "temporal",
       "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",

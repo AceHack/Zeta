@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-25",
+  "measuredOn": "2026-09-27",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -47,6 +47,7 @@
     "full-ai-cluster/spire-crds",
     "full-ai-cluster/tempo",
     "full-ai-cluster/temporal",
+    "full-ai-cluster/temporal/postgres",
     "full-ai-cluster/trust-manager",
     "full-ai-cluster/vllm",
     "full-ai-cluster/weaviate"
@@ -1317,6 +1318,21 @@
             "full-ai-cluster/temporal/server",
             "full-ai-cluster/temporal/web"
           ]
+        },
+        {
+          "appId": "full-ai-cluster/temporal/postgres",
+          "cpuMillis": 250,
+          "memoryMib": 512,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "Cluster/temporal-postgres",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 512
+            }
+          ],
+          "overlaid": []
         },
         {
           "appId": "full-ai-cluster/trust-manager",
@@ -2632,6 +2648,21 @@
             "full-ai-cluster/temporal/server",
             "full-ai-cluster/temporal/web"
           ]
+        },
+        {
+          "appId": "full-ai-cluster/temporal/postgres",
+          "cpuMillis": 250,
+          "memoryMib": 512,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "Cluster/temporal-postgres",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 512
+            }
+          ],
+          "overlaid": []
         },
         {
           "appId": "full-ai-cluster/trust-manager",

@@ -260,6 +260,23 @@ export function extractRenderedRequests(
   for (const doc of documents) {
     const kind = doc.kind;
     if (typeof kind !== "string") continue;
+    // A CLOUDNATIVEPG `Cluster` renders no pod template: the operator creates one
+    // `postgres` pod per instance at runtime, sized by `spec.resources`. Reading
+    // only pod templates would make every CNPG instance cost 0m / 0Mi here while
+    // it consumes a real reservation on the node -- the invisible-consumer defect.
+    const apiVersion = typeof doc.apiVersion === "string" ? doc.apiVersion : "";
+    if (kind === "Cluster" && apiVersion.split("/")[0] === "postgresql.cnpg.io") {
+      const spec = asRecord(doc.spec);
+      const name = typeof asRecord(doc.metadata).name === "string" ? String(asRecord(doc.metadata).name) : "";
+      const workload = `${kind}/${name}`;
+      const rawInstances = spec.instances;
+      const replicas = typeof rawInstances === "number" && Number.isFinite(rawInstances) ? rawInstances : 1;
+      const containers = containersOf({ containers: [{ name: "postgres", resources: spec.resources }] }).map(
+        (container) => ({ ...container, workload }),
+      );
+      out.push({ appId, workload, replicas, containers, ...podEffectiveRequest(containers) });
+      continue;
+    }
     const at = POD_TEMPLATE_AT[kind];
     if (at === undefined) continue;
     const template = getIn(doc, at);

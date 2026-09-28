@@ -759,10 +759,17 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
       )
       .sort();
 
-    expect(nested).toEqual(["game-hosting/gmod"]);
+    // `temporal/postgres` joined 2026-09-27: temporal's CNPG database, nested so the
+    // `temporal/**` exclude defers it with its only consumer. Held out by INHERITING
+    // temporal's reason (the parent-directory rule in isExcludedFromIncludedProof),
+    // not by a second entry that could drift from the first.
+    expect(nested).toEqual(["game-hosting/gmod", "temporal/postgres"]);
     const gmod = discoverExpectedApplications().find((app) => app.name === "gmod");
     expect(gmod?.dir).toBe("game-hosting/gmod");
     expect(gmod?.excludedFromDev).toBe(true);
+    const pg = discoverExpectedApplications().find((app) => app.name === "temporal-postgres");
+    expect(pg?.dir).toBe("temporal/postgres");
+    expect(pg?.excludedFromDev).toBe(true);
   });
 
   test("metadata.name is read by a YAML parser, not by first-name-wins line scanning", () => {
@@ -1748,11 +1755,16 @@ describe("DEV_EXCLUDED_REASONS", () => {
     expect(reason).not.toContain("Please specify cassandra port");
   });
 
-  test("the temporal reason names both live blockers, not the retired one", () => {
+  test("the temporal reason records the CockroachDB blockers as RETIRED, and by what", () => {
     const reason = DEV_EXCLUDED_REASONS.get("temporal") ?? "";
-    // (1) visibility schema, (2) TLS-only CockroachDB with no material here.
+    // 2026-09-27: (1) visibility schema and (2) TLS-only CockroachDB were live
+    // blockers; both stores moved to a CNPG PostgreSQL. The history stays named,
+    // and the reason must say they are retired rather than still claim them.
     expect(reason).toContain("btree_gin");
     expect(reason).toContain("`tls.enabled: true` with the selfSigner");
+    expect(reason).toContain("ARE RETIRED");
+    expect(reason).toContain("temporal-postgres");
+    expect(reason).not.toContain("LIFTS WHEN: the CRDB CA is distributed");
   });
 
   test("the correction records that it was the author's own stale reason", () => {

@@ -32,7 +32,13 @@
 //      matched on (namespace, name) -- a Secret in the wrong namespace is not one
 //      the consuming pod can mount;
 //   2. a Secret / SealedSecret / ExternalSecret committed in the tree;
-//   3. an entry in METAL_NOT_SEEDED below, which is a CLAIM with a reason: the
+//   3. a Secret an OPERATOR generates from a CR committed in the tree, matched on
+//      (namespace, name) like (1). Today that is CloudNativePG: a `Cluster` bootstrapped
+//      with `initdb` makes the operator write `<cluster>-app` (keys CNPG_APP_SECRET_KEYS)
+//      holding the owner role's password. Derived from the CR, never listed by hand --
+//      so the Secret's name, namespace and the role it authenticates are all read from
+//      the same document the operator reads;
+//   4. an entry in METAL_NOT_SEEDED below, which is a CLAIM with a reason: the
 //      credential is external (operator-supplied), operator-generated at runtime,
 //      or mounted `optional: true`. Every entry must still match a reference, or
 //      it fails as STALE -- so a lifted exemption forces the question again.
@@ -42,6 +48,7 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
+import { discoverGitDirectorySources, listSupportingManifests, sourceReconciles } from "./app-of-apps-discovery.ts";
 import {
   collectRawSecretReferences,
   collectSecretReferences,
@@ -127,8 +134,143 @@ export function applicationNamespace(app: string, repoRoot = REPO_ROOT): string 
   return null;
 }
 
+/**
+ * The keys CloudNativePG writes into a Cluster's `<cluster>-app` Secret
+ * (CNPG 1.30, "Connecting from an application"). `password` is the one every
+ * consumer here reads; the rest are listed so a consumer pointing `secretKey` at
+ * one of them is still checkable, and one pointing anywhere else is not.
+ */
+export const CNPG_APP_SECRET_KEYS: readonly string[] = [
+  "username",
+  "user",
+  "password",
+  "dbname",
+  "host",
+  "port",
+  "uri",
+  "jdbc-uri",
+  "pgpass",
+  "fqdn-uri",
+  "fqdn-jdbc-uri",
+];
+
+/** A CNPG `Cluster` committed in the tree, and what the operator will make of it. */
+export interface CnpgCluster {
+  /** The ArgoCD Application whose directory source applies the Cluster CR. */
+  readonly app: string;
+  readonly name: string;
+  readonly namespace: string;
+  /** The read-write Service, in every spelling a pod's resolver accepts. */
+  readonly rwHosts: readonly string[];
+  /** `<name>-app` when bootstrapped with initdb (CNPG's default), else null. */
+  readonly appSecret: string | null;
+  /** The initdb owner role -- the role `appSecret`'s password authenticates. */
+  readonly owner: string;
+  /** database -> owner, from initdb plus every `Database` CR naming this Cluster. */
+  readonly databases: ReadonlyMap<string, string>;
+  readonly manifest: string;
+}
+
+/** The CNPG API GROUP, compared as a whole `group/version` segment -- never a substring. */
+const CNPG_API_GROUP = "postgresql.cnpg.io";
+/** Cheap prefilter: a document line `apiVersion: postgresql.cnpg.io/...`. */
+const CNPG_API_LINE = /^apiVersion:\s*postgresql\.cnpg\.io\//m;
+const isCnpgApiVersion = (apiVersion: unknown): boolean =>
+  typeof apiVersion === "string" && apiVersion.split("/")[0] === CNPG_API_GROUP;
+
+/**
+ * Every CNPG `Cluster` a directory-source Application in this tree applies.
+ *
+ * A Cluster CR no Application reconciles is not collected: the operator never sees
+ * it, so the Secret it would generate never exists -- counting it would be the
+ * declaration-governs-a-path-that-does-not-exist defect.
+ */
+export function collectCnpgClusters(repoRoot = REPO_ROOT): readonly CnpgCluster[] {
+  // The dev root catalogue is itself a directory source over the whole tree; it
+  // applies Application manifests, never a supporting CR, so it owns nothing here.
+  const sources = discoverGitDirectorySources(repoRoot).filter((s) => !s.origin.startsWith("src/"));
+  const clusters: {
+    app: string;
+    name: string;
+    namespace: string;
+    bootstrap: Record<string, unknown>;
+    manifest: string;
+  }[] = [];
+  const databases: { cluster: string; namespace: string; name: string; owner: string }[] = [];
+  for (const rel of listSupportingManifests(repoRoot)) {
+    const repoRel = `${APPLICATIONS_DIR}/${rel.split("\\").join("/")}`;
+    const text = readFileSync(resolve(repoRoot, repoRel), "utf8");
+    if (!CNPG_API_LINE.test(text)) continue;
+    const owner = sources.find((s) => sourceReconciles(s, repoRel));
+    if (owner === undefined) continue;
+    const appNs = applicationNamespaceFromManifest(resolve(repoRoot, owner.origin));
+    for (const doc of parseAllDocuments(text)) {
+      const value = doc.toJS() as unknown;
+      if (!isRecord(value) || !isCnpgApiVersion(value.apiVersion)) {
+        continue;
+      }
+      const metadata = isRecord(value.metadata) ? value.metadata : {};
+      const spec = isRecord(value.spec) ? value.spec : {};
+      const name = typeof metadata.name === "string" ? metadata.name : "";
+      const namespace = typeof metadata.namespace === "string" ? metadata.namespace : (appNs ?? "");
+      if (name === "" || namespace === "") continue;
+      if (value.kind === "Cluster") {
+        const bootstrap = isRecord(spec.bootstrap) ? spec.bootstrap : {};
+        clusters.push({ app: owner.app, name, namespace, bootstrap, manifest: repoRel });
+      } else if (value.kind === "Database" && spec.ensure !== "absent") {
+        const cluster = isRecord(spec.cluster) && typeof spec.cluster.name === "string" ? spec.cluster.name : "";
+        if (typeof spec.name === "string" && typeof spec.owner === "string" && cluster !== "") {
+          databases.push({ cluster, namespace, name: spec.name, owner: spec.owner });
+        }
+      }
+    }
+  }
+  return clusters.map((c) => {
+    // CNPG: no bootstrap section means initdb with database `app`; `owner`
+    // defaults to the database name. Any other bootstrap method (recovery,
+    // pg_basebackup) generates no `-app` Secret of its own.
+    const other = Object.keys(c.bootstrap).some((k) => k !== "initdb");
+    const initdb = isRecord(c.bootstrap.initdb) ? c.bootstrap.initdb : {};
+    const database = typeof initdb.database === "string" ? initdb.database : "app";
+    const owner = typeof initdb.owner === "string" ? initdb.owner : database;
+    const dbs = new Map<string, string>([[database, owner]]);
+    for (const d of databases) if (d.cluster === c.name && d.namespace === c.namespace) dbs.set(d.name, d.owner);
+    const rw = `${c.name}-rw.${c.namespace}`;
+    return {
+      app: c.app,
+      name: c.name,
+      namespace: c.namespace,
+      rwHosts: [rw, `${rw}.svc`, `${rw}.svc.cluster.local`],
+      appSecret: other ? null : `${c.name}-app`,
+      owner,
+      databases: dbs,
+      manifest: c.manifest,
+    };
+  });
+}
+
+function applicationNamespaceFromManifest(absPath: string): string | null {
+  for (const doc of parseAllDocuments(readFileSync(absPath, "utf8"))) {
+    const value = doc.toJS() as unknown;
+    if (!isRecord(value) || value.kind !== "Application") continue;
+    const ns = ((value.spec as Record<string, unknown> | undefined)?.destination as Record<string, unknown> | undefined)
+      ?.namespace;
+    if (typeof ns === "string" && ns !== "") return ns;
+  }
+  return null;
+}
+
+/** Every `<namespace>/<name>` an operator generates from a CR committed in the tree. */
+export function collectOperatorGeneratedSecrets(repoRoot = REPO_ROOT): ReadonlySet<string> {
+  const out = new Set<string>();
+  for (const c of collectCnpgClusters(repoRoot)) if (c.appSecret !== null) out.add(`${c.namespace}/${c.appSecret}`);
+  return out;
+}
+
 export interface MetalAudit {
   readonly seeded: readonly SecretReference[];
+  /** Generated at runtime by an operator from a CR this tree commits (CNPG `<cluster>-app`). */
+  readonly operatorGenerated: readonly SecretReference[];
   readonly treeMinted: readonly SecretReference[];
   readonly exempt: readonly SecretReference[];
   /** Referenced, and nothing on a fresh metal install produces it. */
@@ -141,9 +283,11 @@ export function auditMetalSecretProduction(
   exemptions: ReadonlyMap<string, string> = METAL_NOT_SEEDED,
 ): MetalAudit {
   const seededSet = collectMetalSeededSecrets(repoRoot);
+  const operatorSet = collectOperatorGeneratedSecrets(repoRoot);
   const treeMintedSet = collectTreeMintedSecretNames(repoRoot);
   const references = [...collectSecretReferences(repoRoot), ...collectRawSecretReferences(repoRoot)];
   const seeded: SecretReference[] = [];
+  const operatorGenerated: SecretReference[] = [];
   const treeMinted: SecretReference[] = [];
   const exempt: SecretReference[] = [];
   const unproduced: (SecretReference & { namespace: string | null })[] = [];
@@ -152,6 +296,10 @@ export function auditMetalSecretProduction(
     const namespace = applicationNamespace(r.app, repoRoot);
     if (namespace !== null && seededSet.has(`${namespace}/${r.secretName}`)) {
       seeded.push(r);
+      continue;
+    }
+    if (namespace !== null && operatorSet.has(`${namespace}/${r.secretName}`)) {
+      operatorGenerated.push(r);
       continue;
     }
     if (treeMintedSet.has(r.secretName)) {
@@ -167,7 +315,7 @@ export function auditMetalSecretProduction(
     unproduced.push({ ...r, namespace });
   }
   const staleExemptions = [...exemptions.keys()].filter((k) => !used.has(k)).sort();
-  return { seeded, treeMinted, exempt, unproduced, staleExemptions };
+  return { seeded, operatorGenerated, treeMinted, exempt, unproduced, staleExemptions };
 }
 
 function main(): void {
@@ -184,7 +332,7 @@ function main(): void {
   }
   for (const k of a.staleExemptions) lines.push(`  STALE EXEMPTION ${k} — matches no unproduced reference; delete it`, "");
   lines.push(
-    `  seeded (${String(a.seeded.length)}) · tree-minted (${String(a.treeMinted.length)}) · exempt (${String(a.exempt.length)})`,
+    `  seeded (${String(a.seeded.length)}) · operator-generated (${String(a.operatorGenerated.length)}) · tree-minted (${String(a.treeMinted.length)}) · exempt (${String(a.exempt.length)})`,
   );
   process.stdout.write(`${lines.join("\n")}\n`);
   process.exit(a.unproduced.length > 0 || a.staleExemptions.length > 0 ? 1 : 0);

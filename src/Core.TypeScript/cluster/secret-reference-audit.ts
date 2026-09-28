@@ -74,8 +74,28 @@ export function secretProducers(root: string): readonly string[] {
 export interface SecretAudit {
   readonly referenced: readonly string[];
   readonly producerFiles: readonly string[];
+  /** Secret names an OPERATOR generates from a committed CR (CNPG `Cluster` -> `<name>-app`). */
+  readonly operatorGenerated: readonly string[];
   /** Referenced by the catalogue, created by nothing in it. */
   readonly unproduced: readonly string[];
+}
+
+/**
+ * A CloudNativePG `Cluster` makes its operator write `<metadata.name>-app` (the
+ * initdb owner's credentials). Name-level, like the rest of this module; the
+ * namespace- and bootstrap-aware version is `collectCnpgClusters` in
+ * metal-secret-production.ts, which also requires an Application to apply the CR.
+ */
+const CNPG_CLUSTER = /^apiVersion:\s*postgresql\.cnpg\.io\/v1\s*\nkind:\s*Cluster\s*\nmetadata:\s*\n\s+name:\s*([a-z0-9][a-z0-9-]*)/gm;
+
+export function operatorGeneratedSecrets(root: string): readonly string[] {
+  const out = new Set<string>();
+  for (const f of yamlFilesUnder(root)) {
+    for (const m of readFileSync(f, "utf8").matchAll(CNPG_CLUSTER)) {
+      if (m[1] !== undefined) out.add(`${m[1]}-app`);
+    }
+  }
+  return [...out].sort();
 }
 
 export function auditSecrets(root: string): SecretAudit {
@@ -92,9 +112,12 @@ export function auditSecrets(root: string): SecretAudit {
       if (n !== undefined) produced.add(n);
     }
   }
+  const operatorGenerated = operatorGeneratedSecrets(root);
+  for (const n of operatorGenerated) produced.add(n);
   return {
     referenced,
     producerFiles,
+    operatorGenerated,
     unproduced: referenced.filter((s) => !produced.has(s)),
   };
 }

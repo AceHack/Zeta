@@ -592,11 +592,15 @@ describe("the real tree", () => {
       .map((e) => edgeKey(e.from, e.to))
       .sort();
     expect(intent).toEqual(["hindsight -> cockroachdb", "spire -> openbao"]);
-    // temporal's citation contains the phrase and is adjudicated OBSERVED: the
-    // case a grep would get backwards.
-    expect(text.includes("temporal -> cockroachdb")).toBe(true);
-    const temporalEdge = graph.edges.find((e) => e.from === "temporal" && e.to === "cockroachdb");
-    expect(must(temporalEdge, "the temporal -> cockroachdb edge").edgeClass).toBe("observed");
+    // WAS: temporal -> cockroachdb, whose citation contained the phrase and was
+    // adjudicated OBSERVED -- the case a grep would get backwards. RETIRED
+    // 2026-09-27 with the edge itself (temporal moved to a CNPG PostgreSQL), and
+    // the map entry had to go with it or the join above fails as stale. What
+    // replaces it must be an ordinary observed edge, carrying no intent language.
+    expect(text.includes("temporal -> cockroachdb:")).toBe(false);
+    expect(graph.edges.find((e) => e.from === "temporal" && e.to === "cockroachdb")).toBeUndefined();
+    const temporalEdge = graph.edges.find((e) => e.from === "temporal" && e.to === "temporal-postgres");
+    expect(must(temporalEdge, "the temporal -> temporal-postgres edge").edgeClass).toBe("observed");
   });
 
   test("a graph edge pointing at a node that does not exist is refused", () => {

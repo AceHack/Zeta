@@ -1,6 +1,6 @@
 {
-  "measuredOn": "2026-09-22",
-  "appsDiscovered": 57,
+  "measuredOn": "2026-09-28",
+  "appsDiscovered": 58,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
       "literal": {
@@ -37304,6 +37304,16 @@
       "targetRevision": "0.59.0",
       "repoURL": "https://go.temporal.io/helm-charts",
       "chartKey": "https://go.temporal.io/helm-charts|temporal|0.59.0"
+    },
+    {
+      "appId": "full-ai-cluster/temporal/postgres",
+      "chart": "",
+      "targetRevision": "main",
+      "repoURL": "https://github.com/Lucent-Financial-Group/Zeta",
+      "unavailable": {
+        "reason": "no-chart-yaml",
+        "detail": "full-ai-cluster/k8s/applications/temporal/postgres is a git-path source with no Chart.yaml — nothing declares a schema"
+      }
     },
     {
       "appId": "full-ai-cluster/trust-manager",

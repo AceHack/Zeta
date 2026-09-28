@@ -1,0 +1,74 @@
+# temporal-postgres — the PostgreSQL temporal's two persistence stores live in.
+#
+# ── WHY A CNPG CLUSTER, AND WHY NOT COCKROACHDB ──────────────────────────────
+# temporal used to point at the CockroachDB already in the cluster. That never
+# converged on a fresh install, for three independent reasons (measured on the
+# USB install node-5b2dfa, 2026-09-27, temporal Synced/Degraded):
+#   1. no `temporal` SQL user existed in CockroachDB to carry the seeded password;
+#   2. CockroachDB is TLS-only and its client CA lives in the `cockroachdb`
+#      namespace, not in `temporal`;
+#   3. temporal v1.27.2's SQL VISIBILITY schema cannot apply to CockroachDB at all:
+#      `schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql`
+#      opens `CREATE EXTENSION IF NOT EXISTS btree_gin;` (cockroachdb/cockroach#51992,
+#      unimplemented) and puts a plpgsql `convert_ts(...)` inside
+#      `GENERATED ALWAYS AS (...) STORED` columns (CockroachDB known limitation
+#      #122945: computed columns may not reference UDFs).
+# (1) and (2) are fixable; (3) is not, short of forking the schema. Temporal's own
+# docs list PostgreSQL as a TESTED store for both default and visibility, and the
+# CloudNativePG operator (`applications/cloudnativepg`) was added precisely so this
+# and gitlab could have a real PostgreSQL. CockroachDB stays for its other users.
+#
+# ── ONE SOURCE OF TRUTH FOR THE PASSWORD ─────────────────────────────────────
+# `bootstrap.initdb` creates role `temporal` owning database `temporal`, and the
+# operator writes that role's password into Secret `temporal-postgres-app`
+# (keys username/password/dbname/host/port/uri/...) in THIS namespace. temporal's
+# chart reads `existingSecret: temporal-postgres-app`, key `password`, for BOTH
+# stores. So the password is minted exactly once, by the thing that also sets it
+# on the role — there is no second copy that can diverge. The first-boot seeding
+# Job that used to mint `temporal-{default,visibility}-store` is gone: those were
+# a password with no account behind it.
+# Checked by `src/Core.TypeScript/cluster/metal-secret-production.ts` (the
+# operator-generated producer class) and `temporal-datastore.test.ts`.
+#
+# ── WHY THIS LIVES UNDER temporal/ ───────────────────────────────────────────
+# Its only consumer is temporal. Nesting it here means every lane that defers
+# temporal (the dev root's `temporal/**` exclude) defers its database too, by the
+# same glob, instead of a second deferral that could drift from the first. The
+# app-of-apps include glob reaches depth 2 (established in
+# app-of-apps-discovery.ts, as for `game-hosting/gmod`), so metal applies it.
+#
+# ── ORDERING ─────────────────────────────────────────────────────────────────
+# wave 5: after cloudnativepg (-70, the CRDs + webhook this CR needs); before
+# temporal (10). The volume is `zeta-block-local` (see cluster.yaml), provisioned
+# at bootstrap, so there is no storage Application to order against.
+# Declared as edges in `full-ai-cluster/k8s/sync-wave-dependency-graph.yaml` and
+# checked by derive-sync-waves.ts. The wave orders CREATION only; temporal's
+# schema Job still retries (restartPolicy OnFailure, backoffLimit 100) until the
+# instance accepts connections, which is what covers the runtime gap.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  name: temporal-postgres
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/temporal/postgres
+    directory:
+      # The CRs, NOT this Application.yaml itself (no recursion).
+      include: '{cluster,database}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: temporal
+  syncPolicy:
+    automated:
+      # NEVER prune: pruning the Cluster CR deletes the PVC temporal's whole
+      # durable-execution history lives on. Manual delete only.
+      prune: false
+      selfHeal: true
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

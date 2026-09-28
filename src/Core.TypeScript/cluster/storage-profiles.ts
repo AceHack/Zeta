@@ -1200,10 +1200,10 @@ export function applicationDirs(repoRoot = REPO_ROOT): readonly string[] {
   const dirs: string[] = [];
   for (const entry of readdirSync(base, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue;
-    if (existsSync(resolve(base, entry.name, "Application.yaml"))) {
-      dirs.push(entry.name);
-      continue;
-    }
+    if (existsSync(resolve(base, entry.name, "Application.yaml"))) dirs.push(entry.name);
+    // NOT `continue` after a parent Application: `temporal/postgres` (2026-09-27)
+    // nests under a directory that has its own Application.yaml, and the root glob
+    // reaches both. Skipping the children of an Application directory hid it.
     for (const nested of readdirSync(resolve(base, entry.name), { withFileTypes: true })) {
       if (!nested.isDirectory()) continue;
       if (existsSync(resolve(base, entry.name, nested.name, "Application.yaml"))) {
@@ -1281,7 +1281,10 @@ export function metalAppliedDirs(repoRoot = REPO_ROOT): readonly string[] | null
         .map((entry) => entry.trim().replace(/\/\*\*$/, ""))
         .filter((entry) => entry.length > 0),
     );
-    return applicationDirs(repoRoot).filter((dir) => !excluded.has(dir));
+    // `<dir>/**` also drops nested Applications (`temporal/postgres` under `temporal/**`).
+    return applicationDirs(repoRoot).filter(
+      (dir) => !excluded.has(dir) && ![...excluded].some((e) => dir.startsWith(`${e}/`)),
+    );
   }
   return null;
 }

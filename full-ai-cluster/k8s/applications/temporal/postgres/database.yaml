@@ -1,0 +1,29 @@
+# temporal's VISIBILITY database, on the same CNPG Cluster as the default store.
+#
+# `bootstrap.initdb` can create only ONE application database, so the second is a
+# CNPG `Database` CR (postgresql.cnpg.io/v1, present in the installed CNPG 1.30 —
+# `kubectl get crd databases.postgresql.cnpg.io` on node-5b2dfa, 2026-09-27).
+# Owned by the SAME role as `temporal`, so the one generated password in
+# `temporal-postgres-app` authenticates both stores.
+#
+# `btree_gin` is created HERE, by the operator as superuser, rather than left to
+# temporal's schema tool: `advanced_visibility.sql` runs
+# `CREATE EXTENSION IF NOT EXISTS btree_gin;` as role `temporal`, which succeeds
+# only because btree_gin is a TRUSTED extension (PostgreSQL 13+). Pre-creating it
+# makes that statement a no-op and removes the dependency on trustedness.
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: temporal-postgres-visibility
+  namespace: temporal
+spec:
+  cluster:
+    name: temporal-postgres
+  name: temporal_visibility
+  owner: temporal
+  # A retained database survives deletion of this CR — temporal's history is not
+  # something a manifest edit should be able to drop.
+  databaseReclaimPolicy: retain
+  extensions:
+    - name: btree_gin
+      ensure: present

@@ -675,23 +675,21 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "2 ConfigMaps, 1 Job, ZERO PVCs -- retiring the `helm-template-failed` acknowledgement this reason " +
       "cited. Writing that down rather than quietly overwriting it is the point: a stale reason is the " +
       "exact defect #13472 existed to remove from `platform`, and it took ten minutes to reintroduce. " +
-      "THE REAL BLOCKERS, both established by #13469 and both in temporal/Application.yaml's header with " +
-      "their own exits. (1) THE VISIBILITY SCHEMA DOES NOT APPLY TO COCKROACHDB: temporal v1.27.2's " +
+      "THE TWO COCKROACHDB BLOCKERS #13469 ESTABLISHED ARE RETIRED (2026-09-27), and recorded here rather " +
+      "than erased. (1) THE VISIBILITY SCHEMA DID NOT APPLY TO COCKROACHDB: temporal v1.27.2's " +
       "`schema/postgresql/v12/visibility/versioned/v1.2/advanced_visibility.sql` opens with " +
       "`CREATE EXTENSION IF NOT EXISTS btree_gin` and uses a plpgsql function inside " +
       "`GENERATED ALWAYS AS (...) STORED` columns; CockroachDB implements neither " +
-      "(cockroachdb/cockroach#51992 open; computed columns may not reference UDFs, #122945). The DEFAULT " +
-      "store is unaffected, which is why this is a split rather than 'temporal does not work on " +
-      "CockroachDB'. It fails at the `update-visibility-store` init container of `temporal-schema-1`. " +
-      "(2) NO TLS MATERIAL, AND THIS COCKROACHDB IS TLS-ONLY: the cockroachdb Application sets " +
-      "`tls.enabled: true` with the selfSigner, so the SQL port refuses a plaintext client; the CA lives " +
-      "in a Secret in the `cockroachdb` namespace, this app runs in `temporal`, and no `temporal` SQL user " +
-      "exists. Declaring `sql.tls` today would point a values block at a Secret nothing creates -- the " +
-      "declaration-governing-a-nonexistent-path defect -- so it is named instead of declared. " +
-      "LIFTS WHEN: the CRDB CA is distributed into the `temporal` namespace (trust-manager is already in " +
-      "the cluster for exactly this) and a `temporal` SQL user plus its sealed password Secret exist, AND " +
-      "the visibility store is pointed somewhere that accepts its schema; then `temporal/**` can leave " +
-      "`DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the rest. " +
+      "(cockroachdb/cockroach#51992 open; computed columns may not reference UDFs, #122945). " +
+      "(2) THAT COCKROACHDB IS TLS-ONLY (`tls.enabled: true` with the selfSigner), its CA lived in the " +
+      "`cockroachdb` namespace, and no `temporal` SQL user existed. RETIRED BY: both stores now live on the " +
+      "CloudNativePG Cluster `temporal-postgres` declared in `temporal/postgres/` -- real PostgreSQL, one " +
+      "operator-generated credential (`temporal-postgres-app`), sslmode=require. That directory sits under " +
+      "the SAME `temporal/**` glob, so the database and its only consumer leave this lane together or not " +
+      "at all. What remains is lane room, below. " +
+      "LIFTS WHEN: the dev lane has room for temporal's request plus the CNPG instance's 512Mi; then " +
+      "`temporal/**` can leave `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports whether the " +
+      "schema Job converges against the CNPG primary. " +
       "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
       "[cite: no-unrenderable full-ai-cluster/temporal] " +
       "[cite: renders full-ai-cluster/temporal] " +
@@ -700,7 +698,8 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: glob-defers temporal] " +
       "UPDATE 2026-09-23: independently of both blockers, it requests 1184Mi at `dev` against a lane that is now " +
       "OVER its budget by 652Mi [cite: lane-memory dev 9868 over] -- it had 116Mi left until 2026-09-25. The " +
-      "schema/TLS fixes alone would not fit it into this lane, and now fit it less.",
+      "schema/TLS fixes alone would not fit it into this lane, and now fit it less -- and the move to a CNPG " +
+      "PostgreSQL adds that instance's own 512Mi request on top.",
   ],
   [
     "vllm",
@@ -1082,6 +1081,9 @@ const DEV_INCLUDED_PROOF_DEFERRED_DIRS = new Set([
   // lane, so the blocker is the unwritten `server.config.persistence` block
   // alone, not an unavailable datastore. That is the next one to close, and it
   // is a manifest change nobody has made rather than a substrate gap.
+  // SUPERSEDED: the persistence block was written (#13469, CockroachDB) and on
+  // 2026-09-27 repointed at the CNPG Cluster `temporal-postgres`
+  // (temporal/postgres/). DEV_EXCLUDED_REASONS carries what still defers it.
   "temporal",
   // `vault` is NOT here. It LEFT this set on 2026-08-21, and the condition that
   // lifted it is recorded rather than the line silently deleted.
@@ -1259,7 +1261,10 @@ export interface AppliedButUnassertedDrift {
  */
 export function auditAppliedButUnasserted(repoRoot = REPO_ROOT): AppliedButUnassertedDrift {
   const globExcluded = rootDevCatalogExcludedDirs();
-  const applied = discoverExpectedApplications(repoRoot).filter((app) => !globExcluded.has(app.dir));
+  // `<dir>/**` drops nested Applications too (`temporal/postgres` under `temporal/**`).
+  const underGlob = (dir: string): boolean =>
+    globExcluded.has(dir) || [...globExcluded].some((excluded) => dir.startsWith(`${excluded}/`));
+  const applied = discoverExpectedApplications(repoRoot).filter((app) => !underGlob(app.dir));
   const unasserted = applied.filter((app) => app.excludedFromDev).map((app) => app.dir);
   const unassertedSet = new Set(unasserted);
 
@@ -1566,6 +1571,13 @@ export function isExcludedFromIncludedProof(
   // kindnetd still has no LoadBalancer implementation -- keep deferred there.
   if (dir === "weaviate" && kindCni === "cilium") return false;
   if (DEV_EXCLUDED_DIRS.has(dir)) return true;
+  // A NESTED Application under an excluded directory is excluded too, because
+  // ArgoCD's glob says so: the root's `<dir>/**` drops `<dir>/<child>/Application.yaml`
+  // exactly as it drops `<dir>/Application.yaml`. Asserting the child would make the
+  // lane wait its full timeout on an Application nothing synced -- the case
+  // applied-vs-asserted-agreement.test.ts caught for `temporal/postgres`, which sits
+  // under `temporal/` so that temporal's database defers with temporal, by one glob.
+  if ([...DEV_EXCLUDED_DIRS].some((excluded) => dir.startsWith(`${excluded}/`))) return true;
   if (DEV_INCLUDED_PROOF_DEFERRED_DIRS.has(dir)) return true;
   // BOTH detectors, because each sees a case the other cannot: the checked-in
   // scan catches in-repo manifests (arc-runner-set), the render catches

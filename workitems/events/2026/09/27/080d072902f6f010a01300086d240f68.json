@@ -1,0 +1,14 @@
+{
+  "id": "080d072902f6f010a01300086d240f68",
+  "at": "2026-09-27T23:08:19.038Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JJ0QPX087G0R002KMDG51",
+    "type": "bug",
+    "title": "temporal cannot converge on a fresh install: its datastore is CockroachDB, which has no temporal user, needs a CA it cannot mount, and cannot run the visibility schema -- move both stores to a CNPG PostgreSQL",
+    "slug": "temporal-cannot-converge-on-a-fresh-install-its-datastore-is",
+    "priority": "P2",
+    "filename": "081M3JJ0QPX087G0R002KMDG51-temporal-cannot-converge-on-a-fresh-install-its-datastore-is.md"
+  }
+}

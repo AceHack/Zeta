@@ -1300,7 +1300,8 @@ describe("the checked-in resource ladder", () => {
     // search"). Also NOT in the exclude glob, and DELIBERATELY so -- Aaron, same day:
     // "we want to try to test on dev for all of these". A new Application that went
     // straight into the dev-excluded set would be one more thing CI never applies.
-    expect(applicationDirs()).toHaveLength(49);
+    // 49 -> 50 on 2026-09-27: `temporal/postgres` (nested, dev-excluded with temporal).
+    expect(applicationDirs()).toHaveLength(50);
     // 49/41 -> 49/40 on 2026-09-07: `game-hosting/gmod/**` joined the excludeGlob. The
     // catalogue is unchanged at 49 -- the Application still exists and is still
     // governed; the LANE is one smaller. That distinction is asserted just below.
@@ -1380,8 +1381,10 @@ describe("the checked-in resource ladder", () => {
     // 12215 -> 12965m / 25739 -> 27147Mi on 2026-09-25: the ArgoCD control plane
     // priced at the metal rung (+750m / +1408Mi). `compute-provenance` re-checked:
     // 12965m against the smallest registered node's 16000m, green with 3035m spare.
-    expect(all.cpuMillis).toBe(12965);
-    expect(all.memoryMib).toBe(27147);
+    // 12965 -> 13215m / 27147 -> 27659Mi on 2026-09-27: temporal-postgres (a CNPG
+    // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
+    expect(all.cpuMillis).toBe(13215);
+    expect(all.memoryMib).toBe(27659);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the

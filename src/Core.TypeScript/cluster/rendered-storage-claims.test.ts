@@ -635,7 +635,9 @@ describe("the live catalogue against the measured render", () => {
     // (`global.minio.enabled: false` -- both minio/minio and minio/mc were
     // withdrawn from Docker Hub); its 10Gi `gitlab-minio` PVC no longer renders.
     // `zeta-local-path` -> `zeta-block-local` on 2026-09-23: renamed, not moved.
-    expect(totals.get("zeta-block-local")).toBe(220);
+    // 220 -> 230 on 2026-09-27: temporal-postgres, a CNPG Cluster on node-local
+    // storage by design; its operator-created PVC is now read from the CR.
+    expect(totals.get("zeta-block-local")).toBe(230);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

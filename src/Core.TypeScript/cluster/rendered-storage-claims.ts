@@ -810,6 +810,38 @@ export function extractRenderedPvcs(
       });
     }
 
+    // CLOUDNATIVEPG `Cluster`. Same situation as the operator CRs above, different
+    // shape: the operator creates one PVC per instance (named `<cluster>-<n>`, RWO
+    // by default) from `spec.storage.{storageClass,size}`, and nothing in the
+    // manifest is a PersistentVolumeClaim. `spec.instances` is the count. Matched
+    // by apiVersion + kind because `spec.storage.size` alone is too generic a shape
+    // to mean "an operator will claim this". (`spec.walStorage`, a second volume
+    // per instance, is read the same way when present.)
+    const apiVersion = typeof doc["apiVersion"] === "string" ? doc["apiVersion"] : "";
+    if (kind === "Cluster" && apiVersion.split("/")[0] === "postgresql.cnpg.io") {
+      const instances = typeof spec["instances"] === "number" ? spec["instances"] : 1;
+      for (const [volume, field] of [
+        ["pgdata", "storage"],
+        ["pgwal", "walStorage"],
+      ] as const) {
+        const cnpgStorage = asRecord(spec[field]);
+        if (Object.keys(cnpgStorage).length === 0) continue;
+        const size = typeof cnpgStorage["size"] === "string" ? cnpgStorage["size"] : "";
+        out.push({
+          appId,
+          origin: "operatorStorageSpec",
+          name: `${volume}/${name}`,
+          workload: `${kind}/${name}`,
+          storageClassName: typeof cnpgStorage["storageClass"] === "string" ? cnpgStorage["storageClass"] : "",
+          accessModes: ["ReadWriteOnce"],
+          size,
+          gibibytes: size === "" ? null : quantityToGib(size),
+          count: instances,
+        });
+      }
+      continue;
+    }
+
     const templates = spec["volumeClaimTemplates"];
     if (!Array.isArray(templates)) continue;
     for (const template of templates) {
