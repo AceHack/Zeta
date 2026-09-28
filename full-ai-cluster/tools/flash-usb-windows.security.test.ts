@@ -6,7 +6,13 @@
  * its insecure-temp-file finding there, and did not remove the original — the fork has not been
  * touched since #6895. Nothing invokes it: `zeta-flash.ts`, `flash-and-inject.ts`,
  * `audit-installer-substrate.ts` and the flasher's own test all name the `zflash/` copy, and even
- * `README-flash-usb-windows.md`, which sits in the same directory, documents the `zflash/` path.
+ * `README-flash-usb-windows.md` (now beside the canonical copy in `zflash/`) documents that path.
+ *
+ * STATUS 2026-09-27: the fork was DELETED when the canonical copy restored removable-media
+ * flashing (it no longer runs `Set-Disk -IsOffline`, which Windows refuses for USB sticks). The
+ * divergence test below then failed exactly as it was written to — "the delete/dedupe question has
+ * to be reopened" — and the fork still carried the removable-media defect, so it was removed
+ * rather than patched. Restoring it is `git revert` of that one deletion; these tests re-arm then.
  *
  * The recommendation is to DELETE it, and that is Aaron's call to make, not this test's. What this
  * file pins is the reversible half: while the fork exists, it must not carry the security defect

@@ -11,23 +11,43 @@
  *     exported, so flash-usb-windows.test.ts can verify it on macOS/Linux
  *     against realistic `Get-Disk` JSON fixtures + temp-file byte copies.
  *   - Only the genuinely Windows-specific operations (enumerate disks,
- *     take a disk offline, open \\.\PhysicalDriveN) go through an
- *     injectable CommandRunner / the node fs path, so they're swappable
- *     in tests.
+ *     clear a disk, open \\.\PhysicalDriveN) go through an injectable
+ *     CommandRunner / the node fs path, so they're swappable in tests.
  *
  * macOS ↔ Windows mapping:
  *   diskutil list -plist        ->  Get-Disk | ConvertTo-Json
  *   BusProtocol == "USB"        ->  BusType == "USB"
  *   info.Internal === true      ->  IsBoot / IsSystem
- *   diskutil unmountDisk        ->  Set-Disk -IsOffline $true
- *   sudo dd of=/dev/rdiskN      ->  raw write to \\.\PhysicalDriveN (admin)
+ *   diskutil unmountDisk        ->  Set-Disk -IsReadOnly $false; Clear-Disk -RemoveData -RemoveOEM
+ *   sudo dd of=/dev/rdiskN      ->  raw write to \\.\PhysicalDriveN (admin), partition table LAST
  *   sudo (Touch ID / PAM)       ->  Administrator elevation (UAC / Windows Hello)
- *   diskutil eject              ->  Set-Disk -IsOffline $false
+ *
+ * REMOVABLE MEDIA. This tool used to run `Set-Disk -IsOffline $true` before the
+ * write. Windows rejects that for every removable stick ("Removable media cannot
+ * be set to offline", reproduced 2026-09-27 on a PNY USB 3.2.1 FD), so it could
+ * not flash a USB stick at all. #6981 had handled removable media; the #8076
+ * refactor dropped that path. The path now, for every target:
+ *   1. stage a COPY of the ISO, hashed while copying — it must equal the sha256
+ *      the integrity gate established, so the bytes baked and written are the
+ *      bytes that were verified;
+ *   2. bake the ESP payloads (operator pubkey, hostname, firstboot conf, repo
+ *      pin — the list the shared planner in lib.ts builds for every arm) into
+ *      the copy's FAT ESP in pure TypeScript (esp-fat-writer.ts), read back and
+ *      compared — never into the device after the write, where Windows
+ *      auto-mounts the isohybrid ESP read-only;
+ *   3. Set-Disk -IsReadOnly $false; Clear-Disk -RemoveData -RemoveOEM (no
+ *      offline, and no `mountvol /N`, which would disable automount system-wide);
+ *   4. raw-write everything past the first 1 MiB, then the first 1 MiB (the
+ *      partition table) LAST, so Windows has nothing to auto-mount mid-write;
+ *   5. read back exactly the written range and compare its sha256 with the image.
  *
  * Usage (run from an ELEVATED PowerShell/terminal):
  *   bun src/Core.TypeScript/zflash/flash-usb-windows.ts [flags] [iso-path]
  *     --short      shorter `yes <4-hex>` challenge format
- *     --dry-run    print the plan (device + commands) and exit; NO write
+ *     --dry-run    print the plan (device + commands + ESP payloads) and exit; NO write
+ *     --ssh-key <path> | --no-inject
+ *     --host <name>  --role <r> [--flake-host <h>] [--join-server-url <u>] [--join-token <path>]
+ *     --acme-email <addr> --public-domain <domain>   --repo-pin <40-hex>
  *     -h, --help
  *   iso-path defaults to the newest %USERPROFILE%\Downloads\zeta-installer-*.iso
  *
@@ -51,10 +71,17 @@ import {
   fsyncSync,
 } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { homedir, tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 
 import { establishIsoIntegrity, realIsoIntegrityIo } from "./iso-integrity.ts";
+import { bakeEspFiles, fdBlockIo, locateIsohybridEsp, type EspFile } from "./esp-fat-writer.ts";
+import { planFileBackedZflashImage, type FileBackedEspWrite } from "./lib.ts";
+import { firstbootRoleFromFlags } from "./firstboot-role.ts";
+import { railFindingsForEspWrites } from "./injection-rail.ts";
+import { planPublicEndpoint } from "../installer/public-endpoint.ts";
+import { readFileBounded } from "../io/safe-io.ts";
 
 // ── Safety-rail constants — shared with every arm, not mirrored ──────
 import { MAX_ISO_BYTES, MAX_USB_BYTES, MIN_ISO_BYTES, MIN_USB_BYTES } from "./size-bounds.ts";
@@ -415,8 +442,31 @@ export function psIsAdminScript(): string {
 export function psSetReadonlyScript(diskNumber: number, ro: boolean): string {
   return `Set-Disk -Number ${diskNumber} -IsReadOnly $${ro ? "true" : "false"}`;
 }
-export function psSetOfflineScript(diskNumber: number, offline: boolean): string {
-  return `Set-Disk -Number ${diskNumber} -IsOffline $${offline ? "true" : "false"}`;
+export function psClearDiskScript(diskNumber: number): string {
+  return `Clear-Disk -Number ${diskNumber} -RemoveData -RemoveOEM -Confirm:$false -ErrorAction Stop`;
+}
+
+/**
+ * Everything run against the disk BEFORE the raw write, in order.
+ *
+ * Deliberately NO `Set-Disk -IsOffline $true`: Windows refuses it for removable
+ * media ("Removable media cannot be set to offline"), which made this tool unable
+ * to flash any USB stick. Clear-Disk removes every partition, so there is no
+ * volume left to hold a lock on the sectors being written; with the partition
+ * table written LAST (see copyImageToDevice) there is nothing to auto-mount until
+ * the image is complete. Also NO `mountvol /N` — it disables automount for the
+ * whole machine and persists after the tool exits.
+ */
+export function diskPreparationScripts(diskNumber: number): readonly string[] {
+  return [psSetReadonlyScript(diskNumber, false), psClearDiskScript(diskNumber)];
+}
+
+/** Run {@link diskPreparationScripts} in order; the first failure throws (fail loud, before any byte is written). */
+export function prepareDiskForRawWrite(runner: Pick<CommandRunner, "ps">, diskNumber: number, log: (s: string) => void = () => {}): void {
+  for (const script of diskPreparationScripts(diskNumber)) {
+    log(`  ${script}`);
+    runner.ps(script);
+  }
 }
 export function psListVolumesScript(diskNumber: number): string {
   return (
@@ -465,54 +515,327 @@ export function diskpartRemoveLetterScript(diskNumber: number, partitionNumber: 
 
 // ── Raw byte copy (pure; the data-write path — fully testable) ───────
 
+/** The region written LAST: the MBR/GPT partition table and everything near it. */
+export const PARTITION_TABLE_BYTES = 1024 * 1024;
+
 export interface CopyOpts {
   readonly isoPath: string;
   readonly destPath: string;
   readonly chunkSize?: number; // default 4 MiB
   readonly sectorSize?: number; // default 4096 (works for 512- and 4096-sector drives)
   readonly openFlag?: string; // default "r+" (physical drive / existing file)
+  /**
+   * Bytes at the start of the image written AFTER everything else (default
+   * PARTITION_TABLE_BYTES). Until they land, a cleared disk has no partition
+   * table, so Windows has nothing to auto-mount — and cannot lock or mount
+   * the ESP half-way through the write. Must be a multiple of sectorSize.
+   */
+  readonly headLastBytes?: number;
   readonly onProgress?: (writtenBytes: number, totalBytes: number) => void;
+  /** Called after each positional write, in write order (tests assert the ordering). */
+  readonly onWrite?: (position: number, length: number) => void;
 }
 
 /**
- * Copy an ISO image to a destination, padding the final write up to a
- * sector boundary with zeros (raw block devices require sector-aligned
- * writes — the equivalent of dd's `conv=sync`). Works on a real
+ * Copy an image to a destination, padding the final write up to a sector
+ * boundary with zeros (raw block devices require sector-aligned writes — the
+ * equivalent of dd's `conv=sync`). Writes the tail (everything past
+ * `headLastBytes`) first and the head LAST. Works on a real
  * \\.\PhysicalDriveN handle on Windows AND on a plain temp file (tests).
- * Returns the number of bytes written (>= ISO size, padded).
+ * Returns the number of bytes written (>= image size, padded).
  */
 export function copyImageToDevice(o: CopyOpts): { bytesWritten: number; isoBytes: number } {
   const chunk = o.chunkSize ?? 4 * 1024 * 1024;
   const sector = o.sectorSize ?? 4096;
+  const headLast = o.headLastBytes ?? PARTITION_TABLE_BYTES;
   if (chunk % sector !== 0) throw new Error(`chunkSize ${chunk} must be a multiple of sectorSize ${sector}`);
+  if (headLast < 0 || headLast % sector !== 0) {
+    throw new Error(`headLastBytes ${headLast} must be a non-negative multiple of sectorSize ${sector}`);
+  }
   const src = openSync(o.isoPath, "r");
   const dst = openSync(o.destPath, o.openFlag ?? "r+");
   try {
     const total = fstatSync(src).size;
+    const head = Math.min(total, headLast);
     const buf = Buffer.allocUnsafe(chunk);
     let written = 0;
-    let srcPos = 0;
-    while (srcPos < total) {
-      const n = readSync(src, buf, 0, chunk, srcPos);
-      if (n <= 0) break;
-      let len = n;
-      if (len % sector !== 0) {
-        const padded = Math.ceil(len / sector) * sector;
-        buf.fill(0, len, padded);
-        len = padded;
+    // Source and destination offsets are equal: `head` is sector-aligned, and
+    // only the image's final block can be short (it is padded, never shifted).
+    const writeRange = (from: number, to: number): void => {
+      let pos = from;
+      while (pos < to) {
+        const n = readSync(src, buf, 0, Math.min(chunk, to - pos), pos);
+        if (n <= 0) throw new Error(`short read of image at ${pos} (wanted ${to - pos} more bytes)`);
+        let len = n;
+        if (len % sector !== 0) {
+          if (pos + n !== total) throw new Error(`unaligned short read of image at ${pos} (${n} bytes)`);
+          const padded = Math.ceil(len / sector) * sector;
+          buf.fill(0, len, padded);
+          len = padded;
+        }
+        writeSync(dst, buf, 0, len, pos);
+        o.onWrite?.(pos, len);
+        written += len;
+        pos += n;
+        o.onProgress?.(Math.min(written, total), total);
       }
-      // dest write offset tracks `written` (always sector-aligned).
-      writeSync(dst, buf, 0, len, written);
-      written += len;
-      srcPos += n;
-      o.onProgress?.(Math.min(srcPos, total), total);
-    }
+    };
+    writeRange(head, total); // everything but the partition table
+    writeRange(0, head); // the partition table, LAST
     fsyncSync(dst);
     return { bytesWritten: written, isoBytes: total };
   } finally {
     closeSync(src);
     closeSync(dst);
   }
+}
+
+/**
+ * sha256 of bytes [0, length) of `path`. With `padPastEof` a short file is
+ * treated as zero-padded to `length` (the image, whose last block the write
+ * padded); without it a short read is an error (the device must return every
+ * byte that was written).
+ */
+export function sha256OfRange(path: string, length: number, padPastEof: boolean, chunkSize = 4 * 1024 * 1024): string {
+  const fd = openSync(path, "r");
+  try {
+    const h = createHash("sha256");
+    const buf = Buffer.allocUnsafe(chunkSize);
+    let pos = 0;
+    while (pos < length) {
+      const want = Math.min(chunkSize, length - pos);
+      let got = 0;
+      while (got < want) {
+        const n = readSync(fd, buf, got, want - got, pos + got);
+        if (n <= 0) break;
+        got += n;
+      }
+      if (got < want) {
+        if (!padPastEof) throw new Error(`short read of ${path} at ${pos + got}: device returned fewer bytes than were written`);
+        buf.fill(0, got, want);
+      }
+      h.update(buf.subarray(0, want));
+      pos += want;
+    }
+    return h.digest("hex");
+  } finally {
+    closeSync(fd);
+  }
+}
+
+export type ReadbackVerdict =
+  | { readonly ok: true; readonly sha256: string; readonly bytes: number }
+  | { readonly ok: false; readonly imageSha256: string; readonly deviceSha256: string; readonly bytes: number; readonly message: string };
+
+/**
+ * Read back EXACTLY the range the write covered (`bytesWritten`, sector-padded)
+ * from the device and compare its sha256 with the image's (zero-padded to the
+ * same length). A mismatch is a hard failure — the stick is not the image.
+ */
+export function verifyDeviceReadback(o: { imagePath: string; devicePath: string; bytesWritten: number }): ReadbackVerdict {
+  const imageSha256 = sha256OfRange(o.imagePath, o.bytesWritten, true);
+  const deviceSha256 = sha256OfRange(o.devicePath, o.bytesWritten, false);
+  if (imageSha256 === deviceSha256) return { ok: true, sha256: deviceSha256, bytes: o.bytesWritten };
+  return {
+    ok: false,
+    imageSha256,
+    deviceSha256,
+    bytes: o.bytesWritten,
+    message:
+      `read-back MISMATCH over ${o.bytesWritten} bytes: image sha256 ${imageSha256}, ` +
+      `device sha256 ${deviceSha256}. The USB does NOT hold the image — do not boot it; re-flash.`,
+  };
+}
+
+export type StageResult =
+  | { readonly ok: true; readonly sha256: string; readonly bytes: number }
+  | { readonly ok: false; readonly message: string };
+
+/**
+ * Copy `isoPath` to a NEW file `stagePath` (exclusive create), hashing the bytes
+ * as they are copied, and require the hash to equal `expectedSha256` — the one
+ * the integrity gate established. So the bytes that get baked and written are
+ * exactly the bytes that were verified, not whatever the path names a moment
+ * after the gate read it.
+ */
+export function stageVerifiedCopy(isoPath: string, stagePath: string, expectedSha256: string, chunkSize = 4 * 1024 * 1024): StageResult {
+  const src = openSync(isoPath, "r");
+  try {
+    const dst = openSync(stagePath, "wx");
+    try {
+      const h = createHash("sha256");
+      const buf = Buffer.allocUnsafe(chunkSize);
+      let pos = 0;
+      while (true) {
+        const n = readSync(src, buf, 0, chunkSize, pos);
+        if (n <= 0) break;
+        h.update(buf.subarray(0, n));
+        let put = 0;
+        while (put < n) put += writeSync(dst, buf, put, n - put, pos + put);
+        pos += n;
+      }
+      fsyncSync(dst);
+      const sha256 = h.digest("hex");
+      if (sha256 !== expectedSha256.toLowerCase()) {
+        return {
+          ok: false,
+          message: `staged copy sha256 ${sha256} != verified ${expectedSha256} — the ISO changed after it was verified; refusing`,
+        };
+      }
+      return { ok: true, sha256, bytes: pos };
+    } finally {
+      closeSync(dst);
+    }
+  } finally {
+    closeSync(src);
+  }
+}
+
+// ── ESP payloads: the SAME list the shared planner builds for every arm ──
+
+/** Parsed command line. Pure; `parseWindowsFlasherArgs` is the only producer. */
+export interface WindowsFlasherArgs {
+  readonly short: boolean;
+  readonly dryRun: boolean;
+  readonly noInject: boolean;
+  readonly help: boolean;
+  readonly isoPath?: string;
+  readonly sshKeyPath?: string;
+  readonly host?: string;
+  readonly role?: string;
+  readonly flakeHost?: string;
+  readonly joinServerUrl?: string;
+  readonly joinTokenPath?: string;
+  readonly acmeEmail?: string;
+  readonly publicDomain?: string;
+  readonly repoPin?: string;
+}
+
+export type ArgsResult = { readonly ok: true; readonly value: WindowsFlasherArgs } | { readonly ok: false; readonly message: string };
+
+const VALUE_FLAG_FIELDS: Readonly<Record<string, keyof WindowsFlasherArgs>> = {
+  "--ssh-key": "sshKeyPath",
+  "--host": "host",
+  "--role": "role",
+  "--flake-host": "flakeHost",
+  "--join-server-url": "joinServerUrl",
+  "--join-token": "joinTokenPath",
+  "--acme-email": "acmeEmail",
+  "--public-domain": "publicDomain",
+  "--repo-pin": "repoPin",
+};
+
+/** Parse argv into flags. Unknown flags, missing values and >1 positional are refusals. */
+export function parseWindowsFlasherArgs(argv: readonly string[]): ArgsResult {
+  const unknown = firstUnknownFlag(argv);
+  if (unknown !== null) return { ok: false, message: `unknown arg: ${unknown}` };
+  const out: Record<string, unknown> = {
+    short: argv.includes("--short"),
+    dryRun: argv.includes("--dry-run"),
+    noInject: argv.includes("--no-inject"),
+    help: argv.includes("-h") || argv.includes("--help"),
+  };
+  const positional: string[] = [];
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i]!;
+    const field = VALUE_FLAG_FIELDS[a];
+    if (field !== undefined) {
+      const v = argv[i + 1];
+      if (v === undefined || v.startsWith("-")) return { ok: false, message: `${a} requires an argument` };
+      if (out[field] !== undefined) return { ok: false, message: `${a} given more than once` };
+      out[field] = v;
+      i++;
+      continue;
+    }
+    if (!a.startsWith("-")) positional.push(a);
+  }
+  if (positional.length > 1) return { ok: false, message: `at most one ISO path expected, got ${positional.length}` };
+  if (positional[0] !== undefined) out.isoPath = positional[0];
+  if (out.noInject === true && out.sshKeyPath !== undefined) {
+    return { ok: false, message: "--ssh-key and --no-inject contradict each other" };
+  }
+  return { ok: true, value: out as unknown as WindowsFlasherArgs };
+}
+
+export type EspWritesResult =
+  | { readonly ok: true; readonly value: readonly FileBackedEspWrite[] }
+  | { readonly ok: false; readonly message: string };
+
+/**
+ * The ESP writes for this flash, from the SHARED planner (lib.ts
+ * `planFileBackedZflashImage`) — so a Windows stick carries byte-for-byte the
+ * payloads the other arms bake for the same flags: pubkey, hostname, firstboot
+ * role conf (+ join token), the public-TLS pair, and the repo pin. Role and
+ * public-endpoint flags go through the same validators the device CLI runs.
+ * An empty list is a legitimate answer (--no-inject and nothing else asked).
+ */
+export function planWindowsEspWrites(
+  args: WindowsFlasherArgs,
+  pubkeyContent: string | undefined,
+  isoPath: string,
+  espOffsetBytes: number,
+  outputImagePath: string,
+): EspWritesResult {
+  const role = firstbootRoleFromFlags({
+    ...(args.role === undefined ? {} : { role: args.role }),
+    ...(args.flakeHost === undefined ? {} : { flakeHost: args.flakeHost }),
+    ...(args.joinServerUrl === undefined ? {} : { joinServerUrl: args.joinServerUrl }),
+    ...(args.joinTokenPath === undefined ? {} : { joinTokenSourcePath: args.joinTokenPath }),
+  });
+  if (!role.ok) return { ok: false, message: `join material refused: ${role.error}` };
+  const pe = planPublicEndpoint({
+    ...(args.acmeEmail === undefined ? {} : { acmeEmail: args.acmeEmail }),
+    ...(args.publicDomain === undefined ? {} : { publicDomain: args.publicDomain }),
+  });
+  if (!pe.ok) return { ok: false, message: `public TLS refused: ${pe.error}` };
+  const nothingAsked =
+    pubkeyContent === undefined &&
+    args.host === undefined &&
+    role.value === undefined &&
+    pe.value === null &&
+    args.repoPin === undefined;
+  if (nothingAsked) return { ok: true, value: [] };
+  const planned = planFileBackedZflashImage({
+    isoPath,
+    outputImagePath,
+    espOffsetBytes,
+    ...(pubkeyContent === undefined ? {} : { authorizedKeysContent: pubkeyContent }),
+    ...(args.host === undefined ? {} : { hostname: args.host }),
+    ...(role.value === undefined ? {} : { firstbootRole: role.value }),
+    ...(args.joinTokenPath === undefined ? {} : { joinTokenSourcePath: args.joinTokenPath }),
+    ...(pe.value === null ? {} : { publicEndpoint: pe.value }),
+    ...(args.repoPin === undefined ? {} : { repoPinCommit: args.repoPin }),
+  });
+  if (!planned.ok) return { ok: false, message: planned.error };
+  return { ok: true, value: planned.value.espWrites };
+}
+
+export type EspFilesResult = { readonly ok: true; readonly value: readonly EspFile[] } | { readonly ok: false; readonly message: string };
+
+/** Materialise planned writes into (name, bytes). A `sourcePath` is read once, bounded, BEFORE any device work. */
+export function resolveEspFiles(
+  writes: readonly FileBackedEspWrite[],
+  readSource: (path: string) => { ok: true; bytes: Buffer } | { ok: false; message: string } = defaultReadSource,
+): EspFilesResult {
+  const files: EspFile[] = [];
+  for (const w of writes) {
+    const name = w.destination.replace(/^\//, "");
+    if (w.content !== undefined) {
+      files.push({ name, body: Buffer.from(w.content, "utf8") });
+      continue;
+    }
+    if (w.sourcePath === undefined) return { ok: false, message: `${w.destination}: planned write has neither content nor source` };
+    const r = readSource(w.sourcePath);
+    if (!r.ok) return { ok: false, message: `${w.destination}: ${r.message}` };
+    files.push({ name, body: r.bytes });
+  }
+  return { ok: true, value: files };
+}
+
+function defaultReadSource(path: string): { ok: true; bytes: Buffer } | { ok: false; message: string } {
+  const r = readFileBounded(path, { maxBytes: 1024 * 1024 });
+  if (!r.ok) return { ok: false, message: r.error.message };
+  return { ok: true, bytes: Buffer.from(r.value.text, "utf8") };
 }
 
 // ── ISO auto-discovery (mirror zflash) ───────────────────────────────
@@ -715,7 +1038,18 @@ function bail(code: 1 | 2, msg: string): never {
 /** Flags that stand alone. */
 export const BOOLEAN_FLAGS: readonly string[] = ["--short", "--dry-run", "--no-inject", "--help", "-h"];
 /** Flags that consume the following token as their value. */
-export const VALUE_FLAGS: readonly string[] = ["--ssh-key"];
+export const VALUE_FLAGS: readonly string[] = [
+  "--ssh-key",
+  // ESP payload flags — same names and validators as the device CLI (allowed-flags.ts).
+  "--host",
+  "--role",
+  "--flake-host",
+  "--join-server-url",
+  "--join-token",
+  "--acme-email",
+  "--public-domain",
+  "--repo-pin",
+];
 
 /**
  * FAIL CLOSED ON AN UNRECOGNISED FLAG — 081M03HRHBS087G0R001HRAFQ0.
@@ -759,30 +1093,27 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
         `Accepted: ${[...BOOLEAN_FLAGS, ...VALUE_FLAGS].sort().join(" ")} [iso-path]`,
     );
   }
+  const parsed = parseWindowsFlasherArgs(argv);
+  if (!parsed.ok) bail(2, parsed.message);
+  const args = parsed.value;
 
-  const short = argv.includes("--short");
-  const dryRun = argv.includes("--dry-run");
-  const noInject = argv.includes("--no-inject");
-  if (argv.includes("-h") || argv.includes("--help")) {
+  if (args.help) {
     process.stdout.write(
-      "usage: bun full-ai-cluster\\tools\\flash-usb-windows.ts [flags] [iso-path]\n" +
+      "usage: bun src\\Core.TypeScript\\zflash\\flash-usb-windows.ts [flags] [iso-path]\n" +
         "  run from an ELEVATED (Administrator) terminal\n" +
-        "    --short            shorter `yes <4-hex>` confirm phrase\n" +
-        "    --dry-run          print the plan and exit; NO write\n" +
-        "    --ssh-key <path>   public key to inject (default: ~/.ssh/id_ed25519.pub)\n" +
-        "    --no-inject        skip SSH-key injection (password login only)\n",
+        "    --short                    shorter `yes <4-hex>` confirm phrase\n" +
+        "    --dry-run                  print the plan and exit; NO write\n" +
+        "    --ssh-key <path>           public key to bake (default: ~/.ssh/id_ed25519.pub)\n" +
+        "    --no-inject                no SSH key on the ESP (password login only)\n" +
+        "    --host <name>              /zeta-hostname.txt\n" +
+        "    --role <first-control-plane|joiner> [--flake-host <h>] [--join-server-url <u>] [--join-token <path>]\n" +
+        "                               /zeta-firstboot.conf (+ /zeta-join-token)\n" +
+        "    --acme-email <addr> --public-domain <domain>   public TLS pair, appended to /zeta-firstboot.conf\n" +
+        "    --repo-pin <40-hex>        /zeta-repo-pin (pin the installed tree to a commit)\n",
     );
     process.exit(0);
   }
-  // --ssh-key takes a value; pull it out before computing positionals.
-  let sshKeyPath: string | undefined;
-  const skIdx = argv.indexOf("--ssh-key");
-  if (skIdx !== -1) {
-    sshKeyPath = argv[skIdx + 1];
-    if (!sshKeyPath || sshKeyPath.startsWith("-")) bail(2, "--ssh-key requires a path argument");
-  }
-  const positional = argv.filter((a, i) => !a.startsWith("-") && !(skIdx !== -1 && i === skIdx + 1));
-  if (positional.length > 1) bail(2, `at most one ISO path expected, got ${positional.length}`);
+  const dryRun = args.dryRun;
 
   if (process.platform !== "win32") {
     bail(2, "this tool only runs on Windows. On macOS use flash-usb.ts / zflash.ts.");
@@ -799,7 +1130,7 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
   }
 
   // Resolve + validate ISO.
-  const isoPath = positional[0] ?? autoDiscoverIso(join(homedir(), "Downloads"));
+  const isoPath = args.isoPath ?? autoDiscoverIso(join(homedir(), "Downloads"));
   if (!isoPath) bail(2, `no zeta-installer-*.iso under %USERPROFILE%\\Downloads; pass an ISO path explicitly`);
   if (!existsSync(isoPath)) bail(2, `ISO file does not exist: ${isoPath}`);
   const st = statSync(isoPath);
@@ -818,24 +1149,36 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
   // This matters more here than anywhere: the default ISO path is whatever
   // autoDiscoverIso found in the operator's Downloads folder, which is the
   // least trustworthy directory on the machine.
-  {
-    const integrity = await establishIsoIntegrity(isoPath, realIsoIntegrityIo());
-    if (!integrity.ok) bail(2, integrity.message);
-    process.stdout.write(integrity.report);
-  }
+  const integrity = await establishIsoIntegrity(isoPath, realIsoIntegrityIo());
+  if (!integrity.ok) bail(2, integrity.message);
+  process.stdout.write(integrity.report);
 
   // Resolve the operator SSH pubkey NOW — BEFORE the destructive write — so a
   // missing/malformed key fails before the USB is wiped (not after).
   const realFs: PubkeyFsLike = { exists: existsSync, read: (p) => readFileSync(p, "utf8") };
   let pubkey: { path: string; content: string } | null = null;
-  if (!noInject) {
-    const r = resolveSshPubkey(sshKeyPath, homedir(), realFs);
+  if (!args.noInject) {
+    const r = resolveSshPubkey(args.sshKeyPath, homedir(), realFs);
     if (!r.ok) bail(2, `SSH key injection required (default). ${r.message}`);
     pubkey = { path: r.path, content: r.content };
-    process.stdout.write(`SSH key to inject: ${pubkey.path}\n`);
+    process.stdout.write(`SSH key to bake: ${pubkey.path}\n`);
   } else {
     process.stdout.write(`SSH key injection: DISABLED (--no-inject; password login only)\n`);
   }
+
+  // Plan the ESP payloads from the SHARED planner, against the ESP the ISO's
+  // own MBR names — refused here, before any disk is enumerated, if the ISO has
+  // no isohybrid ESP or a flag is invalid.
+  const espLoc = locateIsohybridEsp(readHead(isoPath, 512));
+  if (!espLoc.ok) bail(2, `cannot bake ESP payloads: ${espLoc.error}`);
+  const stageName = `${basename(isoPath)}.baked.img`;
+  const planned = planWindowsEspWrites(args, pubkey?.content, isoPath, espLoc.value.offsetBytes, stageName);
+  if (!planned.ok) bail(2, planned.message);
+  for (const finding of railFindingsForEspWrites(planned.value.map((w) => w.destination))) {
+    process.stderr.write(`flash-usb-windows: constitutional-rail finding: ${finding}\n`);
+  }
+  const espFiles = resolveEspFiles(planned.value);
+  if (!espFiles.ok) bail(2, espFiles.message);
 
   // Enumerate + select.
   const disks = parseGetDiskJson(runner.ps(psGetDiskScript()));
@@ -862,74 +1205,123 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
   process.stdout.write(`\n*** ALL DATA ON disk ${disk.number} (${drivePath}) WILL BE DESTROYED ***\n`);
 
   const nonce = makeNonce();
-  const phrase = short ? buildShortChallenge(nonce) : `accept-destroy ${disk.number} ${nonce}${nonce}`;
+  const phrase = args.short ? buildShortChallenge(nonce) : `accept-destroy ${disk.number} ${nonce}${nonce}`;
+  const bakeList = espFiles.value.map((f) => `    /${f.name} (${f.body.length} B)`).join("\n");
 
   if (dryRun) {
     process.stdout.write(
       `\n[dry-run] would prompt for: ${phrase}\n` +
-        `[dry-run] would run:\n` +
-        `  ${psSetReadonlyScript(disk.number, false)}\n` +
-        `  ${psSetOfflineScript(disk.number, true)}\n` +
-        `  <raw copy ${isoPath} -> ${drivePath}, sector-padded>\n` +
-        `  ${psSetOfflineScript(disk.number, false)}\n` +
-        (pubkey
-          ? `  <mount ESP, write ${ESP_PUBKEY_FILENAME} = ${pubkey.path}, read-back verify, unmount>\n`
-          : `  <SSH-key injection skipped (--no-inject)>\n`) +
+        `[dry-run] would:\n` +
+        `  <copy ${isoPath} -> <temp>\\${stageName}, sha256 must equal ${integrity.sha256}>\n` +
+        (espFiles.value.length > 0
+          ? `  <bake into the copy's ESP (MBR 0xEF @ LBA ${espLoc.value.startLba}), each read back and compared:\n${bakeList}>\n`
+          : `  <no ESP payloads (--no-inject, nothing else asked)>\n`) +
+        diskPreparationScripts(disk.number).map((s) => `  ${s}\n`).join("") +
+        `  <raw write -> ${drivePath}: bytes past ${human(PARTITION_TABLE_BYTES)} first, partition table LAST>\n` +
+        `  <read back the written range from ${drivePath}, compare sha256 with the baked image>\n` +
         `[dry-run] no changes made.\n`,
     );
     process.exit(0);
   }
 
-  process.stdout.write(`\nTo proceed, type EXACTLY (case-sensitive):\n\n  ${phrase}\n\n> `);
-  const typed = (await readLine()).trim();
-  if (typed !== phrase) bail(2, `confirmation mismatch — aborting (no write performed).`);
-
-  // Prepare the disk: clear read-only, take offline (dismounts volumes).
-  runner.ps(psSetReadonlyScript(disk.number, false));
-  runner.ps(psSetOfflineScript(disk.number, true));
-
-  process.stdout.write(`\nFlashing ${isoPath} -> ${drivePath} (this takes a few minutes) ...\n`);
-  let lastPct = -1;
-  const res = copyImageToDevice({
-    isoPath,
-    destPath: drivePath,
-    onProgress: (w, t) => {
-      const pct = Math.floor((w / t) * 100);
-      if (pct !== lastPct) {
-        process.stdout.write(`\r  ${pct}%  (${human(w)} / ${human(t)})   `);
-        lastPct = pct;
-      }
-    },
-  });
-  process.stdout.write(`\n\nWrote ${human(res.bytesWritten)} (ISO ${human(res.isoBytes)}). Flash complete.\n`);
-
-  // Bring the disk back online so Windows enumerates the new partition table
-  // (required before we can mount the ESP to inject the key).
-  try {
-    runner.ps(psSetOfflineScript(disk.number, false));
-  } catch {
-    /* eject is best-effort; the flash already succeeded */
-  }
-
-  // SSH-key injection (fail-loud — mirrors zflash.ts iter-4.2). A keyless
-  // USB is the silent-failure trap the macOS path was burned by, so a failed
-  // inject is a HARD error: the flash succeeded but the result is unusable for
-  // zero-typing first boot.
-  if (pubkey) {
-    process.stdout.write(`\nInjecting ${pubkey.path} into the USB ESP as ${ESP_PUBKEY_FILENAME} ...\n`);
-    const inj = injectPubkeyIntoEsp(runner, disk.number, pubkey.content, (s) => process.stdout.write(`  ${s}\n`));
-    if (!inj.ok) {
-      bail(
-        1,
-        `SSH-KEY INJECTION FAILED — ${inj.message}\n` +
-          `  The ISO is flashed but the operator key is NOT on the USB. First boot would be\n` +
-          `  password-only. Fix the cause and re-run, or re-run with --no-inject to accept that.`,
-      );
+  // Created only now — after every refusal that can happen without touching
+  // anything — and removed in the finally below on every path out.
+  const stageDir = mkdtempSync(join(tmpdir(), "zeta-flash-stage-"));
+  const stagePath = join(stageDir, stageName);
+  const cleanupStage = (): void => {
+    try {
+      rmSync(stageDir, { recursive: true, force: true });
+    } catch {
+      process.stderr.write(`flash-usb-windows: could not remove staging dir ${stageDir}; delete it manually\n`);
     }
-    process.stdout.write(`  ${inj.message}\n`);
-  }
+  };
+  let failure: FlashAbort | null = null;
+  try {
+    // Stage + bake BEFORE the confirm prompt: every failure here happens with the
+    // USB untouched, and the prompt-to-write gap stays short.
+    process.stdout.write(`\nStaging a verified copy of the ISO at ${stagePath} ...\n`);
+    const staged = stageVerifiedCopy(isoPath, stagePath, integrity.sha256);
+    if (!staged.ok) abort(2, staged.message);
+    if (espFiles.value.length > 0) {
+      const fd = openSync(stagePath, "r+");
+      try {
+        const baked = bakeEspFiles(fdBlockIo(fd), espFiles.value);
+        if (!baked.ok) abort(1, `ESP bake FAILED (no device was touched): ${baked.error}`);
+        fsyncSync(fd);
+        process.stdout.write(
+          `Baked into the copy's FAT${baked.value.fatType} ESP and read back:\n` +
+            baked.value.files.map((f) => `    /${f.name}  (8.3 ${f.shortName.slice(0, 8).trimEnd()}.${f.shortName.slice(8).trimEnd()})`).join("\n") +
+            "\n",
+        );
+      } finally {
+        closeSync(fd);
+      }
+    }
 
-  process.stdout.write(`Disk ${disk.number} back online; safe to remove the USB.\n`);
+    process.stdout.write(`\nTo proceed, type EXACTLY (case-sensitive):\n\n  ${phrase}\n\n> `);
+    const typed = (await readLine()).trim();
+    if (typed !== phrase) abort(2, `confirmation mismatch — aborting (no write performed).`);
+
+    // Prepare the disk: clear read-only, clear partitions. No offline (removable
+    // media refuses it) — see diskPreparationScripts.
+    process.stdout.write(`\nPreparing disk ${disk.number}:\n`);
+    prepareDiskForRawWrite(runner, disk.number, (s) => process.stdout.write(`${s}\n`));
+
+    process.stdout.write(`\nFlashing -> ${drivePath} (partition table last; this takes a few minutes) ...\n`);
+    let lastPct = -1;
+    const res = copyImageToDevice({
+      isoPath: stagePath,
+      destPath: drivePath,
+      onProgress: (w, t) => {
+        const pct = Math.floor((w / t) * 100);
+        if (pct !== lastPct) {
+          process.stdout.write(`\r  ${pct}%  (${human(w)} / ${human(t)})   `);
+          lastPct = pct;
+        }
+      },
+    });
+    process.stdout.write(`\n\nWrote ${human(res.bytesWritten)} (image ${human(res.isoBytes)}).\n`);
+
+    process.stdout.write(`Reading back ${human(res.bytesWritten)} from ${drivePath} ...\n`);
+    const rb = verifyDeviceReadback({ imagePath: stagePath, devicePath: drivePath, bytesWritten: res.bytesWritten });
+    if (!rb.ok) abort(1, rb.message);
+    process.stdout.write(`Read-back sha256 ${rb.sha256} matches the baked image.\n`);
+    process.stdout.write(`Flash complete; disk ${disk.number} is safe to remove.\n`);
+  } catch (e) {
+    failure = asFlashAbort(e);
+  } finally {
+    cleanupStage();
+  }
+  if (failure !== null) bail(failure.code, failure.message);
+}
+
+/** A refusal raised inside the staging try-block, so the staging dir is removed before exit. */
+interface FlashAbort {
+  readonly code: 1 | 2;
+  readonly message: string;
+}
+const FLASH_ABORT = Symbol("flash-abort");
+function abort(code: 1 | 2, message: string): never {
+  throw Object.assign(new Error(message), { [FLASH_ABORT]: code });
+}
+function asFlashAbort(e: unknown): FlashAbort {
+  if (e instanceof Error) {
+    const code = (e as Error & { [FLASH_ABORT]?: 1 | 2 })[FLASH_ABORT];
+    return { code: code ?? 1, message: e.message };
+  }
+  return { code: 1, message: String(e) };
+}
+
+/** First `n` bytes of a file (short file → shorter buffer). */
+function readHead(path: string, n: number): Buffer {
+  const fd = openSync(path, "r");
+  try {
+    const buf = Buffer.alloc(n);
+    const got = readSync(fd, buf, 0, n, 0);
+    return buf.subarray(0, got);
+  } finally {
+    closeSync(fd);
+  }
 }
 
 function readLine(): Promise<string> {

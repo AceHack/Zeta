@@ -1,0 +1,14 @@
+{
+  "id": "080d07312597a810a0130008449227eb",
+  "at": "2026-09-28T03:52:39.925Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3K29CQM087G0R000B5ZV3N",
+    "type": "bug",
+    "title": "Windows USB flasher cannot flash removable media: Set-Disk -IsOffline refused; restore removable path (bake ESP into ISO copy, partition table last, read-back sha256)",
+    "slug": "windows-usb-flasher-cannot-flash-removable-media-set-disk-is",
+    "priority": "P2",
+    "filename": "081M3K29CQM087G0R000B5ZV3N-windows-usb-flasher-cannot-flash-removable-media-set-disk-is.md"
+  }
+}

@@ -25,7 +25,7 @@ import {
   psGetDiskScript,
   psIsAdminScript,
   psSetReadonlyScript,
-  psSetOfflineScript,
+  psClearDiskScript,
   psListVolumesScript,
   copyImageToDevice,
   autoDiscoverIso,
@@ -208,8 +208,7 @@ describe("nonce + device path + PowerShell builders", () => {
     expect(psGetDiskScript()).toContain("ConvertTo-Json");
     expect(psIsAdminScript()).toContain("Administrator");
     expect(psSetReadonlyScript(2, false)).toBe("Set-Disk -Number 2 -IsReadOnly $false");
-    expect(psSetOfflineScript(2, true)).toBe("Set-Disk -Number 2 -IsOffline $true");
-    expect(psSetOfflineScript(2, false)).toBe("Set-Disk -Number 2 -IsOffline $false");
+    expect(psClearDiskScript(2)).toBe("Clear-Disk -Number 2 -RemoveData -RemoveOEM -Confirm:$false -ErrorAction Stop");
     expect(psListVolumesScript(2)).toContain("Get-Partition -DiskNumber 2");
   });
 });
