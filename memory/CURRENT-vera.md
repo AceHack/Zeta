@@ -2870,3 +2870,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Test not vacuous: runs script extracted from manifest; 4/4 at tip, 2/4 red on base; mutations 11/15 killed.
 - Softs: S1 idle PID-1 sh ignores SIGTERM (+30 s delete). S2 keys read only at startup (pre-existing). S3 drop-exec and poll mutations survive. S4 blueprint atmoz sidecars exit 3 on every start (no user spec) -- follow-up. S5 no live run. S7 floating atmoz tag.
 - Re-grade path: 1-parent fix on 71d572ea turning lint (TS) green. Sit leftover; not merged.
+
+## leftover UNIQUE leftover #17723 leftover unique @ f964ef2b4eb4dc6306340744b9f16774412f6504 -- GRADE HOLD
+
+- Installer ownership under ~zeta and /etc/zeta. Two linear commits on base 03fd62b6; no merge; 6 files +306/-10. Auto-merge armed.
+- HARD FAIL H1: cross-verify (hand-rolled-io) red at tip (job 108779517015), green on base: test :104 uses spawnSync("bash", ["-c", ...]). Fix: spawnSync("stat", ["-c", "%u %g", ...]).
+- HARD FAIL H2: build-iso-aarch64 + qemu-boot red (job 108779515742): nix flake check zeta-creds-to-k8s-model says option systemd.tmpfiles does not exist; stub eval test nixos/tests/zeta-creds-to-k8s-eval-test.nix L24-46 not updated. Incomplete product. Fix: add options.systemd.tmpfiles.rules to the stub.
+- Product sound: exact passwd match, runs after activation; chown -R uses AT_SYMLINK_NOFOLLOW (strace), no fail-open; HOME now /var/lib/zeta-creds-to-k8s 0700; safe.directory exactly /etc/zeta in /etc/gitconfig; 11 tests real (0/11 base, 11/11 tip), mutations 17/23 incl all fail-opens.
+- Softs: S1 (significant) resolution failure still falls back to 1000:100 (L4346-4351) contrary to PR body. S2 uid 0 accepted, sweep crosses mounts. S3 zeta-creds-restore HOME. S4 mutation survivors. S5 no ISO/VM/live run.
+- Re-grade path: 1-parent fix on f964ef2b turning both checks green. Sit leftover; not merged.
