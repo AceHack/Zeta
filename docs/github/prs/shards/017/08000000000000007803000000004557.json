@@ -1,0 +1,12 @@
+{
+  "pr_number": 17751,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17751-fix-installer-mount-iso-through-a-symlink-only-the-partition-claims.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-28T12:38:57.418Z",
+  "schema_version": "v1",
+  "commit_sha": "b82eced62f9c3fbc3cdaa63b3c42dde27ad1bb23",
+  "title": "fix(installer): mount /iso through a symlink only the partition claims",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T12:38:15Z",
+  "head_ref": "claude/boot-medium-deterministic"
+}
