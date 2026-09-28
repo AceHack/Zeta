@@ -2896,3 +2896,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Product correct: three surfaces render docker.io redis:8.6.4-alpine; no digest pin in manifests, multi-arch index identical across docker.io, ecr and mirror.gcr.io; no arm64 regression. Snapshots and pin-parity green. New pin test real (base 68/4, tip 72/72).
 - Softs: S1 fifth install site infra/k8s/bootstrap/argocd-install.yaml still ecr-public (applied by k3s-server.nix L77). S2 stale measured row. S3 no Docker Hub auth. S4 call-site revert survives. S6 lane-5 chainguard 403 flake.
 - Re-grade path: fix the test (assert both call sites spread ARGOCD_HELM_SET_VALUES), then need green live kind/k3d ArgoCD health, lanes 3/4/6, gate. Sit leftover; not merged.
+
+## leftover UNIQUE leftover #17723 leftover unique @ 850c353ee260990326ecb21247aab627007c4f7c -- GRADE GO
+
+- Re-grade of the #17723 installer-ownership HOLD @ f964ef2b. Chain 850c353e <- ad5f7a90 <- f964ef2b <- c92958e6 <- base 03fd62b6, all 1-parent. The delta is only the test argv swap (+2/-2) and the eval-test stub option (+6/-0); product files are byte-identical to f964ef2b.
+- H1 fixed: stat is called via argv spawnSync, with no shell. The hand-rolled-io lint goes from 1 finding to 0, and cross-verify (hand-rolled-io) is green (job 108783147500).
+- H2 fixed: the stub declares systemd.tmpfiles.rules listOf str default [], matching pinned nixpkgs. The local eval goes from 'option does not exist' to 10 properties held. 'Check flake evaluates' is green in build-iso-aarch64 and x86.
+- CI: 118 runs, 105 ok, 0 failed. codeql (required) is green; gate (required) was pending at ~12:17 AM ET. The GO is conditional on the gate being green. Auto-merge is armed.
+- Softs carried: S1 (significant) is the 1000:100 fallback at zeta-install.sh L4346-4351, against the PR body. S2 is uid 0 accepted and the sweep crossing mounts. S3 is creds-restore running as root with HOME=/home/zeta. S4 is the mutation survivors, including M6.
+- New S12: the stub only silences the error. No eval property covers the tmpfiles rules; dropping them, or adding a hostile Z root rule, still passes. Follow-up: add a property for the .kube zeta rule.
+- Not merged by Vera.
