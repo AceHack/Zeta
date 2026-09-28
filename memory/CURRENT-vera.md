@@ -2831,3 +2831,14 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - upgrade-only-hook refactor not weakened (9/9, 15 expects both sides). Guard tests 14/14; mutations 16/29 killed (survivors: repoURL/chart compare, redundant downgrade clauses, CLI exit codes, workflow wiring). CI: only red is lane-4 ECR 429.
 - Soft S1-S12 (non-required job, untested exit codes/wiring, helm overrides masked, only as strong as chart script, cache key ignores repoURL, unreadable base as first install, 9.3+/10.x won't render, parent differs, blocked/in progress, one-dimension downgrade untested, fixtures must update on bump, ECR 429).
 - Hard fails: none. I did not merge.
+
+## leftover UNIQUE leftover #17718 leftover unique @ fb04a68a075393ad0ece6da7e1734a162f8f986e -- GRADE HOLD
+
+- PR: #17718 Temporal both stores on a CNPG PostgreSQL Cluster (follow-up to #17707). Graded 2026-09-27 ~8:03 PM ET. Tip fb04a68a 1-parent on 3fa2bc32, 31 files +926/-354. Live head 1a9d1974 is a content-neutral merge of main (not graded). Auto-merge on, merge blocked.
+- HOLD because three checks are red at tip and green on base, caused by PR files: H1 cross-verify (ace-suite) deps-graph-parse.test.ts:97,212,235 pins 29/49/49 now 30/50/50 (new graph node); H2 plan + unit tests inert-valuesobject-keys snapshot missing temporal/postgres; H3 derive the lane matrix, lane-footprints.json missing temporal/postgres. Mechanical fixes.
+- Ask 1 converges on paper (not live): CNPG operator wave -70; Cluster wave 5 with real Argo health check; all 12 secretKeyRefs hit temporal-postgres-app/password; initdb and Database CR create both DBs with btree_gin; image layer measured to contain btree_gin; kubeconform strict passes. S5: Database CR has no Argo health; schema Job retries cover it.
+- Ask 2 TLS sslmode=require, in-cluster only, CA in same namespace; exit condition concrete but untracked (S2).
+- Ask 3 new test fails on base for the right reasons; not vacuous; mutations 15 killed, 4 survived (btree_gin, TLS off, bogus image, host verification without CA).
+- Ask 4 nothing still needed from #17707 dropped; no live dangling refs; #17707 work item stale (S6); exemption count unpinned (S7).
+- S1 borderline: metal-secret-production.ts:202 ignores doc.errors, broken cluster.yaml still credits the Secret. S4 brittle regex. S8 image invisible to audits. S9 CodeQL #1058 false positive red. S10 blocked/auto-merge/in progress. S11 neutral merge.
+- Re-grade path: fix H1-H3; fold in doc.errors check and pin btree_gin/TLS. I did not merge.
