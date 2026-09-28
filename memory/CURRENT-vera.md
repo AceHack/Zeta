@@ -3051,3 +3051,11 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests: real script, 30/30 tip, 22 fail on base; mutants 19/26 caught.
 - Softs: S1 significant unreadable MemTotal/nproc writes no reservations; S2 significant runtime MemoryLow untested; S4 system.slice MemoryLow may revert on daemon-reload; S6 write failure logs success; S7 K3S_CONFIG_FILE disables config.yaml.d; others S3,S5,S8-S10.
 - Path to GO: add the baseline exception, re-run CI.
+
+## leftover UNIQUE leftover #17747 leftover unique @ bfb87f4a8bd439b80fd6c327bbd15d368daf1e9f -- GRADE HOLD (post-merge)
+
+- Landed despite HOLD: armed auto-merge squash 8d3e496090e6487a8df607be4117c59bb3a1acf4 at 2026-09-28 03:03 ET (parent 13b0a973, +306/-4, 5 files). All 5 blobs identical to head ec7c5356 (zeta-install.sh fd0400e0, zeta-first-boot.sh 6eb6a5af, test 6c2f2214, workitem 0938c334, event 9aef0d5c).
+- H1 live on main acc03b9a: zeta_pf_gather (:1546) blkid reads end in `|| true` (:1548, :1550, :1577); no whole-disk signature check; blank -> adopt at :1700. Whole-disk LVM/LUKS/bcache/swap/unlabelled fs and blkid failures are wiped without consent.
+- H2 live: unquoted `for tok in ${list//,/ }` at :1678; `all` (:1680) before `none` (:1681) so `all,none` adopts all.
+- No fix PR open at 05:33 ET. Path to GO: fail closed on blkid error, whole-disk signature probe, reject contradictory tokens, quoted split, parity tests.
+- Sent to CoS. Sit leftover; Vera did not merge.
