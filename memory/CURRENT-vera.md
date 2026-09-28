@@ -2972,3 +2972,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI @ 32b47e89: 0 failures, codeql (required) green; gate (required) and build-iso still pending.
 - Softs: S1 (significant) claude/codex pre-reboot logins now always skip. S2 toolchain arrives up to ~3h after boot. S3 (significant) 8 new-test gaps (timer wantedBy, TimeoutStartSec, runuser, network-online...). S4 no real boot. S5 stage0 ratchet counts only. S6 bare catch. S7-S9 minor.
 - Hard fails: none. Did not merge.
+
+## leftover UNIQUE leftover #17732 leftover unique @ f1135bd9df7c366c3e880738160f1fe11a9ee693 -- GRADE GO
+
+- #17732 adds WP11 pressure diagnostics and a CI guest envelope that drops gitlab, temporal(+postgres) and gmod on the QEMU verify guest only. Product f1135bd9 is 1-parent on 05522a6a (neutral merge of main) over 369bc4f0 (superseded pre-grade; its check-then-use at the test's L166 is now fixed by readOrEmpty, which returns '' only on ENOENT and rethrows the rest). Live HEAD f8a5b791 is a content-neutral merge of main (7 PR files identical). 4 commits, +781/-0. Not merged at ~01:08 ET 2026-09-28; auto-merge armed.
+- Diagnostics are purely additive (no -e/exit/trap, only PRESSURE_* vars, no API calls), so they can't mask the verdict. The envelope is gated only on /etc/zeta/qemu-k3s-first-boot-verify; no marker means no exclusion; Before=k3s without Requires; unanchorable means it writes nothing.
+- Module eval OK on base and tip; tests 18/18 (red on base); mutations 17/22 caught.
+- CI @ f8a5b791: 0 failures, codeql (required) green; gate (required), build-iso, aarch64 qemu-boot and online-VM boot still running.
+- Softs: S1 (significant) 4 product-side survivors (gmod JSON, latch, diag setting ROSTER_OK, no-marker path). S2 no live WP11 run. S3 no journalctl timeout. S4 systemctl show on missing unit. S5-S11 minor (stale comment, flag help text, neutral merges, module-level eval, rethrow untested).
+- Hard fails: none. Did not merge.
