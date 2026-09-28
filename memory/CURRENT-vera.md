@@ -2879,3 +2879,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Product sound: exact passwd match, runs after activation; chown -R uses AT_SYMLINK_NOFOLLOW (strace), no fail-open; HOME now /var/lib/zeta-creds-to-k8s 0700; safe.directory exactly /etc/zeta in /etc/gitconfig; 11 tests real (0/11 base, 11/11 tip), mutations 17/23 incl all fail-opens.
 - Softs: S1 (significant) resolution failure still falls back to 1000:100 (L4346-4351) contrary to PR body. S2 uid 0 accepted, sweep crosses mounts. S3 zeta-creds-restore HOME. S4 mutation survivors. S5 no ISO/VM/live run.
 - Re-grade path: 1-parent fix on f964ef2b turning both checks green. Sit leftover; not merged.
+
+## leftover UNIQUE leftover #17721 leftover unique @ 6f650bb3d812fc0d31a0e40472ebade044c6eb94 -- GRADE GO
+
+- Post-merge GO. Tests-only pin of ich777 SteamCMD blueprint write identity (gmod, unturned): pod securityContext exactly { fsGroup: 1000 }, no runAsUser, no init securityContext. 1-parent on 03fd62b6; blueprint.ts/blueprints.yaml unchanged. Auto-merged 00:05 EDT as squash dedf8f4d, same tree as tip.
+- Tests pin real rendering (blueprint.ts L184, L188; exact toEqual; set == [gmod, unturned]). 82/0 locally. Mutation claim reproduces (2 red); 15/20 mutations killed.
+- Image facts: no User (root), start.sh does chown then su steam; k8s command bypasses entrypoint; nothing later writes as uid 1000. Pin not demonstrably wrong.
+- CI: gate (required) and codeql (required) green; TS hermetic 29165/0; 0 failures.
+- Softs: S6 (significant) #17708 pvc-write-identity guard does not cover kind: Blueprint; over rendered StatefulSets it flags steamcmd-as-root 4 times -- two opposite rules, silent only via coverage gap. S1 main/sidecar securityContext unpinned. S2 entrypoint-bypass unpinned. S4 missing /opt/steamcmd/steamcmd.sh (081M0QB1ZCV). S5 regression rationale overstated. S7 future start.sh fix loses group 1000. S9 empty workitem body.
+- Sit leftover; not merged by me.
