@@ -1,0 +1,15 @@
+{
+  "pr_number": 17718,
+  "archive_path": "docs/history/pr-reviews/2026/09/28/PR-17718-fix-temporal-run-both-stores-on-a-cnpg-postgresql-so-a-fresh-install-converges.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM71bH2e",
+    "thread:PRRT_kwDOSF9kNM6mf06g"
+  ],
+  "fetched_at": "2026-09-28T01:05:29.193Z",
+  "schema_version": "v1",
+  "commit_sha": "37734dd3c2afafff3a04ad26e4d72009ebd4421a",
+  "title": "fix(temporal): run both stores on a CNPG PostgreSQL so a fresh install converges",
+  "state": "MERGED",
+  "merged_at": "2026-09-28T01:04:43Z",
+  "head_ref": "claude/temporal-on-cnpg-postgres"
+}
