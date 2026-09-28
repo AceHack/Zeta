@@ -3029,3 +3029,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: 89 runs pass; build-iso NixOS k3s 'invalid Node Allocatable' red is pre-existing on main (#17728 class), not this PR.
 - Softs: S1 significant test gaps; S2 zflash harness lacks HALTED marker; S3 off+REQUIRED=1 now founds (intended); S4 no re-prompt/flush, read without -r; S5 w no join URL; S6 no VM/metal halt run; S7 merged before build-iso scenario-2 QEMU; S8 neutral merge; S9 probe has no outer timeout; S10 main k3s red.
 - Watch: scenario 2 / main push run for c3ecfaa3 must reach BOOTSTRAP, not HALTED.
+
+## leftover UNIQUE leftover #17747 leftover unique @ bfb87f4a8bd439b80fd6c327bbd15d368daf1e9f -- GRADE HOLD
+
+- Topic: installer Step 2.55 adopts blank extra disks but keeps disks carrying data unless ZETA_LONGHORN_EXTRA_DISKS names them or an operator presses y.
+- Product bfb87f4a 1-parent on ee3a1a72; 5 files +306/-4. HEAD ec7c5356 merge of main 13b0a973 (clean 3-way; scripts not byte-identical because main changed them). Open, auto-merge armed, unmerged at 03:01 EDT.
+- H1: blank detection (zeta_pf_gather :1515-1563) reads only partition-table type/label and hides blkid errors; whole-disk LVM PV, LUKS1/2, bcache, swap, unlabelled ext4/btrfs, and blkid failure all read as blank and are wiped without consent (reproduced on loop devices).
+- H2: first-match-wins consent ('all,none' adopts all) and unquoted glob expansion at :1650 ('/dev/loop*' consents).
+- Correct: placement before all destructive steps; kept disks dropped from DATA_DISKS and scope everywhere; exact fail-closed matching; only y/Y adopts, timeout/EOF keep; USB medium excluded; first-boot passthrough intact.
+- Tests: 0/15 base, 15/15 product; probe/runtime loop/keypress never executed. Mutants 24: 12 killed, 11 survive, 1 equivalent.
+- CI: 108/112 green, no reds; required checks green.
+- Softs S1-S12 (S2 kept disks still mounted rw/ro pre-wipe; S3 lsblk crash under set -e; S8 significant test gaps).
+- Path to GO: whole-disk signatures count as data and blkid errors fail closed; reject contradictory lists and disable globbing; probe/runtime tests; fix S2/S3.
