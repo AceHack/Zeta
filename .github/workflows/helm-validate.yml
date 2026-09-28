@@ -354,6 +354,33 @@ jobs:
           helm version --short
           kubeconform -v
 
+      - name: GitLab required upgrade path (PR only; the chart's own runcheck, old chart-info in, run offline)
+        # ADDED 2026-09-27. full-ai-cluster/k8s/applications/gitlab/Application.yaml
+        # disables the chart's in-cluster upgrade check (its pre-upgrade hook deadlocks
+        # ArgoCD's first sync -- upgrade-only-hook-first-sync.ts). In GitOps an upgrade
+        # only happens through a PR that moves the chart pin, so the check runs HERE:
+        # render the base pin's chart-info and the head pin's `runcheck`, execute the
+        # script offline with the old chart-info, and let its exit status decide.
+        # Downgrades fail too (the script itself allows them -- measured). Prints
+        # PASSED / FAILED / NOT APPLICABLE; exit 2 means it did not run.
+        #
+        # The base is the PR's base commit, fetched shallowly: the checkout above is
+        # depth 1, so without the fetch `git show <base>:...` has nothing to read.
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BASE_SHA"
+          bun src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.ts --base "$BASE_SHA"
+
+      - name: Prove the GitLab upgrade-path guard can go red (skip-a-stop, legal bump, unchanged, downgrade)
+        # Real Application.yaml with only targetRevision rewritten: 8.7.0 -> 8.11.0 and
+        # -> 9.0.0 FAIL on the chart's own message, -> 8.8.0 PASSES, unchanged is NOT
+        # APPLICABLE without rendering, -> 8.6.0 FAILS as a downgrade. helm is on PATH
+        # (confirmed above), so the chart-script half runs rather than skipping.
+        run: bun test src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.test.ts
+
       - name: Chart pins + helm template + kubeconform
         # RETRY WITHOUT SWALLOWING THE EXIT CODE. Upstream Helm repos are third
         # parties and do occasionally 5xx; three attempts absorb that. Note what

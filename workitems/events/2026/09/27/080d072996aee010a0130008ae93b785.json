@@ -1,0 +1,14 @@
+{
+  "id": "080d072996aee010a0130008ae93b785",
+  "at": "2026-09-27T23:28:29.148Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3JK5NEV087G0R0034TEZ72",
+    "type": "task",
+    "title": "PR-time CI guard for GitLab's required upgrade path (chart's own runcheck, run offline)",
+    "slug": "pr-time-ci-guard-for-gitlab-s-required-upgrade-path-chart-s",
+    "priority": "P2",
+    "filename": "081M3JK5NEV087G0R0034TEZ72-pr-time-ci-guard-for-gitlab-s-required-upgrade-path-chart-s.md"
+  }
+}

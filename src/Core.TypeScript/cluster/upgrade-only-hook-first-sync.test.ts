@@ -19,11 +19,12 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parseAllDocuments, stringify as stringifyYaml } from "yaml";
 import { readAppSource } from "./crd-provider-consumer-order.ts";
+import { runRuncheckOffline } from "./gitlab-upgrade-path-guard.ts";
 import { firstSyncDependencies, isUpgradeOnlyHook } from "./upgrade-only-hook-first-sync.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
@@ -156,32 +157,15 @@ describe.skipIf(!HELM)("gitlab Application -- upgrade-check on ArgoCD's first sy
         console.warn("sh/sort not on PATH -- offline runcheck execution SKIPPED");
         return;
       }
-      const dir = mkdtempSync(join(tmpdir(), "gitlab-runcheck-"));
-      try {
-        const posix = (p: string) => p.replaceAll("\\", "/");
-        const chartInfoDir = join(dir, "chart-info");
-        mkdirSync(chartInfoDir);
-        const script = runcheck
-          .replaceAll("/chart-info/", `${posix(chartInfoDir)}/`)
-          .replaceAll("/etc/secrets/postgresql", posix(join(dir, "no-postgresql-secret")))
-          .replaceAll("/dev/termination-log", posix(join(dir, "termination-log")));
-        const scriptPath = join(dir, "runcheck");
-        writeFileSync(scriptPath, script, "utf8");
-        const run = () =>
-          Bun.spawnSync(["sh", posix(scriptPath)], { stdout: "pipe", stderr: "pipe", env: { ...process.env, ...env } });
+      // First ArgoCD sync: PreSync runs before the Sync phase creates chart-info.
+      const fresh = runRuncheckOffline(runcheck, env, null);
+      expect(fresh.stdout).toContain("Please follow the upgrade documentation at https://docs.gitlab.com/ee/update/#upgrade-paths");
+      expect(fresh.exitCode).toBe(1);
 
-        // First ArgoCD sync: PreSync runs before the Sync phase creates chart-info.
-        const fresh = run();
-        expect(fresh.stdout.toString()).toContain("Please follow the upgrade documentation at https://docs.gitlab.com/ee/update/#upgrade-paths");
-        expect(fresh.exitCode).toBe(1);
-
-        // Control: the same script, with the ConfigMap a completed sync would have created.
-        for (const [key, value] of Object.entries(chartInfo.data)) writeFileSync(join(chartInfoDir, key), String(value), "utf8");
-        const upgraded = run();
-        expect(upgraded.exitCode).toBe(0);
-      } finally {
-        rmSync(dir, { recursive: true, force: true });
-      }
+      // Control: the same script, with the ConfigMap a completed sync would have created.
+      const chartInfoData: Record<string, string> = {};
+      for (const [key, value] of Object.entries(chartInfo.data)) chartInfoData[key] = String(value);
+      expect(runRuncheckOffline(runcheck, env, chartInfoData).exitCode).toBe(0);
     },
     { timeout: 120_000 },
   );

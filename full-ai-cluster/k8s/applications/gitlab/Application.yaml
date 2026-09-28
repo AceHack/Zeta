@@ -113,9 +113,11 @@ spec:
         #
         # The chart has no values coordinate for the Job's hook annotation, so the check cannot be
         # moved to a phase where it means something; disabling it is the only values-level fix.
-        # HONEST LIMIT: this also drops the guard on FUTURE `targetRevision` bumps (it would have
-        # read the previous sync's chart-info then), so a bump must follow GitLab's documented
-        # upgrade path by hand: https://docs.gitlab.com/charts/installation/upgrade.html
+        # This drops the in-cluster guard on FUTURE `targetRevision` bumps (it would have read the
+        # previous sync's chart-info then). That guard now runs on the PR instead:
+        # src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.ts (helm-validate.yml, `charts`
+        # job) renders the base pin's chart-info and the new chart's own runcheck, executes the
+        # script offline, and fails the PR if it refuses the jump -- or if the bump is a downgrade.
         #
         # Falsifier: src/Core.TypeScript/cluster/upgrade-only-hook-first-sync.test.ts -- red if any
         # upgrade-only hook in this render reads a non-hook object of the same render; it also runs
