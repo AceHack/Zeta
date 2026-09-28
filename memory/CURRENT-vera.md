@@ -3008,3 +3008,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI @ 1d493e5d: 0 failures, codeql (required) green, gate pending.
 - Softs: S1/S2 (significant) new-test gaps (idle loop, exact uid, VALIDATE, env names). S3 count-only control tests. S4 add-sftp without image gives 500. S5 no client-spec allowlist (pre-existing). S6-S8 minor.
 - Path to GO: add configMaps to the CRD sidecar schema (here or first, also fixing main) plus a Blueprint/draft-vs-CRD validation test. Did not merge.
+
+## leftover UNIQUE leftover #17742 leftover unique @ f4b9814c141cd3c0528e184d2c05f54955f5dc0d -- GRADE HOLD (post-merge)
+
+- Topic: installer bounds the post-wipe git clone (900 s) and nixos-install (10800 s) with timeout --kill-after=30; a hang becomes a named failure.
+- Product f4b9814c 1-parent on cf206d56; 2 files +169/-4. HEAD 6d59088c neutral merge of main ee3a1a72. Auto-merged 2026-09-28 01:55 EDT as squash fccc9a2d, blobs identical to product.
+- Correct: rc capture under set -e; 124/137 mapped to named TIMEOUT; timeout wraps sudo (no --foreground); sudo env GIT_TERMINAL_PROMPT=0 reaches git; every hang/fail path bails exit 1. 8 new tests real, 0/8 base, 8/8 product. CI 114 runs 0 failures; codeql and gate green.
+- H1 (new fail-open): timeout env overrides unvalidated; 0 or inf removes the bound while printing 'bounded 0s', after the disks are wiped.
+- Softs: S1 significant, 10/21 mutants survive the new test; S2 CI outer timeouts shorter than 3 h; S3 misattribution of OOM/125-127; S4 nixos-install messages omit the wipe; S5 orphans; S6 stripped prompt var at :2626; S7 other post-wipe steps unbounded; S8 merged before build-iso/QEMU.
+- Path to GO: follow-up PR validating both vars against ^[1-9][0-9]*$ before the wipe, with tests for 0/inf/abc/empty.
+- Side note: #17734 landed as e71efca5; all 17 files equal graded 0d7edb11, GO holds post-merge.
