@@ -3078,3 +3078,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Softs: S3 significant, M4 (any-fs partition) survives; S1 two same-label partitions; S2 Ventoy/findiso/loop time out once fixed; S4 never nix-evaluated by author; S5 CI in progress; S6 no metal; S7 source-text pins.
 - Path to GO: working override, eval-based assertion, M4 fixture, ISO USB lanes boot-medium=/dev/sda1 repeatedly.
 - Sent to CoS. Sit leftover; Vera did not merge.
+
+## leftover UNIQUE leftover #17753 leftover unique @ 63a8862a263d9408d72a2963cc39b8de0c1f0b73 -- GRADE GO
+
+- PR: fix(wp11) first-boot 'freeze' was CI runner disk filling, not the guest (maximdolphin). Single commit, parent ddc31b08 (base), +262/-15, 7 files. Merge_commit 9ddf33b6 not graded. Open, auto-merge not armed.
+- Diagnosis confirmed (run 36420588893): B0891 lanes leave ~38 GiB; WP11 phase 1 at 14.3 GiB free; runner 'Free space left: 0 MB' the same minute guest serial stops (t=331s); no werror= on the drive, so the QEMU default pause-on-ENOSPC applies. The pause is inferred, not observed.
+- Reclaim step build-ai-cluster-iso.yml:1106-1116 is correct (same job, before WP11, right paths, keeps .log files). Slice move evals to zeta-background.slice (CPUWeight=idle, MemoryHigh=25%, MemoryMax=40%). RUNNER DISK EXHAUSTED floor 256 MiB at qemu-full-install-test.ts:715 adds a fail path only.
+- Tests: 165/0 at head; red->green on base holds; not vacuous. Survivors: harness wiring, reclaim condition/dirs, Slice placement, memory values.
+- CI: 0 failures at the tip; verification dispatches 36506470223 / 36506472512 had not reached WP11 yet.
+- Softs: S1 CI/dispatch pending; S2 (sig) new-test gaps; S3 (sig) slice move is scope creep and could miss the 1200s toolchain bound; S4 pause inferred; S5 post-verdict fill misnamed; S6 no set -e, always() after cancel; S7 floor sampled once a minute; S8 B0891 harness doesn't self-clean; S9 no local VM run.
+- Hard fails: none. Confirm with the dispatch reaching a WP11 verdict and the toolchain succeeding in the slice.
