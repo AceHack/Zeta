@@ -3088,3 +3088,12 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: 0 failures at the tip; verification dispatches 36506470223 / 36506472512 had not reached WP11 yet.
 - Softs: S1 CI/dispatch pending; S2 (sig) new-test gaps; S3 (sig) slice move is scope creep and could miss the 1200s toolchain bound; S4 pause inferred; S5 post-verdict fill misnamed; S6 no set -e, always() after cancel; S7 floor sampled once a minute; S8 B0891 harness doesn't self-clean; S9 no local VM run.
 - Hard fails: none. Confirm with the dispatch reaching a WP11 verdict and the toolchain succeeding in the slice.
+
+## leftover UNIQUE leftover #17751 leftover unique @ ac35cf25bb22feea4627b8febc6e095d9b42ed89 -- GRADE HOLD (post-merge)
+
+- Landed despite HOLD: squash b82eced62f9c3fbc3cdaa63b3c42dde27ad1bb23 at 08:38:14 EDT 2026-09-28, GitHub-signed, one parent 2c0ecbc3 (graded base). Tree 95d21d9483cd is identical to ac35cf25; all six blobs match; +414/-38.
+- H1 live on main: nix eval fileSystems./iso.device on main ddc31b08 = /dev/disk/by-label/ZETA_INSTALL. installation-cd-base.nix:36 mkImageMediaOverride discards the nested mkForce, so the symlink exists but /iso never mounts through it. Inert, not harmful.
+- H2 live on main: source regex (install-medium-selection.ts:209-213) and exact-string pin (qemu-full-install-test.test.ts:1834) pass the broken pin and would reject the working fix.
+- S3 stands: M4 survives (no same-label non-iso9660 negative case).
+- No fix PR is open.
+- Path to GO (follow-up PR): fileSystems = lib.mkImageMediaOverride { "/iso" = lib.mkImageMediaOverride { device = lib.mkForce "/dev/disk/zeta-install-medium"; }; }; (verified to evaluate to the symlink); replace the regex with a CI check on the evaluated /iso device; add the negative case; re-dispatch the USB lanes.
