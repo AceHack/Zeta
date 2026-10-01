@@ -1479,14 +1479,14 @@
         },
         {
           "appId": "full-ai-cluster/argo-rollouts",
-          "cpuMillis": 75,
+          "cpuMillis": 50,
           "memoryMib": 112,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/argo-rollouts",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 64
             },
             {
@@ -1503,7 +1503,7 @@
         },
         {
           "appId": "full-ai-cluster/argo-workflows",
-          "cpuMillis": 75,
+          "cpuMillis": 50,
           "memoryMib": 160,
           "pods": 2,
           "workloads": [
@@ -1516,7 +1516,7 @@
             {
               "workload": "Deployment/argo-workflows-workflow-controller",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 96
             }
           ],
@@ -1593,7 +1593,7 @@
         },
         {
           "appId": "full-ai-cluster/cert-manager",
-          "cpuMillis": 125,
+          "cpuMillis": 100,
           "memoryMib": 240,
           "pods": 4,
           "workloads": [
@@ -1606,7 +1606,7 @@
             {
               "workload": "Deployment/cert-manager-cainjector",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 96
             },
             {
@@ -1739,7 +1739,7 @@
         },
         {
           "appId": "full-ai-cluster/dapr",
-          "cpuMillis": 275,
+          "cpuMillis": 200,
           "memoryMib": 672,
           "pods": 7,
           "workloads": [
@@ -1770,7 +1770,7 @@
             {
               "workload": "StatefulSet/dapr-scheduler-server",
               "replicas": 3,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 128
             }
           ],
@@ -1975,14 +1975,14 @@
         },
         {
           "appId": "full-ai-cluster/headlamp",
-          "cpuMillis": 50,
+          "cpuMillis": 25,
           "memoryMib": 96,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/headlamp",
               "replicas": 1,
-              "cpuMillis": 50,
+              "cpuMillis": 25,
               "memoryMib": 96
             }
           ],
@@ -2603,7 +2603,7 @@
         },
         {
           "appId": "full-ai-cluster/spire",
-          "cpuMillis": 250,
+          "cpuMillis": 225,
           "memoryMib": 408,
           "pods": 3,
           "workloads": [
@@ -2622,7 +2622,7 @@
             {
               "workload": "StatefulSet/spire-server",
               "replicas": 1,
-              "cpuMillis": 150,
+              "cpuMillis": 125,
               "memoryMib": 256
             }
           ],
