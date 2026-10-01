@@ -18,6 +18,18 @@ spec:
       releaseName: tempo
       valuesObject:
         tempo:
+          # REQUESTS DECLARED, because the chart ships `resources: {}` and an unset request
+          # is not a small request: it is BestEffort, cpu.weight 2 (the cgroup floor). On a
+          # contended first boot that is a trace store the scheduler may evict first and the
+          # CPU scheduler starves, which is how a healthy-looking tempo misses its own
+          # liveness probe (the measured mechanism in usb-installer-first-boot-reliability
+          # RESUME §1: pressure -> slow -> probe timeout -> SIGKILL). Requests only, no
+          # limits, on purpose: a memory limit turns an ingest burst into an OOM kill of the
+          # one pod holding the WAL, and a CPU limit throttles the compactor.
+          resources:
+            requests:
+              cpu: 12m
+              memory: 256Mi
           storage:
             trace:
               backend: local

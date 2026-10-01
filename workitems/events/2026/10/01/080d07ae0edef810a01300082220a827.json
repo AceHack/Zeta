@@ -1,0 +1,14 @@
+{
+  "id": "080d07ae0edef810a01300082220a827",
+  "at": "2026-10-01T04:38:37.791Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TW3PYZ087G0R000EHY8YW",
+    "type": "bug",
+    "title": "alloy, kube-prometheus-stack, loki, nats, tempo render BestEffort: 20 containers request nothing, including Prometheus and Alertmanager",
+    "slug": "alloy-kube-prometheus-stack-loki-nats-tempo-render-besteffor",
+    "priority": "P2",
+    "filename": "081M3TW3PYZ087G0R000EHY8YW-alloy-kube-prometheus-stack-loki-nats-tempo-render-besteffor.md"
+  }
+}

@@ -484,8 +484,8 @@
   ],
   "acknowledgedLaneBudgetShortfall": [
     {
-      "key": "dev memory 9996>9216",
-      "reason": "THE FIRST HONEST PRICING OF ANY BestEffort APP WAS ALWAYS GOING TO TIP THIS LANE, and ArgoCD happened to be the one that did it. Before this change the dev lane declared 9100Mi against a 9216Mi budget -- 116Mi of headroom, 98.7% consumed -- while 26 of 49 Applications rendered pods requesting NOTHING and therefore contributed 0Mi to that total. The lane was not fitting; it was fitting because most of what it runs was invisible to the arithmetic. Pricing the ArgoCD control plane (768Mi at the dev rung across five components) makes 652Mi of that invisibility visible and nothing else about the lane changed. UPDATE 2026-09-30: the oz (OpenZiti) controller, also BestEffort, was priced at 128Mi for the same reason, moving the lane 9868Mi -> 9996Mi (780Mi over); it is the first of the 'other 25' named below to be paid. WHY THE OVERFLOW IS NOT ABSORBED BY SMALLER REQUESTS: the defect being repaired is an under-request. Dispatch 36097310492 watched the WP11 roster peak at 25/35 Synced+Healthy and fall BACKWARDS to 13/35, which rules out slowness -- more wall clock made it worse. Whether the fall was eviction or overlapping reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) is not settled and is not claimed; what is measured is that every ArgoCD pod was BestEffort, which is the first thing the kubelet evicts and the last thing a starved renderer needs to be. Shrinking these requests to clear a budget line would restore the exact condition that produced the regression, in the lane whose whole job is to catch it. The dev numbers are already the smaller of the two rungs, chosen against the 40-app kind/k3d workload rather than the 145-pod metal roster. WHAT IS ACTUALLY OWED: the other 25 Applications that still request nothing -- missing-resource-requests.ts names 18 remaining ACTIONABLE rows with the chart coordinate for each. Pricing them will make this number worse before it gets better, and that is the point: the budget must be measured against what the lane RUNS, not against what it happens to have declared.",
+      "key": "dev memory 11980>9216",
+      "reason": "THE FIRST HONEST PRICING OF ANY BestEffort APP WAS ALWAYS GOING TO TIP THIS LANE, and ArgoCD happened to be the one that did it. Before this change the dev lane declared 9100Mi against a 9216Mi budget -- 116Mi of headroom, 98.7% consumed -- while 26 of 49 Applications rendered pods requesting NOTHING and therefore contributed 0Mi to that total. The lane was not fitting; it was fitting because most of what it runs was invisible to the arithmetic. Pricing the ArgoCD control plane (768Mi at the dev rung across five components) makes 652Mi of that invisibility visible and nothing else about the lane changed. UPDATE 2026-09-30: the oz (OpenZiti) controller, also BestEffort, was priced at 128Mi for the same reason, moving the lane 9868Mi -> 9996Mi (780Mi over); it is the first of the 'other 25' named below to be paid. WHY THE OVERFLOW IS NOT ABSORBED BY SMALLER REQUESTS: the defect being repaired is an under-request. Dispatch 36097310492 watched the WP11 roster peak at 25/35 Synced+Healthy and fall BACKWARDS to 13/35, which rules out slowness -- more wall clock made it worse. Whether the fall was eviction or overlapping reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) is not settled and is not claimed; what is measured is that every ArgoCD pod was BestEffort, which is the first thing the kubelet evicts and the last thing a starved renderer needs to be. Shrinking these requests to clear a budget line would restore the exact condition that produced the regression, in the lane whose whole job is to catch it. The dev numbers are already the smaller of the two rungs, chosen against the 40-app kind/k3d workload rather than the 145-pod metal roster. WHAT IS ACTUALLY OWED: the other 25 Applications that still request nothing -- missing-resource-requests.ts names 18 remaining ACTIONABLE rows with the chart coordinate for each. Pricing them will make this number worse before it gets better, and that is the point: the budget must be measured against what the lane RUNS, not against what it happens to have declared. AMENDED 2026-10-01 (observability): five more Applications stopped being BestEffort -- alloy, kube-prometheus-stack, loki, nats and tempo, which between them carried 20 containers that requested nothing. Same direction this entry already predicted, same refusal: the numbers are small floor reservations (requests only, no limits), and shrinking them to clear the line would put the observability and messaging layer back at the cgroup CPU floor in the lane whose job is to catch that. The CPU axis still fits, by a margin of a few hundred millicores -- which is why those CPU requests are 2-12m rather than a share worth tuning.",
       "liftsWhen": "LIFTS WHEN: `storage-profiles.ts --resource-profile dev --budget` reports the dev lane's memory total at or under the 9216Mi runner budget -- the gate itself, not a paraphrase of it. Two routes reach it and either one suffices: the reserved headroom is re-measured against what the lane actually consumes (the 6144Mi reservation was sized when most of the lane was BestEffort and invisible), or the dev lane partition sheds enough Applications that the priced roster fits. Pricing MORE apps moves this number the wrong way and must not be read as a reason to stop."
     }
   ],
@@ -1365,9 +1365,9 @@
   "ungovernedRequests": [
     {
       "dir": "alloy",
-      "cpuMillis": 10,
-      "memoryMib": 50,
-      "evidence": "alloy rendered with this Application's valuesObject, RE-MEASURED 2026-09-01: one DaemonSet pod, 10m / 50Mi. WAS 1m / 5Mi at 0.10.1 on 2026-08-21; the chart bump raised its own defaults and nothing re-read them until the resource snapshot was re-measured. Still too small to be worth a rung, which is why it stays here rather than becoming a governed row."
+      "cpuMillis": 18,
+      "memoryMib": 178,
+      "evidence": "alloy 1.12.1 rendered with this Application's valuesObject, RE-MEASURED 2026-10-01: one DaemonSet pod, 18m / 178Mi = the `alloy` container's own request (8m / 128Mi, authored here: the chart ships `resources: {}`, so the container that tails every pod's logs ran at the cgroup CPU floor) plus the config-reloader sidecar's chart default (10m / 50Mi). Per NODE, not per cluster. Stays an ungoverned row, not a rung: the number is a floor reservation, not a size anyone tuned between dev and metal."
     },
     {
       "dir": "arc-runner-set",
@@ -1461,9 +1461,9 @@
     },
     {
       "dir": "kube-prometheus-stack",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "kube-prometheus-stack 65.5.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset for every component."
+      "cpuMillis": 27,
+      "memoryMib": 608,
+      "evidence": "kube-prometheus-stack 88.6.3 rendered with this Application's valuesObject, 2026-10-01: six workloads, 27m / 608Mi, every one authored here because the chart ships `resources: {}` for all of them -- operator 8m/128Mi, grafana pod 14m/384Mi (grafana 10m/256Mi + two sidecars at 2m/64Mi), kube-state-metrics 2m/64Mi, node-exporter 3m/32Mi (per node). THE LARGEST PIECES ARE NOT IN THIS NUMBER: Prometheus (`prometheus.prometheusSpec.resources` = 40m / 512Mi) and Alertmanager (`alertmanagerSpec.resources` = 5m / 64Mi) are custom resources whose pods the operator creates, so no `helm template` census sees them. The Application's real reservation is therefore 72m / 1184Mi; the 45m / 576Mi difference is UNPRICED here, and a budget that reads this row understates the stack by that much. Requests only, no limits, on purpose. CPU is deliberately tiny: the dev lane's CPU axis fits with almost nothing to spare, and any request lifts a pod off the cgroup floor and out of BestEffort, which is what this row buys."
     },
     {
       "dir": "kubevirt",
@@ -1473,9 +1473,9 @@
     },
     {
       "dir": "loki",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "loki 6.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+      "cpuMillis": 32,
+      "memoryMib": 736,
+      "evidence": "loki 18.12.1 rendered with this Application's valuesObject, 2026-10-01: five workloads, 32m / 736Mi, every container authored here because the chart ships `resources: {}` -- write 12m/256Mi, read 6m/128Mi, backend 6m/192Mi + rules sidecar 2m/64Mi, gateway nginx 2m/32Mi + exporter 2m/32Mi, canary 2m/32Mi (a DaemonSet: per node). The chunk and results caches are disabled. Requests only, no limits, on purpose."
     },
     {
       "dir": "longhorn",
@@ -1485,9 +1485,9 @@
     },
     {
       "dir": "nats",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "nats 1.2.7 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+      "cpuMillis": 26,
+      "memoryMib": 256,
+      "evidence": "nats 2.14.6 rendered with this Application's valuesObject, 2026-10-01: the nats container at 6m / 64Mi x3 replicas, each with a reloader sidecar at 2m / 16Mi, plus nats-box at 2m / 16Mi = 26m / 256Mi. The sidecar and the box take their request through the chart's `merge` extension point because chart 2.14.6 exposes no resources key for either. Requests only, no limits, on purpose."
     },
     {
       "dir": "ollama",
@@ -1527,9 +1527,9 @@
     },
     {
       "dir": "tempo",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "tempo 1.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
+      "cpuMillis": 12,
+      "memoryMib": 256,
+      "evidence": "tempo 2.3.0 rendered with this Application's valuesObject, 2026-10-01: one StatefulSet pod, 12m / 256Mi, authored here (`tempo.resources`) because the chart ships `resources: {}`. Requests only, no limits, on purpose: a memory limit OOM-kills the one pod holding the WAL."
     },
     {
       "dir": "trust-manager",

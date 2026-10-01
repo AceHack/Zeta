@@ -24,7 +24,7 @@
       "chart": "loki",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "18.12.1",
-      "valuesHash": "sha256:c4f40f802417153f484d7c070f39a5094da5a03cc8c12b47a9d57ec1163e4566",
+      "valuesHash": "sha256:adc6f13175865ad3042a9fb1910d7195b4fecc5060bf6e55faab07e66825a327",
       "services": {
         "loki-query-scheduler-discovery": [
           3100,
@@ -181,7 +181,7 @@
       "chart": "tempo",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "2.3.0",
-      "valuesHash": "sha256:03ea652daf6f33d513c58c96fb4a4702549ca996f0904ab221ed4caedb18c8a5",
+      "valuesHash": "sha256:50540142fc6bc491be5dc1c614c349ed2f9796a5e77a110b4d307b576b8ec42a",
       "services": {
         "tempo": [
           6831,

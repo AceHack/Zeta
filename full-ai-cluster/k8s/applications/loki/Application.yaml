@@ -67,9 +67,21 @@ spec:
               secretAccessKey: ${BLOB_STORE_SECRET_KEY}
               insecure: true
               s3ForcePathStyle: true
-        write: { replicas: 1 }
-        read:  { replicas: 1 }
-        backend: { replicas: 1 }
+        # REQUESTS DECLARED on all seven containers. Every one rendered `resources: {}`
+        # (BestEffort, cpu.weight 2 -- the cgroup floor) at 18.12.1, including the three
+        # that carry the ingest and query path. Requests only, no limits: a memory limit
+        # OOM-kills loki-write mid-WAL-replay, and a CPU limit throttles the compactor
+        # that lives in loki-backend. The sizes are RESERVATIONS chosen to be small
+        # (loki-write is the one with a working set), not measurements of what loki uses.
+        write:
+          replicas: 1
+          resources: { requests: { cpu: 12m, memory: 256Mi } }
+        read:
+          replicas: 1
+          resources: { requests: { cpu: 6m, memory: 128Mi } }
+        backend:
+          replicas: 1
+          resources: { requests: { cpu: 6m, memory: 192Mi } }
         chunksCache: { enabled: false }
         resultsCache: { enabled: false }
         # STARTUP PROBES -- ALL THREE CONTAINERS BELOW HAVE THE COORDINATE. MEASURED
@@ -91,17 +103,21 @@ spec:
         # 0+29*10=290s for each; the chart's own (unchanged) liveness resumes once
         # startup succeeds.
         lokiCanary:
+          resources: { requests: { cpu: 2m, memory: 32Mi } }
           startupProbe:
             httpGet: { path: /metrics, port: http-metrics }
             periodSeconds: 10
             failureThreshold: 30
         gateway:
+          resources: { requests: { cpu: 2m, memory: 32Mi } }
           metrics:
+            resources: { requests: { cpu: 2m, memory: 32Mi } }
             startupProbe:
               httpGet: { path: /metrics, port: http-metrics }
               periodSeconds: 10
               failureThreshold: 30
         sidecar:
+          resources: { requests: { cpu: 2m, memory: 64Mi } }
           startupProbe:
             enabled: true
             httpGet: { path: /healthz, port: http-sidecar }

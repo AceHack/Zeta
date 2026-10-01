@@ -30,6 +30,17 @@ spec:
         controller:
           type: daemonset   # collect from every node
         alloy:
+          # REQUESTS DECLARED. The `alloy` container shipped with none (the chart's
+          # `resources: {}`), so it ran at the cgroup CPU floor (cpu.weight 2) on every
+          # node while tailing every pod's logs -- the one DaemonSet whose load scales with
+          # the node's pod count. Only the config-reloader sidecar was priced (10m/50Mi),
+          # which made the pod Burstable and the container that does the work BestEffort-
+          # shaped. Requests only: a memory limit would OOM-kill the collector exactly when
+          # log volume spikes.
+          resources:
+            requests:
+              cpu: 8m
+              memory: 128Mi
           # OTLP ingress. The chart opens only 12345 (Alloy own UI/metrics);
           # otelcol.receiver.otlp below listens on 4317/4318, and without
           # these entries neither the DaemonSet nor the Service ever binds

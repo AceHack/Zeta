@@ -36,8 +36,21 @@ spec:
     helm:
       releaseName: kube-prometheus-stack
       valuesObject:
+        # REQUESTS DECLARED. Every container this chart renders shipped `resources: {}`
+        # (BestEffort, cpu.weight 2), and the two that matter most are not even in the
+        # rendered Deployments: Prometheus and Alertmanager are CUSTOM RESOURCES whose
+        # pods the operator creates, so no render census sees them -- the biggest memory
+        # consumer in the monitoring stack was the one nothing could price. Requests only,
+        # no limits: a memory limit OOM-kills Prometheus mid-WAL-replay (and replay is when
+        # it needs the most), a CPU limit throttles compaction. Sizes are RESERVATIONS kept
+        # small on purpose, not measurements of what each uses.
+        prometheusOperator:
+          resources: { requests: { cpu: 8m, memory: 128Mi } }
+        prometheus-node-exporter:
+          resources: { requests: { cpu: 3m, memory: 32Mi } }
         prometheus:
           prometheusSpec:
+            resources: { requests: { cpu: 40m, memory: 512Mi } }
             # THE TWO BOUNDS BELOW ARE ONE SETTING. `retention` is a TIME bound
             # and cannot see the disk; kube-prometheus-stack 65.5.0 ships
             # `retentionSize: ""` (values.yaml:3732), i.e. UNSET, so before this
@@ -73,6 +86,9 @@ spec:
                   # and a wedged WAL.
                   resources: { requests: { storage: 32Gi } }
         grafana:
+          resources: { requests: { cpu: 10m, memory: 256Mi } }
+          sidecar:
+            resources: { requests: { cpu: 2m, memory: 64Mi } }
           # Admin password sourced from a Secret rather than
           # hardcoded. Create the secret BEFORE this app syncs:
           #   kubectl -n monitoring create secret generic grafana-admin-credentials \
@@ -144,6 +160,7 @@ spec:
               - name: unrouted-REQUIRES-CONFIGURATION
               - name: watchdog-REQUIRES-DEADMANSSWITCH
           alertmanagerSpec:
+            resources: { requests: { cpu: 5m, memory: 64Mi } }
             storage:
               volumeClaimTemplate:
                 spec:
@@ -172,6 +189,7 @@ spec:
         # failureThreshold 30 -> startup kill budget 0+29*10=290s; the chart's own 25s
         # liveness resumes once startup succeeds.
         kube-state-metrics:
+          resources: { requests: { cpu: 2m, memory: 64Mi } }
           startupProbe:
             enabled: true
             failureThreshold: 30

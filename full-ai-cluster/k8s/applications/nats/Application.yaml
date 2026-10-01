@@ -67,8 +67,33 @@ spec:
                 # the limit and age out or reject publishes.
                 size: 10Gi
                 storageClassName: zeta-block-replicated
+        # REQUESTS DECLARED on the server container: `container.resources` is `{}` by chart
+        # default, so all three JetStream replicas rendered BestEffort -- a message bus whose
+        # Raft quorum is lost when two of three are evicted or starved past their liveness
+        # budget. Requests only, no limits: a memory limit OOM-kills a replica mid-snapshot.
+        # The reloader sidecar and nats-box have no `resources` key in chart 2.14.6 (the
+        # only one under natsBox is nested beneath `image` and is never read), so they take
+        # it through the chart's own `merge` extension point, which strategic-merges onto
+        # the rendered container.
+        container:
+          resources:
+            requests:
+              cpu: 6m
+              memory: 64Mi
+        reloader:
+          merge:
+            resources:
+              requests:
+                cpu: 2m
+                memory: 16Mi
         natsBox:
           enabled: true
+          container:
+            merge:
+              resources:
+                requests:
+                  cpu: 2m
+                  memory: 16Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: nats
