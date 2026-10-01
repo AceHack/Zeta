@@ -9,9 +9,10 @@
 // asserts a throw, never an empty array.
 
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import {
   NODE_TUNABLES_PATH,
   readNodeTunables,
@@ -46,6 +47,31 @@ describe("the declaration itself", () => {
     const maxMapCount = entries.find((e) => e.key === "vm.max_map_count");
     expect(maxMapCount).toBeDefined();
     expect(maxMapCount!.value as number).toBeGreaterThanOrEqual(262144);
+  });
+
+  test("weaviate's privileged sysctl initContainer is OFF and the host carries the value it asked for", () => {
+    // The chart's default `initContainers.sysctlInitContainer.enabled: true` renders a
+    // privileged `docker.io/alpine:latest` init container that nothing preloads: on a fresh
+    // install the pod sits in Init:0/1 behind an anonymous Docker Hub pull, the StatefulSet
+    // reads Progressing, and the Application's conditions stay EMPTY. The fix is two-sided
+    // and each half is useless without the other -- disable the container AND make the
+    // host provide the value (chart default 524288) -- so the test pins both. Remove
+    // either and it goes red: re-enable the container (or delete the key, which means
+    // "chart default = enabled") and half 1 fails; revert the host value and half 2 does.
+    const app = parseYaml(
+      readFileSync(
+        join(REPO_ROOT, "full-ai-cluster/k8s/applications/weaviate/Application.yaml"),
+        "utf8",
+      ),
+    ) as { spec: { source: { helm: { valuesObject: Record<string, unknown> } } } };
+    const values = app.spec.source.helm.valuesObject as {
+      initContainers?: { sysctlInitContainer?: { enabled?: boolean } };
+    };
+    expect(values.initContainers?.sysctlInitContainer?.enabled).toBe(false);
+
+    const maxMapCount = readNodeTunables(REPO_ROOT).find((e) => e.key === "vm.max_map_count");
+    expect(maxMapCount).toBeDefined();
+    expect(maxMapCount!.value as number).toBeGreaterThanOrEqual(524288);
   });
 
   test("resolves relative to the given repo root, not the process cwd", () => {
