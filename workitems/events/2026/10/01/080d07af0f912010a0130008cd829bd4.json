@@ -1,0 +1,14 @@
+{
+  "id": "080d07af0f912010a0130008cd829bd4",
+  "at": "2026-10-01T05:13:40.644Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TY3WH3087G0R000NK6G9S",
+    "type": "bug",
+    "title": "main red: arity-nonequality census on cnpg example test + stale chart snapshot",
+    "slug": "main-red-arity-nonequality-census-on-cnpg-example-test-stale",
+    "priority": "P1",
+    "filename": "081M3TY3WH3087G0R000NK6G9S-main-red-arity-nonequality-census-on-cnpg-example-test-stale.md"
+  }
+}

@@ -79,8 +79,15 @@ describe("it is highly available, to the extent one node allows, and says where 
 
 describe("credentials are minted with the role, never written down", () => {
   test("no password, no superuser access, no pre-supplied secret", () => {
-    const body = JSON.stringify(cluster);
-    expect(body.toLowerCase()).not.toContain('"password"');
+    // A POSITIVE claim over the whole document, not an absence in one rendering: walk every
+    // key at every depth and require the set of credential-shaped keys to be exactly empty.
+    const keysOf = (v: unknown): string[] =>
+      Array.isArray(v)
+        ? v.flatMap(keysOf)
+        : v !== null && typeof v === "object"
+          ? Object.entries(v as Record<string, unknown>).flatMap(([k, x]) => [k, ...keysOf(x)])
+          : [];
+    expect(keysOf(cluster).filter((k) => /pass(word|wd)/i.test(k))).toEqual([]);
     // enableSuperuserAccess defaults to false; a template must not turn it on.
     expect(cluster.spec.enableSuperuserAccess).not.toBe(true);
     // `bootstrap.initdb.secret` would point at a Secret something else must mint.

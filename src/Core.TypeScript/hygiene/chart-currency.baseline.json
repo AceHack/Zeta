@@ -44,6 +44,12 @@
       "reason": "16 releases behind, 0.24.2 -> 0.30.1. Every one is a 0.x MINOR, and semver gives 0.x minors no compatibility promise at all -- sixteen of them is a major in everything but the version string. spire is the identity substrate the decentralised-trust design depends on, so a silent behaviour change here is worse than being behind.",
       "liftsWhen": "the sixteen changelogs are read, or the bump is taken in stages with the live lane asserting spire Healthy at each one.",
       "observed": "2026-09-05"
+    },
+    {
+      "chart": "tempo",
+      "reason": "3 releases behind, 2.3.0 -> 3.1.0, MAJOR, published 2026-09-30 (3.0.0 landed after the last snapshot refresh, which is why this went red with nothing changed in the tree). NOT yet measured for breaking changes: a major on the chart that stores traces touches the OTLP ingest path, the storage/retention keys this tree sets (tempo.retention, the local trace path) and the datasource Grafana reads. Saying it is unmeasured is the point of the entry.",
+      "liftsWhen": "the 3.x changelog is read against the tempo valuesObject and the observability roster (audit-observability-chain) is refreshed; filed as its own change.",
+      "observed": "2026-10-01"
     }
   ]
 }
