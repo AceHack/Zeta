@@ -1,0 +1,53 @@
+---
+id: 081M3TS67PE087G0R002ZZ1XYT
+type: bug
+state: backlog
+priority: P1
+slug: platform-controllers-die-under-node-contention-1s-liveness-t
+title: "platform controllers die under node contention: 1s liveness timeouts and BestEffort QoS on sealed-secrets, headlamp, gatekeeper, NFD, cert-manager, spire, argocd, headscale"
+created: 2026-10-01T03:47:34.734Z
+depends_on: []
+composes_with: []
+---
+
+# platform controllers die under node contention: 1s liveness timeouts and BestEffort QoS on sealed-secrets, headlamp, gatekeeper, NFD, cert-manager, spire, argocd, headscale
+
+<!-- Work-item body. ZetaId-keyed (conflict-free, time-sortable). "Backlog" is a
+     STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
+     Identity is the zetaid prefix — resolve cross-refs by `081M3TS67PE087G0R002ZZ1XYT-*.md` glob. -->
+
+## Evidence (measured, not inferred)
+
+Scheduled first-boot replica on `main`, 2026-09-30, run 36685251210, constrained lane
+(4 vCPU / 12 GiB, 38 Applications): **17 Healthy, 2 DIVERGENCE, 19 FAIL**. Platform
+controllers in CrashLoopBackOff or restarting: sealed-secrets, headlamp, trust-manager,
+spire-server, cert-manager-webhook (CRASHLOOP) plus cert-manager controller/cainjector,
+argocd repo-server (restartCount 3) / server (1), headscale-0, NFD gc/master/worker. The
+unconstrained lane on 2026-09-29 (run 36538162478) had all of these Healthy: the same tree
+dies when the node is contended, and the mechanism is the one already measured on
+dispatch 36119931377 -- liveness probes kill containers that are slow, not dead.
+
+Rendered chart defaults: `timeoutSeconds: 1`, `failureThreshold: 3` -> a RUNNING container is
+killed after (3-1)*10+1 = 21s of slow answers (`probeStallToleranceSeconds`).
+
+## What lands
+
+Probes widened through each chart's own values coordinates (timeout 5s x 12 failures at a
+10s period: kill budget 120s, stall tolerance 115s): sealed-secrets, headlamp, NFD
+(gc/worker/master), cert-manager controller + webhook (+ the k3s bootstrap twin), argocd
+server + repo-server (both pin sites), spire-server (+ bootstrap twin), headscale
+(in-repo manifest), gatekeeper (timeout only -- the chart hardcodes period/threshold).
+
+Falsifier: `liveness-kill-budget.ts` now GATES a `STALL_TOLERANCE_FLOORS` list -- red against
+the pre-fix tree with exactly 13 violations (every container above), green after.
+
+## Not fixed here, and why
+
+- `cilium-operator`, `spire-controller-manager`, spiffe CSI registrar, hubble-ui: probe is
+  hardcoded in the chart template, no values coordinate (upstream change only).
+- `trust-manager`, external-secrets: no liveness probe at all; their CrashLoop is process exit
+  (leader election / API timeouts under load), not a probe kill. UNVERIFIED cause.
+- Resource requests (BestEffort QoS) on cert-manager, trust-manager, sealed-secrets,
+  external-secrets, dapr, spire, longhorn-manager, argo-rollouts, argo-workflows, headlamp --
+  `missing-resource-requests.ts` lists them ACTIONABLE. Each needs a `resourceClaims` row in
+  `storage-profiles.json`, a regenerated snapshot and a budget re-fit, so it is its own change.

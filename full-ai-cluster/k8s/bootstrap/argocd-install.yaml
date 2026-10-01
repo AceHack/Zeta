@@ -60,6 +60,21 @@ spec:
         requests:
           cpu: 100m
           memory: 128Mi
+      # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart default for
+      # server and repoServer is timeout 1s x 3 failures: a RUNNING pod is killed
+      # after (3-1)*10+1 = 21s of slow `/healthz?full=true` answers. The constrained
+      # first-boot replica (run 36685251210, 4 vCPU) measured argocd-repo-server
+      # restarting 3 times and argocd-server once -- and `full=true` makes the
+      # server fail on a SLOW repo-server/redis too, so one stall cascades. Timeout
+      # 5s x 12 failures at a 10s period: kill budget 10+11*10 = 120s, running-stall
+      # tolerance 115s. Kept EQUAL at both pin sites (bootstrap + Application).
+      livenessProbe:
+        enabled: true
+        httpPath: /healthz?full=true
+        failureThreshold: 12
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        timeoutSeconds: 5
     configs:
       params:
         server.insecure: true   # TLS terminated upstream once ingress lands
@@ -333,6 +348,13 @@ spec:
         requests:
           cpu: 250m
           memory: 512Mi
+      livenessProbe:
+        enabled: true
+        httpPath: /healthz?full=true
+        failureThreshold: 12
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        timeoutSeconds: 5
     redis:
       # REPOSITORY MOVED OFF ANONYMOUS ecr-public (081M3K1K20Y087G0R00088W4DD).
       # The chart default is `ecr-public.aws.com/docker/library/redis`. MEASURED

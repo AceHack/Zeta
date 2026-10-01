@@ -48,8 +48,30 @@ spec:
           kind: ControllerConfiguration
           enableGatewayAPI: true
         replicaCount: 1
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart defaults:
+        # controller timeout 15s x 8 failures (kill budget 80s, just under the
+        # 120s floor); webhook timeout 1s x 3 failures (a RUNNING webhook is
+        # killed after 21s of slow /livez). The constrained first-boot replica
+        # (run 36685251210) measured cert-manager-webhook in CrashLoopBackOff
+        # and the controller/cainjector restarting; every Certificate and
+        # webhook in the roster waits on these. Controller: 12 failures ->
+        # budget 10+11*10 = 120s. Webhook keeps its 60s startup delay; timeout
+        # 5s x 8 failures -> budget 60+7*10 = 130s, stall tolerance 75s.
+        livenessProbe:
+          enabled: true
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 15
+          successThreshold: 1
+          failureThreshold: 12
         webhook:
           replicaCount: 1
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 8
         cainjector:
           replicaCount: 1
         prometheus:

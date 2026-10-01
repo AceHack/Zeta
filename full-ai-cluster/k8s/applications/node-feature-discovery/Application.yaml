@@ -56,8 +56,21 @@ spec:
         # NFD ships three components: master (deployment), worker
         # (daemonset, runs on every node), and gc (cleans up labels
         # for deleted nodes). All three on by default.
+        #
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart defaults
+        # for master/worker/gc liveness are timeout 1s / period 10s / threshold
+        # 3: a RUNNING pod is killed after 21s of slow /healthz answers; the
+        # constrained first-boot replica (run 36685251210) measured all three
+        # components restarting. Each exposes the full probe. Timeout 5s, 12
+        # failures at a 10s period: kill budget 10+11*10 = 120s, running-stall
+        # tolerance 115s. (master keeps the chart's own startupProbe.)
         master:
           replicaCount: 1   # bump to 2 for HA once we have 5+ nodes
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
           resources:
             requests: { cpu: 100m, memory: 128Mi }
             limits:   { cpu: 500m, memory: 512Mi }
@@ -70,6 +83,11 @@ spec:
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits:   { cpu: 200m, memory: 256Mi }
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
           # Enable additional source plugins beyond the defaults.
           # cpu / kernel / memory / network / pci / storage / system /
           # usb are on by default; we explicitly turn on `local` for
@@ -92,6 +110,11 @@ spec:
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits:   { cpu: 200m, memory: 256Mi }
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
 
         # NodeFeatureRule CRDs let you derive custom labels from raw
         # features. Default rules cover the common stuff (GPU vendor

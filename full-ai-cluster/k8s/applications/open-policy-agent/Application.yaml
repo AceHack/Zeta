@@ -33,7 +33,16 @@ spec:
       releaseName: gatekeeper
       valuesObject:
         replicas: 1   # single control-plane node; bump for HA once workers exist
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). The chart
+        # hardcodes period 10s / failureThreshold 3 and exposes ONLY the timeout
+        # (`*.livenessTimeout`, default 1s), so the one lever is the timeout:
+        # 1s -> 10s moves a RUNNING manager's stall tolerance from 21s to
+        # (3-1)*10+10 = 30s. That is all this chart allows; the rest is an
+        # upstream chart change.
+        audit:
+          livenessTimeout: 10
         controllerManager:
+          livenessTimeout: 10
           metricsPort: 8888
           # Never let admission control touch system/infra namespaces — these
           # carry the control plane, CNI, storage and GitOps that gatekeeper
