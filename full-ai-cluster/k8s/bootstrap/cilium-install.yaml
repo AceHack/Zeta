@@ -100,7 +100,9 @@ spec:
       nodeEncryption: true
     gatewayAPI:
       enabled: true
+    # OFF, EQUAL to k8s/applications/cilium/Application.yaml, which adopts this release (a
+    # mismatch is two reconcilers flipping the flag). `cilium-ingress` is a LoadBalancer
+    # Service that is Progressing until a pool addresses it, nothing serves an Ingress of
+    # class `cilium`, and the Application's own note carries the three measurements.
     ingressController:
-      enabled: true
-      loadbalancerMode: shared
-      default: true
+      enabled: false

@@ -138,12 +138,42 @@ spec:
         gatewayAPI:
           enabled: true
 
-        # Ingress controller — Cilium can serve as ingress directly,
-        # removing the need for ingress-nginx as a separate workload.
+        # Ingress controller -- OFF, and this was the whole reason this Application
+        # read Progressing forever on any install without a LoadBalancer range.
+        #
+        # `ingressController.enabled: true` renders Service kube-system/cilium-ingress,
+        # `type: LoadBalancer`. ArgoCD's Service health (gitops-engine health_service.go)
+        # is Progressing until `status.loadBalancer.ingress` is populated, and that needs a
+        # Cilium LB-IPAM pool -- which is INSTALL-TIME configuration
+        # (docs/ops/INSTALL-TIME-CONFIG.md row 3, k8s/lb-ipam/) and legitimately absent when
+        # the operator supplied no range. So `cilium` -- the CNI, wave -80 -- was
+        # Synced+Progressing with every one of its pods Running. MEASURED, three times:
+        #   * k3d lane, run 35924216557: "every workload healthy (agent DS 1/1, operator 1/1),
+        #     but the `cilium-ingress` LoadBalancer sat at EXTERNAL-IP <pending> for 42 min
+        #     with `cilium-lb-pool: No resources found`" (k8s-lane-partition.yml records it).
+        #   * first-boot replica, run 36831938019 (main, unconstrained): cilium
+        #     `Synced`+`Progressing`, `conditions: []`, "no classified pod issue attributed".
+        #   * WP11 installed disk, run 36832486494: cilium Synced+Progressing at t=3221s.
+        # (An earlier hypothesis blamed an ExcludedResourceWarning on the cilium-ingress
+        # EndpointSlice, workitem 081M3BF6P31, and argocd/Application.yaml stopped excluding
+        # that kind. In run 36831938019 the warning is GONE -- `conditions: []` -- and cilium
+        # is still Synced+Progressing with no pod to blame. The warning was a symptom of the
+        # same Service, not the cause.)
+        #
+        # NOTHING USES IT. This tree exposes everything through Gateway API (gatewayAPI
+        # above; platform/gateway.yaml; gitlab's `gitlab-lan` Gateway) and no Ingress of class
+        # `cilium` exists: gitlab renders `ingress.enabled: false`, longhorn's is off. So the
+        # Service spent one of the installer's few dozen LoadBalancer addresses on a listener
+        # nobody dials -- the same waste game-hosting/gmod/service.yaml documents for
+        # gmod-sftp, which is ClusterIP for that reason.
+        #
+        # Gateway API still gets its LoadBalancer Service (one per Gateway, created by the
+        # operator, not rendered here), and THAT one is correctly Progressing-until-addressed:
+        # it is the thing a pool exists for. Re-enable only together with an Ingress that needs
+        # it AND a pool the lane can supply. k8s/bootstrap/cilium-install.yaml carries the same
+        # value (they share a Helm release; cilium-ingress-disabled.test.ts pins both).
         ingressController:
-          enabled: true
-          loadbalancerMode: shared
-          default: true
+          enabled: false
 
   destination:
     server: https://kubernetes.default.svc
