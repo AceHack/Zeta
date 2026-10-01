@@ -436,7 +436,7 @@ describe("WP11 cluster diagnostics: how the unit wires it", () => {
   it("is read-only: every kubectl verb in the block is get, describe, logs or top", () => {
     const verbs = [...extractBlock().matchAll(/zeta_wp11_kcd\s+(?:-n\s+\S+\s+)?([a-z]+)/g)].map((m) => m[1]);
     expect(verbs.length).toBeGreaterThan(8);
-    for (const v of verbs) expect(["get", "describe", "logs", "top"]).toContain(v);
+    for (const v of verbs) expect(["get", "describe", "logs", "top"]).toContain(String(v));
   });
 });
 
