@@ -39,6 +39,6 @@ transformers==5.10.1
 trimesh==5.1.0
 typeguard==2.13.3
 typing_extensions==4.16.0
-urllib3==2.7.0
+urllib3==2.8.0
 wadler_lindig==0.1.7
 zipp==4.1.0
