@@ -131,6 +131,11 @@ spec:
           installAndUpgradeHooks:
             enabled: false
         spire-server:
+          resources:
+            requests: { cpu: 50m, memory: 192Mi }
+          controllerManager:
+            resources:
+              requests: { cpu: 10m, memory: 64Mi }
           caSubject:
             country: US
             commonName: zeta-spire-ca
@@ -175,6 +180,8 @@ spec:
           #     caCertSecret: vault-ca
           #     authMethod: k8s
         spire-agent:
+          resources:
+            requests: { cpu: 25m, memory: 96Mi }
           # K3S uses containerd, not Docker — wire the agent at the
           # containerd socket so SVIDs attach to the right workload.
           workloadAttestors:
@@ -185,6 +192,11 @@ spec:
               enabled: true
         spiffe-csi-driver:
           enabled: true
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+          nodeDriverRegistrar:
+            resources:
+              requests: { cpu: 10m, memory: 24Mi }
         spiffe-oidc-discovery-provider:
           enabled: false   # broken pre-delete hook deadlocks uninstall; not needed
   destination:

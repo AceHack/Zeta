@@ -31,11 +31,17 @@ spec:
       releaseName: external-secrets
       valuesObject:
         installCRDs: true
+        resources:
+          requests: { cpu: 25m, memory: 96Mi }
         replicaCount: 1
         webhook:
           replicaCount: 1
+          resources:
+            requests: { cpu: 10m, memory: 48Mi }
         certController:
           replicaCount: 1
+          resources:
+            requests: { cpu: 10m, memory: 48Mi }
         # ClusterSecretStore for Vault (lands as a separate manifest
         # after vault + ESO are both healthy):
         #   apiVersion: external-secrets.io/v1        <- v1, NOT v1beta1: at the pinned
