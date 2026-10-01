@@ -1,0 +1,19 @@
+{
+  "pr_number": 17835,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17835-feat-ci-gitlab-live-proof-deploy-gitlab-on-a-hosted-runner-and-assert-it-works-t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM731KPg",
+    "comment:PRRC_kwDOSF9kNM731ZLV",
+    "comment:PRRC_kwDOSF9kNM731ZLt",
+    "thread:PRRT_kwDOSF9kNM6oCekI",
+    "thread:PRRT_kwDOSF9kNM6oCoYa",
+    "thread:PRRT_kwDOSF9kNM6oCoYs"
+  ],
+  "fetched_at": "2026-10-01T18:23:21.243Z",
+  "schema_version": "v1",
+  "commit_sha": "1110eb71c440531b8048644b8e0a660e47571727",
+  "title": "feat(ci): gitlab-live-proof -- deploy GitLab on a hosted runner and assert it works (+ two manifest defects it found)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T18:17:53Z",
+  "head_ref": "feat/gitlab-live-proof"
+}
