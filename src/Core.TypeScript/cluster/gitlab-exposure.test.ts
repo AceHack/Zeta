@@ -217,6 +217,24 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     }
   }, T);
 
+  test("(g) no Deployment needs spare capacity to roll: maxSurge 0 (or Recreate), because the install-time pin rolls every component once", () => {
+    // MEASURED LIVE, run 36881451548: 3160m of 4000m requested, sidekiq asks 900m, the Deployment-default surge pod
+    // sat `Pending: Insufficient cpu` for 14 minutes, the rollout hit its progress deadline and the operation never
+    // reached the exposure wave. A single-replica workload on one node gains nothing from surge.
+    const { docs } = renderGitlab();
+    const deployments = ofKind(docs, "Deployment");
+    expect(deployments.map(nameOf).sort()).toEqual(
+      expect.arrayContaining(["gitlab-gitlab-runner", "gitlab-gitlab-shell", "gitlab-registry", "gitlab-sidekiq-all-in-1-v2", "gitlab-webservice-default"]),
+    );
+    const offenders: string[] = [];
+    for (const d of deployments) {
+      const strategy = ((d["spec"] as Record<string, unknown>)["strategy"] ?? {}) as { type?: string; rollingUpdate?: { maxSurge?: unknown } };
+      if (strategy.type === "Recreate") continue;
+      if (strategy.rollingUpdate?.maxSurge !== 0) offenders.push(`${nameOf(d)} (maxSurge ${JSON.stringify(strategy.rollingUpdate?.maxSurge ?? "default 25%")})`);
+    }
+    expect(offenders).toEqual([]);
+  }, T);
+
   test("(c) no .zeta.local name appears anywhere in the render", () => {
     const hits = renderGitlab().text.split("\n").filter((l) => /\.zeta\.local\b/.test(l));
     expect(hits).toEqual([]);
