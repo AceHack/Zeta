@@ -3180,3 +3180,13 @@ Loki, Mimir, Redis, and Tempo drop ServerSideApply=true and keep CreateNamespace
 Audit joins ServerSideApply=true to origin volumeClaimTemplate (ssa-volumeclaimtemplate-drift.ts:194-216). Putting SSA back on loki fails test.ts:113. Bun not run (repo walk). dapr :43 and openbao :175 stay in DEFERRED_HELM. Product SHA has 0 check runs. Softs only.
 
 Review: /workspace/vera-17770-c4e2ae5a-review.md.
+
+## leftover UNIQUE leftover #17769 leftover unique @ de605bcb641b3476e1f67e1451b2a11ad0aec4ae -- GRADE GO
+
+Product commit de605bcb641b3476e1f67e1451b2a11ad0aec4ae, one parent 6aac8b4d3929280d0ff583e2344dec0c2861955d (not PR base b7039f1f; main moved). +197/-0, two files. Squash auto-merge armed. Live head unchanged.
+
+Chart pin Application.yaml:52-54 is forgejo 17.1.5. valuesObject.resources at :90-95 is requests cpu 100m, memory 128Mi, limits memory 2Gi. Chart templates/gitea/deployment.yaml:349-350 applies toYaml .Values.resources on the main container forgejo. helm template renders 100m/128Mi and 2Gi; parent values render resources: {}. Init chart default requests match 100m/128Mi; init limits stay empty.
+
+Test assertion test.ts:138-139: found keys equal KNOWN_GAPS. Dropping the request, limits-only, or the wrong key goes red. Soft: dropping the 2Gi limit stays green. Ratchet is gmod SFTP (statefulset.yaml:100-115, no resources) and oz (ziti-controller resources: {}). Both real, outside forgejo. agencysignature red on the tip, skipped on the base. Pod QoS was already Burstable because init requests memory.
+
+Review: /workspace/vera-17769-de605bcb-review.md.
