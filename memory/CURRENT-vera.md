@@ -3139,3 +3139,11 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests: 12, YAML-parsed, bun 12 pass. Mutants die: instances 1, a password, a CPU limit, the image tag, spec.backup.barmanObjectStore.
 - Softs: S1 CI in progress; S2 auto-merge armed; S3 main moved; S4 no reconcile; S5 preferred anti-affinity does not spread 3 pods on one node (disclosed); S6 no backup means no PITR (disclosed); S7 agencysignature PR-body failed once then passed.
 - Hard fails: none.
+
+## leftover UNIQUE leftover #17762 leftover unique @ e18b9eb79c18e2f8d867d12fc4277d830632a2ac -- GRADE HOLD (post-merge)
+
+- Landed despite HOLD: squash 132f8d6398701d7339b734b85d702c643a1fbb34 at 12:00:03 AM ET 2026-10-01, subject fix(weaviate) (#17762), one parent 6aac8b4d. Tree equals graded tree 3708dcb2. All three blobs match e18b9eb7.
+- H1 live on main: init container stays disabled, and node-tunables.json still has no vm.overcommit_memory. The privileged init also set vm.overcommit_memory=1. Kernel default is 0. Vector-index mmap can still fail. The test does not pin overcommit.
+- Later main commit b7039f1f (12:05 AM ET) is an archive shard for #17762 and does not touch the three product files.
+- No open or closed PR mentions overcommit_memory.
+- Path to GO: keep the init disabled; add vm.overcommit_memory=1 to node-tunables.json; pin it in the test.
