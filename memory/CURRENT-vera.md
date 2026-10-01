@@ -3285,3 +3285,21 @@ Grafana init is docker.io/library/busybox:1.38.0. Same tag. OpenSearch omits the
 bun test opensearch-chown-image-pinned.test.ts: tip 2 pass. Parent exit 1 (unset imageTag is floating). Mutation imageTag latest exit 1. Mutation imageTag 9.9.9 stays green. The test does not lock 1.38.0. Significant soft. lane-footprints.json:173 still lists busybox:latest for opensearch. Soft.
 
 CI: 0 check runs on 970ea49b. Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17781 leftover unique @ b30b01525181ec367185386d6565c8e3f5e7aac1 -- GRADE GO
+
+Tip b30b01525181ec367185386d6565c8e3f5e7aac1 is 1 parent. Parent 1ccd3262ffa96372878c0e116ab1e019acaa286d. Stat +1001/-235, 21 files. Live head is that SHA and was graded. PR base 8df54dbd is main, not the commit parent.
+
+Nine BestEffort platform controllers priced. 23 regular containers, all with cpu and memory requests and no limit quantities. Parent render of those containers was empty (requests null, sealed-secrets {}). Metal values match the Application yaml. Dev is the overlay floor. sealed-secrets limits: {} exists on both parent and tip with no quantities. cert-manager startupapicheck Job and two spire init containers stay empty. Pods stay Burstable.
+
+dapr scheduler is 3 pods with ha.enabled false. Chart dapr 1.18.3 dapr_scheduler_statefulset.yaml:13 hardcodes replicas: 3. Helm of both parent and tip rendered replicas 3.
+
+Longhorn: node 16000m (single-node-budget.json:369), kube-reserved 500 (k3s-server.nix:99) plus system-reserved 250 (k3s-process-protection.nix:158) equals 750, allocatable 15250m. resourceTotal metal over 50 dirs: tip 14015m / 29635Mi, parent 13215m / 27659Mi. Application.yaml:60 sets v1 5 and v2 5. Gate uses Math.ceil(15250*5/100)=763. Sum 14778m, spare 472m. 5 percent fits. 12 percent of this roster is 1830m, 14015+1830=15845, over by 595m. Prose 762/14777/473 is truncation, not the gate.
+
+Tests: bun test platform-controllers-requests.test.ts at the tip, 6 pass. Same file on the parent, 2 fail. Mutation to 12 percent fails (received 15845, greater than 15250). Zeroing metal headlamp fails. Not pushed.
+
+Disclosed and still true: longhorn-manager no request; cilium-agent, envoy, operator, and hubble no request (the cilium pod 100m is init install-cni-binaries only); openbao unseal container no request; gitlab snapshot object equal to the parent.
+
+CI: no check red on the tip and green on the parent. agencysignature (main tip) skipped on the tip and success on the parent. Soft. Lanes and live cluster checks were still in progress at grade time. test (TS hermetic) parent of that name was already a failure.
+
+Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
