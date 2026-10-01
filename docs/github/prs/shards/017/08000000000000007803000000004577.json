@@ -1,0 +1,12 @@
+{
+  "pr_number": 17783,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17783-fix-observability-widen-liveness-stall-tolerance-for-redis-tempo-prometheus-oper.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T06:19:12.378Z",
+  "schema_version": "v1",
+  "commit_sha": "853af90bdc278f19b2ad56c52b36044126f2e4cc",
+  "title": "fix(observability): widen liveness stall tolerance for redis, tempo, prometheus-operator, node-exporter, kube-state-metrics",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T06:18:27Z",
+  "head_ref": "fix/obs-liveness-stall-tolerance"
+}
