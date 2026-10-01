@@ -1,0 +1,14 @@
+{
+  "id": "080d07b9d0263810a013000816d7cbf1",
+  "at": "2026-10-01T11:29:29.799Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VKM164087G0R001RJFB2Z",
+    "type": "task",
+    "title": "GitLab live proof lane: deploy gitlab on a hosted runner and assert (a)-(f) live",
+    "slug": "gitlab-live-proof-lane-deploy-gitlab-on-a-hosted-runner-and",
+    "priority": "P2",
+    "filename": "081M3VKM164087G0R001RJFB2Z-gitlab-live-proof-lane-deploy-gitlab-on-a-hosted-runner-and.md"
+  }
+}
