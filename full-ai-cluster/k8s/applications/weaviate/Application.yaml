@@ -60,6 +60,38 @@ spec:
           repo: semitechnologies/weaviate
           tag: 1.32.7
         replicas: 1 # bump to 3 for HA once cluster has the headroom
+        # NO PRIVILEGED `alpine:latest` INITCONTAINER. The chart's default
+        # `initContainers.sysctlInitContainer.enabled: true` renders, MEASURED by
+        # `helm template` of 17.8.3 against this valuesObject (2026-09-30), a
+        # `configure-sysctl` init container with `privileged: true`, `runAsUser: 0`
+        # and image `docker.io/alpine:latest`. Three defects in one line:
+        #
+        #  1. AN IMAGE THAT NOTHING PRELOADS AND NOTHING PINS. `alpine:latest` is on
+        #     no bootstrap preload list, so on a fresh install the pod cannot leave
+        #     `Init:0/1` until an anonymous Docker Hub pull succeeds -- the same
+        #     registry whose 429 is cited above for weaviate itself. A StatefulSet
+        #     with readyReplicas 0 != replicas 1 is `Progressing`, and an
+        #     Application whose only complaint is a Progressing workload has an EMPTY
+        #     `status.conditions`: the signature of the "Synced/Progressing,
+        #     conditions empty" run recorded in
+        #     docs/trajectories/usb-installer-first-boot-reliability/RESUME.md §4.
+        #     A CANDIDATE for that run, not a confirmed cause: no live pod
+        #     description exists.
+        #  2. `:latest` MOVES. The repo's own image audit flags it
+        #     (image-resolvability.json `isLatestOrUntagged: true`).
+        #  3. PRIVILEGED, to run `sysctl -w`. Refused by any restricted Pod Security
+        #     admission, and the only privileged container in this namespace.
+        #
+        # THE HOST ALREADY OWNS THIS KNOB. `vm.max_map_count` is a node-wide kernel
+        # setting, so the init container was setting the host's value from a pod --
+        # which is why opensearch ships `sysctlInit.enabled: false` for the same
+        # reason, and why full-ai-cluster/k8s/node-tunables.json declares it once for
+        # the NixOS host (k8s-node-tunables.nix) and the CI runner. The value this
+        # chart asked for (524288) is now the declared host value; it was 262144,
+        # opensearch's floor and below weaviate's.
+        initContainers:
+          sysctlInitContainer:
+            enabled: false
         # CLUSTER-INTERNAL, NOT LoadBalancer. The chart defaults BOTH `service`
         # and `grpcService` to `type: LoadBalancer`, which did two things here
         # and neither was intended:

@@ -24,6 +24,11 @@
     "  state the floor: https://opensearch.org/docs/latest/install-and-configure/install-opensearch/index/",
     "  (search 'max_map_count'; also the Elasticsearch original this note descends from:",
     "  https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html).",
+    "  Raised 262144 -> 524288 on 2026-09-30 for weaviate: its chart's default",
+    "  sysctlInitContainer (privileged, docker.io/alpine:latest) asks for exactly 524288,",
+    "  and weaviate/Application.yaml now disables that container. 524288 is a CEILING on",
+    "  mappings per process, not an allocation, so it satisfies OpenSearch's 262144 floor",
+    "  and costs nothing to hosts that never reach it.",
     "",
     "fs.inotify.max_user_instances — kubelet's own config/secret sync watcher plus every",
     "  config-reloader sidecar and log-tailing agent (alloy, promtail-shaped DaemonSets,",
@@ -70,9 +75,9 @@
   "sysctls": [
     {
       "key": "vm.max_map_count",
-      "value": 262144,
+      "value": 524288,
       "hostDefault": 65530,
-      "requiredBy": "opensearch (full-ai-cluster/k8s/applications/opensearch/Application.yaml, sysctlInit.enabled=false)",
+      "requiredBy": "opensearch (full-ai-cluster/k8s/applications/opensearch/Application.yaml, sysctlInit.enabled=false; floor 262144) and weaviate (full-ai-cluster/k8s/applications/weaviate/Application.yaml, initContainers.sysctlInitContainer.enabled=false; chart default 524288)",
       "citation": "https://opensearch.org/docs/latest/install-and-configure/install-opensearch/index/"
     },
     {
