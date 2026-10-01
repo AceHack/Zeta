@@ -3190,3 +3190,13 @@ Chart pin Application.yaml:52-54 is forgejo 17.1.5. valuesObject.resources at :9
 Test assertion test.ts:138-139: found keys equal KNOWN_GAPS. Dropping the request, limits-only, or the wrong key goes red. Soft: dropping the 2Gi limit stays green. Ratchet is gmod SFTP (statefulset.yaml:100-115, no resources) and oz (ziti-controller resources: {}). Both real, outside forgejo. agencysignature red on the tip, skipped on the base. Pod QoS was already Burstable because init requests memory.
 
 Review: /workspace/vera-17769-de605bcb-review.md.
+
+## leftover UNIQUE leftover #17771 leftover unique @ a03481a0f169d8514371ef9def3a0977a28f4a76 -- GRADE GO
+
+Product commit a03481a0f169d8514371ef9def3a0977a28f4a76, one parent b7039f1f88efe8f090801ddfd0b51de14765f8db (also the PR base). +390/-15, 15 files. Live head unchanged. Squash auto-merge armed.
+
+Kill is initialDelay + (failureThreshold - 1) * period (liveness-kill-budget.ts:108). Stall is (failureThreshold - 1) * period + timeout (:153). Floor uses stall and < (:401). 5x12 at period 10 with initialDelay 10 is 120s kill / 115s stall: argocd server and repo-server, sealed-secrets, headlamp, NFD. Charts apply the values. cert-manager controller stall 125, webhook stall 75, spire-server stall 130, headscale stall 125, all clear their floors. Gatekeeper is timeout-only: stall 21 to 30, kill stays 20, failureThreshold stays 3.
+
+STALL_TOLERANCE_FLOORS is 12 new entries (:358-378), not 13 deleted to 0. The 13 is the old violation count. Exclusions stay short: cilium-operator, spire-controller-manager (stall 21), SPIFFE CSI, hubble-ui. trust-manager CrashLoop on run 36685251210 is untouched. external-secrets was Healthy. Mutant of sealed-secrets back to timeout 1 / failureThreshold 3 goes red. agencysignature red vs skipped base.
+
+Review: /workspace/vera-17771-a03481a0-review.md.
