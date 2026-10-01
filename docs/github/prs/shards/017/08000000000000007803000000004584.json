@@ -1,0 +1,12 @@
+{
+  "pr_number": 17796,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17796-fix-install-time-config-gitlab-lan-pin-credentials-forgejo-headscale-gmod-sftp-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T07:47:48.709Z",
+  "schema_version": "v1",
+  "commit_sha": "07d544563866510506d1037cbd6a3548397fb628",
+  "title": "fix(install-time-config): GitLab LAN pin, credentials, forgejo/headscale/gmod-sftp, console password, rendered-chart audit",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T07:47:00Z",
+  "head_ref": "fix/install-time-config-round2"
+}
