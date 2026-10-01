@@ -7,6 +7,7 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
+import { renderLbPoolApplicationText } from "./lb-ipam-pool.ts";
 import {
   buildGitlabLaneApplication,
   CHECKS,
@@ -23,6 +24,8 @@ import {
   jsonMergePatch,
   KIND_LB_POOL_MANIFEST_PATH,
   kindPoolLanAddress,
+  kindPoolRange,
+  laneLbPoolApplication,
   METRICS_SERVER_CHART,
   PINNED_LEAVES,
   pipelineVerdict,
@@ -65,7 +68,7 @@ describe("the check roster", () => {
   });
 
   test("the owner's lettered checks (a)..(f) are all present and blocking", () => {
-    for (const letter of ["a1", "a2", "a3", "a4", "a5", "b1", "c1", "c2", "d1", "d2", "d3", "e1", "e2", "f1", "f2", "f3"]) {
+    for (const letter of ["a1", "a2", "a3", "a4", "a5", "b1", "c1", "c2", "d1", "d2", "d3", "e1", "e2", "f1", "f2", "f3", "f4"]) {
       const spec = CHECKS.find((c) => c.id.startsWith(`${letter}-`));
       expect(spec, letter).toBeDefined();
       expect(spec?.blocking, letter).toBe(true);
@@ -80,6 +83,12 @@ describe("the check roster", () => {
     // The token Job completing proves nothing on its own (it exits 0 on its own failure by design):
     // the Secret check must depend on it, and the runner pod must depend on the Secret check.
     expect(CHECKS.find((c) => c.id === "d1-runner-pod-running")?.dependsOn).toContain("c2-runner-secret-token");
+  });
+
+  test("the clone-URL check needs a project to exist (e1) and the Gateway (f1): it cannot pass on a URL it never got", () => {
+    const f4 = CHECKS.find((c) => c.id === "f4-clone-url-from-host");
+    expect(f4?.dependsOn).toContain("e1-pipeline-success");
+    expect(f4?.dependsOn).toContain("f1-gateway-programmed");
   });
 });
 
@@ -144,6 +153,27 @@ describe("the LAN address pin follows the installer, not this lane", () => {
 
   test("the lane address is the LAST address of the kind pool, as the installer pins the last of the resolved range", () => {
     expect(kindPoolLanAddress(poolText)).toBe("172.18.255.220");
+    expect(kindPoolRange(poolText)).toEqual({ start: "172.18.255.200", stop: "172.18.255.220" });
+  });
+
+  test("the installer's lb-pool Application is rendered for the kind range and retargeted at the served tree -- nothing else moves", () => {
+    const rendered = renderLbPoolApplicationText("172.18.255.200", "172.18.255.220", ROOT);
+    const out = parse(laneLbPoolApplication(rendered, "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git", "main")) as unknown;
+    expect(getLeaf(out, ["spec", "source", "repoURL"])).toBe("http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git");
+    expect(getLeaf(out, ["spec", "source", "targetRevision"])).toBe("main");
+    expect(getLeaf(out, ["spec", "source", "path"])).toBe("full-ai-cluster/k8s/lb-ipam");
+    // The kustomize patches -- the thing the lane exists to exercise -- survive, with the range substituted.
+    const text = JSON.stringify(getLeaf(out, ["spec", "source", "kustomize", "patches"]));
+    expect(text).toContain("172.18.255.200");
+    expect(text).toContain("172.18.255.220");
+    expect(text).toContain("gitlab-lan-address");
+    expect(text).not.toContain("@ZETA_");
+  });
+
+  test("an unsubstituted token or a template with no patches is refused", () => {
+    const raw = read(INSTALL_TIME_LB_APPLICATION_PATH);
+    expect(() => laneLbPoolApplication(raw, "http://x/tree.git", "main")).toThrow(/@ZETA_/);
+    expect(() => laneLbPoolApplication("kind: Application\nspec:\n  source: {}\n", "http://x/tree.git", "main")).toThrow(/no kustomize patches/);
   });
 
   test("a pool manifest with no pool is refused, not defaulted", () => {
@@ -183,9 +213,9 @@ describe("the LAN address pin follows the installer, not this lane", () => {
 describe("readiness predicates do not round up", () => {
   const dep = (name: string, app: string, want: number, have: number): WorkloadItem => ({
     kind: "Deployment",
-    metadata: { name, labels: { app } },
+    metadata: { name, labels: { app }, generation: 3 },
     spec: { replicas: want },
-    status: { readyReplicas: have },
+    status: { readyReplicas: have, updatedReplicas: have, replicas: have, observedGeneration: 3 },
   });
 
   test("an ABSENT workload is not Ready", () => {
@@ -205,8 +235,23 @@ describe("readiness predicates do not round up", () => {
   });
 
   test("a StatefulSet counts (gitaly)", () => {
-    const sts: WorkloadItem = { kind: "StatefulSet", metadata: { name: "gitlab-gitaly", labels: { app: "gitaly" } }, spec: { replicas: 1 }, status: { readyReplicas: 1 } };
+    const sts: WorkloadItem = { kind: "StatefulSet", metadata: { name: "gitlab-gitaly", labels: { app: "gitaly" } }, spec: { replicas: 1 }, status: { readyReplicas: 1, updatedReplicas: 1 } };
     expect(componentReadiness([sts], COMPONENT_LABELS.gitaly).ready).toBe(true);
+  });
+
+  test("a ROLLOUT IN FLIGHT is not Ready: the installer's address pin re-renders the Application and replaces every component once", () => {
+    const base = dep("w", "webservice", 1, 1);
+    // old pod still Ready, new pod not yet up: surge pod present
+    expect(componentReadiness([{ ...base, status: { ...base.status, replicas: 2, updatedReplicas: 1 } }], "webservice").ready).toBe(false);
+    // the controller has not yet observed the new spec
+    expect(componentReadiness([{ ...base, metadata: { ...base.metadata, generation: 4 } }], "webservice").ready).toBe(false);
+    // the one Ready replica is still on the OLD template
+    expect(componentReadiness([{ ...base, status: { ...base.status, updatedReplicas: 0 } }], "webservice").ready).toBe(false);
+    expect(componentReadiness([{ ...base, status: { ...base.status, updatedReplicas: 0 } }], "webservice").detail).toContain("rollout in progress");
+    // a StatefulSet still moving to its update revision
+    const sts: WorkloadItem = { kind: "StatefulSet", metadata: { name: "g", labels: { app: "gitaly" } }, spec: { replicas: 1 }, status: { readyReplicas: 1, updatedReplicas: 1, currentRevision: "g-1", updateRevision: "g-2" } };
+    expect(componentReadiness([sts], "gitaly").ready).toBe(false);
+    expect(componentReadiness([{ ...sts, status: { ...sts.status, currentRevision: "g-2" } }], "gitaly").ready).toBe(true);
   });
 
   test("a Pod is Ready only when Running AND the Ready condition is True; restarts are summed", () => {

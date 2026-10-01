@@ -36,6 +36,12 @@ on:
         required: false
         default: "900"
         type: string
+      pin:
+        description: "How GitLab's LAN address is pinned: `job` = the installer's lb-pool Application + Job gitlab-lan-address (what a node does); `inline` = the lane patches it itself (debug only; f0 then reads did-not-run)"
+        required: false
+        default: "job"
+        type: choice
+        options: ["job", "inline"]
   push:
     branches: ["gitlab-live-proof-iter"]
 
@@ -123,6 +129,7 @@ jobs:
           GITLAB_PROOF_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           READY_SEC: ${{ inputs.ready_sec || '2700' }}
           PHASE_SEC: ${{ inputs.phase_sec || '900' }}
+          PIN_MODE: ${{ inputs.pin || 'job' }}
         run: |
           set -o pipefail
           bun src/Core.TypeScript/cluster/gitlab-live-proof.ts \
@@ -131,6 +138,7 @@ jobs:
             --git-ref "$GITLAB_PROOF_REF" \
             --ready-sec "$READY_SEC" \
             --phase-sec "$PHASE_SEC" \
+            --pin "$PIN_MODE" \
             --report "$RUNNER_TEMP/gitlab-proof.json" \
             --summary "$GITHUB_STEP_SUMMARY" \
             | tee "$RUNNER_TEMP/gitlab-proof.log"
@@ -188,6 +196,9 @@ jobs:
       - name: Cilium Gateway / LB-IPAM view
         if: always()
         run: |
+          kubectl -n kube-system get job gitlab-lan-address -o wide || true
+          kubectl -n kube-system logs job/gitlab-lan-address --all-containers=true --tail=30 || true
+          kubectl -n argocd get application cilium-lb-ipam-pool -o wide || true
           kubectl get gatewayclass || true
           kubectl get ciliumloadbalancerippools.cilium.io -o wide || true
           kubectl get svc -A --field-selector spec.type=LoadBalancer -o wide || true

@@ -48,6 +48,8 @@ import { parse, parseAllDocuments, stringify } from "yaml";
 import { bootstrapKindClusterInProcess, defaultKindCiliumConfigPath } from "./harness/bootstrap.ts";
 import { buildLaneTreeForProfile } from "./argocd-health-test.ts";
 import { liveDevClusterPorts } from "./dev-cluster/deps.ts";
+import { laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
+import { renderLbPoolApplicationText } from "./lb-ipam-pool.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const GITLAB_APPLICATION_PATH = "full-ai-cluster/k8s/applications/gitlab/Application.yaml";
@@ -103,9 +105,11 @@ export const CHECKS: readonly CheckSpec[] = [
   { id: "e1-pipeline-success", name: "(e) untagged pipeline succeeds on the runner", dependsOn: ["d2-runner-api-online"], blocking: true },
   { id: "e2-kubernetes-executor-pod", name: "(e) the job ran in a Kubernetes executor pod", dependsOn: ["e1-pipeline-success"], blocking: true },
   { id: "d3-runner-not-crash-looping", name: "(d) runner container never restarted (checked after the pipeline and a soak)", dependsOn: ["d1-runner-pod-running"], blocking: true },
+  { id: "f0-address-pin-job", name: "(f) Job gitlab-lan-address pinned the Application's three address leaves to the last address of the lb pool", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "f1-gateway-programmed", name: "(f) Gateway gitlab-lan Programmed at the pinned address, routes Accepted", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "f2-external-url-from-host", name: "(f) external URL answers from outside the pod network and advertises itself", dependsOn: ["f1-gateway-programmed", "a1-webservice-ready"], blocking: true },
   { id: "f3-registry-route-from-host", name: "(f) /v2/ routes to the registry from outside the pod network", dependsOn: ["f1-gateway-programmed", "a4-registry-ready"], blocking: true },
+  { id: "f4-clone-url-from-host", name: "(f) the clone URL GitLab advertises is the pinned LAN address and `git ls-remote` works through it from the host", dependsOn: ["f1-gateway-programmed", "e1-pipeline-success"], blocking: true },
 ];
 
 export class ProofReport {
@@ -190,17 +194,37 @@ export class ProofReport {
 
 // ------------------------------------------------------- lane address pin ---
 
-/** Last address of the kind LB-IPAM pool -- the address the installer's `gitlab-lan-address` Job would pin. */
-export function kindPoolLanAddress(poolManifestText: string): string {
+/** The kind LB-IPAM pool's range: first address of the first block, last address of the last block. */
+export function kindPoolRange(poolManifestText: string): { readonly start: string; readonly stop: string } {
   for (const doc of parseAllDocuments(poolManifestText)) {
     const obj = doc.toJS() as { kind?: string; spec?: { blocks?: { start?: string; stop?: string }[] } } | null;
     if (obj?.kind !== "CiliumLoadBalancerIPPool") continue;
     const blocks = obj.spec?.blocks ?? [];
+    const first = blocks[0];
     const last = blocks[blocks.length - 1];
-    if (last?.stop === undefined) throw new Error("the kind CiliumLoadBalancerIPPool carries no block with a stop address");
-    return last.stop;
+    if (first?.start === undefined || last?.stop === undefined) throw new Error("the kind CiliumLoadBalancerIPPool carries no block with a start and a stop address");
+    return { start: first.start, stop: last.stop };
   }
   throw new Error("no CiliumLoadBalancerIPPool in the kind LB-IPAM manifest");
+}
+
+/** Last address of the kind LB-IPAM pool -- the address the installer's `gitlab-lan-address` Job pins. */
+export function kindPoolLanAddress(poolManifestText: string): string {
+  return kindPoolRange(poolManifestText).stop;
+}
+
+/**
+ * The installer's own `cilium-lb-ipam-pool` Application, rendered for the kind pool's range exactly as
+ * `injected-lb-pool.nix` renders it for a node (`renderLbPoolApplicationText`), and pointed at the in-cluster
+ * served tree instead of GitHub -- the one substitution the lane needs, because that tree is the committed
+ * tree at the dev rung. Applying THIS Application is what makes `Job gitlab-lan-address` run the way it does
+ * on metal: wait for Application `gitlab`, then merge-patch the three address leaves.
+ */
+export function laneLbPoolApplication(renderedTemplate: string, servedRepoUrl: string, servedRef: string): string {
+  const app = parse(renderedTemplate) as Json;
+  if (getLeaf(app, ["spec", "source", "kustomize", "patches"]) === undefined) throw new Error("the lb-ipam Application carries no kustomize patches");
+  if (JSON.stringify(app).includes("@ZETA_")) throw new Error("the lb-ipam Application still carries an unsubstituted @ZETA_*@ token");
+  return stringify(jsonMergePatch(app, { spec: { source: { repoURL: servedRepoUrl, targetRevision: servedRef } } }));
 }
 
 type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
@@ -274,9 +298,17 @@ export function buildGitlabLaneApplication(applicationText: string, patch: Json,
 
 export interface WorkloadItem {
   readonly kind: string;
-  readonly metadata: { readonly name: string; readonly labels?: Record<string, string> };
+  readonly metadata: { readonly name: string; readonly labels?: Record<string, string>; readonly generation?: number };
   readonly spec?: { readonly replicas?: number };
-  readonly status?: { readonly readyReplicas?: number; readonly availableReplicas?: number; readonly replicas?: number };
+  readonly status?: {
+    readonly readyReplicas?: number;
+    readonly availableReplicas?: number;
+    readonly replicas?: number;
+    readonly updatedReplicas?: number;
+    readonly observedGeneration?: number;
+    readonly currentRevision?: string;
+    readonly updateRevision?: string;
+  };
 }
 
 /** The `app=` label values the GitLab chart puts on each component. */
@@ -309,9 +341,18 @@ export function componentReadiness(items: readonly WorkloadItem[], appLabel: str
   for (const m of matches) {
     const want = m.spec?.replicas ?? 1;
     const have = m.status?.readyReplicas ?? 0;
-    const ok = want >= 1 && have >= 1 && have >= want;
+    // A ROLLOUT IN FLIGHT IS NOT READY. The installer's address pin re-renders the Application after the
+    // first sync, so every component is replaced once; a Ready pod that is about to be terminated must not
+    // count. The controller must have seen the latest spec, every replica must be on it, no surge pod may
+    // remain, and a StatefulSet must be on its update revision.
+    const seen = m.status?.observedGeneration === undefined || m.metadata.generation === undefined || m.status.observedGeneration >= m.metadata.generation;
+    const updated = (m.status?.updatedReplicas ?? 0) >= want;
+    const noSurge = m.kind !== "Deployment" || m.status?.replicas === undefined || m.status.replicas <= want;
+    const onRevision = m.kind !== "StatefulSet" || m.status?.currentRevision === undefined || m.status.updateRevision === undefined || m.status.currentRevision === m.status.updateRevision;
+    const ok = want >= 1 && have >= 1 && have >= want && seen && updated && noSurge && onRevision;
     if (!ok) all = false;
-    parts.push(`${m.kind}/${m.metadata.name} ready ${String(have)}/${String(want)}`);
+    const rolling = !(seen && updated && noSurge && onRevision) ? " (rollout in progress)" : "";
+    parts.push(`${m.kind}/${m.metadata.name} ready ${String(have)}/${String(want)}${rolling}`);
   }
   return { ready: all, detail: parts.join("; ") };
 }
@@ -597,6 +638,8 @@ export interface ProofOptions {
   /** Seconds each of the later phases (token, runner, pipeline) may take once its prerequisite passed. */
   readonly phaseSec: number;
   readonly soakSec: number;
+  /** `job`: the installer's lb-pool Application + Job pin the address (production). `inline`: the lane patches it (debug). */
+  readonly pin: "job" | "inline";
   readonly reportPath: string | null;
   readonly summaryPath: string | null;
 }
@@ -685,11 +728,31 @@ function dumpArgoState(): void {
   }
 }
 
+/** The three address leaves of the LIVE `gitlab` Application, read back -- what the pin actually wrote. */
+function liveAddressLeaves(): readonly (string | undefined)[] {
+  const app = kubectlJson<unknown>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
+  const values = getLeaf(app, ["spec", "source", "helm", "valuesObject"]);
+  return PINNED_LEAVES.map((leaf) => {
+    const v = getLeaf(values, leaf);
+    return typeof v === "string" ? v : undefined;
+  });
+}
+
 async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> {
-  const address = kindPoolLanAddress(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
-  const patch = installTimeGitlabPatch(readFileSync(join(REPO_ROOT, INSTALL_TIME_LB_APPLICATION_PATH), "utf8"), address);
-  const application = buildGitlabLaneApplication(readFileSync(join(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8"), patch, address);
-  log(`lane LAN address (last address of the kind LB pool, as the installer pins it): ${address}`);
+  const range = kindPoolRange(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
+  const address = range.stop;
+  const committedApplication = readFileSync(join(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
+  // `job` (the default, and what a real node does): apply the installer's own lb-pool Application and the
+  // COMMITTED gitlab Application with its sentinel address, and let Job `gitlab-lan-address` pin it.
+  // `inline`: apply the same merge patch ourselves before the first sync -- a debugging aid that proves
+  // nothing about the Job, and is reported as such (f0 is did-not-run).
+  const application =
+    opts.pin === "inline"
+      ? buildGitlabLaneApplication(committedApplication, installTimeGitlabPatch(readFileSync(join(REPO_ROOT, INSTALL_TIME_LB_APPLICATION_PATH), "utf8"), address), address)
+      : committedApplication;
+  log(`lane LAN address (last address of the kind LB pool, ${range.start}-${range.stop}, as the installer pins it): ${address}; pin=${opts.pin}`);
+  // A git call that wants a password must FAIL, not wait for a terminal nobody is at.
+  process.env["GIT_TERMINAL_PROMPT"] = "0";
 
   if (!opts.existing) {
     const laneTree = buildLaneTreeForProfile("dev", opts.gitRef);
@@ -710,16 +773,42 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
   const metrics = installMetricsApi();
   log(metrics);
 
-  log("applying the gitlab Application (committed manifest + install-time address pin) ...");
+  if (opts.pin === "job") {
+    log("applying the installer's cilium-lb-ipam-pool Application (the one injected-lb-pool.nix renders on a node) ...");
+    const lbApp = laneLbPoolApplication(renderLbPoolApplicationText(range.start, range.stop, REPO_ROOT), laneTreeRepoUrl(), SERVED_GIT_REF);
+    const lb = kubectl(["apply", "-n", "argocd", "-f", "-"], { input: lbApp });
+    if (lb.code !== 0) {
+      report.record("a0-lane-up", "failed", `could not apply the cilium-lb-ipam-pool Application: ${lb.stderr.trim().slice(0, 300)}`);
+      return;
+    }
+  }
+
+  log(`applying the gitlab Application (${opts.pin === "job" ? "committed manifest, sentinel address" : "committed manifest + inline address pin"}) ...`);
   const applied = kubectl(["apply", "-n", "argocd", "-f", "-"], { input: application });
   if (applied.code !== 0) {
     report.record("a0-lane-up", "failed", `could not apply the gitlab Application: ${applied.stderr.trim().slice(0, 300)}`);
     return;
   }
-  report.record("a0-lane-up", "passed", `cluster ${opts.clusterName} up; ${metrics}; gitlab Application applied with LAN address ${address}`);
+  report.record("a0-lane-up", "passed", `cluster ${opts.clusterName} up; ${metrics}; gitlab Application applied (pin=${opts.pin}, LAN address ${address})`);
 
   const appliedAt = Date.now();
   const readyDeadline = appliedAt + opts.readySec * 1000;
+
+  // ---- (f0) the install-time address pin followed the pool ------------------------------------
+  if (opts.pin === "inline") {
+    report.record("f0-address-pin-job", "did-not-run", "pin=inline: the lane patched the Application itself, so Job gitlab-lan-address was not exercised");
+  } else {
+    const r = await pollUntil(Date.now() + opts.phaseSec * 1000, 10_000, () => {
+      const job = kubectlJson<JobItem>(["get", "job/gitlab-lan-address", "-n", "kube-system"]);
+      const leaves = liveAddressLeaves();
+      const pinned = leaves.every((l) => l === address);
+      const lb = kubectlJson<ArgoApp>(["get", "application.argoproj.io/cilium-lb-ipam-pool", "-n", "argocd"]);
+      const detail = `Job gitlab-lan-address ${job === null ? "absent" : jobComplete(job) ? "Complete" : "not complete"}; Application gitlab leaves=[${leaves.map((l) => l ?? "<unset>").join(", ")}] want ${address}; cilium-lb-ipam-pool sync=${lb?.status?.sync?.status ?? "?"} health=${lb?.status?.health?.status ?? "?"}`;
+      return { done: job !== null && jobComplete(job) && pinned, detail };
+    });
+    report.record("f0-address-pin-job", r.done ? "passed" : "failed", r.detail);
+    log(`f0: ${r.detail}`);
+  }
 
   // ---- (a) components Ready -------------------------------------------------------------------
   const comps: readonly [string, string][] = [
@@ -771,6 +860,8 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
   // ---- shared API proxy -----------------------------------------------------------------------
   const proxy = new ApiForward();
   let accessToken: string | null = null;
+  /** The clone URL GitLab ADVERTISES for the proof project (built from `global.hosts.gitlab`), for (f4). */
+  let advertisedCloneUrl: string | null = null;
   try {
     // Only worth opening when the webservice is Ready: a forward to a Service with no ready pod would
     // throw here and take (f2)/(f3), which do not need it, down with it.
@@ -866,6 +957,7 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
       const name = `zeta-live-proof-${String(Date.now())}`;
       const created = await proxy.request("POST", "/api/v4/projects", { token, json: { name, visibility: "private", initialize_with_readme: true, default_branch: "main" } });
       const projectId = (created.json as { id?: number } | null)?.id;
+      advertisedCloneUrl = (created.json as { http_url_to_repo?: string } | null)?.http_url_to_repo ?? null;
       if (created.status !== 201 || projectId === undefined) {
         report.record("e1-pipeline-success", "failed", `POST /projects -> ${String(created.status)} ${created.text.slice(0, 200)}`);
       } else {
@@ -967,6 +1059,24 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
     });
     report.record("f3-registry-route-from-host", r.done ? "passed" : "failed", r.detail);
   }
+  if (report.blockedBy("f4-clone-url-from-host") === null) {
+    // The URL GitLab ADVERTISES for a repository is built from `global.hosts.gitlab.name`, the third place the
+    // installer's address pin writes. It must be the LAN address AND a client on the LAN must be able to use it.
+    if (advertisedCloneUrl === null || accessToken === null) {
+      report.record("f4-clone-url-from-host", "failed", "no clone URL was captured from POST /projects");
+    } else {
+      const cloneUrl: string = advertisedCloneUrl;
+      const basic = Buffer.from(`oauth2:${accessToken}`).toString("base64");
+      const r = await pollUntil(Date.now() + 180_000, 10_000, () => {
+        // The token travels in a header, never in the URL, and is never printed.
+        const g = run("git", ["-c", `http.extraHeader=Authorization: Basic ${basic}`, "ls-remote", cloneUrl, "HEAD"], { timeoutMs: 60_000 });
+        const head = /^([0-9a-f]{40})\s+HEAD/m.exec(g.stdout)?.[1];
+        return { done: g.code === 0 && head !== undefined, detail: g.code === 0 ? `git ls-remote ${cloneUrl} HEAD -> ${head ?? "<no HEAD>"}` : `git ls-remote ${cloneUrl} failed (exit ${String(g.code)}): ${g.stderr.replaceAll(basic, "<redacted>").trim().slice(0, 240)}` };
+      });
+      const lan = cloneUrl.startsWith(`http://${address}/`);
+      report.record("f4-clone-url-from-host", r.done && lan ? "passed" : "failed", lan ? r.detail : `GitLab advertises ${cloneUrl}, which is not on the pinned LAN address ${address}; ${r.detail}`);
+    }
+  }
 
   // ---- (a+) ArgoCD's own verdict, judged LAST (informational) ----------------------------------
   // The runner Deployment (wave 10) and the token Job (wave 5) only exist after wave 0 is Healthy, so
@@ -992,6 +1102,7 @@ function parseArgs(argv: readonly string[]): { mode: "run" | "dry-run" | "diagno
     readySec: 2700,
     phaseSec: 900,
     soakSec: 120,
+    pin: "job" as "job" | "inline",
     reportPath: null as string | null,
     summaryPath: null as string | null,
   };
@@ -1012,6 +1123,11 @@ function parseArgs(argv: readonly string[]): { mode: "run" | "dry-run" | "diagno
       else if (a === "--ready-sec") o.readySec = Number(v());
       else if (a === "--phase-sec") o.phaseSec = Number(v());
       else if (a === "--soak-sec") o.soakSec = Number(v());
+      else if (a === "--pin") {
+        const p = v();
+        if (p !== "job" && p !== "inline") return `--pin must be job or inline (got ${p})`;
+        o.pin = p;
+      }
       else if (a === "--report") o.reportPath = v();
       else if (a === "--summary") o.summaryPath = v();
       else return `unknown argument: ${String(a)}`;
@@ -1041,7 +1157,9 @@ if (import.meta.main) {
     const address = kindPoolLanAddress(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
     const patch = installTimeGitlabPatch(readFileSync(join(REPO_ROOT, INSTALL_TIME_LB_APPLICATION_PATH), "utf8"), address);
     const app = buildGitlabLaneApplication(readFileSync(join(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8"), patch, address);
-    console.log(`lane address ${address}; rendered Application ${String(app.length)} bytes; ${String(CHECKS.length)} checks:`);
+    const rng = kindPoolRange(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
+    const lbApp = laneLbPoolApplication(renderLbPoolApplicationText(rng.start, rng.stop, REPO_ROOT), laneTreeRepoUrl(), SERVED_GIT_REF);
+    console.log(`lane address ${address} (pool ${rng.start}-${rng.stop}); rendered Application ${String(app.length)} bytes; lb-pool Application ${String(lbApp.length)} bytes; ${String(CHECKS.length)} checks:`);
     for (const c of CHECKS) console.log(`  ${c.id}${c.blocking ? "" : " (informational)"} <- [${c.dependsOn.join(", ")}]`);
     process.exit(0);
   }
