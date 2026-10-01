@@ -3337,3 +3337,21 @@ Tests: bun test opensearch-chown-image-pinned.test.ts at the tip, 2 pass. Puttin
 CI: 0 check runs on 5ddb8a06. Nothing is red on the tip and green on the parent.
 
 Auto-merge squash still armed. mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17773 leftover unique @ 28702a0aa25a16267c8d981fffd2b84704fd943e -- GRADE GO
+
+Prior GO @ 283306ce46efe9a77e6778c69c238de40372db76 stands for the nginx-unprivileged body. This cell is the follow-up tip only.
+
+Tip 28702a0aa25a16267c8d981fffd2b84704fd943e is 1 parent. Parent 9a697db1cc96e9ae392fab7ccbdb053e5c8dbfae is a merge and was not graded. Stat +7/-1, 1 file, lane-partition.test.ts only. No yaml, image, or probe change. Live head 382ec8605a9a97a514955c1485f7014d69fabfff is a merge of 28702a0a and 06bcef6a and was not graded.
+
+Expectation is now expect(all.diskGib).toBeCloseTo(65.5, 2) at lane-partition.test.ts:427. Bun precision 2 means difference < 0.005. Recomputed priceSet: 26339217148 bytes times 2.67 / 1024^3 = 65.49592109877617 (125 images, 1 unmeasurable not summed). Absolute difference 0.004078901223834919, inside.
+
+One more image of 20971416 compressed bytes is 0.05214817889034748 GiB and lands at 65.44377291988582, difference 0.056227080114183536, outside. Headroom is about 370420 compressed bytes. The window is not vacuous.
+
+Test at the tip: the runner-bound case, 1 pass. Parent file still expects 65.55 at its line 421. Footprints are byte-identical. That case fails, received 65.49592109877617.
+
+Image set versus pre-swap 6aac8b4d: platform dropped nginx:1.27-alpine (20971416 bytes) for docker.io/nginxinc/nginx-unprivileged:1.29-alpine, which mimir already listed and which was already sized at 23088694. Unique set loses one image and gains none. Comment rounds the delta as -0.0522; the exact delta is -0.05214817889034748.
+
+CI: 0 check runs on 28702a0a. Parent still has derive the lane matrix in failure. Nothing is red here and green on the parent.
+
+Auto-merge squash still armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
