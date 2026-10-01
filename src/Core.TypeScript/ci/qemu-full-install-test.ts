@@ -2430,7 +2430,24 @@ export interface K3sFirstBootVerifyBadPod {
   readonly restarts: string;
 }
 
+/** One capture of the module's three-state diagnostics: `captured` | `failed` | `did-not-run`. */
+export interface K3sFirstBootVerifyCaptureState {
+  readonly state: string;
+  /** Space-separated section names that did not run to completion, each with why. Empty when `captured`. */
+  readonly failedSections: string;
+}
+
 export interface K3sFirstBootVerifyVerdict {
+  /**
+   * Per-pod / capacity / per-Application evidence captured once mid-run (while
+   * the API still answers) and once at the end on a verdict-7 failure. Optional
+   * so verdict JSON from before the capture existed still parses. THREE states,
+   * never two: a capture that FAILED must not read as one that found nothing.
+   */
+  readonly clusterDiagnostics?: {
+    readonly mid: K3sFirstBootVerifyCaptureState;
+    readonly atEnd: K3sFirstBootVerifyCaptureState;
+  };
   readonly bootedMultiUser: { readonly ok: boolean; readonly elapsedSeconds: number };
   readonly k3sServiceActive: { readonly ok: boolean; readonly elapsedSeconds: number };
   readonly nodeReady: { readonly ok: boolean; readonly elapsedSeconds: number };
@@ -2709,6 +2726,13 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
       : [
           `     pods at the last sample: ${roster.podRunningAtLastSample ?? "-"} Running of ${roster.podTotalAtLastSample} total` +
             ` — a pod count that FELL with the Application count is eviction; one that HELD while Applications went Unknown is render failure`,
+        ]),
+    ...(verdict.clusterDiagnostics === undefined
+      ? []
+      : [
+          `     cluster diagnostics: mid=${verdict.clusterDiagnostics.mid.state}${verdict.clusterDiagnostics.mid.failedSections === "" ? "" : ` (${verdict.clusterDiagnostics.mid.failedSections.trim()})`}` +
+            `, end=${verdict.clusterDiagnostics.atEnd.state}${verdict.clusterDiagnostics.atEnd.failedSections === "" ? "" : ` (${verdict.clusterDiagnostics.atEnd.failedSections.trim()})`}` +
+            ` — per-pod describe/logs, the Pending-reason census and requests-vs-allocatable are under [wp11-cluster-diag] in the serial log artifact`,
         ]),
     // Every non-converged row, including EXCLUSIONS. An exclusion nobody can
     // see is how a verdict becomes decorative; a converged app needs no line.
