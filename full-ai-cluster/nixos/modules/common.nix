@@ -58,6 +58,14 @@
     # server gets the `platform-public-tls` ArgoCD Application. Absent -> adds
     # nothing, and the platform runs LAN-only with no issuer and no hostname.
     ./injected-public-tls.nix
+    # docs/ops/INSTALL-TIME-CONFIG.md row 3: the Cilium LoadBalancer address range as
+    # INSTALL-TIME configuration. With /etc/zeta/lb-pool present (`<first-ip>-<last-ip>`,
+    # written by zeta-install.sh from the ESP conf or the start-of-install prompt, after
+    # validating it against the LAN it measured), a k3s server gets the
+    # `cilium-lb-ipam-pool` ArgoCD Application. Absent -> adds nothing: no pool, and
+    # Services of type LoadBalancer stay <pending> (the installer said so). The repo
+    # carries NO default range -- the old 192.168.1.240-250 was right for one subnet.
+    ./injected-lb-pool.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes

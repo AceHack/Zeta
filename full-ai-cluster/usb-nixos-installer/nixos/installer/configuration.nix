@@ -409,6 +409,18 @@
     }
   '';
 
+  # ── docs/ops/INSTALL-TIME-CONFIG.md: the cluster identity the pre-wipe collision check needs ──
+  #
+  # zeta-install.sh clones the repo AFTER it wipes the disk, so BEFORE the wipe the only
+  # way it can know which pod/service CIDR this cluster derives is a copy that travels
+  # with the ISO. The pod and service CIDRs are a pure function of `clusterName`
+  # (cluster/cluster-cidr.ts), and whether they collide with the LAN this node is on is
+  # exactly the question that must be answered while refusing is still free. Read at
+  # `/etc/zeta-cluster-identity.json` (ZETA_CLUSTER_IDENTITY_FILE overrides). After the
+  # clone the installer re-checks against the clone's own copy, so an ISO older than
+  # main cannot make a stale answer stick.
+  environment.etc."zeta-cluster-identity.json".source = ../../../cluster-identity.json;
+
   # Marker file: presence enables the first-boot service. Absent on the
   # *installed* host (this config only ships on the live ISO), so the
   # service can't accidentally re-fire on the freshly installed system.

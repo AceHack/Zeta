@@ -3,10 +3,12 @@
 # WHY THIS FILE EXISTS. `type: LoadBalancer` Services (weaviate, game-hosting,
 # the portal, Cilium's own ingress) never receive `status.loadBalancer.ingress`
 # on a kind node: `servicelb` is disabled so Cilium owns L2-L4, and the metal
-# Application (`applications/cilium-lb-ipam/`) pins 192.168.1.240-250, a LAN
-# range with no meaning inside a container network. Applying that Application
-# here would ASSIGN IPs (enough for ArgoCD to call it Healthy) that nothing can
-# route -- worse than not running it -- AND selfHeal over this alias.
+# path's pool is a range on the node's own LAN, resolved by the installer
+# (`applications/cilium-lb-ipam/` ships only the L2 policy; the pool is applied by
+# the install-time `cilium-lb-ipam-pool` Application) -- a LAN range with no
+# meaning inside a container network. Applying the metal Application here would
+# ASSIGN IPs (enough for ArgoCD to call it Healthy) that nothing can route --
+# worse than not running it -- AND selfHeal over this alias.
 #
 # WHAT THIS FILE IS. The same two CRs the metal Application ships
 # (`CiliumLoadBalancerIPPool` `zeta-lb-pool`, `CiliumL2AnnouncementPolicy`

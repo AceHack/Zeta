@@ -66,7 +66,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 
-function yamlDocs(text: string): K8sObject[] {
+export function yamlDocs(text: string): K8sObject[] {
   return parseAllDocuments(text)
     .map((d) => d.toJS() as unknown)
     .filter(isRecord);
@@ -95,14 +95,14 @@ export function renderPublicTlsApplicationText(pe: PublicEndpoint, repoRoot = RE
     .replaceAll(PUBLIC_DOMAIN_TOKEN, pe.publicDomain);
 }
 
-type PatchOp = { readonly op: string; readonly path: string; readonly value?: unknown };
+export type PatchOp = { readonly op: string; readonly path: string; readonly value?: unknown };
 
 /**
  * The JSON6902 subset the template uses: `add` / `replace`, object keys and
  * array indices (`-` appends). Anything else THROWS — a renderer that silently
  * skipped an op would report a patched object that ArgoCD never produces.
  */
-function applyPatch(target: K8sObject, ops: readonly PatchOp[]): void {
+export function applyPatch(target: K8sObject, ops: readonly PatchOp[]): void {
   for (const op of ops) {
     if (op.op !== "add" && op.op !== "replace") throw new Error(`unsupported JSON6902 op: ${op.op}`);
     const parts = op.path.split("/").slice(1).map((p) => p.replaceAll("~1", "/").replaceAll("~0", "~"));

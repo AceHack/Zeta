@@ -218,8 +218,11 @@ describe("session-added apps: required objects present", () => {
     expect(ss).toContain("storageClassName: zeta-block-replicated");
   });
 
-  test("cilium-lb-ipam declares an IP pool + an L2 announcement policy", () => {
-    expect(read("cilium-lb-ipam/ip-pool.yaml")).toContain("kind: CiliumLoadBalancerIPPool");
+  test("cilium-lb-ipam declares an L2 announcement policy; the IP pool is install-time (k8s/lb-ipam), never in applications/", () => {
     expect(read("cilium-lb-ipam/l2-policy.yaml")).toContain("kind: CiliumL2AnnouncementPolicy");
+    // The pool carries no address in git (docs/ops/INSTALL-TIME-CONFIG.md row 3): the
+    // kustomize base declares it, the installer's range arrives as an inline patch.
+    expect(existsSync(join(dir, "cilium-lb-ipam/ip-pool.yaml"))).toBe(false);
+    expect(readFileSync(join(K8S, "lb-ipam/pool.yaml"), "utf8")).toContain("kind: CiliumLoadBalancerIPPool");
   });
 });

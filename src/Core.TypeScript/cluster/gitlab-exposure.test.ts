@@ -26,6 +26,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parse as parseYaml, parseAllDocuments, stringify as stringifyYaml } from "yaml";
 import { readAppSource } from "./crd-provider-consumer-order.ts";
+import { proposeLbPool } from "../installer/lan-config.ts";
 import {
   advertisedUrls,
   annotationsOf,
@@ -42,7 +43,24 @@ import {
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const GITLAB_APP = resolve(REPO_ROOT, "full-ai-cluster/k8s/applications/gitlab/Application.yaml");
-const IP_POOL = resolve(REPO_ROOT, "full-ai-cluster/k8s/applications/cilium-lb-ipam/ip-pool.yaml");
+/**
+ * THE POOL THE PIN MUST FALL INSIDE.
+ *
+ * The cluster's LoadBalancer range is no longer in git (docs/ops/INSTALL-TIME-CONFIG.md
+ * row 3): the installer resolves it per LAN. GitLab's LAN Gateway is still pinned to ONE
+ * literal address, so the pin can only be correct on a LAN where the installer's own
+ * proposal -- `.240-.250` of the node's /24 -- is the range in force. This is that
+ * proposal on the reference LAN the pin was written for (192.168.1.0/24). On any other LAN
+ * the pin lies outside the pool and `gitlab-lan` stays <pending>: a KNOWN GAP, recorded in
+ * INSTALL-TIME-CONFIG.md and printed by the installer, until the pin is derived from the
+ * resolved range instead of being a literal.
+ */
+const REFERENCE_LAN = { nodeIp: "192.168.1.74", prefix: 24, gateway: "192.168.1.254" } as const;
+function referencePool(): Record<string, unknown> {
+  const p = proposeLbPool(REFERENCE_LAN, []);
+  if (p === null) throw new Error("the installer proposes no pool for the reference LAN");
+  return { spec: { blocks: [{ start: p.start, stop: p.stop }] } };
+}
 const IN_CLUSTER_URL = "http://gitlab-webservice-default.gitlab.svc:8181";
 
 // ---------------------------------------------------------------------------
@@ -184,7 +202,7 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(addresses.map((a) => a["type"])).toEqual(["IPAddress"]);
     const pinned = String(addresses[0]!["value"]);
     expect(urls).toEqual({ gitlabHost: pinned, https: false, registryHost: pinned });
-    expect(inPool(pinned, poolRanges(parseYaml(readFileSync(IP_POOL, "utf8"))))).toBe(true);
+    expect(inPool(pinned, poolRanges(referencePool()))).toBe(true);
     // Every listener is hostname-less: the address alone must be enough to reach it.
     for (const l of ((lan!["spec"] as Record<string, unknown>)["listeners"] ?? []) as Array<Record<string, unknown>>) {
       expect(l["hostname"]).toBeUndefined();

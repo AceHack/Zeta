@@ -38,4 +38,8 @@ export const ZFLASH_ALLOWED_FLAGS: ReadonlySet<string> = new Set([
   // `planPublicEndpoint` the file-backed image path runs.
   "--acme-email",
   "--public-domain",
+  // docs/ops/INSTALL-TIME-CONFIG.md row 3: the Cilium LoadBalancer range
+  // (`auto` | `<first-ip>-<last-ip>`), validated by the same `planLbPool` the
+  // file-backed image path runs.
+  "--lb-pool",
 ]);

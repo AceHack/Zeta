@@ -2,6 +2,15 @@
 # external IPs on bare metal. This is the MetalLB slot, done the Cilium-native
 # way (servicelb is disabled so Cilium owns L2-L4; MetalLB would fight it).
 # Prereq for game-server / VM external ports. See PLATFORM-ARCHITECTURE.md §4.1.
+#
+# THIS APPLICATION OWNS THE L2 ANNOUNCEMENT POLICY ONLY. The address POOL is not here:
+# `ip-pool.yaml` used to carry 192.168.1.240-250, a block that is only meaningful on one
+# home subnet, and on any other network Cilium handed Services addresses no router knew
+# while everything read healthy. The pool is install-time configuration -- zeta-install.sh
+# resolves it (ESP `ZETA_LB_POOL` -> prompt -> UNSET), nixos/modules/injected-lb-pool.nix
+# renders it into the separate `cilium-lb-ipam-pool` Application (k8s/lb-ipam/), and with
+# no value supplied no pool exists and Services of type LoadBalancer stay <pending>, loudly.
+# docs/ops/INSTALL-TIME-CONFIG.md row 3.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -17,7 +26,7 @@ spec:
     targetRevision: main
     path: full-ai-cluster/k8s/applications/cilium-lb-ipam
     directory:
-      include: '{ip-pool,l2-policy}.yaml'
+      include: 'l2-policy.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

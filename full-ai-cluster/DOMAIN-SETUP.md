@@ -32,10 +32,16 @@ Your **domain** and **ACME email** are install-time configuration, never repo ed
 yourdomain.com`, or answer the prompt at the start of the install. The portal is then
 published as `portal.yourdomain.com`. Skip both and the cluster installs LAN-only.
 
+The **LoadBalancer IP range** is install-time configuration too (`INJECTION-POINTS.md` §11,
+`docs/ops/INSTALL-TIME-CONFIG.md`): pass `zflash --lb-pool 192.168.1.240-192.168.1.250` (free
+addresses on **your** subnet, outside your router's DHCP range) or `--lb-pool auto`, or answer the
+prompt. The installer checks it against the LAN it measures and refuses a range that cannot work;
+with nobody to ask it is left **unset, loudly** - there is no default range in the repo.
+
 | Value | Where | To |
 |---|---|---|
 | DDNS host list | `ddns/cronjob.yaml` `DDNS_HOSTS` | the host records you create (default `@ *` is fine) |
-| LB IP range | `cilium-lb-ipam/ip-pool.yaml` | a free IP block on **your** subnet |
+| LB IP range | `zflash --lb-pool` / installer prompt (**not** a file) | a free IP block on **your** subnet |
 
 ---
 

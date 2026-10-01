@@ -1,0 +1,26 @@
+# full-ai-cluster/k8s/lb-ipam/pool.yaml — the kustomize BASE of the install-time
+# `cilium-lb-ipam-pool` Application (docs/ops/INSTALL-TIME-CONFIG.md, row 3).
+#
+# THIS FILE CARRIES NO ADDRESS, ON PURPOSE. The pool of external IPs Cilium hands to
+# `type: LoadBalancer` Services is a fact about the LAN the node is plugged into:
+# free addresses on THAT subnet, outside THAT router's DHCP range. It used to live in
+# `cilium-lb-ipam/ip-pool.yaml` as 192.168.1.240-250 -- right for exactly one home
+# network, and on every other one Cilium assigned addresses nobody could route to while
+# the Service read healthy. A generic installer edits no file, so every install applied
+# it. Now the range arrives ONLY as the inline JSON6902 patch of the Application that
+# nixos/modules/injected-lb-pool.nix renders from argocd-application.yaml.in, and that
+# Application exists only when the installer resolved a range (zflash --lb-pool, or the
+# installer's own prompt, which validates it against the LAN it measures).
+#
+# Nothing here is applied on an install without one -- this directory is outside
+# k8s/applications/, so the app-of-apps root never reaches it. UNSET is a visible state:
+# no pool, Services of type LoadBalancer stay <pending>, and the installer says so.
+#
+# The name `zeta-lb-pool` is load-bearing: the kind CI alias
+# (dev-cluster/manifests/cilium-lb-ipam.kind.yaml) and `DEV_CILIUM_LB_KIND_POOL_NAME`
+# use the same name for the same role on the dev substrate.
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: zeta-lb-pool
+spec: {}

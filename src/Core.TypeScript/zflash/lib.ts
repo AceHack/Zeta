@@ -14,6 +14,7 @@ import { planFirstbootConfWithNamedBaoElf, type NamedBaoElfAsk } from "./firstbo
 import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 import { LONGHORN_UNDERSIZED_OVERRIDE_ENV } from "../installer/longhorn-capacity-preflight.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
+import { LB_POOL_AUTO, planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -297,6 +298,17 @@ export interface FileBackedZflashImagePlanInput {
    * all, and the installer asks at the start of the install instead.
    */
   readonly publicEndpoint?: PublicEndpoint;
+  /**
+   * docs/ops/INSTALL-TIME-CONFIG.md row 3: the Cilium LoadBalancer address range
+   * (zflash `--lb-pool`), appended to the ESP `/zeta-firstboot.conf` as
+   * `ZETA_LB_POOL='auto'` or `ZETA_LB_POOL='<first-ip>-<last-ip>'`. Step 1 of the
+   * installer's resolution order (ESP -> prompt -> unset). Re-validated here by the
+   * same `planLbPool` the CLI runs, so a malformed or LAN-nonsense range is refused
+   * even when handed in without the CLI. What only the LAN can decide (is it on the
+   * node's subnet, is it free) is decided by the installer, which refuses before the
+   * wipe. Omitted -> no line at all, and the installer asks instead.
+   */
+  readonly lbPool?: LbPoolSpec;
   /**
    * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
    * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
@@ -678,6 +690,31 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
         espWrites[existing] = { ...prior, content: prior.content + lines };
       } else {
         espWrites.push({ content: lines, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+      }
+    }
+  }
+
+  // docs/ops/INSTALL-TIME-CONFIG.md row 3 -- the LoadBalancer range, appended to the
+  // same ONE conf, validated by the same function the CLI used (a second renderer
+  // would be two spellings of one file format).
+  if (input.lbPool !== undefined) {
+    const raw = input.lbPool.kind === "auto" ? LB_POOL_AUTO : `${input.lbPool.start ?? ""}-${input.lbPool.stop ?? ""}`;
+    const lb = planLbPool(raw);
+    if (!lb.ok) return { ok: false, error: lb.error };
+    if (lb.value !== null) {
+      const line = renderLbPoolConfLine(lb.value);
+      const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+      if (existing >= 0) {
+        const prior = espWrites[existing];
+        if (prior === undefined || prior.content === undefined) {
+          return {
+            ok: false,
+            error: `lbPool cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+          };
+        }
+        espWrites[existing] = { ...prior, content: prior.content + line };
+      } else {
+        espWrites.push({ content: line, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
       }
     }
   }

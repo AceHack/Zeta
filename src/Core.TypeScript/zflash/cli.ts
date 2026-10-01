@@ -122,6 +122,7 @@ import { INSTALL_SUBSTRATE_FILES } from "./install-substrate-files.ts";
 import { ZFLASH_ALLOWED_FLAGS } from "./allowed-flags.ts";
 import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
+import { planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
 import {
   planFirstbootConfFileContent,
   validateJoinTokenMaterial,
@@ -849,6 +850,7 @@ async function injectPubkeyToUsb(
   firstbootRole: ZetaFirstbootRole | undefined,
   joinTokenSourcePath: string | undefined,
   publicEndpoint: PublicEndpoint | null = null,
+  lbPool: LbPoolSpec | null = null,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
   if (testMode) {
@@ -969,7 +971,11 @@ async function injectPubkeyToUsb(
   // role, the conf carries ONLY these two lines -- zeta-first-boot.sh moves the
   // role's provenance only when the conf declares ZETA_ROLE, so this cannot
   // silently turn discovery off.
-  const publicEndpointLines = publicEndpoint === null ? "" : renderPublicEndpointConfLines(publicEndpoint);
+  // docs/ops/INSTALL-TIME-CONFIG.md row 3: the LoadBalancer range rides the SAME conf,
+  // for the same reason and with the same no-role behaviour.
+  const publicEndpointLines =
+    (publicEndpoint === null ? "" : renderPublicEndpointConfLines(publicEndpoint)) +
+    (lbPool === null ? "" : renderLbPoolConfLine(lbPool));
   if (firstbootRole === undefined && publicEndpointLines.length > 0) {
     const confOnlyTarget = join(mountPoint, "zeta-firstboot.conf");
     try {
@@ -980,9 +986,14 @@ async function injectPubkeyToUsb(
     } catch (e) {
       dumpDiagnostics(`sudo tee ${confOnlyTarget} failed`);
       unmountEsp(espPart, mountResult);
-      bail(3, `public TLS inject failed: sudo tee ${confOnlyTarget} failed: ${e instanceof Error ? e.message : String(e)}`);
+      bail(3, `install-time config inject failed: sudo tee ${confOnlyTarget} failed: ${e instanceof Error ? e.message : String(e)}`);
     }
-    process.stdout.write(`public-tls: wrote ${confOnlyTarget} (portal.${publicEndpoint?.publicDomain ?? ""})\n`);
+    process.stdout.write(
+      `install-time config: wrote ${confOnlyTarget}` +
+        (publicEndpoint === null ? "" : ` (portal.${publicEndpoint.publicDomain})`) +
+        (lbPool === null ? "" : ` (lb-pool ${lbPool.kind === "auto" ? "auto" : `${lbPool.start ?? ""}-${lbPool.stop ?? ""}`})`) +
+        "\n",
+    );
   }
   if (firstbootRole !== undefined) {
     const planned0 = planFirstbootConfFileContent(firstbootRole);
@@ -1203,6 +1214,7 @@ async function main() {
   let joinTokenPathFlag: string | undefined;
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
+  let lbPoolFlag: string | undefined;
   let agentMode = false;
   let testMode = false;
   const bakeCredArgs: string[] = [];
@@ -1269,12 +1281,13 @@ async function main() {
       testMode = true;
       continue;
     }
-    if (a === "--acme-email" || a === "--public-domain") {
+    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool") {
       const next = argv[i + 1];
       if (next === undefined || next.startsWith("-")) {
         bail(2, `${a} requires an argument`);
       }
       if (a === "--acme-email") acmeEmailFlag = next;
+      else if (a === "--lb-pool") lbPoolFlag = next;
       else publicDomainFlag = next;
       i += 1;
       continue;
@@ -1417,6 +1430,16 @@ async function main() {
   if (publicEndpoint.value !== null && noInject) {
     bail(2, "--acme-email / --public-domain require ESP injection; remove --no-inject");
   }
+  // docs/ops/INSTALL-TIME-CONFIG.md row 3 -- the LoadBalancer range, refused here for
+  // everything that is wrong on every LAN; what only the LAN decides is decided by the
+  // installer, before the wipe.
+  const lbPool = planLbPool(lbPoolFlag);
+  if (!lbPool.ok) {
+    bail(2, `LoadBalancer range refused: ${lbPool.error}`);
+  }
+  if (lbPool.value !== null && noInject) {
+    bail(2, "--lb-pool requires ESP injection; remove --no-inject");
+  }
 
   const credBake: CredBakeOptions = {
     bakeCredArgs,
@@ -1480,6 +1503,11 @@ async function main() {
         "  --public-domain <domain>  public TLS: base domain; portal is published as portal.<domain>.\n" +
         "                            Omit both: the installer asks at the start of the install;\n" +
         "                            Enter there = no public TLS (LAN only). RFC 2606 names refused.\n" +
+        "  --lb-pool <auto|first-ip-last-ip>\n" +
+        "                            Cilium LoadBalancer range, e.g. 192.168.1.240-192.168.1.250: FREE addresses on\n" +
+        "                            the node's LAN, outside the router's DHCP range. 'auto' derives .240-.250 of\n" +
+        "                            the node's /24 and the installer refuses if they answer. Omit: the installer\n" +
+        "                            asks; with nobody there it is left UNSET (never a default).\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -1900,7 +1928,7 @@ async function main() {
     }
   } else if (willInject) {
     try {
-      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value);
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value);
     } finally {
       // `force: true` already means "no error if absent", so the `existsSync`
       // guard it replaces bought nothing and was itself a check-then-use race

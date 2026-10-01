@@ -1,8 +1,16 @@
 # Announce LoadBalancer IPs on the LAN via L2 (ARP/NDP), so traffic to a
 # pool IP reaches this node. (Use BGP instead if you peer with a router.)
 #
-# `interfaces` are regexes — adjust if your NIC names differ (the test node's
-# external NIC is enp172s0; en*/eth* covers the common cases).
+# `interfaces` are regexes. `^en.*` is every systemd predictable ETHERNET name -- onboard
+# (eno), PCI slot (enp/ens) AND the MAC-named `enx<mac>` that every USB/Thunderbolt
+# adapter gets. This was `^en[ops].*`, which silently excluded `enx*`: a node whose only
+# wired NIC is a USB adapter announced nothing, so no LoadBalancer address ever answered
+# ARP and nothing said why. Wi-Fi (`wl*`) is deliberately NOT matched -- access points and
+# client isolation commonly drop an ARP reply for a second address behind one client MAC
+# (UNVERIFIED on this fleet's hardware), so L2 announcement over Wi-Fi is not something this
+# policy should claim to provide.
+# Cilium's own devices are `cilium_*` / `lxc*` and docker's are `docker0` / `br-*` / `veth*`:
+# none starts with `en`.
 apiVersion: cilium.io/v2alpha1
 kind: CiliumL2AnnouncementPolicy
 metadata:
@@ -10,7 +18,7 @@ metadata:
 spec:
   loadBalancerIPs: true
   interfaces:
-    - "^en[ops].*"
+    - "^en.*"
     - "^eth[0-9]+"
   nodeSelector:
     matchExpressions:

@@ -474,6 +474,52 @@ plane and `sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#
 `src/Core.TypeScript/cluster/public-tls.ts` mirrors them, and that `nix` renders the template
 byte-for-byte as the TypeScript mirror does — both are pinned by tests on the text, not run.
 
+### 11. LoadBalancer address range + LAN collision check (docs/ops/INSTALL-TIME-CONFIG.md rows 3–5)
+
+**Supersedes §10's mention of `cilium-lb-ipam/ip-pool.yaml`: that file is gone.** It carried
+`192.168.1.240–250`, free addresses on exactly one home subnet; on any other network Cilium handed
+every `type: LoadBalancer` Service an address no router knew and reported it healthy. The range is
+now resolved per install by the **same mechanism as §10** — nothing is invented twice.
+
+| Property                | Value                                                                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | (1) flash time → ESP conf, or (2) cluster console at the **start** of the install (Step 0.6, before disk enumeration)                        |
+| **Content class**       | Public identifier (IPv4 addresses on the node's own LAN)                                                                                      |
+| **Operator-driven via** | `zflash --lb-pool auto\|<first-ip>-<last-ip>` (device and file-backed), else the installer prompt                                              |
+| **ESP carrier**         | `ZETA_LB_POOL='…'` appended to `/zeta-firstboot.conf` (exported by `zeta-first-boot.sh`)                                                       |
+| **Backed by file**      | `/mnt/etc/zeta/lb-pool` = `<first-ip>-<last-ip>` (written only when SET; symlinked to `/etc/zeta/` for `--impure` eval)                         |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-lb-pool.nix` (k3s servers only)                                                                       |
+| **Reaches the cluster** | the k3s auto-deploy roster, as the ArgoCD Application `cilium-lb-ipam-pool` (kustomize base `k8s/lb-ipam/` carries **no** address; inline patch) |
+| **Validation**          | `src/Core.TypeScript/installer/lan-config.ts`; shell twin `ZETA-LB-POOL` block in `zeta-install.sh` (parity-tested); shape + pod/service overlap re-asserted in Nix |
+
+**Resolution order** (`zeta_lb_pool_resolve`): **(1)** the ESP value (`auto` or a range) when it
+validates **against the LAN the installer measured** → **(2)** otherwise ask, offering `.240–.250`
+of the node's /24 _only on an explicit `y`_ → **(3)** otherwise **UNSET, loudly**. A range is refused
+if it is outside the node's subnet, includes the network/broadcast address, the node itself or the
+gateway, overlaps the cluster's derived pod/service CIDR or the `10.88.0.0/24` segment, spans more
+than 256 addresses, **or any of its addresses already answers a ping**. An ESP value that fails any of
+these **refuses the install before the wipe** when nobody can be asked (at a console it is re-asked).
+A joiner never asks and never applies one: the range is the founder's.
+
+**UNSET (visible, not a placeholder).** No pool exists; Services of type LoadBalancer stay
+`<pending>`; the installer's prompt output and completion banner both say exactly that and how to fix
+it (`/etc/zeta/lb-pool` + `nixos-rebuild switch --impure`).
+
+**The collision check (row 4).** Before the wipe the installer compares every network the node can
+already route to with the cluster's derived pod `/17`, service `/19` and the inter-node segment, and
+**refuses** on overlap (`ZETA_ALLOW_CIDR_OVERLAP=1` overrides, and is named in the refusal). It is
+detection, not injection, because the Cilium CIDRs live in git (see `cluster-identity.json`). The ISO
+ships `/etc/zeta-cluster-identity.json` so the pre-wipe check knows the cluster name; after the clone
+the check repeats against the cloned tree's own copy.
+
+**Known gap.** GitLab's LAN Gateway is still pinned to the literal `192.168.1.250`
+(`applications/gitlab/Application.yaml`). On any LAN whose range does not contain it, that Gateway
+stays `<pending>` while the portal's `zeta-gateway` is correct; the installer says so. Row 6 of the
+inventory — the gitlab lane owns it.
+
+**Not verified here:** nothing in §11 has been booted (no nix, no QEMU); see
+`docs/ops/INSTALL-TIME-CONFIG.md` "Not verified".
+
 ## Operator-driven `zflash` flag inventory (current)
 
 Allowlist from `zflash.ts`:
@@ -496,6 +542,9 @@ Allowlist from `zflash.ts`:
 --public-domain <d>  public TLS (§10): base domain; portal.<d> is published →
                      ZETA_PUBLIC_DOMAIN. Both omitted: the installer asks at the
                      start of the install. RFC 2606 names refused.
+--lb-pool <v>        LoadBalancer range (§11): `auto` (.240-.250 of the node's /24) or
+                     <first-ip>-<last-ip> → ZETA_LB_POOL. Omitted: the installer asks;
+                     nobody there → UNSET, loudly. Checked against the LAN at install.
 ```
 
 ## In-flight injection points (substrate-engineering targets — not yet shipped)

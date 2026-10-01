@@ -1,0 +1,49 @@
+# full-ai-cluster/k8s/lb-ipam/argocd-application.yaml.in
+#
+# A TEMPLATE, not a manifest: nothing applies this file as-is (the `.in` suffix keeps it
+# out of every *.yaml scan and out of kustomize). docs/ops/INSTALL-TIME-CONFIG.md row 3.
+#
+# nixos/modules/injected-lb-pool.nix reads /etc/zeta/lb-pool (`<first-ip>-<last-ip>`,
+# written by zeta-install.sh from the ESP conf or the start-of-install prompt, validated
+# against the LAN the installer measured), substitutes the two start/stop tokens
+# below with `builtins.replaceStrings` (NOTE: this prose must never spell a token --
+# the module refuses to render a document that still contains the token prefix, and it
+# cannot tell a comment from a manifest), and hands the result to the k3s auto-deploy
+# roster -- the same door `root-application.yaml` and `platform-public-tls` use. When the
+# file is absent the module adds nothing and this Application never exists.
+#
+# The range reaches the pool ONLY as this JSON6902 patch; the kustomize base (pool.yaml)
+# carries no address. Both values are validated at install time to dotted-quad IPv4, so
+# they are safe inside the single-quoted JSON string below.
+# src/Core.TypeScript/cluster/lb-ipam-pool.ts mirrors this substitution for the tests.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cilium-lb-ipam-pool
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/lb-ipam
+    kustomize:
+      patches:
+        - target: { group: cilium.io, kind: CiliumLoadBalancerIPPool, name: zeta-lb-pool }
+          patch: '[{"op":"add","path":"/spec/blocks","value":[{"start":"@ZETA_LB_POOL_START@","stop":"@ZETA_LB_POOL_STOP@"}]}]'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+    # Unbounded, for the same reason as `platform-public-tls`: this Application consumes a
+    # CRD it does not own (cilium.io, registered by the `cilium` bootstrap), and a lost race
+    # against that install must not be permanent.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

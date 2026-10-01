@@ -47,6 +47,16 @@ let
   hasDomain = domain != "";
   emailOk = builtins.match "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z][A-Za-z0-9-]*" email != null;
   domainOk = builtins.match "([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z][a-z0-9-]*" domain != null;
+  emailDomain = lib.toLower (lib.last (lib.splitString "@" email));
+  reservedTlds = [ "test" "example" "invalid" "localhost" "local" ];
+  reservedSlds = [ "example.com" "example.net" "example.org" ];
+  isReservedName = d:
+    let
+      labels = lib.splitString "." d;
+      n = builtins.length labels;
+      sld = lib.concatStringsSep "." (lib.drop (lib.max 0 (n - 2)) labels);
+    in
+    builtins.elem (lib.last labels) reservedTlds || builtins.elem sld reservedSlds;
   template = builtins.readFile ../../k8s/public-tls/argocd-application.yaml.in;
   rendered = builtins.replaceStrings
     [ "@ZETA_ACME_EMAIL@" "@ZETA_PUBLIC_DOMAIN@" ]
@@ -65,6 +75,20 @@ in
         {
           assertion = !(hasEmail && hasDomain) || (emailOk && domainOk);
           message = "injected-public-tls: ${emailFile} / ${domainFile} do not have the shape zeta-install.sh validates (local@domain.tld, and a DNS name). Refusing to render them into a manifest.";
+        }
+        {
+          # The installer refuses RFC 2606 / 6762 names (installer/public-endpoint.ts), but a
+          # file written by hand and a `nixos-rebuild switch --impure` never meets the
+          # installer. This is the same refusal where that route ends: the one live failure
+          # was `you@example.com` reaching a ClusterIssuer.
+          assertion = !(hasEmail && hasDomain && emailOk && domainOk) || !(isReservedName domain || isReservedName emailDomain);
+          message = "injected-public-tls: ${emailFile} / ${domainFile} name a reserved domain (RFC 2606 example.com/.net/.org, .test/.example/.invalid/.localhost, or RFC 6762 .local). A certificate authority refuses every one of them, and the issuer that carried it would never go Ready. Use a domain you control, or remove both files for a LAN-only platform.";
+        }
+        {
+          # Fail closed on a template that grew a token this module does not fill: an
+          # un-rendered placeholder must never reach the cluster as a literal.
+          assertion = !(hasEmail && hasDomain) || !(lib.hasInfix "@ZETA_" rendered);
+          message = "injected-public-tls: the rendered Application still contains an unsubstituted token prefix. k8s/public-tls/argocd-application.yaml.in and this module disagree about the tokens.";
         }
       ];
     }

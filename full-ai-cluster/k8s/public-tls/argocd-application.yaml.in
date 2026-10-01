@@ -5,8 +5,10 @@
 #
 # nixos/modules/injected-public-tls.nix reads /etc/zeta/acme-email and
 # /etc/zeta/public-domain (written by zeta-install.sh from the ESP conf or the
-# start-of-install prompt), substitutes the two @ZETA_*@ tokens below with
-# `builtins.replaceStrings`, and hands the result to the k3s auto-deploy roster —
+# start-of-install prompt), substitutes the two tokens below with
+# `builtins.replaceStrings` (this prose never spells a token: the module refuses to
+# render a document that still contains the token prefix, and cannot tell a comment
+# from a manifest), and hands the result to the k3s auto-deploy roster —
 # the same path `root-application.yaml` takes into the cluster. When either value
 # is absent, the module adds nothing and this Application never exists.
 #

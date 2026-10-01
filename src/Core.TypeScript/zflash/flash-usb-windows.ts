@@ -48,6 +48,7 @@
  *     --ssh-key <path> | --no-inject
  *     --host <name>  --role <r> [--flake-host <h>] [--join-server-url <u>] [--join-token <path>]
  *     --acme-email <addr> --public-domain <domain>   --repo-pin <40-hex>
+ *     --lb-pool <auto|first-ip-last-ip>   Cilium LoadBalancer range (checked against the LAN at install)
  *     -h, --help
  *   iso-path defaults to the newest %USERPROFILE%\Downloads\zeta-installer-*.iso
  *
@@ -81,6 +82,7 @@ import { planFileBackedZflashImage, type FileBackedEspWrite } from "./lib.ts";
 import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint } from "../installer/public-endpoint.ts";
+import { planLbPool } from "../installer/lan-config.ts";
 import { readFileBounded } from "../io/safe-io.ts";
 
 // ── Safety-rail constants — shared with every arm, not mirrored ──────
@@ -708,6 +710,7 @@ export interface WindowsFlasherArgs {
   readonly joinTokenPath?: string;
   readonly acmeEmail?: string;
   readonly publicDomain?: string;
+  readonly lbPool?: string;
   readonly repoPin?: string;
 }
 
@@ -722,6 +725,7 @@ const VALUE_FLAG_FIELDS: Readonly<Record<string, keyof WindowsFlasherArgs>> = {
   "--join-token": "joinTokenPath",
   "--acme-email": "acmeEmail",
   "--public-domain": "publicDomain",
+  "--lb-pool": "lbPool",
   "--repo-pin": "repoPin",
 };
 
@@ -788,11 +792,14 @@ export function planWindowsEspWrites(
     ...(args.publicDomain === undefined ? {} : { publicDomain: args.publicDomain }),
   });
   if (!pe.ok) return { ok: false, message: `public TLS refused: ${pe.error}` };
+  const lb = planLbPool(args.lbPool);
+  if (!lb.ok) return { ok: false, message: `LoadBalancer range refused: ${lb.error}` };
   const nothingAsked =
     pubkeyContent === undefined &&
     args.host === undefined &&
     role.value === undefined &&
     pe.value === null &&
+    lb.value === null &&
     args.repoPin === undefined;
   if (nothingAsked) return { ok: true, value: [] };
   const planned = planFileBackedZflashImage({
@@ -804,6 +811,7 @@ export function planWindowsEspWrites(
     ...(role.value === undefined ? {} : { firstbootRole: role.value }),
     ...(args.joinTokenPath === undefined ? {} : { joinTokenSourcePath: args.joinTokenPath }),
     ...(pe.value === null ? {} : { publicEndpoint: pe.value }),
+    ...(lb.value === null ? {} : { lbPool: lb.value }),
     ...(args.repoPin === undefined ? {} : { repoPinCommit: args.repoPin }),
   });
   if (!planned.ok) return { ok: false, message: planned.error };
@@ -1048,6 +1056,7 @@ export const VALUE_FLAGS: readonly string[] = [
   "--join-token",
   "--acme-email",
   "--public-domain",
+  "--lb-pool",
   "--repo-pin",
 ];
 
@@ -1109,6 +1118,8 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
         "    --role <first-control-plane|joiner> [--flake-host <h>] [--join-server-url <u>] [--join-token <path>]\n" +
         "                               /zeta-firstboot.conf (+ /zeta-join-token)\n" +
         "    --acme-email <addr> --public-domain <domain>   public TLS pair, appended to /zeta-firstboot.conf\n" +
+        "    --lb-pool <auto|first-ip-last-ip>   Cilium LoadBalancer range (FREE addresses on the node's LAN, outside DHCP);\n" +
+        "                               appended to /zeta-firstboot.conf; the installer checks it against the LAN\n" +
         "    --repo-pin <40-hex>        /zeta-repo-pin (pin the installed tree to a commit)\n",
     );
     process.exit(0);

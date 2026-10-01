@@ -20,6 +20,7 @@ import {
 } from "./firstboot-bao-elf.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint, type PublicEndpoint } from "../installer/public-endpoint.ts";
+import { planLbPool, type LbPoolSpec } from "../installer/lan-config.ts";
 import type {
   FileBackedEspWrite,
   FileBackedZflashImageExecution,
@@ -62,6 +63,8 @@ export interface FileBackedZflashCliOptions {
   readonly repoPinCommit?: string;
   /** 081M3JG74G0087G0R001XJC837: `--acme-email` + `--public-domain`, validated. See lib.ts. */
   readonly publicEndpoint?: PublicEndpoint;
+  /** docs/ops/INSTALL-TIME-CONFIG.md row 3: `--lb-pool auto|<first-ip>-<last-ip>`, validated. See lib.ts. */
+  readonly lbPool?: LbPoolSpec;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -136,7 +139,11 @@ const USAGE =
   "  --qemu-k3s-first-boot-verify-marker  write /zeta-qemu-k3s-first-boot-verify (WP11 QEMU-only; not default)\n" +
   "  --acme-email <addr>          public TLS: ACME contact, onto /zeta-firstboot.conf (requires --public-domain)\n" +
   "  --public-domain <domain>     public TLS: base domain; the portal is published as portal.<domain>\n" +
-  "                               (omit both: the installer asks at the start of the install; Enter = no public TLS)\n";
+  "                               (omit both: the installer asks at the start of the install; Enter = no public TLS)\n" +
+  "  --lb-pool <auto|first-ip-last-ip>  Cilium LoadBalancer range onto /zeta-firstboot.conf, e.g. 192.168.1.240-192.168.1.250.\n" +
+  "                               'auto' derives .240-.250 of the node's /24 and refuses if it is in use. The range must be FREE\n" +
+  "                               addresses on the node's LAN, outside the router's DHCP range. Omit: the installer asks; if nobody\n" +
+  "                               answers it is left UNSET (Services of type LoadBalancer stay pending) - never a default.\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -238,6 +245,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let qemuCredsPassphraseFile: string | undefined;
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
+  let lbPoolFlag: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -278,7 +286,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--bao-path" ||
       arg === "--qemu-creds-passphrase-file" ||
       arg === "--acme-email" ||
-      arg === "--public-domain"
+      arg === "--public-domain" ||
+      arg === "--lb-pool"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -305,6 +314,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--qemu-creds-passphrase-file") qemuCredsPassphraseFile = value;
       else if (arg === "--acme-email") acmeEmailFlag = value;
       else if (arg === "--public-domain") publicDomainFlag = value;
+      else if (arg === "--lb-pool") lbPoolFlag = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -330,6 +340,9 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
     ...(publicDomainFlag === undefined ? {} : { publicDomain: publicDomainFlag }),
   });
   if (!publicEndpoint.ok) return { kind: "error", error: publicEndpoint.error };
+
+  const lbPool = planLbPool(lbPoolFlag);
+  if (!lbPool.ok) return { kind: "error", error: lbPool.error };
 
   const namedArgv: string[] = [];
   if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
@@ -381,6 +394,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(qemuK3sFirstBootVerifyMarker ? { qemuK3sFirstBootVerifyMarker: true } : {}),
       ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
       ...(publicEndpoint.value === null ? {} : { publicEndpoint: publicEndpoint.value }),
+      ...(lbPool.value === null ? {} : { lbPool: lbPool.value }),
     },
   };
 }
@@ -576,6 +590,7 @@ export function runFileBackedZflashCli(
     ...(options.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: options.qemuCredsPassphrase }),
     ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
     ...(options.publicEndpoint === undefined ? {} : { publicEndpoint: options.publicEndpoint }),
+    ...(options.lbPool === undefined ? {} : { lbPool: options.lbPool }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

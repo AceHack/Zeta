@@ -19,7 +19,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildPlan, discoverExpectedApplications, isExcludedFromIncludedProof, parseArgs } from "./argocd-health-test.ts";
 
@@ -101,14 +101,27 @@ describe("cilium-lb-ipam stays excluded — half a conjunction is not a conditio
     ).not.toContain("cilium-lb-ipam");
   });
 
-  test("the unmet conjunct is REAL and checkable: the pool is a pinned home subnet", () => {
-    // "the pool is parameterised per substrate rather than pinned to one
-    // maintainer's subnet" -- measurably false, so the lift must not fire.
-    const pool = readFileSync(
-      join(REPO_ROOT, "full-ai-cluster/k8s/applications/cilium-lb-ipam/ip-pool.yaml"),
-      "utf8",
-    );
-    expect(pool).toMatch(/192\.168\.\d+\.\d+/);
+  test("the unmet conjunct is REAL and checkable: the metal pool is install-time, so this Application has none to apply", () => {
+    // This used to read: "the pool is parameterised per substrate rather than pinned to one
+    // maintainer's subnet" -- measurably false (ip-pool.yaml pinned 192.168.1.240-250), so
+    // the lift must not fire. The pin is gone (docs/ops/INSTALL-TIME-CONFIG.md row 3): the
+    // range is now resolved by the installer and applied by a SEPARATE Application
+    // (`cilium-lb-ipam-pool`) that exists only on a node that was given one. The
+    // conjunct's WORDING is now true and the conclusion is unchanged: lifting
+    // `cilium-lb-ipam` on a dev substrate would apply only an L2 policy for a pool that is
+    // not there, and the kind alias below is what provides a pool where one can exist.
+    // The exclusion's evidence is now "no pool in git" - stronger than "a pinned pool",
+    // because editing the pinned range to another subnet cannot satisfy it.
+    const dir = join(REPO_ROOT, "full-ai-cluster/k8s/applications/cilium-lb-ipam");
+    expect(existsSync(join(dir, "ip-pool.yaml"))).toBe(false);
+    for (const f of ["Application.yaml", "l2-policy.yaml"]) {
+      const body = readFileSync(join(dir, f), "utf8")
+        .split("\n")
+        .filter((l) => !l.trimStart().startsWith("#"))
+        .join("\n");
+      expect(body).not.toMatch(/192\.168\.\d+\.\d+/);
+      expect(body).not.toContain("CiliumLoadBalancerIPPool");
+    }
   });
 
   test("the kind bring-up alias is not a lift of this Application", () => {

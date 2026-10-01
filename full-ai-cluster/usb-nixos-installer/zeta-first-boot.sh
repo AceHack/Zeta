@@ -1034,6 +1034,17 @@ export ZETA_LONGHORN_EXTRA_DISKS="${ZETA_LONGHORN_EXTRA_DISKS:-}"
 # Enter/timeout there means no public TLS.
 export ZETA_ACME_EMAIL="${ZETA_ACME_EMAIL:-}"
 export ZETA_PUBLIC_DOMAIN="${ZETA_PUBLIC_DOMAIN:-}"
+# docs/ops/INSTALL-TIME-CONFIG.md: the LoadBalancer range zflash --lb-pool baked
+# into the ESP conf (`auto` or `<first-ip>-<last-ip>`). Same pass-through: sourced
+# vars need an explicit export. zeta-install validates it against the LAN it measures
+# and REFUSES the install (before the wipe) if it cannot work and nobody is here to ask.
+# Empty is the normal value: zeta-install then offers a prompt behind one keypress and,
+# failing that, leaves the pool UNSET -- loudly, never a placeholder.
+export ZETA_LB_POOL="${ZETA_LB_POOL:-}"
+# The operator override for the pod/service-vs-LAN address-space collision refusal.
+# Like ZETA_ALLOW_LONGHORN_UNDERSIZED it is NEVER baked into the ISO's own conf: a value
+# there would clear the guard for every install, which is the guard deleting itself.
+export ZETA_ALLOW_CIDR_OVERLAP="${ZETA_ALLOW_CIDR_OVERLAP:-}"
 # zeta-install handles the rest: disk enum → wipe → partition →
 # format → mount → clone → nixos-install. Exits with the OS still
 # booted in the USB live environment; this script then reboots so

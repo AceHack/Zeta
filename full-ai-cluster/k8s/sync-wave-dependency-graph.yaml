@@ -366,10 +366,12 @@ spec:
       dependsOn: [cilium]
       citations:
         cilium: >-
-          full-ai-cluster/k8s/applications/cilium-lb-ipam/ip-pool.yaml declares
-          `kind: CiliumLoadBalancerIPPool` and l2-policy.yaml declares
-          `kind: CiliumL2AnnouncementPolicy` — both CRDs are registered by the
-          cilium Application. CRD provider before CRD consumer.
+          full-ai-cluster/k8s/applications/cilium-lb-ipam/l2-policy.yaml declares
+          `kind: CiliumL2AnnouncementPolicy` (the address pool,
+          `kind: CiliumLoadBalancerIPPool`, is install-time config applied by the
+          separate `cilium-lb-ipam-pool` Application from k8s/lb-ipam/) — both CRDs
+          are registered by the cilium Application. CRD provider before CRD
+          consumer.
 
     # ── Layer 4: Gatekeeper policy consumers ─────────────────────────────────
     - chart: hat-system

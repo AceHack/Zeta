@@ -601,6 +601,516 @@ else
 fi
 echo
 
+# ZETA-LB-POOL-BEGIN ---------------------------------------------
+# docs/ops/INSTALL-TIME-CONFIG.md — the install-time settings that are a FACT
+# ABOUT THE LAN: the Cilium LoadBalancer address range, and whether the cluster's
+# own pod/service address space collides with the network this node is plugged
+# into. Pure functions plus one resolver; checked for parity against
+# src/Core.TypeScript/installer/lan-config.ts by
+# src/Core.TypeScript/installer/lan-config-shell-parity.test.ts.
+#
+# THE DEFECT THIS CLOSES: `cilium-lb-ipam/ip-pool.yaml` shipped 192.168.1.240-250.
+# On any other subnet Cilium hands every `type: LoadBalancer` Service (the portal
+# gateway, GitLab) an address no router knows, and nothing says so. A generic
+# installer edits no file, so every install applied it. Nothing in the repo
+# carries a default any more; the value comes from here.
+#
+# RESOLUTION ORDER, and nothing else:
+#   1. ZETA_LB_POOL from the ESP /zeta-firstboot.conf (zflash --lb-pool;
+#      zeta-first-boot.sh exports it): `auto`, or `<first-ip>-<last-ip>`;
+#   2. otherwise ASK — before any disk work — offering a PROPOSAL derived from the
+#      detected LAN (.240-.250 of the node's /24) that is only ever applied on an
+#      explicit `y`;
+#   3. otherwise UNSET, loudly: no pool is applied, Services of type LoadBalancer
+#      stay <pending>, and the completion banner says exactly that.
+# A value that fails validation or whose addresses already answer on the LAN is
+# REFUSED, never repaired: non-interactively that REFUSES the install (nothing has
+# been wiped yet); interactively it is asked again.
+#
+# FAIL-CLOSED, NOT FAIL-OPEN: every function below answers a verdict word, never a
+# guess. "The probe did not run" is reported as such and is not a pass.
+
+ZETA_LB_POOL_MAX_ADDRESSES=256
+ZETA_CLUSTER_SEGMENT_CIDR="10.88.0.0/24"
+ZETA_LB_POOL_MAX_ATTEMPTS=5
+
+# Strict dotted quad -> integer. Empty on anything else, including `010` (octal in
+# some parsers). Always returns 0: callers read the output, never the status,
+# because this file runs under `set -e`.
+zeta_ipv4_to_int() {
+  local s="$1" a b c d
+  local re='^(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})$'
+  if ! [[ "$s" =~ $re ]]; then
+    echo ""
+    return 0
+  fi
+  a="${BASH_REMATCH[1]}"; b="${BASH_REMATCH[2]}"; c="${BASH_REMATCH[3]}"; d="${BASH_REMATCH[4]}"
+  if [ "$a" -gt 255 ] || [ "$b" -gt 255 ] || [ "$c" -gt 255 ] || [ "$d" -gt 255 ]; then
+    echo ""
+    return 0
+  fi
+  echo $(( ((a * 256 + b) * 256 + c) * 256 + d ))
+}
+
+zeta_int_to_ipv4() {
+  local n="$1"
+  echo "$(( (n >> 24) & 255 )).$(( (n >> 16) & 255 )).$(( (n >> 8) & 255 )).$(( n & 255 ))"
+}
+
+# "<first> <last>" integers of a CIDR, masked (10.42.5.0/16 compares as 10.42.0.0/16). Empty if malformed.
+zeta_cidr_bounds() {
+  local cidr="$1" ip p size first
+  local re='^([0-9.]+)/([0-9]{1,2})$'
+  if ! [[ "$cidr" =~ $re ]]; then
+    echo ""
+    return 0
+  fi
+  p="${BASH_REMATCH[2]}"
+  ip="$(zeta_ipv4_to_int "${BASH_REMATCH[1]}")"
+  if [ -z "$ip" ] || [ "$p" -gt 32 ]; then
+    echo ""
+    return 0
+  fi
+  size=$(( 1 << (32 - p) ))
+  first=$(( ip - ip % size ))
+  echo "$first $(( first + size - 1 ))"
+}
+
+# yes|no. A malformed CIDR is "no": an unreadable range cannot be proven to collide,
+# and the caller's own validation is what refuses malformed input.
+zeta_cidr_overlaps() {
+  local a b af al bf bl
+  a="$(zeta_cidr_bounds "$1")"
+  b="$(zeta_cidr_bounds "$2")"
+  if [ -z "$a" ] || [ -z "$b" ]; then
+    echo "no"
+    return 0
+  fi
+  read -r af al <<<"$a"
+  read -r bf bl <<<"$b"
+  if [ "$af" -le "$bl" ] && [ "$bf" -le "$al" ]; then echo "yes"; else echo "no"; fi
+}
+
+# Twin of cluster/cluster-cidr.ts `deriveClusterNetwork`, replayed against
+# nixos/tests/cluster-cidr-golden-vectors.json by the parity test.
+# "<podCidr> <serviceCidr>", or empty for a name Cilium would refuse.
+zeta_cluster_cidrs() {
+  local name="$1" hex h slot
+  local re='^[a-z0-9]([a-z0-9-]{0,30}[a-z0-9])?$'
+  if ! [[ "$name" =~ $re ]]; then
+    echo ""
+    return 0
+  fi
+  hex="$(printf '%s' "$name" | sha256sum | cut -c1-4)"
+  h=$(( 16#$hex ))
+  slot=$(( h % 255 ))
+  echo "10.$(( 128 + slot / 2 )).$(( (slot % 2) * 128 )).0/17 10.$(( 96 + slot / 8 )).$(( (slot % 8) * 32 )).0/19"
+}
+
+# The host's own routed networks, one CIDR per line (the kernel route table minus
+# the default route): connected subnets AND anything a VPN or static route added.
+zeta_host_cidrs() {
+  command -v ip >/dev/null 2>&1 || return 0
+  ip -4 -o route show 2>/dev/null | awk '$1 ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+\/[0-9]+$/ {print $1}' || true
+}
+
+# stdin: host CIDRs, one per line. Prints "<host> <pod|service|segment> <cidr>" for
+# every overlap with the cluster `$1`'s derived pod / service CIDR or the inter-node
+# segment. A name that cannot be derived checks the segment only.
+zeta_cidr_collisions() {
+  local name="$1" host cidrs pod="" svc=""
+  cidrs="$(zeta_cluster_cidrs "$name")"
+  if [ -n "$cidrs" ]; then read -r pod svc <<<"$cidrs"; fi
+  while IFS= read -r host || [ -n "$host" ]; do
+    [ -n "$host" ] || continue
+    if [ -n "$pod" ] && [ "$(zeta_cidr_overlaps "$host" "$pod")" = "yes" ]; then echo "$host pod $pod"; fi
+    if [ -n "$svc" ] && [ "$(zeta_cidr_overlaps "$host" "$svc")" = "yes" ]; then echo "$host service $svc"; fi
+    if [ "$(zeta_cidr_overlaps "$host" "$ZETA_CLUSTER_SEGMENT_CIDR")" = "yes" ]; then echo "$host segment $ZETA_CLUSTER_SEGMENT_CIDR"; fi
+  done
+  return 0
+}
+
+# Verdicts that do NOT need the LAN: shape only. ok | bad-start | bad-stop | reversed | too-large
+zeta_lb_pool_shape() {
+  local start stop
+  start="$(zeta_ipv4_to_int "$1")"
+  if [ -z "$start" ]; then echo "bad-start"; return 0; fi
+  stop="$(zeta_ipv4_to_int "$2")"
+  if [ -z "$stop" ]; then echo "bad-stop"; return 0; fi
+  if [ "$start" -gt "$stop" ]; then echo "reversed"; return 0; fi
+  if [ $(( stop - start + 1 )) -gt "$ZETA_LB_POOL_MAX_ADDRESSES" ]; then echo "too-large"; return 0; fi
+  echo "ok"
+}
+
+# zeta_lb_pool_validate <first> <last> <node-ip> <prefix> <gateway|""> "<reserved cidrs>"
+# Ordered; the first failure wins. Twin of lan-config.ts `validateLbPool`.
+zeta_lb_pool_validate() {
+  local start_s="$1" stop_s="$2" node_s="$3" prefix="$4" gw_s="$5" reserved="$6"
+  local shape start stop node gw size first last c b f l
+  shape="$(zeta_lb_pool_shape "$start_s" "$stop_s")"
+  if [ "$shape" != "ok" ]; then echo "$shape"; return 0; fi
+  start="$(zeta_ipv4_to_int "$start_s")"
+  stop="$(zeta_ipv4_to_int "$stop_s")"
+  node="$(zeta_ipv4_to_int "$node_s")"
+  if [ -z "$node" ] || ! [[ "$prefix" =~ ^[0-9]+$ ]] || [ "$prefix" -lt 8 ] || [ "$prefix" -gt 30 ]; then
+    echo "outside-lan"
+    return 0
+  fi
+  size=$(( 1 << (32 - prefix) ))
+  first=$(( node - node % size ))
+  last=$(( first + size - 1 ))
+  if [ "$start" -lt "$first" ] || [ "$stop" -gt "$last" ]; then echo "outside-lan"; return 0; fi
+  if [ "$start" -le "$first" ] || [ "$stop" -ge "$last" ]; then echo "network-or-broadcast"; return 0; fi
+  if [ "$start" -le "$node" ] && [ "$node" -le "$stop" ]; then echo "contains-node"; return 0; fi
+  if [ -n "$gw_s" ]; then
+    gw="$(zeta_ipv4_to_int "$gw_s")"
+    if [ -n "$gw" ] && [ "$start" -le "$gw" ] && [ "$gw" -le "$stop" ]; then echo "contains-gateway"; return 0; fi
+  fi
+  for c in $reserved; do
+    b="$(zeta_cidr_bounds "$c")"
+    [ -n "$b" ] || continue
+    read -r f l <<<"$b"
+    if [ "$start" -le "$l" ] && [ "$f" -le "$stop" ]; then echo "overlaps-reserved"; return 0; fi
+  done
+  echo "valid"
+}
+
+# A range to OFFER, never to apply unasked: .240-.250 of the node's /24. Empty when
+# the LAN is too small or the window would not validate. "<first>-<last>".
+zeta_lb_pool_propose() {
+  local node_s="$1" prefix="$2" gw_s="$3" reserved="$4" node base s e
+  node="$(zeta_ipv4_to_int "$node_s")"
+  if [ -z "$node" ] || ! [[ "$prefix" =~ ^[0-9]+$ ]] || [ "$prefix" -gt 24 ]; then
+    echo ""
+    return 0
+  fi
+  base=$(( node - node % 256 ))
+  s="$(zeta_int_to_ipv4 $(( base + 240 )))"
+  e="$(zeta_int_to_ipv4 $(( base + 250 )))"
+  if [ "$(zeta_lb_pool_validate "$s" "$e" "$node_s" "$prefix" "$gw_s" "$reserved")" = "valid" ]; then
+    echo "$s-$e"
+  else
+    echo ""
+  fi
+}
+
+zeta_lb_pool_explain() {
+  case "$1" in
+    bad-start) echo "the first address is not a dotted-quad IPv4 address" ;;
+    bad-stop) echo "the last address is not a dotted-quad IPv4 address" ;;
+    reversed) echo "the first address is above the last" ;;
+    too-large) echo "it spans more than ${ZETA_LB_POOL_MAX_ADDRESSES} addresses" ;;
+    outside-lan) echo "it is not inside this node's LAN subnet (${ZETA_LAN_SRC:-?}/${ZETA_LAN_PREFIX:-?})" ;;
+    network-or-broadcast) echo "it includes the subnet's network or broadcast address" ;;
+    contains-node) echo "it includes this node's own address (${ZETA_LAN_SRC:-?})" ;;
+    contains-gateway) echo "it includes the default gateway (${ZETA_LAN_GW:-?})" ;;
+    overlaps-reserved) echo "it overlaps the cluster's pod/service address space or the inter-node segment ${ZETA_CLUSTER_SEGMENT_CIDR}" ;;
+    *) echo "unknown verdict '$1'" ;;
+  esac
+}
+
+# `ip -4 -o route get` line -> ZETA_LAN_DEV / ZETA_LAN_SRC / ZETA_LAN_GW (GW empty when on-link).
+zeta_lan_parse_route() {
+  local tok prev=""
+  ZETA_LAN_DEV=""; ZETA_LAN_SRC=""; ZETA_LAN_GW=""
+  for tok in $1; do
+    case "$prev" in
+      dev) ZETA_LAN_DEV="$tok" ;;
+      src) ZETA_LAN_SRC="$tok" ;;
+      via) ZETA_LAN_GW="$tok" ;;
+    esac
+    prev="$tok"
+  done
+}
+
+# `ip -4 -o addr show dev X` text + the node's address -> the prefix length.
+zeta_lan_prefix_from_addr() {
+  local tok
+  for tok in $1; do
+    case "$tok" in
+      "$2"/*) echo "${tok#*/}"; return 0 ;;
+    esac
+  done
+  echo ""
+}
+
+# Measure the interface that owns the route to the internet. Sets ZETA_LAN_OK=1 only
+# when device, address and prefix were all read.
+zeta_lan_detect() {
+  local rg ad
+  ZETA_LAN_OK=0; ZETA_LAN_DEV=""; ZETA_LAN_SRC=""; ZETA_LAN_GW=""; ZETA_LAN_PREFIX=""
+  command -v ip >/dev/null 2>&1 || return 0
+  rg="$(ip -4 -o route get 1.1.1.1 2>/dev/null | head -n 1 || true)"
+  zeta_lan_parse_route "$rg"
+  if [ -z "$ZETA_LAN_DEV" ] || [ -z "$ZETA_LAN_SRC" ]; then return 0; fi
+  ad="$(ip -4 -o addr show dev "$ZETA_LAN_DEV" 2>/dev/null || true)"
+  ZETA_LAN_PREFIX="$(zeta_lan_prefix_from_addr "$ad" "$ZETA_LAN_SRC")"
+  if [ -n "$ZETA_LAN_PREFIX" ]; then ZETA_LAN_OK=1; fi
+  return 0
+}
+
+# Which addresses of <first>-<last> already answer a ping? Sets ZETA_LB_BUSY
+# (newline-separated) and ZETA_LB_PROBE_RAN (1/0). NOT a command substitution:
+# the flags must survive. A silent LAN host (ICMP filtered) is invisible to this, so
+# "nothing answered" is evidence, not proof - and a probe that could not run says so.
+zeta_lb_pool_probe_busy() {
+  local s e i tmp
+  ZETA_LB_BUSY=""; ZETA_LB_PROBE_RAN=0
+  command -v ping >/dev/null 2>&1 || return 0
+  # A ping that cannot even reach loopback (no raw-socket permission) would make
+  # every address look free. That is the check-that-did-not-run-looking-like-a-pass.
+  ping -c 1 -W 1 127.0.0.1 >/dev/null 2>&1 || return 0
+  s="$(zeta_ipv4_to_int "$1")"; e="$(zeta_ipv4_to_int "$2")"
+  if [ -z "$s" ] || [ -z "$e" ]; then return 0; fi
+  ZETA_LB_PROBE_RAN=1
+  tmp="$(mktemp -d)"
+  for (( i = s; i <= e; i++ )); do
+    ( if ping -c 1 -W 1 "$(zeta_int_to_ipv4 "$i")" >/dev/null 2>&1; then : > "$tmp/$i"; fi ) &
+  done
+  wait
+  for (( i = s; i <= e; i++ )); do
+    if [ -e "$tmp/$i" ]; then ZETA_LB_BUSY="${ZETA_LB_BUSY}$(zeta_int_to_ipv4 "$i")"$'\n'; fi
+  done
+  rm -rf "$tmp"
+  return 0
+}
+
+# Accept <first>-<last> or leave a reason in ZETA_LB_POOL_REASON. 0 = accepted.
+# Needs ZETA_LAN_* (zeta_lan_detect) and ZETA_LB_RESERVED_CIDRS.
+zeta_lb_pool_accept() {
+  local start="$1" stop="$2" v shape
+  ZETA_LB_POOL_REASON=""
+  if [ "${ZETA_LAN_OK:-0}" = "1" ]; then
+    v="$(zeta_lb_pool_validate "$start" "$stop" "$ZETA_LAN_SRC" "$ZETA_LAN_PREFIX" "$ZETA_LAN_GW" "${ZETA_LB_RESERVED_CIDRS:-}")"
+    if [ "$v" != "valid" ]; then
+      ZETA_LB_POOL_REASON="$(zeta_lb_pool_explain "$v")"
+      return 1
+    fi
+  else
+    echo "[lb-pool] WARNING: this node's LAN address could not be read, so ${start}-${stop} is NOT checked against the LAN." >&2
+    shape="$(zeta_lb_pool_shape "$start" "$stop")"
+    if [ "$shape" != "ok" ]; then
+      ZETA_LB_POOL_REASON="$(zeta_lb_pool_explain "$shape")"
+      return 1
+    fi
+  fi
+  zeta_lb_pool_probe_busy "$start" "$stop"
+  if [ -n "$ZETA_LB_BUSY" ]; then
+    ZETA_LB_POOL_REASON="these addresses already answer on the LAN: $(echo "$ZETA_LB_BUSY" | tr '\n' ' ')"
+    return 1
+  fi
+  if [ "$ZETA_LB_PROBE_RAN" != "1" ]; then
+    echo "[lb-pool] NOTE: the in-use probe DID NOT RUN (no usable ping). That is a check that did not run, NOT a check that passed." >&2
+  fi
+  return 0
+}
+
+# zeta_lb_pool_resolve <mode>
+#   mode: ask        prompt now (interactive zeta-install)
+#         gate:<N>   offer the prompt behind a single 'l' keypress for N seconds
+#         none       never read stdin
+# Sets ZETA_LB_POOL_SOURCE (esp|prompt|unset|refused), ZETA_LB_POOL_START / _STOP,
+# ZETA_LB_POOL_REASON. `refused` = the ESP carried a value that cannot work and
+# nobody is here to ask: the caller must stop the install. Messages go to stderr.
+zeta_lb_pool_resolve() {
+  local mode="$1" spec key n ans start stop proposal re
+  ZETA_LB_POOL_SOURCE="unset"; ZETA_LB_POOL_START=""; ZETA_LB_POOL_STOP=""; ZETA_LB_POOL_REASON=""
+  spec="${ZETA_LB_POOL:-}"
+  re='^([0-9.]+)-([0-9.]+)$'
+  if [ -n "$spec" ]; then
+    start=""; stop=""
+    if [ "$spec" = "auto" ]; then
+      if [ "${ZETA_LAN_OK:-0}" = "1" ]; then
+        proposal="$(zeta_lb_pool_propose "$ZETA_LAN_SRC" "$ZETA_LAN_PREFIX" "$ZETA_LAN_GW" "${ZETA_LB_RESERVED_CIDRS:-}")"
+      else
+        proposal=""
+      fi
+      if [ -n "$proposal" ]; then
+        start="${proposal%-*}"; stop="${proposal#*-}"
+      else
+        ZETA_LB_POOL_REASON="'auto' needs a /24-or-larger LAN whose .240-.250 window is clear of this node, the gateway and the cluster's address space; none was found"
+      fi
+    elif [[ "$spec" =~ $re ]]; then
+      start="${BASH_REMATCH[1]}"; stop="${BASH_REMATCH[2]}"
+    else
+      ZETA_LB_POOL_REASON="not 'auto' and not <first-ip>-<last-ip>"
+    fi
+    if [ -n "$start" ] && zeta_lb_pool_accept "$start" "$stop"; then
+      ZETA_LB_POOL_SOURCE="esp"; ZETA_LB_POOL_START="$start"; ZETA_LB_POOL_STOP="$stop"
+      return 0
+    fi
+    echo "[lb-pool] REFUSED the ESP value ZETA_LB_POOL='${spec}': ${ZETA_LB_POOL_REASON}" >&2
+    if [ "$mode" != "ask" ]; then
+      ZETA_LB_POOL_SOURCE="refused"
+      return 0
+    fi
+  fi
+  case "$mode" in
+    ask) ;;
+    gate:*)
+      echo "[lb-pool] Press 'l' within ${mode#gate:}s to enter the LoadBalancer address range (portal gateway, GitLab)." >&2
+      echo "[lb-pool] Any other key, or waiting, leaves it UNSET: Services of type LoadBalancer stay <pending>." >&2
+      key=""
+      read -r -n 1 -s -t "${mode#gate:}" key || key=""
+      if [ "${key,,}" != "l" ]; then
+        ZETA_LB_POOL_REASON="no ZETA_LB_POOL on the ESP and no keypress"
+        return 0
+      fi
+      ;;
+    *)
+      ZETA_LB_POOL_REASON="non-interactive, and the ESP carried no ZETA_LB_POOL"
+      return 0
+      ;;
+  esac
+  proposal=""
+  if [ "${ZETA_LAN_OK:-0}" = "1" ]; then
+    echo "[lb-pool] This node: ${ZETA_LAN_SRC}/${ZETA_LAN_PREFIX} on ${ZETA_LAN_DEV}, gateway ${ZETA_LAN_GW:-<on-link>}." >&2
+    proposal="$(zeta_lb_pool_propose "$ZETA_LAN_SRC" "$ZETA_LAN_PREFIX" "$ZETA_LAN_GW" "${ZETA_LB_RESERVED_CIDRS:-}")"
+    if [ -n "$proposal" ]; then
+      zeta_lb_pool_probe_busy "${proposal%-*}" "${proposal#*-}"
+      if [ -n "$ZETA_LB_BUSY" ]; then
+        echo "[lb-pool] Proposal ${proposal} is NOT offered: $(echo "$ZETA_LB_BUSY" | tr '\n' ' ')already answer on the LAN." >&2
+        proposal=""
+      fi
+    fi
+  else
+    echo "[lb-pool] WARNING: this node's LAN address could not be read; no proposal is possible." >&2
+  fi
+  echo "[lb-pool] These must be FREE addresses on this LAN and OUTSIDE your router's DHCP range." >&2
+  echo "[lb-pool] Enter 'none' (or press Enter) to leave it UNSET." >&2
+  n=0
+  while :; do
+    ans=""
+    if [ -n "$proposal" ]; then
+      read -r -p "[lb-pool] LoadBalancer range — 'y' accepts ${proposal}, or type <first-ip>-<last-ip>: " ans || ans=""
+    else
+      read -r -p "[lb-pool] LoadBalancer range <first-ip>-<last-ip>: " ans || ans=""
+    fi
+    ans="${ans// /}"
+    case "${ans,,}" in
+      ""|none|n|no)
+        ZETA_LB_POOL_REASON="left unset at the prompt"
+        return 0
+        ;;
+    esac
+    start=""; stop=""
+    if [ "${ans,,}" = "y" ] || [ "${ans,,}" = "yes" ]; then
+      if [ -n "$proposal" ]; then
+        start="${proposal%-*}"; stop="${proposal#*-}"
+      else
+        echo "[lb-pool]   there is no proposal to accept; type a range." >&2
+      fi
+    elif [[ "$ans" =~ $re ]]; then
+      start="${BASH_REMATCH[1]}"; stop="${BASH_REMATCH[2]}"
+    else
+      echo "[lb-pool]   need <first-ip>-<last-ip>, e.g. 192.168.1.240-192.168.1.250" >&2
+    fi
+    if [ -n "$start" ]; then
+      if zeta_lb_pool_accept "$start" "$stop"; then
+        ZETA_LB_POOL_SOURCE="prompt"; ZETA_LB_POOL_START="$start"; ZETA_LB_POOL_STOP="$stop"
+        return 0
+      fi
+      echo "[lb-pool]   rejected: ${ZETA_LB_POOL_REASON}" >&2
+    fi
+    n=$((n + 1))
+    if [ "$n" -ge "$ZETA_LB_POOL_MAX_ATTEMPTS" ]; then
+      ZETA_LB_POOL_REASON="gave up after ${ZETA_LB_POOL_MAX_ATTEMPTS} rejected answers"
+      return 0
+    fi
+  done
+}
+
+# zeta_cluster_name_from_identity <identity.json> -> the clusterName, or empty.
+zeta_cluster_name_from_identity() {
+  [ -r "$1" ] || { echo ""; return 0; }
+  sed -n 's/.*"clusterName"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$1" 2>/dev/null | head -n 1 || true
+}
+# ZETA-LB-POOL-END -----------------------------------------------
+
+# ── Step 0.6: the LAN this node is on (docs/ops/INSTALL-TIME-CONFIG.md) ────────────
+# Before disk enumeration, so a refusal costs nothing: nothing has been wiped.
+#   (a) does the cluster's derived pod/service CIDR collide with a network this node
+#       can already route to?   -> REFUSE unless ZETA_ALLOW_CIDR_OVERLAP=1
+#   (b) which LoadBalancer address range?  -> ESP -> prompt -> UNSET (loud)
+ZETA_CLUSTER_IDENTITY_FILE="${ZETA_CLUSTER_IDENTITY_FILE:-/etc/zeta-cluster-identity.json}"
+ZETA_PREFLIGHT_CLUSTER_NAME="$(zeta_cluster_name_from_identity "$ZETA_CLUSTER_IDENTITY_FILE")"
+echo
+echo "[lan] ── the LAN this node is on ──"
+zeta_lan_detect
+if [ "$ZETA_LAN_OK" = "1" ]; then
+  echo "[lan] ${ZETA_LAN_SRC}/${ZETA_LAN_PREFIX} on ${ZETA_LAN_DEV}, gateway ${ZETA_LAN_GW:-<on-link>}"
+else
+  echo "[lan] WARNING: could not read this node's LAN address (ip route get 1.1.1.1). The collision check and LoadBalancer-range validation below are DEGRADED." >&2
+fi
+if [ -n "$ZETA_PREFLIGHT_CLUSTER_NAME" ]; then
+  ZETA_LB_RESERVED_CIDRS="$(zeta_cluster_cidrs "$ZETA_PREFLIGHT_CLUSTER_NAME") ${ZETA_CLUSTER_SEGMENT_CIDR}"
+  ZETA_LAN_COLLISIONS="$(zeta_host_cidrs | zeta_cidr_collisions "$ZETA_PREFLIGHT_CLUSTER_NAME")"
+else
+  # The identity file is baked into the ISO next to this script. Absent means a
+  # hand-built medium: say so, and check the WHOLE address space the derivation can
+  # land in, which can only over-refuse (the override exists), never under-refuse.
+  echo "[lan] WARNING: no cluster identity at ${ZETA_CLUSTER_IDENTITY_FILE}; checking the whole pod/service space instead of this cluster's derived slot." >&2
+  ZETA_LB_RESERVED_CIDRS="10.128.0.0/9 10.96.0.0/11 ${ZETA_CLUSTER_SEGMENT_CIDR}"
+  ZETA_LAN_COLLISIONS=""
+  while IFS= read -r zeta_h; do
+    [ -n "$zeta_h" ] || continue
+    for zeta_wide in 10.128.0.0/9 10.96.0.0/11 "$ZETA_CLUSTER_SEGMENT_CIDR"; do
+      if [ "$(zeta_cidr_overlaps "$zeta_h" "$zeta_wide")" = "yes" ]; then
+        ZETA_LAN_COLLISIONS="${ZETA_LAN_COLLISIONS}${zeta_h} space ${zeta_wide}"$'\n'
+      fi
+    done
+  done < <(zeta_host_cidrs)
+fi
+if [ -n "$ZETA_LAN_COLLISIONS" ]; then
+  echo "[lan] ADDRESS-SPACE COLLISION between this node's networks and the cluster's own:" >&2
+  while IFS= read -r zeta_line; do
+    if [ -n "$zeta_line" ]; then echo "[lan]   ${zeta_line}" >&2; fi
+  done <<<"$ZETA_LAN_COLLISIONS"
+  if [ "${ZETA_ALLOW_CIDR_OVERLAP:-}" = "1" ]; then
+    echo "[lan] ZETA_ALLOW_CIDR_OVERLAP=1 is set -- proceeding. Pods will be unable to reach the colliding LAN hosts." >&2
+  else
+    bail "this node can already route to a network that overlaps the cluster's pod/service address space (listed above). The overlay would swallow traffic to those LAN hosts: nothing crashes, packets just never arrive. Fix it at the source -- renumber that network, or change clusterName in full-ai-cluster/cluster-identity.json (which derives a different pod/service range) and rebuild the ISO -- or set ZETA_ALLOW_CIDR_OVERLAP=1 to install anyway. Nothing has been wiped."
+  fi
+else
+  echo "[lan] no overlap between this node's networks and the cluster's pod/service/segment CIDRs."
+fi
+
+# A joiner does not ask: the LoadBalancer range is a property of the cluster its
+# founder already decided (and the ESP value, if any, is the founder's).
+if [[ "${ZETA_ROLE:-}" == "joiner" ]]; then
+  ZETA_LB_POOL_MODE="none"
+  ZETA_LB_POOL=""
+elif zeta_install_prompts_enabled; then
+  ZETA_LB_POOL_MODE="ask"
+elif [[ -t 0 ]]; then
+  ZETA_LB_POOL_MODE="gate:${LB_POOL_PROMPT_SECS:-20}"
+else
+  ZETA_LB_POOL_MODE="none"
+fi
+echo
+echo "[lb-pool] ── LoadBalancer address range (Cilium LB-IPAM) ──"
+zeta_lb_pool_resolve "$ZETA_LB_POOL_MODE"
+case "$ZETA_LB_POOL_SOURCE" in
+  refused)
+    bail "the ESP asked for a LoadBalancer range that cannot work on this LAN and nobody is at the console to ask (reason above: ${ZETA_LB_POOL_REASON}). Installing anyway would ship Services that never get a reachable address. Re-flash with a --lb-pool that fits this network, or run zeta-install from a console so it can ask. Nothing has been wiped."
+    ;;
+  unset)
+    if [[ "${ZETA_ROLE:-}" == "joiner" ]]; then
+      echo "[lb-pool] joiner: the cluster's LoadBalancer range is the founder's; nothing to set."
+    else
+      echo "[lb-pool] UNSET (${ZETA_LB_POOL_REASON:-no value}) -- NO LoadBalancer pool will be applied." >&2
+      echo "[lb-pool]   Services of type LoadBalancer (the portal gateway, GitLab on the LAN) will stay <pending>." >&2
+      echo "[lb-pool]   To fix after install: write '<first-ip>-<last-ip>' to /etc/zeta/lb-pool on the control plane," >&2
+      echo "[lb-pool]   then sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>" >&2
+    fi
+    ;;
+  *)
+    echo "[lb-pool] SET (source: ${ZETA_LB_POOL_SOURCE}) -- ${ZETA_LB_POOL_START} .. ${ZETA_LB_POOL_STOP}"
+    ;;
+esac
+echo
+
+
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
@@ -2746,6 +3256,31 @@ case "$REPO_PIN_VALIDATION" in
 esac
 echo "[repo-pin] outcome=${REPO_PIN_OUTCOME} pin=${ZETA_ISO_COMMIT:-<none>}"
 
+# ── Re-check the address-space collision against the tree that is ACTUALLY going on the
+# disk. Step 0.6 checked against the identity baked into this ISO; the clone above may
+# carry a different clusterName (a main that moved, or a pin that did not match the ISO),
+# and the pod/service CIDR is derived from it. The disk is already wiped here, so this
+# bails rather than refuses -- but it bails BEFORE nixos-install builds a node whose pods
+# cannot reach part of its own LAN, which is the cheaper place to learn it.
+ZETA_CLONED_CLUSTER_NAME="$(zeta_cluster_name_from_identity /mnt/etc/zeta/full-ai-cluster/cluster-identity.json)"
+if [ -z "$ZETA_CLONED_CLUSTER_NAME" ]; then
+  echo "[lan] NOTE: the cloned tree has no readable cluster-identity.json; collision re-check DID NOT RUN (that is not a pass)." >&2
+elif [ "$ZETA_CLONED_CLUSTER_NAME" != "$ZETA_PREFLIGHT_CLUSTER_NAME" ]; then
+  echo "[lan] the cloned tree's clusterName '${ZETA_CLONED_CLUSTER_NAME}' differs from the ISO's '${ZETA_PREFLIGHT_CLUSTER_NAME:-<none>}'; re-checking against the clone."
+  ZETA_RECHECK_COLLISIONS="$(zeta_host_cidrs | zeta_cidr_collisions "$ZETA_CLONED_CLUSTER_NAME")"
+  if [ -n "$ZETA_RECHECK_COLLISIONS" ] && [ "${ZETA_ALLOW_CIDR_OVERLAP:-}" != "1" ]; then
+    echo "[lan] ADDRESS-SPACE COLLISION against the cloned tree's cluster '${ZETA_CLONED_CLUSTER_NAME}':" >&2
+    echo "$ZETA_RECHECK_COLLISIONS" | sed 's/^/[lan]   /' >&2
+    bail "the cloned tree derives a pod/service address space that overlaps a network this node can route to (listed above). Set ZETA_ALLOW_CIDR_OVERLAP=1 to install anyway, or renumber the network / change clusterName in full-ai-cluster/cluster-identity.json."
+  fi
+  if [ -n "${ZETA_LB_POOL_START:-}" ]; then
+    ZETA_RECHECK_RESERVED="$(zeta_cluster_cidrs "$ZETA_CLONED_CLUSTER_NAME") ${ZETA_CLUSTER_SEGMENT_CIDR}"
+    if [ "$ZETA_LAN_OK" = "1" ] && [ "$(zeta_lb_pool_validate "$ZETA_LB_POOL_START" "$ZETA_LB_POOL_STOP" "$ZETA_LAN_SRC" "$ZETA_LAN_PREFIX" "$ZETA_LAN_GW" "$ZETA_RECHECK_RESERVED")" != "valid" ]; then
+      bail "the LoadBalancer range ${ZETA_LB_POOL_START}-${ZETA_LB_POOL_STOP} overlaps the cloned tree's pod/service address space. Re-run and choose another range."
+    fi
+  fi
+fi
+
 echo "Generating hardware-configuration.nix ..."
 sudo nixos-generate-config --root /mnt --force
 # 081KSNY2Z0008QG0R0008PN7RQ / 081KSGS9H0008QG0R0011BC7T2: flake hosts import ./hardware-configuration.nix from the
@@ -3528,6 +4063,24 @@ else
   echo "[public-tls] unset — no /mnt/etc/zeta/acme-email or public-domain written (LAN-only platform)"
 fi
 
+# ── Step 6.64b: persist the LoadBalancer range (docs/ops/INSTALL-TIME-CONFIG.md) ──
+# Resolved at Step 0.6 (ESP -> prompt -> unset). Written ONLY when set, as one
+# public-identifier file `<first-ip>-<last-ip>` that nixos/modules/injected-lb-pool.nix
+# reads at evaluation time; its absence IS the unset state, so nothing is written
+# for it. Re-validated here with the same function Step 0.6 used, so a value that
+# somehow changed in between is a refusal and not a pool.
+if [ "${ZETA_LB_POOL_SOURCE:-unset}" = "esp" ] || [ "${ZETA_LB_POOL_SOURCE:-unset}" = "prompt" ]; then
+  if [ "$(zeta_lb_pool_shape "$ZETA_LB_POOL_START" "$ZETA_LB_POOL_STOP")" != "ok" ]; then
+    bail "internal: the resolved LoadBalancer range '${ZETA_LB_POOL_START}-${ZETA_LB_POOL_STOP}' fails the shape check; refusing to write it to /mnt/etc/zeta/lb-pool."
+  fi
+  sudo mkdir -p /mnt/etc/zeta
+  printf '%s-%s\n' "$ZETA_LB_POOL_START" "$ZETA_LB_POOL_STOP" | sudo tee /mnt/etc/zeta/lb-pool >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/lb-pool
+  echo "[lb-pool] wrote /mnt/etc/zeta/lb-pool (${ZETA_LB_POOL_START}-${ZETA_LB_POOL_STOP})"
+else
+  echo "[lb-pool] unset — no /mnt/etc/zeta/lb-pool written (no LoadBalancer pool will be applied)"
+fi
+
 # ── Step 6.65: persist the node ZetaId (2026-08-23) ───────────────
 #
 # Aaron 2026-08-22: "yes we should move this to a zetaid."
@@ -4264,6 +4817,10 @@ maybe_symlink /mnt/etc/zeta/k3s-join-token /etc/zeta/k3s-join-token
 # time, so without these the ACME Application would silently not render.
 maybe_symlink /mnt/etc/zeta/acme-email /etc/zeta/acme-email
 maybe_symlink /mnt/etc/zeta/public-domain /etc/zeta/public-domain
+# injected-lb-pool.nix readFile's this at evaluation time; without the symlink the
+# LoadBalancer pool Application would silently not render and every Service of
+# type LoadBalancer would stay <pending>.
+maybe_symlink /mnt/etc/zeta/lb-pool /etc/zeta/lb-pool
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
@@ -5198,6 +5755,23 @@ if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
 else
   echo "  PUBLIC TLS: not configured (LAN-only). The portal is on the zeta-gateway"
   echo "    LoadBalancer IP, port 80, any hostname. See INJECTION-POINTS.md §10 to add it."
+  echo
+fi
+# docs/ops/INSTALL-TIME-CONFIG.md — say which LoadBalancer range was applied, or that
+# none was, so a portal that is <pending> is never a mystery.
+if [ "${ZETA_LB_POOL_SOURCE:-unset}" = "esp" ] || [ "${ZETA_LB_POOL_SOURCE:-unset}" = "prompt" ]; then
+  echo "  LOADBALANCER RANGE: ${ZETA_LB_POOL_START} .. ${ZETA_LB_POOL_STOP} (source: ${ZETA_LB_POOL_SOURCE})"
+  echo "    Cilium hands these to Services of type LoadBalancer; keep them out of your router's DHCP range."
+  echo "      sudo k3s kubectl get ciliumloadbalancerippool zeta-lb-pool"
+  if [[ "${ZETA_LB_POOL_START}" != "192.168.1.240" ]] || [[ "${ZETA_LB_POOL_STOP}" != "192.168.1.250" ]]; then
+    echo "    NOTE: GitLab's LAN Gateway is still pinned to 192.168.1.250 in full-ai-cluster/k8s/applications/gitlab/."
+    echo "    Outside that address it stays <pending> until that pin follows this range (docs/ops/INSTALL-TIME-CONFIG.md, row 3)."
+  fi
+  echo
+elif [[ "${ZETA_ROLE:-}" != "joiner" ]]; then
+  echo "  LOADBALANCER RANGE: NOT SET. No pool was applied, so every Service of type LoadBalancer"
+  echo "    (the portal gateway, GitLab on the LAN) is <pending>. Write '<first-ip>-<last-ip>' to"
+  echo "    /etc/zeta/lb-pool and: sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#$HOST"
   echo
 fi
 # 081M3K23YCP087G0R003BVDS1P — say where the dev toolchain went, so an operator

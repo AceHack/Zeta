@@ -1,0 +1,14 @@
+{
+  "id": "080d07ad0bd77010a0130008e087e978",
+  "at": "2026-10-01T04:03:15.822Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TT2YQE087G0R003QFBZE4",
+    "type": "task",
+    "title": "Install-time config audit: LoadBalancer range, LAN collision check, placeholder lint",
+    "slug": "install-time-config-audit-loadbalancer-range-lan-collision-c",
+    "priority": "P1",
+    "filename": "081M3TT2YQE087G0R003QFBZE4-install-time-config-audit-loadbalancer-range-lan-collision-c.md"
+  }
+}
