@@ -3109,3 +3109,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - CI: one red, agencysignature (PR body), skipped on main not green; many checks in progress.
 - Softs: S1 CI pending; S2 blocked + auto-merge armed; S3 no live cluster; S4 test misses overcommit; S5 PR-body signature; S6 stale Nix comment; S7 gitops-before-rebuild window on already-installed nodes.
 - Path to GO: keep enabled false; add vm.overcommit_memory=1 to node-tunables.json; pin it in the test.
+
+## leftover UNIQUE leftover #17763 leftover unique @ 4fc5284669a2ee7bb43b22b5eda52581c0be5f87 -- GRADE GO
+
+- PR: GitLab runner bring-up (maximdolphin). Tip 4fc52846 is test-only +13/-3, parent d39e8bc8 (product), parent of that is base 6aac8b4d. Main unmoved. PR rollup 2 commits, 4 files, +471/-5. Test-merge a9a12402 not graded. Blocked, squash auto-merge armed.
+- Chart 8.7.0 (GitLab 17.7) renders runner 50m/64Mi, redis 100m/128Mi, both exporters, concurrent 4, job requests in config.template.toml. HPAs: webservice 1..2, sidekiq 1..2, shell 1..1, registry 1..1. No min-2 HPA left.
+- Token Job retries inside 720s / deadline 900s. reset_token! is real on 17.7. Give-up still exits 0 (pre-existing #17737 hook); empty runner-token leaves the Deployment unready. run_untagged is a Rails create attribute, not config.toml.
+- readIfPresent is one read; only ENOENT means absent.
+- Tests 9/9 at tip. Base with this test is 7 red / 2 green (PR said 6 of 9). Survivors: reset_token! removed, SECONDS cap removed.
+- Softs: S1 blocked; S2 auto-merge armed; S3 CI in progress; S4 agencysignature PR body; S5 live node unverified; S6 stale pre-#17737 totals; S7 run_untagged is create-only (existing token skips Rails); S8 test gaps; S9 untagged jobs use the gitlab namespace admin SA; S10 redis request is not a maxmemory cap; S11 give-up exit 0 is pre-existing.
+- Hard fails: none.
