@@ -1,0 +1,12 @@
+{
+  "pr_number": 17809,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17809-fix-hygiene-roster-current-vera-md-as-a-prose-stale-tree-consumer.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T09:41:14.748Z",
+  "schema_version": "v1",
+  "commit_sha": "e6e5c877f0d63ad8e91fa8a0b923276f2da6d9b8",
+  "title": "fix(hygiene): roster CURRENT-vera.md as a prose stale-tree consumer",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T09:40:32Z",
+  "head_ref": "cursor/cluster-tree-vera-roster-27c5"
+}
