@@ -487,3 +487,79 @@ describe("atmoz/sftp sidecars are opt-in: idle without a key, start atmoz with a
     expect((await sftpGateViolations(podSpec, "bare", "zeta::99:100", ROOT)).length).toBeGreaterThanOrEqual(3);
   });
 });
+
+// ── library Blueprints serve on the port they declare ───────────────────
+// The `web` Blueprint ran `nginx:1.27-alpine` while declaring port 8080. That image's
+// config says `ExposedPorts {"80/tcp"}` and runs as root, so the pod was Running with
+// nothing listening on the containerPort, the Service targetPort and the HTTPRoute
+// backend the engine renders from that one number -- and with no probe, nothing said so.
+//
+// A render cannot see this: the mismatch is between the Blueprint and the IMAGE. So the
+// image half is a table, read from the registry config blobs (linux/amd64), 2026-10-01:
+//   library/nginx:1.27-alpine                    ExposedPorts 80/tcp                no User
+//   nginxinc/nginx-unprivileged:1.29-alpine      ExposedPorts 8080/tcp              User 101
+//   library/postgres:16-alpine                   ExposedPorts 5432/tcp
+// An image with no row cannot be checked and FAILS rather than passing -- unknown is not
+// agreement. Game servers are configured by environment rather than by image default, so
+// for them the check is that the env names the same port the Blueprint declares.
+describe("library Blueprints serve on the port they declare", () => {
+  /** Docker Hub repository (no registry host, tag or digest) -> the TCP ports its image listens on. */
+  const IMAGE_TCP_PORTS: Record<string, number[]> = {
+    "nginxinc/nginx-unprivileged": [8080],
+    "library/nginx": [80],
+    "library/postgres": [5432],
+  };
+  const hubRepo = (image: string): string => {
+    const noDigest = image.split("@")[0]!;
+    const noTag = noDigest.replace(/:[^/:]+$/, "");
+    const stripped = noTag.replace(/^(registry-1\.)?docker\.io\//, "");
+    return stripped.includes("/") ? stripped : `library/${stripped}`;
+  };
+  const tcpBlueprints = library().filter((bp) => (bp.ports ?? []).some((p) => (p.protocol ?? "TCP") === "TCP"));
+  /** Why a Blueprint's declared TCP ports cannot be served by its image; empty = they can. */
+  const portViolations = (bp: Blueprint): string[] => {
+    const known = IMAGE_TCP_PORTS[hubRepo(bp.image)];
+    if (known === undefined) return [`${bp.name}: no listen-port row for image ${bp.image}; add one from its registry config`];
+    return (bp.ports ?? [])
+      .filter((p) => (p.protocol ?? "TCP") === "TCP" && !known.includes(p.port))
+      .map((p) => `${bp.name}: port ${p.name}=${p.port} but ${bp.image} listens on ${known.join(",")}`);
+  };
+
+  test("the library has TCP-serving Blueprints (not vacuous)", () => {
+    expect(tcpBlueprints.map((b) => b.name).sort()).toEqual(["postgres", "web"]);
+  });
+
+  for (const bp of tcpBlueprints) {
+    test(`${bp.name}: every declared TCP port is one its image listens on`, () => {
+      expect(portViolations(bp)).toEqual([]);
+    });
+  }
+
+  test("web: renders containerPort, Service targetPort and probe on the port nginx-unprivileged listens on", () => {
+    const web = library().find((b) => b.name === "web")!;
+    expect(hubRepo(web.image)).toBe("nginxinc/nginx-unprivileged");
+    const objs = renderDeployable(web, instance("site", { blueprint: "web" }));
+    const container = (one(objs, "Deployment").spec as any).template.spec.containers[0];
+    expect(container.ports[0].containerPort).toBe(8080);
+    expect((one(objs, "Service").spec as any).ports[0].targetPort).toBe(8080);
+    // The probe is what makes a future mismatch visible: NotReady, not silently Running.
+    expect(container.readinessProbe?.httpGet?.port).toBe(8080);
+  });
+
+  test("control: the pre-fix pairing (library nginx on 8080) is reported, not passed", () => {
+    const prefix: Blueprint = { name: "web", image: "nginx:1.27-alpine", ports: [{ name: "http", port: 8080, web: true }] };
+    expect(portViolations(prefix)).toEqual(["web: port http=8080 but nginx:1.27-alpine listens on 80"]);
+    // ...and an image nobody wrote a row for is a failure, never a pass.
+    expect(portViolations({ name: "x", image: "example.org/unknown:1", ports: [{ name: "p", port: 1 }] })[0]).toContain("no listen-port row");
+  });
+
+  test("game Blueprints: the env port equals the declared UDP port", () => {
+    const ENV_PORT: Record<string, string> = { gmod: "GAME_PORT", unturned: "GAME_PORT", "arma-reforger": "SERVER_BIND_PORT" };
+    for (const [name, key] of Object.entries(ENV_PORT)) {
+      const bp = library().find((b) => b.name === name)!;
+      const vals = resolveValues(bp, instance(`${name}-srv`, { blueprint: name }));
+      const declared = (bp.ports ?? [])[0]!.port;
+      expect(substitute(bp.env![key]!, vals), `${name}: ${key}`).toBe(String(declared));
+    }
+  });
+});

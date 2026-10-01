@@ -418,7 +418,13 @@ describe("the real tree", () => {
     // (`global.minio.enabled: false`, gitlab/Application.yaml) -- both minio/minio
     // and minio/mc were withdrawn from Docker Hub. -17,513,355 compressed bytes
     // x2.67 = -0.0435 GiB, measured (65.59 - 0.04193... = 65.54806927766651).
-    expect(all.diskGib).toBeCloseTo(65.55, 2);
+    // 65.55 -> 65.50 on 2026-10-01: platform's `web` Blueprint left `nginx:1.27-alpine`
+    // (20,971,416 B compressed) for `docker.io/nginxinc/nginx-unprivileged:1.29-alpine`,
+    // which mimir's gateway already pulls, so the image SET shrank by one entry and
+    // nothing was added. -20,971,416 x2.67 = -0.0522 GiB (65.54806927766651 - 0.0522 =
+    // 65.4959, the figure CI measured). The floor FALLING because an image left, not
+    // because one went missing -- the distinction the notes above exist to keep.
+    expect(all.diskGib).toBeCloseTo(65.5, 2);
     expect(all.cpuMillis).toBeGreaterThan(budget.cpuMillis);
     // THE DISK AXIS STOPPED BINDING ON 2026-09-02, and this line used to assert the
     // opposite. `all.diskGib` is 61.83 against a 66 GiB budget, so for the first time

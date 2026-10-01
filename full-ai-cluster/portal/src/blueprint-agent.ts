@@ -231,7 +231,7 @@ export function build(message: string, draft?: BlueprintProposal): BuildResult {
   if (/postgres|database|\bdb\b|sql/.test(t))
     return { reply: "A PostgreSQL blueprint (stateful, cluster-internal). Tweak or save.", spec: { name: "postgres", category: "database", image: "postgres:16-alpine", env: { POSTGRES_DB: "${DB}", POSTGRES_USER: "${USER}", POSTGRES_PASSWORD: "${PASSWORD}", PGDATA: "/var/lib/postgresql/data/pgdata" }, ports: [{ name: "sql", port: 5432, protocol: "TCP" }], storage: { size: "20Gi", mountPath: "/var/lib/postgresql/data" }, resources: { cpu: "1", memory: "1Gi" }, variables: [{ name: "DB", default: "app" }, { name: "USER", default: "app" }, { name: "PASSWORD", default: "change-me" }], defaultExpose: "cluster" } };
   if (/web|site|nginx|static|frontend/.test(t))
-    return { reply: "A static web blueprint (stateless, public HTTPS). Tweak or save.", spec: { name: "web", category: "web", image: "nginx:1.27-alpine", ports: [{ name: "http", port: 8080, web: true }], resources: { cpu: "250m", memory: "256Mi" }, defaultExpose: "public" } };
+    return { reply: "A static web blueprint (stateless, public HTTPS). Tweak or save.", spec: { name: "web", category: "web", image: "docker.io/nginxinc/nginx-unprivileged:1.29-alpine", ports: [{ name: "http", port: 8080, web: true }], resources: { cpu: "250m", memory: "256Mi" }, defaultExpose: "public" } };
 
   return { reply: `Tell me what to build — a game server (try "Arma Reforger", "Unturned", "Garry's Mod", "Valheim", "Rust", "Minecraft"), a database, or a web app. I'll draft a complete blueprint you can tweak and save.` };
 }

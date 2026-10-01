@@ -182,12 +182,12 @@
     "full-ai-cluster/platform": [
       "atmoz/sftp:alpine",
       "busybox:1.36",
+      "docker.io/nginxinc/nginx-unprivileged:1.29-alpine",
       "ghcr.io/acemod/arma-reforger:sha-cd226c0@sha256:90883ce2f3d8b3b5b132ae7f4b3377afdc9e6be7e7c8cb1a290f8bd7b39d079c",
       "ghcr.io/ich777/steamcmd:garrysmod",
       "ghcr.io/ich777/steamcmd:unturned",
       "ghcr.io/lucent-financial-group/zeta-platform-controller:latest",
       "ghcr.io/lucent-financial-group/zeta-portal:latest",
-      "nginx:1.27-alpine",
       "postgres:16-alpine"
     ],
     "full-ai-cluster/qwen-coder": [],
@@ -512,9 +512,6 @@
     },
     "natsio/nats-server-config-reloader:0.23.0": {
       "compressedBytes": 5173326
-    },
-    "nginx:1.27-alpine": {
-      "compressedBytes": 20971416
     },
     "ollama/ollama:0.33.2": {
       "compressedBytes": 3383205370

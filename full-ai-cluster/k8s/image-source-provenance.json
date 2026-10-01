@@ -292,18 +292,6 @@
       "resolvedAt": "2026-09-22"
     },
     {
-      "repository": "registry-1.docker.io/library/nginx",
-      "tags": {
-        "1.27-alpine": 200
-      },
-      "artifact": "public",
-      "sourceRepo": null,
-      "sourceEvidence": "none",
-      "sourceVisibility": "unknown",
-      "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-09-22"
-    },
-    {
       "repository": "registry-1.docker.io/library/postgres",
       "tags": {
         "16-alpine": 200
@@ -314,6 +302,18 @@
       "sourceVisibility": "unknown",
       "packagePresence": "not-ghcr",
       "resolvedAt": "2026-09-22"
+    },
+    {
+      "repository": "registry-1.docker.io/nginxinc/nginx-unprivileged",
+      "tags": {
+        "1.29-alpine": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "nginx/docker-nginx-unprivileged",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-10-01"
     },
     {
       "repository": "registry-1.docker.io/ollama/ollama",

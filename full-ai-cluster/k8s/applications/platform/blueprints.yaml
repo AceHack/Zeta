@@ -91,9 +91,25 @@ metadata:
 spec:
   category: web
   stateful: false
-  image: nginx:1.27-alpine
+  # WAS `nginx:1.27-alpine`, WHICH NEVER SERVED. That image's config declares
+  # `ExposedPorts {"80/tcp"}` and runs as root, while this Blueprint -- and so the
+  # rendered containerPort, Service targetPort and HTTPRoute backend -- says 8080.
+  # The pod would be Running with nothing listening on the port every route points
+  # at. MEASURED 2026-10-01 from the registry config blobs (linux/amd64), not from
+  # a README: library/nginx:1.27-alpine -> ExposedPorts 80/tcp, no User;
+  # nginxinc/nginx-unprivileged:1.29-alpine -> ExposedPorts 8080/tcp, User 101.
+  # The unprivileged variant is the one that listens on 8080 by design (it cannot
+  # bind a port below 1024 as uid 101), so the port below stays and the image moves.
+  # 1.29-alpine is already pulled for mimir's gateway, so it adds no new image.
+  # Guard: full-ai-cluster/platform-controller/src/blueprint.test.ts
+  image: docker.io/nginxinc/nginx-unprivileged:1.29-alpine
   ports:
     - { name: http, port: 8080, web: true }
+  # READINESS ON THE DECLARED PORT. Without a probe a port/image mismatch like the
+  # one above is invisible: the pod reads Ready while serving nothing, and the
+  # Service and HTTPRoute send traffic into a closed port.
+  probe:
+    readiness: { httpGet: { path: /, port: 8080 }, initialDelaySeconds: 2, periodSeconds: 10 }
   resources: { cpu: "250m", memory: "256Mi" }
   defaultExpose: public
 ---

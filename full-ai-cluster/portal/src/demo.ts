@@ -11,7 +11,7 @@ import type { BlueprintCR, DeployableCR, RoomData } from "./viewmodel.ts";
 
 const DEMO_BLUEPRINTS: BlueprintCR[] = [
   { metadata: { name: "gmod", namespace: "zeta-platform" }, spec: { category: "game", image: "ghcr.io/ich777/steamcmd:gmod", stateful: true, defaultExpose: "lan", variables: [{ name: "MAP", default: "gm_construct" }, { name: "MAXPLAYERS", default: "16" }] } },
-  { metadata: { name: "web", namespace: "zeta-platform" }, spec: { category: "web", image: "nginx:1.27-alpine", stateful: false, defaultExpose: "public" } },
+  { metadata: { name: "web", namespace: "zeta-platform" }, spec: { category: "web", image: "docker.io/nginxinc/nginx-unprivileged:1.29-alpine", stateful: false, defaultExpose: "public" } },
   { metadata: { name: "postgres", namespace: "zeta-platform" }, spec: { category: "database", image: "postgres:16-alpine", stateful: true, defaultExpose: "cluster", variables: [{ name: "DB", default: "app" }] } },
   { metadata: { name: "worker", namespace: "zeta-platform" }, spec: { category: "app", image: "busybox:1.36", stateful: false, defaultExpose: "none" } },
 ];

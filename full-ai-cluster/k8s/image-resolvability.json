@@ -1521,27 +1521,6 @@
       "resolvedAt": "2026-09-22"
     },
     {
-      "reference": "registry-1.docker.io/library/nginx:1.27-alpine",
-      "status": "ok",
-      "httpStatus": 200,
-      "arches": [
-        "linux/386",
-        "linux/amd64",
-        "linux/arm",
-        "linux/arm",
-        "linux/arm64",
-        "linux/ppc64le",
-        "linux/riscv64",
-        "linux/s390x"
-      ],
-      "requiredArchesMissing": [],
-      "reason": "",
-      "isDockerHub": true,
-      "isLatestOrUntagged": false,
-      "hasDigest": false,
-      "resolvedAt": "2026-09-22"
-    },
-    {
       "reference": "registry-1.docker.io/library/postgres:16-alpine",
       "status": "ok",
       "httpStatus": 200,
