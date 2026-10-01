@@ -602,3 +602,43 @@ describe("A REVIEWER IS HANDED THE CHECKOUT IT JUDGES IN, BY NAME", () => {
     expect(r.value.reason).toContain(`"branch":"feature/act-1"`);
   });
 });
+
+describe("A REVIEWER IS HANDED WHAT THE STEP PRODUCED, INLINE", () => {
+  // MEASURED over 96 reviews on the Waypoint run, 2026-09-20/21: a reviewer looked at 19 things on
+  // average — the dashboard (88 of 96), the item twice, each evidence attachment one `observe` call
+  // at a time — before reading a line of the change. Every one of those is a turn that re-reads the
+  // whole context. The evidence for the step being judged is a few kilobytes the runtime already
+  // holds; handing it over costs nothing and removes the calls that only fetched it.
+  test("inline evidence (ran/exit/stdout/stderr) reaches the command as ORG_REVIEW_EVIDENCE; file refs stay refs", async () => {
+    const SELF = process.execPath;
+    const review = commandReview({
+      command: SELF,
+      argsFor: () => ["-e", `process.stdout.write(JSON.stringify({ t: process.env.ORG_REVIEW_TITLE || null, b: process.env.ORG_REVIEW_BRIEF || null, ev: JSON.parse(process.env.ORG_REVIEW_EVIDENCE || "[]") })); process.exit(0)`],
+      cwd: process.cwd(),
+    });
+    const r = await review.review({
+      gate: GateKind.QaUat,
+      workId: "task-1",
+      title: "wire the thing",
+      brief: "the thing must be wired",
+      evidence: [
+        { kind: "trace", ref: "ran:node verify.cjs in /checkouts/x" },
+        { kind: "trace", ref: "exit:1" },
+        { kind: "log", ref: "stdout:" + "line\n".repeat(3000) },
+        { kind: "document", ref: "/docs/task-1/reproduction.md" },
+      ],
+    } as never);
+    if (!r.ok) throw new Error(r.reason);
+    const seen = JSON.parse(r.value.reason.replace(/^said:/, "")) as { t: string; b: string; ev: { label: string; text?: string; ref?: string }[] };
+    expect(seen.t).toBe("wire the thing");
+    expect(seen.b).toBe("the thing must be wired");
+    expect(seen.ev.find((e) => e.label === "ran")?.text).toBe("node verify.cjs in /checkouts/x");
+    expect(seen.ev.find((e) => e.label === "exit")?.text).toBe("1");
+    // Long output is kept head-and-tail, never the whole thing and never nothing.
+    const out = seen.ev.find((e) => e.label === "stdout")?.text ?? "";
+    expect(out.length).toBeGreaterThan(1000);
+    expect(out.length).toBeLessThan(15_000 + 100);
+    // A file is a reference the reviewer opens; it is not inlined.
+    expect(seen.ev.find((e) => e.ref === "/docs/task-1/reproduction.md")?.text).toBeUndefined();
+  });
+});

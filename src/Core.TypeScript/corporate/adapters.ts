@@ -330,6 +330,9 @@ export function commandReview(input: {
       const handed = {
         ...(request.workdir === undefined ? {} : { ORG_REVIEW_CHECKOUT: request.workdir }),
         ...(request.branch === undefined ? {} : { ORG_REVIEW_BRANCH: request.branch }),
+        ...(request.title === undefined ? {} : { ORG_REVIEW_TITLE: request.title }),
+        ...(request.brief === undefined ? {} : { ORG_REVIEW_BRIEF: request.brief }),
+        ...((request.evidence ?? []).length === 0 ? {} : { ORG_REVIEW_EVIDENCE: JSON.stringify(inlineEvidenceFor(request.evidence)) }),
         ...(input.envFor?.(request) ?? {}),
       };
       const run = await runCommand(input.command, [...input.argsFor(request)], { cwd: request.workdir ?? input.cwd, ...(Object.keys(handed).length === 0 ? {} : { env: { ...process.env, ...handed } }), timeoutMs: input.timeoutMs ?? 120_000, maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
@@ -605,6 +608,31 @@ export const MAX_CAPTURED_OUTPUT = 4_000;
  * at" list — lost the objection to the middle cut. Sixteen thousand characters is past any verdict seen.
  */
 export const MAX_VERDICT_CHARS = 16_000;
+
+/**
+ * Evidence labels whose ref IS the text (`stdout:…`, `exit:1`, `ran:…`), as opposed to a path a
+ * reader opens. The same set `observe` uses to decide what it prints inline.
+ */
+export const INLINE_EVIDENCE_LABELS: ReadonlySet<string> = new Set(["stdout", "stderr", "log", "said", "exit", "ran", "verify-exit", "agent-said", "trace", "runner-refused"]);
+
+/** How much of one inline evidence text a reviewer is handed in its prompt: head and tail, marked. */
+export const MAX_INLINE_EVIDENCE_CHARS = 15_000;
+
+/**
+ * What the reviewer is handed of the step's evidence, verbatim where it is text and by reference
+ * where it is a file. MEASURED over 96 reviews on the Waypoint run, 2026-09-20/21: a reviewer looked
+ * at 19 things on average — dashboard, item, each attachment through one `observe` call — before
+ * reading a line of the change, and every one of those is a turn that re-reads the whole context.
+ */
+export function inlineEvidenceFor(evidence: readonly { readonly ref: string }[]): readonly { readonly label: string; readonly text?: string; readonly ref?: string }[] {
+  return evidence.map(({ ref }) => {
+    const colon = ref.indexOf(":");
+    const label = colon > 0 ? ref.slice(0, colon) : "";
+    if (!INLINE_EVIDENCE_LABELS.has(label)) return { label: "file", ref };
+    const text = ref.slice(colon + 1);
+    return { label, text: capture("", text, MAX_INLINE_EVIDENCE_CHARS).slice(1) };
+  });
+}
 
 function capture(label: string, text: string, limit: number = MAX_CAPTURED_OUTPUT): string {
   if (text.length <= limit) return `${label}:${text}`;
