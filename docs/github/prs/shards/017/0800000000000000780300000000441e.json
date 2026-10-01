@@ -1,0 +1,12 @@
+{
+  "pr_number": 17438,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17438-docs-memory-vera-notebook-unique-confirms-through-leftover-unique-leftover-17572.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T08:44:59.721Z",
+  "schema_version": "v1",
+  "commit_sha": "e64710ecec1be0a93f9152b94f1846b680f1e7a5",
+  "title": "docs(memory): Vera notebook unique-confirms through leftover UNIQUE leftover #17572 @ 7967a9d3 GRADE GO",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T08:43:37Z",
+  "head_ref": "vera/notebook-17436-17437-tip"
+}
