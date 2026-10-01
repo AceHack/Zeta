@@ -1,0 +1,12 @@
+{
+  "pr_number": 17816,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17816-fix-kube-prometheus-stack-widen-liveness-on-the-operator-created-prometheus-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T12:21:10.313Z",
+  "schema_version": "v1",
+  "commit_sha": "590f0351c0e7d5a3223372fb8ad6d1d1fd25dd42",
+  "title": "fix(kube-prometheus-stack): widen liveness on the operator-created Prometheus and Alertmanager pods (28s/93s -> 115s)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T12:20:23Z",
+  "head_ref": "fix/kps-operator-pods-liveness-stall"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17813,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17813-fix-installer-honour-the-discovery-dwell-as-measured-29999-ms-halted-scenario-4.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T12:52:38.958Z",
+  "schema_version": "v1",
+  "commit_sha": "31def6fa41c7718f821be099dcc1bed6a3ac7e7a",
+  "title": "fix(installer): honour the discovery dwell as measured (29999 ms halted scenario 4)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T12:51:53Z",
+  "head_ref": "fix/discovery-dwell-honoured"
+}
