@@ -1,0 +1,14 @@
+{
+  "id": "080d07ac98f67810a0130008d19568ce",
+  "at": "2026-10-01T03:47:34.735Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TS67PE087G0R002ZZ1XYT",
+    "type": "bug",
+    "title": "platform controllers die under node contention: 1s liveness timeouts and BestEffort QoS on sealed-secrets, headlamp, gatekeeper, NFD, cert-manager, spire, argocd, headscale",
+    "slug": "platform-controllers-die-under-node-contention-1s-liveness-t",
+    "priority": "P1",
+    "filename": "081M3TS67PE087G0R002ZZ1XYT-platform-controllers-die-under-node-contention-1s-liveness-t.md"
+  }
+}

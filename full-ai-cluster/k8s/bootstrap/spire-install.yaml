@@ -100,6 +100,16 @@ spec:
         type: pvc
         size: 5Gi
         storageClass: zeta-block-local
+      # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT) -- EQUAL to
+      # k8s/applications/spire/Application.yaml, which adopts this release. Chart default
+      # is failureThreshold 2 x timeout 3s at a 60s period (running-stall tolerance 63s);
+      # 3 failures and a 10s timeout give kill budget 135s, tolerance 130s. See that file
+      # for the evidence (run 36685251210, constrained first-boot replica).
+      livenessProbe:
+        failureThreshold: 3
+        initialDelaySeconds: 15
+        periodSeconds: 60
+        timeoutSeconds: 10
       # PINNED 2026-09-22. `spire-lib.kubectl-image` (charts/spire-lib/templates/_helpers.tpl
       # in chart 0.24.2) derives this hook image's tag from `.Capabilities.KubeVersion.Version`
       # whenever `tools.kubectl.image.tag` is empty -- its own default. K3S reports

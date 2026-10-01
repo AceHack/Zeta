@@ -35,6 +35,21 @@ spec:
       valuesObject:
         fullnameOverride: sealed-secrets-controller
         keyrenewperiod: 720h   # 30 days
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart default
+        # is timeout 1s / period 10s / failureThreshold 3: a RUNNING controller
+        # is killed after 21s of slow /healthz answers. The constrained
+        # first-boot replica (run 36685251210, 4 vCPU) measured this container
+        # in CrashLoopBackOff. This chart exposes the full probe, so widen it:
+        # timeout 5s, 12 failures at a 10s period -> kill budget 10+11*10 =
+        # 120s, running-stall tolerance 115s. Readiness is left strict -- a
+        # slow controller should leave the Service, not be restarted.
+        livenessProbe:
+          enabled: true
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 12
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

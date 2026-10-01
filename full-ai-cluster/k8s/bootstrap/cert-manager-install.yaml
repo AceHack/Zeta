@@ -33,7 +33,24 @@ spec:
     crds:
       enabled: true
     replicaCount: 1
-    webhook: { replicaCount: 1 }
+    # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT) -- EQUAL to
+    # k8s/applications/cert-manager/Application.yaml, which adopts this release.
+    # See that file for the derivation (run 36685251210, constrained replica).
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 15
+      successThreshold: 1
+      failureThreshold: 12
+    webhook:
+      replicaCount: 1
+      livenessProbe:
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        successThreshold: 1
+        failureThreshold: 8
     cainjector: { replicaCount: 1 }
     prometheus:
       enabled: true

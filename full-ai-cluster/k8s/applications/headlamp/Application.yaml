@@ -37,6 +37,20 @@ spec:
           watchNamespaces: ""   # all namespaces (cluster-wide view)
         service:
           type: ClusterIP        # exposed via port-forward / Gateway later
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). The chart's
+        # default probe (timeout 1s, period 10s, failureThreshold 3) kills a
+        # RUNNING pod after (3-1)*10+1 = 21s of slow answers -- the shape the
+        # constrained first-boot replica measured killing platform pods (run
+        # 36685251210: headlamp CRASHLOOP, 4 vCPU). A dashboard that answers
+        # slowly is not a dead dashboard. Timeout 5s and 12 failures at a 10s
+        # period: kill budget 10+11*10 = 120s, running-stall tolerance 115s.
+        probes:
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 12
   destination:
     server: https://kubernetes.default.svc
     namespace: headlamp

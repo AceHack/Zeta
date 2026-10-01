@@ -283,11 +283,7 @@ const WP18_RANK_C_REASON =
   "tracked in workitems/081M348H97G087G0R0020EA0NY-fix-remaining-livenessprobe-kill-budget-risks-flagged-by-liv.md";
 
 export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
-  { app: "argocd", container: "repo-server", reason: WP18_RANK_C_REASON },
-  { app: "argocd", container: "server", reason: WP18_RANK_C_REASON },
   { app: "cdi", container: "cdi-operator", reason: WP18_RANK_C_REASON },
-  { app: "cert-manager", container: "cert-manager-controller", reason: WP18_RANK_C_REASON },
-  { app: "cert-manager", container: "cert-manager-webhook", reason: WP18_RANK_C_REASON },
   { app: "cilium", container: "cilium-operator", reason: WP18_RANK_C_REASON },
   { app: "cilium", container: "frontend", reason: WP18_RANK_C_REASON },
   // gitlab-exporter: hardcoded `exec: [pgrep, -f, gitlab-exporter]` liveness in
@@ -299,8 +295,6 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // either field (only the httpGet path/port route through Values).
   { app: "gitlab", container: "kas", reason: WP18_NO_COORDINATE_REASON },
   { app: "hat-system", container: "operator", reason: WP18_RANK_C_REASON },
-  { app: "headlamp", container: "headlamp", reason: WP18_RANK_C_REASON },
-  { app: "headscale", container: "headscale", reason: WP18_RANK_C_REASON },
   // hindsight/postgresql: NOT a values-coordinate gap like the others in this
   // list -- the chart hardcodes this probe (see Application.yaml's own comment
   // on `controlPlane.livenessProbe`), so there is no valuesObject fix at all,
@@ -309,13 +303,10 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   { app: "kube-prometheus-stack", container: "kube-prometheus-stack", reason: WP18_RANK_C_REASON },
   { app: "kube-prometheus-stack", container: "node-exporter", reason: WP18_RANK_C_REASON },
   { app: "kubevirt", container: "virt-operator", reason: WP18_RANK_C_REASON },
-  { app: "node-feature-discovery", container: "gc", reason: WP18_RANK_C_REASON },
-  { app: "node-feature-discovery", container: "worker", reason: WP18_RANK_C_REASON },
   { app: "ollama", container: "ollama", reason: WP18_RANK_C_REASON },
   // Covers BOTH gatekeeper-audit and gatekeeper-controller-manager Deployments --
   // both containers are literally named "manager" and share the same shape.
   { app: "open-policy-agent", container: "manager", reason: WP18_RANK_C_REASON },
-  { app: "sealed-secrets", container: "controller", reason: WP18_RANK_C_REASON },
   { app: "spire", container: "node-driver-registrar", reason: WP18_RANK_C_REASON },
   // spire-controller-manager: DIRECTLY OBSERVED restarting (restartCount 2, pod
   // spire-server-0) in CI run 35707656488 -- but charts/spire-server/templates/
@@ -324,11 +315,6 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // parts). Unlike its sibling spire-server container below (which DOES have a
   // `.Values.livenessProbe` coordinate), there is nothing to widen here.
   { app: "spire", container: "spire-controller-manager", reason: WP18_NO_COORDINATE_REASON },
-  // spire-server: has a values coordinate (`.Values.livenessProbe`) but was not
-  // itself observed restarting in the evidence sweep -- only its sidecar
-  // (spire-controller-manager, above) was. Left un-widened rather than
-  // speculatively fixed without a measured symptom.
-  { app: "spire", container: "spire-server", reason: WP18_RANK_C_REASON },
   { app: "tempo", container: "tempo", reason: WP18_RANK_C_REASON },
   // admin-tools: charts/temporal/templates/admintools-deployment.yaml hardcodes
   // `exec: [ls, /], initialDelaySeconds: 5, periodSeconds: 5` -- no .Values
@@ -341,6 +327,86 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // does not here).
   { app: "temporal", container: "temporal-web", reason: WP18_NO_COORDINATE_REASON },
 ];
+
+// ── Stall-tolerance floors (the steady-state axis, GATED) ─────────────────────
+//
+// `needsStartupProbe` gates the STARTUP axis only. The constrained first-boot
+// replica measured the other one killing platform controllers: dispatch
+// 36119931377 (61 `failed liveness probe` events, zero OOMKilled) and, on main's
+// schedule, run 36685251210 (sealed-secrets, headlamp, trust-manager, spire-server,
+// cert-manager-webhook, NFD, argocd repo-server/server, headscale all restarting or
+// CrashLoopBackOff at 4 vCPU). With the chart defaults -- `timeoutSeconds: 1`,
+// `failureThreshold: 3` -- a RUNNING container is killed after 21s of slow answers.
+//
+// A container listed here has had its probe widened to a stated tolerance; the
+// floor is what keeps a chart bump or a values refactor from silently restoring the
+// 21s default. `stallToleranceViolations` reports THREE states, never two: ok,
+// below the floor, and NOT FOUND -- a floor that names a container the render no
+// longer produces is a check that did not run, and reads as a failure here.
+
+export interface StallToleranceFloor {
+  readonly app: string;
+  /** Container name, matched exactly. */
+  readonly container: string;
+  /** Minimum `probeStallToleranceSeconds` the rendered liveness probe must have. */
+  readonly minStallToleranceSeconds: number;
+  readonly why: string;
+}
+
+const STALL_WIDENED = "081M3TS67PE087G0R002ZZ1XYT: widened from the chart default (21s) via values";
+
+export const STALL_TOLERANCE_FLOORS: readonly StallToleranceFloor[] = [
+  { app: "argocd", container: "server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "argocd", container: "repo-server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "cert-manager", container: "cert-manager-controller", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "cert-manager", container: "cert-manager-webhook", minStallToleranceSeconds: 60, why: STALL_WIDENED },
+  { app: "headlamp", container: "headlamp", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "headscale", container: "headscale", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "node-feature-discovery", container: "gc", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "node-feature-discovery", container: "master", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "node-feature-discovery", container: "worker", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "sealed-secrets", container: "controller", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "spire", container: "spire-server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  {
+    // The chart exposes only `livenessTimeout`; period 10s x 3 failures is hardcoded,
+    // so 1s -> 10s is the whole lever: (3-1)*10 + 10 = 30s.
+    app: "open-policy-agent",
+    container: "manager",
+    minStallToleranceSeconds: 30,
+    why: `${STALL_WIDENED} (timeout only -- the chart hardcodes period and threshold)`,
+  },
+];
+
+/**
+ * Violations of `floors` over the rendered `containers`. A floor matches EVERY
+ * container with its (app, container); zero matches is itself a violation.
+ */
+export function stallToleranceViolations(
+  containers: readonly ContainerProbeSummary[],
+  floors: readonly StallToleranceFloor[] = STALL_TOLERANCE_FLOORS,
+): readonly string[] {
+  const out: string[] = [];
+  for (const f of floors) {
+    const matched = containers.filter((c) => c.app === f.app && c.container === f.container);
+    if (matched.length === 0) {
+      out.push(`${f.app}/${f.container}: NOT FOUND in the render -- the floor did not run (${f.why})`);
+      continue;
+    }
+    for (const c of matched) {
+      const tolerance = c.stallToleranceSeconds;
+      if (tolerance === null) {
+        out.push(
+          `${f.app}/${f.container} (${c.kind}/${c.resource}): no liveness probe -- the floor of ${String(f.minStallToleranceSeconds)}s names a probe that is gone`,
+        );
+      } else if (tolerance < f.minStallToleranceSeconds) {
+        out.push(
+          `${f.app}/${f.container} (${c.kind}/${c.resource}): a running stall of ${String(tolerance)}s kills it; floor is ${String(f.minStallToleranceSeconds)}s`,
+        );
+      }
+    }
+  }
+  return out;
+}
 
 function isAllowlisted(c: ContainerProbeSummary): AllowlistEntry | null {
   for (const entry of KILL_BUDGET_ALLOWLIST) {
@@ -572,7 +638,15 @@ function main(): number {
     `\n[liveness-kill-budget] ${String(result.containers.length)} containers examined across ${String(apps.length)} Applications; ` +
       `${String(findings.length)} unacknowledged container(s) have a livenessProbe, no startupProbe, and a kill budget under ${String(threshold)}s.`,
   );
+  const stall = stallToleranceViolations(result.containers);
+  console.log(
+    `[liveness-kill-budget] ${String(STALL_TOLERANCE_FLOORS.length)} stall-tolerance floors checked; ${String(stall.length)} violated.`,
+  );
   if (args.report) return 0; // report-only: never gates, for generating the PR-body table
+  if (stall.length > 0) {
+    for (const v of stall) console.log(`  STALL: ${v}`);
+    return 1;
+  }
   if (findings.length > 0) {
     for (const f of findings) {
       console.log(`  FLAG: ${f.app} ${f.kind}/${f.resource} container=${f.container} killBudget=${String(f.killBudgetSeconds)}s`);

@@ -139,6 +139,17 @@ spec:
             type: pvc
             size: 5Gi
             storageClass: zeta-block-local
+          # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart default is
+          # failureThreshold 2 x timeout 3s at a 60s period: a RUNNING spire-server is
+          # killed after (2-1)*60+3 = 63s of slow /live. The constrained first-boot replica
+          # (run 36685251210) measured spire-server-0 in CrashLoopBackOff. 3 failures and a
+          # 10s timeout: kill budget 15+2*60 = 135s, running-stall tolerance 130s. Kept
+          # EQUAL at both pin sites (k8s/bootstrap/spire-install.yaml and the Application).
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 10
           # PINNED 2026-09-22 -- mirrors k8s/bootstrap/spire-install.yaml (see the comment
           # there for the full derivation and the live-VM evidence: run 35687536936,
           # helm-install-spire's post-install-job ErrImagePull-looping on

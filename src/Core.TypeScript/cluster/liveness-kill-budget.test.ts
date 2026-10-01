@@ -18,12 +18,14 @@ import { describe, expect, test } from "bun:test";
 import {
   DEFAULT_KILL_BUDGET_THRESHOLD_SECONDS,
   KILL_BUDGET_ALLOWLIST,
+  STALL_TOLERANCE_FLOORS,
   collectContainers,
   formatTable,
   needsStartupProbe,
   probeKillBudgetSeconds,
   probeStallToleranceSeconds,
   probeTimeoutSeconds,
+  stallToleranceViolations,
   summarizeDoc,
   unacknowledgedFindings,
   type AuditResult,
@@ -284,6 +286,53 @@ function helmOnPathForTest(): boolean {
   return Bun.spawnSync(["sh", "-c", "command -v helm"], { stdout: "pipe", stderr: "pipe" }).exitCode === 0;
 }
 
+describe("STALL_TOLERANCE_FLOORS / stallToleranceViolations (081M3TS67PE087G0R002ZZ1XYT)", () => {
+  const mk = (app: string, container: string, probe: unknown): ContainerProbeSummary =>
+    summarizeDoc(app, {
+      kind: "Deployment",
+      metadata: { name: container },
+      spec: { template: { spec: { containers: [{ name: container, image: "x:1", livenessProbe: probe }] } } },
+    })[0]!;
+
+  test("the CHART DEFAULT (timeout 1s x 3 failures, 21s) is below every floor -- the defect these floors close", () => {
+    const defaults = STALL_TOLERANCE_FLOORS.map((f) =>
+      mk(f.app, f.container, { httpGet: { path: "/h", port: 1 }, periodSeconds: 10 }),
+    );
+    const violations = stallToleranceViolations(defaults);
+    expect(violations.length).toBe(STALL_TOLERANCE_FLOORS.length);
+    expect(violations.every((v) => v.includes("a running stall of 21s kills it"))).toBe(true);
+  });
+
+  test("the widened shape (timeout 5s x 12 failures at 10s = 115s) meets every floor", () => {
+    const widened = STALL_TOLERANCE_FLOORS.map((f) =>
+      mk(f.app, f.container, { periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 12 }),
+    );
+    expect(stallToleranceViolations(widened)).toEqual([]);
+  });
+
+  test("a floor that names a container the render does not produce is a violation, not a silent pass", () => {
+    const v = stallToleranceViolations([], [{ app: "a", container: "b", minStallToleranceSeconds: 10, why: "w" }]);
+    expect(v).toEqual(["a/b: NOT FOUND in the render -- the floor did not run (w)"]);
+  });
+
+  test("a probe removed outright is reported, not read as infinite tolerance", () => {
+    const gone = mk("sealed-secrets", "controller", undefined);
+    const v = stallToleranceViolations(
+      [gone],
+      [{ app: "sealed-secrets", container: "controller", minStallToleranceSeconds: 100, why: "w" }],
+    );
+    expect(v.length).toBe(1);
+    expect(v[0]).toContain("no liveness probe");
+  });
+
+  test("a widened container has left the grandfather allowlist (it would otherwise hide a regression)", () => {
+    for (const f of STALL_TOLERANCE_FLOORS) {
+      if (f.app === "open-policy-agent") continue; // timeout-only widening; startup budget stays short and allowlisted
+      expect(KILL_BUDGET_ALLOWLIST.some((e) => e.app === f.app && e.container === f.container)).toBe(false);
+    }
+  });
+});
+
 describe("the live full-ai-cluster catalog", () => {
   const skip = !helmOnPathForTest();
   if (skip) {
@@ -303,6 +352,16 @@ describe("the live full-ai-cluster catalog", () => {
           console.error(formatTable(result));
         }
         expect(findings).toEqual([]);
+      },
+      300_000,
+    );
+    test(
+      "every stall-tolerance floor holds against the REAL render (the chart default would be 21s)",
+      () => {
+        const { readShippedApplications } = require("./derive-sync-waves.ts") as typeof import("./derive-sync-waves.ts");
+        const { auditCatalog } = require("./liveness-kill-budget.ts") as typeof import("./liveness-kill-budget.ts");
+        const result = auditCatalog(readShippedApplications());
+        expect(stallToleranceViolations(result.containers)).toEqual([]);
       },
       300_000,
     );
