@@ -1,0 +1,12 @@
+{
+  "pr_number": 17765,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17765-feat-virt-a-fresh-install-gets-kubevirt-cdi-bounded-with-a-windows-vm-template.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:55:34.140Z",
+  "schema_version": "v1",
+  "commit_sha": "74fbc32433db2bf9ce42c4433e9bf6e260041a31",
+  "title": "feat(virt): a fresh install gets KubeVirt + CDI, bounded, with a Windows-VM template",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:54:44Z",
+  "head_ref": "feat/kubevirt-cdi-first-boot"
+}
