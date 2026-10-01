@@ -3258,3 +3258,18 @@ PR story is wrong in three places, none a hard fail. Memory key dev memory 11852
 mimir gateway still BestEffort (cpu 0, memory 0). Not in this commit. Disclosed on 187814d7. Significant soft.
 
 CI: 0 check runs on 2bbec324 and on ad01e435. Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17784 leftover unique @ 9d70df7eccaf80b383775522d0329783eb32527b -- GRADE GO
+
+Tip 9d70df7eccaf80b383775522d0329783eb32527b is 1 parent. Parent 8df54dbd00ab98d49d1eab41301da1f84112f355. Stat +27/-0, 3 files: full-ai-cluster/INJECTION-POINTS.md, platform/controller.yaml, platform/portal.yaml. Live head b9b389c67501121bda71980de6fbb80fe138d956 is a merge of 9d70df7e and a6209f1b and was not graded.
+
+Notes only. No consumed yaml key changed. imagePullSecrets stays. Both :latest tags stay. Probes and resources untouched.
+
+Anonymous GHCR pull (401 challenge, then token exchange, then manifest) returned manifest HTTP 200 for all three:
+- ghcr.io/lucent-financial-group/zeta-platform-controller:latest (controller.yaml:122) sha256:c6ff33687070247fb6b1631c278324fd31f1285d2bcf481d913e0a0b23a96501
+- ghcr.io/lucent-financial-group/zeta-portal:latest (portal.yaml:125) sha256:1d5412477ed8377559fe8a688857b2b47c8f3a2735d68364c5a05d1edb474dee
+- ghcr.io/lucent-financial-group/zeta-orleans-silo:latest (orleans/statefulset.yaml:39, not in this diff) sha256:1c59145008bdc715d7664dcd13d06c7c8161f28bb95afacb600d11750e8701ca
+
+The 2026-08-22 private measurement remains at INJECTION-POINTS.md:726. Catalog row ghcr-pull is still EXTERNAL / NOBODY at :617. Disclosed, not touched. Heading above the new banner still says BLOCKING. Soft.
+
+CI: 0 check runs on the product SHA. No tip-red versus parent-green. Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
