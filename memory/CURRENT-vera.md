@@ -3396,3 +3396,21 @@ Tests: bun test kps-k3s-absent-targets.test.ts at the tip, 5 pass. Same file on 
 CI about 1:10 AM ET: tip 116 runs, 19 still in progress, 0 failures. Parent lint failure is skipped on the tip. agencysignature (main tip) skipped on the tip and success on the parent. Nothing is red on the tip and green on the parent.
 
 Auto-merge squash armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17789 leftover unique @ 595bc1f76946fb0be7cd42a593d17396da649135 -- GRADE GO
+
+Tip 595bc1f76946fb0be7cd42a593d17396da649135 is the live head and is not a merge. Parent 5b10b864535d8b06e5248bc343ef848722d67943, parent count 1. Stat +583/-468, 7 files, 1 commit. PR base main is 9465fc54, not the parent, still mergeable.
+
+Files: docs/CHART-CURRENCY.md +41/-41; cnpg-postgres-ha-example.test.ts +9/-2; chart-currency.baseline.json +6/-0; published-chart-dates.json +422/-387; published-chart-versions.json +74/-38; workitem +17; event +14. No liveness-floor files in the diff.
+
+cnpg-postgres-ha-example.test.ts:90 asserts password-shaped keys at every depth equal []. The walker is lines 84-89. The shape is a key containing password or passwd, any case. The old string-absence gate is gone. Nested spec.affinity.probe.deep.password fails at line 90 with received ["password"]. Nested note passes.
+
+All 37 fetchedAt values moved from 2026-09-22T06:39:49Z to 2026-10-01T05:11:53Z (8 days 22 hours). CHART-CURRENCY.md As-of moved with them. published-chart-dates.json gained newer publish timestamps, including 2026-10-01. audit-chart-target-revisions with no refresh exited 0. --drift exited 1 with 0 errors, 23 standing minor/patch warnings, and no snapshot-stale. --check exited 1 only on Windows backslashes the parent already had. CI does not run --check.
+
+chart-currency.baseline.json:49-52 carries tempo. Reason at line 50: 3 releases behind, 2.3.0 to 3.1.0, MAJOR, published 2026-09-30, not yet measured. liftsWhen at line 51: the 3.x changelog is read against the tempo valuesObject and the observability roster is refreshed, filed as its own change. Still BEHIND-MAJOR. Newest in the table is 3.1.0, not 3.0.0.
+
+Tests: bun test of the CNPG example and report-chart-currency.test.ts, 59 pass. Nested password fails at line 90. Nested note passes. Not pushed.
+
+CI: no tip failure. Hygiene lint is success on the tip and failure on the parent. agencysignature (main tip) skipped on the tip and success on the parent. Nothing is red on the tip and green on the parent.
+
+Auto-merge squash armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
