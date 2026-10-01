@@ -3147,3 +3147,14 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Later main commit b7039f1f (12:05 AM ET) is an archive shard for #17762 and does not touch the three product files.
 - No open or closed PR mentions overcommit_memory.
 - Path to GO: keep the init disabled; add vm.overcommit_memory=1 to node-tunables.json; pin it in the test.
+
+## leftover UNIQUE leftover #17766 leftover unique @ 2be28632171577c036d28aea0e6c64adb326cec0 -- GRADE GO
+
+- PR: Loki replication, Mimir tenancy, Alloy-to-Tempo TLS (maximdolphin). Single commit, parent 6aac8b4d, +220/-5, 8 files. Test-merge 46f0c0b9 not graded. Blocked, squash auto-merge armed. Main is b7039f1f (archive of #17762). This tip is a sibling.
+- Loki chart 18.12.1: Application.yaml:46-47 replication_factor 1, :70 write.replicas 1. Rendered common.replication_factor 1 (parent was 3) and loki-write replicas 1. RF 3 quorum is 2, so one writer never acked.
+- Mimir chart 6.2.0: structuredConfig.multitenancy_enabled false (Application.yaml:53-64) is in the rendered config. Parent render has no such key (binary default true, tenant anonymous when false). Alloy remote_write (alloy Application.yaml:214-217) sends no X-Scope-OrgID. Optimizer default tenant is already anonymous.
+- Alloy v1.19.2: tls.insecure disables TLS. insecure_skip_verify still speaks TLS. Tip alloy Application.yaml:203-210 is tls { insecure = true } with no scheme. Tempo chart 2.3.0 grpc :4317 has no tls listener. Both sides plaintext.
+- valuesHash (audit-observability-chain.ts:307-317) recomputed and matches the roster. Three checks (checkLokiReplication :436, checkMimirTenancy :454, checkAlloyOtlpTls :468) fail on the parent and on independent mutants, including insecure_skip_verify. Green at the tip.
+- Work-item title names SSA/VCT drift. The diff does not touch it.
+- Softs: S1 blocked; S2 CI in progress; S3 auto-merge armed and main moved; S4 no live cluster; S5 RF 1 has no durability; S6 SSA/VCT title only; S7 agencysignature PR body; S8 Loki check is stricter than quorum (RF > writers).
+- Hard fails: none.
