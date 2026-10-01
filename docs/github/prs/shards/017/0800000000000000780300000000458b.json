@@ -1,0 +1,12 @@
+{
+  "pr_number": 17803,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17803-fix-dapr-five-control-plane-components-killed-after-41s-of-slow-healthz-widen-an.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T07:19:51.019Z",
+  "schema_version": "v1",
+  "commit_sha": "04f16cb113d1916e7ba70d9d54a97e94525590ae",
+  "title": "fix(dapr): five control-plane components killed after 41s of slow /healthz - widen and gate",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T07:19:05Z",
+  "head_ref": "fix/dapr-liveness-stall"
+}

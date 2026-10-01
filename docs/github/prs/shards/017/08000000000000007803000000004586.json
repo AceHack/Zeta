@@ -1,0 +1,12 @@
+{
+  "pr_number": 17798,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17798-fix-mimir-price-the-gateway-nginx-the-one-besteffort-mimir-container-and-re-key-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T07:33:51.377Z",
+  "schema_version": "v1",
+  "commit_sha": "708ecd5a88ad920f69763eb3ffeca020b37d7da6",
+  "title": "fix(mimir): price the gateway nginx (the one BestEffort mimir container) and re-key the ledger",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T07:33:02Z",
+  "head_ref": "fix/mimir-gateway-requests"
+}
