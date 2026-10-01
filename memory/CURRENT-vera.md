@@ -3097,3 +3097,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - S3 stands: M4 survives (no same-label non-iso9660 negative case).
 - No fix PR is open.
 - Path to GO (follow-up PR): fileSystems = lib.mkImageMediaOverride { "/iso" = lib.mkImageMediaOverride { device = lib.mkForce "/dev/disk/zeta-install-medium"; }; }; (verified to evaluate to the symlink); replace the regex with a CI check on the evaluated /iso device; add the negative case; re-dispatch the USB lanes.
+
+## leftover UNIQUE leftover #17762 leftover unique @ e18b9eb79c18e2f8d867d12fc4277d830632a2ac -- GRADE HOLD
+
+- PR: drop Weaviate's privileged alpine:latest sysctl init (maximdolphin). Single commit, parent 6aac8b4d (base, main unmoved), +66/-3, 3 files. Test-merge 6528a7a9 not graded. Open, blocked, squash auto-merge armed.
+- Disable is real: chart 17.8.3 weaviateStatefulset.yaml:52 renders privileged docker.io/alpine:latest, command sysctl -w vm.max_map_count=524288 vm.overcommit_memory=1. Application.yaml:92-94 enabled false. helm template: init container, alpine, privileged, overcommit all 0.
+- Host vm.max_map_count 524288 (node-tunables.json:78) matches the chart default, covers OpenSearch's 262144 floor, applied at boot and before kind.
+- H1: vm.overcommit_memory=1 is dropped with no host equivalent (repo search 0 hits; kernel default 0). Vector-index mmap can still fail. The PR body says the init only sets max_map_count.
+- Test node-tunables.test.ts:52-75 parses real YAML/JSON, 12/0, mutants on both halves die. It never pins overcommit, so it stays green on H1.
+- Synced/Progressing empty-conditions claim is an unconfirmed hypothesis (RESUME.md:110 does not name the init).
+- CI: one red, agencysignature (PR body), skipped on main not green; many checks in progress.
+- Softs: S1 CI pending; S2 blocked + auto-merge armed; S3 no live cluster; S4 test misses overcommit; S5 PR-body signature; S6 stale Nix comment; S7 gitops-before-rebuild window on already-installed nodes.
+- Path to GO: keep enabled false; add vm.overcommit_memory=1 to node-tunables.json; pin it in the test.
