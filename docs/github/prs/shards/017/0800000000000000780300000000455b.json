@@ -1,0 +1,12 @@
+{
+  "pr_number": 17755,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17755-build-deps-bump-the-uv-group-across-3-directories-with-1-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T01:19:39.842Z",
+  "schema_version": "v1",
+  "commit_sha": "25c5bc8d4b04500fbf5f5f178dbbe0aa7a35fd78",
+  "title": "build(deps): Bump the uv group across 3 directories with 1 update",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T01:18:50Z",
+  "head_ref": "dependabot/uv/src/Arc.Python/uv-baffde84bf"
+}
