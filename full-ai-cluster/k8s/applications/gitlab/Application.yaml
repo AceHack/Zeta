@@ -710,4 +710,4 @@ spec:
     # needs SSA: the chart renders no CRD, and no object approaches the 262144-byte
     # last-applied-configuration cap. Falsifier: cluster/gitlab-exposure.test.ts (e).
     syncOptions: [ CreateNamespace=true, SkipDryRunOnMissingResource=true ]
-    retry: { limit: 5, backoff: { duration: 30s, factor: 2, maxDuration: 5m } }
+    retry: { limit: -1, backoff: { duration: 30s, factor: 2, maxDuration: 5m } }

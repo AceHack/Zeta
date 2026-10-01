@@ -1,0 +1,14 @@
+{
+  "id": "080d07c4ada49010a0130008220fc05b",
+  "at": "2026-10-01T17:49:15.794Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3W9BD4H087G0R003BEKFWJ",
+    "type": "bug",
+    "title": "ArgoCD Applications stranded SyncFailed by a transient control-plane outage: default retry is 5 attempts",
+    "slug": "argocd-applications-stranded-syncfailed-by-a-transient-contr",
+    "priority": "P2",
+    "filename": "081M3W9BD4H087G0R003BEKFWJ-argocd-applications-stranded-syncfailed-by-a-transient-contr.md"
+  }
+}

@@ -70,5 +70,12 @@ spec:
     server: https://kubernetes.default.svc
     namespace: tempo
   syncPolicy:
+    # Unbounded retry (limit -1, backoff capped at 5m). ArgoCD's automated-sync default is 5 attempts
+    # (~2.5 min) and it never re-attempts a revision whose sync already failed, so a control-plane blip
+    # longer than that strands the Application SyncFailed for good. Pinned for every automated
+    # Application by src/Core.TypeScript/cluster/application-retry-unbounded.test.ts.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }
     automated: { prune: false, selfHeal: true }
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

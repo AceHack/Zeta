@@ -264,7 +264,7 @@ measured). That is a control-plane casualty, not a chart defect. Row bucket: **C
 | kube-prometheus-stack | `*-admission` ServiceAccount/Role/Job all `SyncFailed: failed to discover server resources ... apiserver not ready` / `connection refused` | CP, on top of the CAP pods |
 | kubevirt | `virt-operator` restarts 12-13, `Liveness probe failed ... 8443/metrics connection refused`; every ClusterRole/Role/Deployment patch `SyncFailed ... dial tcp 10.99.192.1:443: connection refused`; health `Unknown` | CP |
 | cdi | `SyncFailed ... connection refused` on every resource (the same first-sync-into-a-dead-API as run 36832486494) | CP + CAP |
-| cockroachdb | operation `Retrying Attempt #2`; failed tasks are `error when retrieving current configuration of ... ` and `clusterroles ... is forbidden: User "system:serviceaccount:argocd:..."` (apiserver unable to answer, RBAC read through a restarting API) | CP |
+| cockroachdb | operation `Retrying Attempt #2`; failed tasks are `error when retrieving current configuration of ...` and `clusterroles ... is forbidden: User "system:serviceaccount:argocd:..."` (apiserver unable to answer, RBAC read through a restarting API) | CP |
 | cilium-lb-ipam-pool | `health=Missing`, `ComparisonError: Failed to load live state ... Get ".../ciliumloadbalancerippools/zeta-lb-pool": dial ...` | CP |
 | node-feature-discovery | `nfd-worker` restart count 6, last state `Terminated Unknown / 255` | CP |
 | agent-memory, argo-rollouts, argo-workflows, forgejo, headlamp, headscale, keda, loki, longhorn, openziti-controller, opensearch, orleans, postgres-shared, redis | `operation: Succeeded`, no failed task, no non-Healthy resource: health is Progressing/Degraded because their **pods** are Pending/not Ready, which is Part B's capacity table, unchanged | CAP / CP as in B.3 |
@@ -277,3 +277,33 @@ measured). That is a control-plane casualty, not a chart defect. Row bucket: **C
 * The one genuine defect candidate in the whole census is `platform`'s `monitoring.coreos.com` handling (D.3),
   not a chart and not capacity: a sync that fails on `forbidden` group discovery while the guard that is meant
   to tolerate a missing CRD group is in place.
+
+## Part E. The `platform` defect candidate, adjudicated
+
+Question: do `PrometheusRule` / `ServiceMonitor` fail with `failed to discover server resources for group version
+monitoring.coreos.com/v1: forbidden ... cannot get path` because (a) the application-controller lacks `get` on that
+non-resource URL, (b) the CRD group is not registered yet, or (c) the API server failed transiently?
+
+* **(a) is excluded.** The same ServiceAccount was denied in the same capture on a *resource* verb its ClusterRole
+  grants through `*`: `cockroachdb` `SyncFailed: ... cannot get resource "clusterroles" in API group
+  "rbac.authorization.k8s.io" at the cluster scope` (run 36887261429, roster-diag JSON). A permission gap on one
+  nonResourceURL does not explain a denial of `get clusterroles`; and `/apis/*` is granted to every authenticated user
+  by `system:discovery` anyway.
+* **(b) is not what that error says.** An unregistered group answers 404 to a *permitted* caller; the
+  `SkipDryRunOnMissingResource` guard exists for that path. A `forbidden` is an authorization answer. (b) is real as an
+  ordering fact (`kube-prometheus-stack` was itself capacity-blocked) and is why `platform` stayed non-Healthy, but it
+  is not the cause of this message.
+* **(c) fits every measurement.** One ServiceAccount, cluster-admin-equivalent, denied at cluster scope for both a
+  resource and a path, in a run where k3s had just exited on a lost lease: a freshly restarted apiserver whose RBAC
+  authorizer had not yet synced. The same outage produced `connection refused` on `cdi`, `kubevirt` and
+  `kube-prometheus-stack`.
+
+**What a manifest can still decide is whether the Application survives it.** ArgoCD's automated sync defaults to 5
+attempts (~2.5 min) and never re-attempts a revision whose sync already failed; 5 of 50 Applications (and not the
+root) had the unbounded `retry` that `platform` got after run 36221053730. Every automated Application, and
+`zeta-root`, now carries `retry: {limit: -1, backoff: {duration: 30s, factor: 2, maxDuration: 5m}}`, pinned by
+`src/Core.TypeScript/cluster/application-retry-unbounded.test.ts` (86 cases fail without it).
+
+Not claimed: that the outage is fixed (the leader-election change #17833 and the capacity work address that), or that
+an unbounded retry would have rescued every stranded row in these runs. The wave inversion `platform` -> `kube-prometheus-stack`
+stays registered; this is the robustness fix, not repair (2).
