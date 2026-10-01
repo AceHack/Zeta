@@ -3210,3 +3210,15 @@ Image nginx:1.27-alpine (parent blueprints.yaml:94) becomes docker.io/nginxinc/n
 Test: unknown image fails; pre-fix pairing is asserted red; restoring the old image or port 80 goes red. Soft: test does not render HTTPRoute and does not assert path /. Postgres PASSWORD change-me untouched. Lane-matrix check red vs no base run (disk 65.55 vs 65.49592109877617). agencysignature red vs skipped.
 
 Review: /workspace/vera-17773-9a697db1-review.md.
+
+## leftover UNIQUE leftover #17774 leftover unique @ 91918526ec1292279c4ec414633a4cc8985dc36d -- GRADE GO
+
+Product commit 91918526ec1292279c4ec414633a4cc8985dc36d, one parent 6aac8b4d3929280d0ff583e2344dec0c2861955d. +3033/-52, 37 files. Live head 9e57c17b is a merge of main and was not graded.
+
+192.168.1.240-250 is gone from the applied metal pool. ip-pool.yaml is deleted. Application.yaml:29 includes only l2-policy.yaml. Kind alias is 172.18.255.200-220. GitLab pin 192.168.1.250 remains a documented gap.
+
+Chain: zflash --lb-pool to ZETA_LB_POOL on /zeta-firstboot.conf, zeta_lb_pool_resolve (ESP, else prompt, else UNSET; bad ESP with no console is refused), /mnt/etc/zeta/lb-pool symlinked to /etc/zeta/lb-pool, injected-lb-pool.nix:38 imported at common.nix:68. Base pool.yaml:24-26 is spec: {}. Addresses only in the JSON6902 patch at argocd-application.yaml.in:34.
+
+Collision before wipe: inside the default-route subnet, not network/broadcast, not the node, not the gateway, not pod/service/10.88.0.0/24, at most 256, not ping-busy. CIDR overlap bails unless ZETA_ALLOW_CIDR_OVERLAP=1. bail at zeta-install.sh:94 is exit 1. L2 is l2-policy.yaml:21 ^en.*. Kind alias still ^en[ops].*. Placeholder lint does not treat 192.168.1.240 as a token; restoring the pool under k8s/applications fails lb-ipam-pool.test.ts. Product SHA has 0 check runs. Same mechanism as #17712.
+
+Review: /workspace/vera-17774-91918526-review.md.
