@@ -70,6 +70,21 @@ kind: Job
 metadata:
   name: gitlab-lan-address
   namespace: kube-system
+  annotations:
+    # THIS JOB'S HEALTH MUST NOT BE THE POOL'S. Its first container waits (up to 24h) for the
+    # `gitlab` Application to EXIST, and on an install that does not deploy GitLab -- the WP11
+    # installed-disk lane's envelope excludes it, and an operator may remove it -- that
+    # Application never appears. The Job then runs for the whole wait, ArgoCD reports a running
+    # Job as Progressing, and `cilium-lb-ipam-pool` -- the thing that actually gives every
+    # LoadBalancer Service an address -- reads Progressing/Degraded although its
+    # CiliumLoadBalancerIPPool is applied and listing the range. MEASURED, WP11 run 36858893664:
+    # lbPool verdict PASS (pool present, range listed) while the Application was Degraded, the
+    # Job pod in PodInitializing for the whole run.
+    # `ignore-healthcheck` (argo-cd docs/operator-manual/health.md, "Ignoring Child Resource
+    # Health Check in Applications") drops THIS child from the Application's health and nothing
+    # else. A Job that fails is still visible as a failed Job and as GitLab keeping the sentinel
+    # address; the pool object's own readiness is what the Application now reports.
+    argocd.argoproj.io/ignore-healthcheck: "true"
 spec:
   backoffLimit: 6
   template:
