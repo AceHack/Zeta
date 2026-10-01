@@ -1,0 +1,12 @@
+{
+  "pr_number": 17766,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17766-fix-observability-loki-rf-mimir-tenancy-alloy-tempo-tls-sinks-accepted-nothing.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:20:24.832Z",
+  "schema_version": "v1",
+  "commit_sha": "8772c16b179fd3cc81e4190f419ccfa84313d1c2",
+  "title": "fix(observability): loki RF, mimir tenancy, alloy->tempo TLS (sinks accepted nothing)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:19:42Z",
+  "head_ref": "fix/obs-wiring-loki-rf-mimir-tenancy-alloy-tls"
+}

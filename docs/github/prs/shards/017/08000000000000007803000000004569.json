@@ -1,0 +1,12 @@
+{
+  "pr_number": 17769,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17769-fix-forgejo-server-container-requested-nothing-once-init-containers-exited.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:34:26.607Z",
+  "schema_version": "v1",
+  "commit_sha": "5a0e7db55f15728ba7b97a8f783dd6c34098c324",
+  "title": "fix(forgejo): server container requested nothing once init containers exited",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:33:21Z",
+  "head_ref": "fix/forgejo-steady-state-requests"
+}

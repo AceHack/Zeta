@@ -1,0 +1,12 @@
+{
+  "pr_number": 17767,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17767-feat-postgres-an-ha-cloudnativepg-template-and-the-measured-state-of-postgres-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:21:56.259Z",
+  "schema_version": "v1",
+  "commit_sha": "f55b0b14886054187249ad76504af432b0ade420",
+  "title": "feat(postgres): an HA CloudNativePG template, and the measured state of Postgres in the tree",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:21:16Z",
+  "head_ref": "feat/postgres-cnpg-app-cluster"
+}
