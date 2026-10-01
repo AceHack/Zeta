@@ -171,7 +171,7 @@ Namespaces map to apps one-to-one except `zeta-platform` = `platform` and `monit
 | argo-workflows | Progressing | mid: server + workflow-controller Pending (cpu); end: 1 Pending + 1 ContainerCreating | **CAP** |
 | cdi | Degraded (manual-sync, one first-sync) | `cdi-operator` Pending **`Insufficient memory`** (end census); run 36832486494: first sync failed `connection refused` | **CAP** (+ CP) |
 | cert-manager | Progressing | mid: 4/4 Running. end: **`RunContainerError` x2 (cert-manager, cainjector), last-terminated `StartError`**, trust-manager `Unknown` | **CP** (shims after k3s restarts) |
-| cilium | Progressing | mid: every cilium/envoy/operator/hubble pod 1/1 Running, yet the Application never reaches Healthy in either run. The installer banner on the same guest says `LOADBALANCER RANGE: NOT SET ... every Service of type LoadBalancer is <pending>`, and ArgoCD reads a pending LoadBalancer Service as Progressing | **OPEN**, strong hypothesis (LB pool unset). The mid capture lost its app section; #17831 captures non-Healthy resources |
+| cilium | Progressing | mid: every cilium/envoy/operator/hubble pod 1/1 Running, yet the Application never reaches Healthy in either run. **Run 36887261429 refutes the load-balancer hypothesis**: its end capture lists ZERO non-Healthy resources for `cilium` (operation `Succeeded successfully synced`), so no pending LoadBalancer Service or any other resource is holding it Progressing | **CP / health-evaluation lag (inferred)**, no longer a defect candidate; see D.2 |
 | dapr | Progressing | `dapr-placement-server-0`, `dapr-scheduler-server-2`, `dapr-sidecar-injector` Pending. **This answers the old `undecidable` row: the scheduler refusal is `Insufficient`** | **CAP** |
 | forgejo | Degraded | mid: `forgejo-...-ngcrq` Pending (cpu); end: 1 Pending + `seed-forgejo-admin` PodInitializing | **CAP** |
 | headlamp | Progressing | mid: Pending (cpu); end: ContainerCreating; events: `Readiness probe failed: connection refused` | CAP, then CP |
@@ -198,7 +198,7 @@ Excluded by the verdict itself and unchanged: `hindsight` (needs an LLM key, ope
 Totals: **CAP is the primary bucket for 21 of the 26**: 15 purely (arc-controller, argo-workflows, cdi, dapr, forgejo,
 headscale, keda, kube-prometheus-stack, kubevirt, mimir, opensearch, openziti-controller, orleans, platform,
 tempo) and 6 CAP-then-CP (agent-memory, argo-rollouts, headlamp, redis, seaweedfs, loki); **CP** for 4
-(cert-manager, nats, postgres-shared, spire); **OPEN** for 1 (`cilium`).
+(cert-manager, nats, postgres-shared, spire); **OPEN** for 1 (`cilium`, resolved to CP in Part D).
 **No row is a manifest defect.** The one candidate for a real defect (`cilium` never Healthy) has a named
 config cause that is a property of the guest, not of the chart.
 
@@ -212,7 +212,7 @@ config cause that is a property of the guest, not of the chart.
 2. **Stop the control plane dying of a slow disk** (separate, reviewed change, it touches production k3s):
    widen `leader-elect-lease-duration` / `renew-deadline` for the controller-manager, cloud-controller-manager and
    scheduler so an etcd stall is a delay rather than `status=1`, and give etcd headroom
-   (`heartbeat-interval` / `election-timeout`). Nothing in `full-ai-cluster/nixos` sets any of these today.
+   (`heartbeat-interval` / `election-timeout`). Nothing in `full-ai-cluster/nixos` set any of these when this was measured; PR #17833 sets the leader-election windows.
 3. Items 1 and 2 are independent and **both are needed for a green verdict 7**: with 1 alone the node is still
    at the edge of the lease window during the pull burst (17.7 GB written by the first k3s process); with 2 alone
    48 Applications still cannot be scheduled.
@@ -231,3 +231,49 @@ config cause that is a property of the guest, not of the chart.
   impossible and did not take effect twice running; the ESP was still read through the mtools rung. Run
   36875247887 carried a dispatch-branch-only advisory (never merged) to get past it. This one needs its own
   investigation: it is a hard stop for the WP11 lane and, per the installer's own header, for a real USB stick.
+
+## Part D. Run 36887261429 (second instrumented run, reordered capture, PR #17831)
+
+Both captures finished `captured` this time (mid 280 lines, end 890 of a 1600 budget), which is what #17831 was for.
+This run's control plane restarted **6** times (run 36875247887: 19), so it also shows how much that varies;
+the result was 18/49 Synced+Healthy, 27 unconverged. Everything below is **measured**.
+
+### D.1 It reproduces Part B
+
+At t=600 s (mid) the node held 31 pods and requests were 1600 m / 3988 Mi, 49% / 44% of allocatable: the roster had
+not landed yet, so a mid capture at 600 s is too early to show capacity (a finding about the capture, not the
+cluster; 900 s was better). At the end: **133 live pods, requests 9480 m = 291% CPU, 23168 Mi = 260% memory**; 76 of 150
+pods not Ready, 46 `Pending: Insufficient memory` and 5 `Insufficient cpu`. Same shape as Part B.
+
+### D.2 The OPEN row, `cilium`: the load-balancer hypothesis is refuted
+
+The end capture's per-Application section for `cilium` is two lines, `sync=Synced health=Progressing` and `operation:
+Succeeded successfully synced (all tasks run)`, with **no resource listed as non-Healthy or non-Synced**. A pending
+`LoadBalancer` Service would have been listed, so it is not that, and the "LOADBALANCER RANGE: NOT SET" banner is not
+what holds `cilium` Progressing. An Application whose every resource is healthy but whose own health reads
+Progressing is ArgoCD's aggregate lagging its resources, the same lag that flips `external-secrets`,
+`cockroachdb` and `kubevirt` to `health=Unknown: failed to get resource health ...` in this run (`ComparisonError`,
+measured). That is a control-plane casualty, not a chart defect. Row bucket: **CP (inferred)**.
+
+### D.3 New per-Application evidence (the sections the first run lost)
+
+| app | measured | bucket |
+|---|---|---|
+| mimir | operation `Failed`: webhook `prepare-downscale-mimir.grafana.com` call failed (`mimir-rollout-operator` not up), and **six Deployments `exceeded its progress deadline`** (querier, rollout-operator, query-scheduler, overrides-exporter, query-frontend, distributor) | CAP: a Deployment that cannot schedule is what exceeds its progress deadline |
+| platform | **`PrometheusRule` / `ServiceMonitor` `SyncFailed: failed to discover server resources for group version monitoring.coreos.com/v1: forbidden: User "system:serviceaccount:argocd:argocd-application-controller" cannot get path "/apis/monitoring.coreos.com/v1"`**, operation stuck `Retrying ... Attempt #3` | **ORDER**: the CRD provider (`kube-prometheus-stack`) is itself CAP-blocked, so the group does not exist. **One real defect candidate**: `platform/monitoring.yaml` carries `SkipDryRunOnMissingResource` for exactly these two resources (a test asserts it), and it did not stop the sync failing here, because the failure is group *discovery* returning `forbidden`, not a missing-resource dry-run. Worth its own look |
+| kube-prometheus-stack | `*-admission` ServiceAccount/Role/Job all `SyncFailed: failed to discover server resources ... apiserver not ready` / `connection refused` | CP, on top of the CAP pods |
+| kubevirt | `virt-operator` restarts 12-13, `Liveness probe failed ... 8443/metrics connection refused`; every ClusterRole/Role/Deployment patch `SyncFailed ... dial tcp 10.99.192.1:443: connection refused`; health `Unknown` | CP |
+| cdi | `SyncFailed ... connection refused` on every resource (the same first-sync-into-a-dead-API as run 36832486494) | CP + CAP |
+| cockroachdb | operation `Retrying Attempt #2`; failed tasks are `error when retrieving current configuration of ... ` and `clusterroles ... is forbidden: User "system:serviceaccount:argocd:..."` (apiserver unable to answer, RBAC read through a restarting API) | CP |
+| cilium-lb-ipam-pool | `health=Missing`, `ComparisonError: Failed to load live state ... Get ".../ciliumloadbalancerippools/zeta-lb-pool": dial ...` | CP |
+| node-feature-discovery | `nfd-worker` restart count 6, last state `Terminated Unknown / 255` | CP |
+| agent-memory, argo-rollouts, argo-workflows, forgejo, headlamp, headscale, keda, loki, longhorn, openziti-controller, opensearch, orleans, postgres-shared, redis | `operation: Succeeded`, no failed task, no non-Healthy resource: health is Progressing/Degraded because their **pods** are Pending/not Ready, which is Part B's capacity table, unchanged | CAP / CP as in B.3 |
+
+### D.4 What changed in the picture
+
+* The capacity conclusion (B.1, B.3) holds on a second, independent run, including when the control plane was far
+  healthier (6 exits vs 19). **Capacity alone leaves the verdict unreachable; control-plane exits make it worse.**
+* `cilium` is no longer an open row.
+* The one genuine defect candidate in the whole census is `platform`'s `monitoring.coreos.com` handling (D.3),
+  not a chart and not capacity: a sync that fails on `forbidden` group discovery while the guard that is meant
+  to tolerate a missing CRD group is in place.
