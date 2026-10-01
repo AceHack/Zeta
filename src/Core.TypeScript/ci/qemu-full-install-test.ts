@@ -54,6 +54,7 @@ import {
   serialFirstBootInProgress,
 } from "../zflash/test-harness/serial-markers";
 import { isFullGitCommitSha } from "../installer/repo-pin.ts";
+import type { LbPoolSpec } from "../installer/lan-config.ts";
 import {
   DEFAULT_QEMU_PASSPHRASE,
   DEFAULT_QEMU_WIFI_PASSWORD,
@@ -235,6 +236,36 @@ export const K3S_VERIFY_MEMORY_MB = 12288;
 export const K3S_VERIFY_CPU_COUNT = 4;
 /** k3s-first-boot-roster.nix budgets 45-70 min for the same bring-up on a comparable VM; the guest unit's own DEADLINE_SECONDS mirrors this. */
 const K3S_VERIFY_TIMEOUT_SECONDS = 4500;
+
+/**
+ * The Cilium LoadBalancer range the WP11 lane stages on the ESP, like a real install.
+ *
+ * WHY THE LANE NEEDS ONE. A QEMU `user,id=net0` (SLIRP) guest is handed no pool, and
+ * with no CiliumLoadBalancerIPPool every Service of type LoadBalancer stays <pending>
+ * and every Gateway reports Programmed!=True, so ArgoCD reports the apps that own
+ * them (the `platform` Application's `zeta-gateway`) Progressing FOREVER (measured,
+ * run 36832486494). A real install supplies a range (docs/ops/INSTALL-TIME-CONFIG.md
+ * row 3); this lane does what a real install does instead of excluding the app.
+ *
+ * WHY THESE ADDRESSES. SLIRP's subnet is fixed: 10.0.2.0/24, guest 10.0.2.15
+ * (DHCP), gateway/host 10.0.2.2, DNS 10.0.2.3. `.240`-`.250` is the installer's own
+ * proposal window (lan-config.ts PROPOSED_POOL_*): inside the /24, clear of the
+ * guest, gateway and DNS, and far from the derived pod/service CIDRs and the
+ * 10.88.0.0/24 inter-node segment. An EXPLICIT range rather than `auto`, because
+ * `auto` REFUSES the install when the installer cannot read the LAN. Whether this
+ * range validates against that LAN is pinned by a test that runs the installer's
+ * own shell validator, so a refusal costs a unit test and not a 90-minute lane.
+ */
+export const WP11_LB_POOL_START = "10.0.2.240";
+export const WP11_LB_POOL_STOP = "10.0.2.250";
+export const WP11_LB_POOL_SPEC: LbPoolSpec = { kind: "range", start: WP11_LB_POOL_START, stop: WP11_LB_POOL_STOP };
+/** The SLIRP LAN the guest installs on, as the installer measures it (`ip route get`). */
+export const SLIRP_LAN = { nodeIp: "10.0.2.15", prefix: 24, gateway: "10.0.2.2" } as const;
+
+/** The pool the WP11 lane stages, or none for a lane that never reaches a cluster. */
+export function laneLbPool(requireK3sFirstBootVerify: boolean): LbPoolSpec | undefined {
+  return requireK3sFirstBootVerify ? WP11_LB_POOL_SPEC : undefined;
+}
 /** Byte-identical to zeta-first-boot-k3s-verify.nix's jsonBeginMarker/jsonEndMarker. */
 export const K3S_VERIFY_JSON_BEGIN_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_BEGIN";
 export const K3S_VERIFY_JSON_END_MARKER = "ZETA_K3S_FIRST_BOOT_VERIFY_JSON_END";
@@ -2490,6 +2521,88 @@ export interface K3sFirstBootVerifyVerdict {
     /** Same value as `k3sServiceActive.ok`, carried here for the same reason `noBadPods.k3sActive` is. */
     readonly k3sActive: boolean;
   };
+  /** See {@link K3sFirstBootVerifyLbPool}. Optional so verdict JSON predating the note still parses. */
+  readonly lbPool?: K3sFirstBootVerifyLbPool;
+}
+
+/**
+ * The guest's LoadBalancer-range note (zeta-first-boot-k3s-verify.nix `lbPool`): did the range
+ * the installer was given reach the CLUSTER? A diagnostic note beside verdict 7, not a numbered
+ * verdict, so the numbering and every existing key stay as consumers read them.
+ *
+ * `state` is a plain string for the reason `K3sFirstBootVerifyRosterApp.bucket` is: the producer
+ * is shell inside a `.nix` module, and a union would turn a state it learns to emit into a parse
+ * failure instead of a line a reader can still read.
+ */
+export interface K3sFirstBootVerifyLbPool {
+  /** `ok` | `fail` | `unknown` | `not-configured`. */
+  readonly state: string;
+  readonly detail: string;
+  /** `/etc/zeta/lb-pool` on the installed disk, `<first>-<last>`, or empty when absent. */
+  readonly expected: string;
+  /** `present` | `absent` | `unknown` for Application `cilium-lb-ipam-pool`. */
+  readonly application: string;
+  /** `present` | `absent` | `unknown` for CiliumLoadBalancerIPPool `zeta-lb-pool`. */
+  readonly pool: string;
+  /** The live pool's blocks as space-separated `<first>-<last>`; empty when none. */
+  readonly blocks: string;
+}
+
+/**
+ * Exported for unit tests. What the host makes of the guest's `lbPool` note.
+ *
+ * THREE outcomes, never two, because the guest already drew the line and this must not erase it:
+ * a probe that could not ASK is UNKNOWN (not a failure, not a pass); only an API that ANSWERED
+ * and said the object is absent is a failure. On top of that the host adds the two checks only it
+ * can make, because only it knows what it staged: the installed disk must carry the range this
+ * lane staged (a `not-configured` after staging means the range died between the ESP and the
+ * installed disk), and the live pool must list exactly that range.
+ *
+ * `undefined` (no such key: a unit predating the note) is reported, not failed -- verdict 7's own
+ * ABSENT guard already convicts a unit that stopped before emitting its JSON.
+ */
+export function evaluateLbPoolNote(
+  note: K3sFirstBootVerifyLbPool | undefined,
+  stagedRange: string,
+): { readonly failed: boolean; readonly line: string } {
+  if (note === undefined) {
+    return {
+      failed: false,
+      line:
+        `8. lbPool (note): NOT REPORTED — the verdict JSON has no lbPool key, so nothing is known ` +
+        `about whether the staged range ${stagedRange} reached the cluster. This is not a pass.`,
+    };
+  }
+  const seen = `application=${note.application} pool=${note.pool} blocks=${note.blocks || "-"} installed-range=${note.expected || "-"}`;
+  if (note.state === "not-configured") {
+    return {
+      failed: true,
+      line:
+        `8. lbPool (note): FAIL — this lane staged ZETA_LB_POOL=${stagedRange} but the installed disk has no ` +
+        `/etc/zeta/lb-pool, so the range was lost between the ESP and the installed system ` +
+        `(read esp-conf= and the installer's [lb-pool] lines). ${note.detail}`,
+    };
+  }
+  if (note.state === "fail") {
+    return { failed: true, line: `8. lbPool (note): FAIL — ${note.detail} [${seen}]` };
+  }
+  if (note.state === "ok") {
+    if (note.expected !== stagedRange || note.blocks !== stagedRange) {
+      return {
+        failed: true,
+        line:
+          `8. lbPool (note): FAIL — this lane staged ${stagedRange}, but the installed disk carries ` +
+          `${note.expected || "-"} and the live pool lists ${note.blocks || "-"} [${seen}]`,
+      };
+    }
+    return { failed: false, line: `8. lbPool (note): PASS — ${note.detail}` };
+  }
+  return {
+    failed: false,
+    line:
+      `8. lbPool (note): UNKNOWN (state=${note.state}) — the API could not be asked, which is neither a pass ` +
+      `nor a miss. ${note.detail} [${seen}]`,
+  };
 }
 
 /** One row of verdict 7's roster classification. `bucket` is the discriminator; `detail` always says why. */
@@ -2551,6 +2664,8 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
   // now been bitten by nine times.
   const roster = verdict.rosterConverged;
   const rosterOk = roster !== undefined && roster.ok;
+  // The WP11 lane stages WP11_LB_POOL_SPEC, so that is what the guest must report back.
+  const lbPoolNote = evaluateLbPoolNote(verdict.lbPool, `${WP11_LB_POOL_START}-${WP11_LB_POOL_STOP}`);
   const ok =
     verdict.bootedMultiUser.ok &&
     verdict.k3sServiceActive.ok &&
@@ -2558,7 +2673,8 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
     helmOk &&
     verdict.rootLanded.ok &&
     verdict.noBadPods.ok &&
-    rosterOk;
+    rosterOk &&
+    !lbPoolNote.failed;
 
   const lines: string[] = [
     `1. bootedMultiUser: ${verdict.bootedMultiUser.ok ? "PASS" : "FAIL"} (elapsed ${verdict.bootedMultiUser.elapsedSeconds}s)`,
@@ -2599,6 +2715,7 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
     ...(roster?.apps ?? [])
       .filter((a) => a.bucket !== "converged")
       .map((a) => `     - [${a.bucket}] ${a.name}: ${a.detail}`),
+    lbPoolNote.line,
   ];
   return { ok, lines };
 }
@@ -2948,10 +3065,13 @@ async function main(): Promise<never> {
 
   let bootMedia: InstallBootMedia = { kind: "iso", path: isoPath };
   // WP27 — whether this run staged anything on the ESP /zeta-firstboot.conf.
-  // False since the Longhorn override was removed; kept as a named condition
-  // rather than deleted so the contract above wakes up by itself the moment a
-  // lane stages one again, instead of being rediscovered as missing.
-  const stagedEspFirstbootConf = false;
+  // DERIVED from the bake, never hardcoded: `prepareBootImage` reports whether
+  // the plan it executed wrote that conf. It was a literal `false` once the
+  // Longhorn override was removed, which left the read-back contract dormant
+  // and kept it dormant after the next thing (the WP11 LoadBalancer range) was
+  // staged. Stays false only on lanes that bake nothing into the conf.
+  let stagedEspFirstbootConf = false;
+  const laneLbPoolSpec = laneLbPool(requireK3sFirstBootVerify);
   if (requireWifiEsp || requireUsbISerial || requireUefiKeyfile || requireK3sFirstBootVerify) {
     const usbImagePath = join(
       tmpDir,
@@ -3010,6 +3130,10 @@ async function main(): Promise<never> {
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
       ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
       ...(requireK3sFirstBootVerify ? { qemuK3sFirstBootVerifyMarker: true } : {}),
+      // WP11 — the LoadBalancer range a real install would have been given. See
+      // {@link WP11_LB_POOL_SPEC}: without it the `platform` Application's Gateway
+      // can never be Programmed and ArgoCD reports it Progressing forever.
+      ...(laneLbPoolSpec === undefined ? {} : { lbPool: laneLbPoolSpec }),
       // WP27 — THE OVERRIDE IS GONE, DELIBERATELY.
       //
       // `allowLonghornUndersized: true` used to be staged here, on this image's
@@ -3032,7 +3156,14 @@ async function main(): Promise<never> {
       process.exit(2);
     }
     bootMedia = { kind: "usb-image", path: prepared.outputImagePath };
+    stagedEspFirstbootConf = prepared.espFirstbootConfStaged;
     console.log(`[qemu-full-install-test] USB boot image: ${bootMedia.path}`);
+    console.log(
+      `[qemu-full-install-test] ESP /zeta-firstboot.conf staged by this bake: ${String(stagedEspFirstbootConf)}` +
+        (laneLbPoolSpec === undefined
+          ? ""
+          : ` (ZETA_LB_POOL=${WP11_LB_POOL_START}-${WP11_LB_POOL_STOP}, SLIRP LAN ${SLIRP_LAN.nodeIp}/${SLIRP_LAN.prefix} via ${SLIRP_LAN.gateway})`),
+    );
     // 081M39CJP96087G0R001T4J2R3 (WP29) — say which offset this bake wrote to
     // and what backed it, on EVERY run and not only on a refusal.
     //
@@ -3249,20 +3380,19 @@ async function main(): Promise<never> {
 
   // WP27 — the end-to-end falsifier for a STAGED ESP conf.
   //
-  // DORMANT AS OF THIS COMMIT, and saying so out loud is the point. It was
-  // added when every USB bake staged ZETA_ALLOW_LONGHORN_UNDERSIZED on
-  // /zeta-firstboot.conf; that override is gone (the disk now fits the roster
-  // honestly), so no lane stages a conf and there is nothing to demand the
-  // guest read. Asserting anyway would convict every lane; keeping it live by
-  // staging a no-op value to give it something to find would be the vacuity
-  // class wearing a test.
+  // LIVE WHENEVER THE BAKE STAGED A CONF. It was added when every USB bake staged
+  // ZETA_ALLOW_LONGHORN_UNDERSIZED on /zeta-firstboot.conf, went dormant when that
+  // override was removed (the disk now fits the roster honestly), and is live
+  // again because the WP11 lane stages the LoadBalancer range
+  // (ZETA_LB_POOL, {@link WP11_LB_POOL_SPEC}). `stagedEspFirstbootConf` is DERIVED
+  // from what the bake reports it wrote, so a lane that stages nothing is not
+  // convicted (asserting anyway would convict the innocent; staging a no-op value
+  // to keep this alive would be the vacuity class wearing a test) and a lane that
+  // stages something cannot silently skip the check.
   //
-  // ESP ARRIVAL IS STILL COVERED, by a different observable that every USB
-  // lane really does stage: the injected hostname. `wp11PreconditionFailure`
-  // convicts on `[iter-5.2]   no zeta-hostname.txt on USB ESP`, and the guest's
-  // own `esp-conf=` line (081M392JR97087G0R003QAFH0Y) reports the scan outcome
-  // on every boot regardless. So the join is not uncovered — it is covered by
-  // the thing the lane actually stages.
+  // This proves the conf was READ by the guest. It does not prove the value reached
+  // the cluster: that is the second observable, the guest's `lb-pool:` line and the
+  // verdict JSON's `lbPool` (see `evaluateLbPoolNote`).
   if (stagedEspFirstbootConf && bootMedia.kind === "usb-image") {
     const espConf = assertEspFirstbootConfWasRead(phase1Serial);
     if (!espConf.ok) {
@@ -3283,8 +3413,8 @@ async function main(): Promise<never> {
   } else if (bootMedia.kind === "usb-image") {
     const scan = espConfScanOutcome(phase1Serial);
     console.log(
-      "[qemu-full-install-test] ESP first-boot conf contract DORMANT — this lane stages no " +
-        "/zeta-firstboot.conf, so nothing is asserted about it. This is not a pass. " +
+      "[qemu-full-install-test] ESP first-boot conf contract NOT APPLICABLE — this lane's bake " +
+        "staged no /zeta-firstboot.conf, so nothing is asserted about it. This is not a pass. " +
         `Guest reported esp-conf=${scan?.outcome ?? "<no line>"}.`,
     );
   }

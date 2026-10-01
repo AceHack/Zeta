@@ -25,6 +25,8 @@ spec:
   valuesContent: |-
     crds: { enabled: true }
     replicaCount: 1
+    # EQUAL to k8s/applications/trust-manager/Application.yaml (shared Helm release).
+    priorityClassName: system-cluster-critical
     defaultPackage: { enabled: false }
     app:
       trust:
