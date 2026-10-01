@@ -605,14 +605,15 @@ in
         CLUSTER_DIAG_LAST_STATE=did-not-run
         CLUSTER_DIAG_LAST_DETAIL=""
         CLUSTER_DIAG_MID_DONE=false
-        CLUSTER_DIAG_MID_AT_SECONDS=900
+        CLUSTER_DIAG_MID_AT_SECONDS=600
         CLUSTER_DIAG_LINES=0
-        CLUSTER_DIAG_MAX_LINES=1000
+        CLUSTER_DIAG_MAX_LINES=1600
         CLUSTER_DIAG_SECTION_LINES=120
         CLUSTER_DIAG_LINE_WIDTH=300
-        CLUSTER_DIAG_POD_CAP=20
+        CLUSTER_DIAG_POD_CAP=12
         CLUSTER_DIAG_APP_CAP=24
         CLUSTER_DIAG_API_WAIT_SECONDS=90
+        CLUSTER_DIAG_API_REWAIT_SECONDS=30
         CLUSTER_DIAG_DEADLINE_SECONDS=240
         CLUSTER_DIAG_DEADLINE_TS=0
         CLUSTER_DIAG_KUBECTL_TIMEOUT=20s
@@ -804,7 +805,29 @@ in
           "$TAIL" -n 60 "$1"
         }
         zeta_wp11_cdiag_top_pods() {
-          zeta_wp11_kcd top pods -A --sort-by=memory --no-headers | "$HEAD" -n 30
+          # Into a file first: `kubectl ... | head` died of SIGPIPE (exit 141) on run
+          # 36875247887 and a healthy `top` read as unavailable.
+          _tp_f="$("$MKTEMP")"
+          zeta_wp11_kcd top pods -A --sort-by=memory --no-headers > "$_tp_f"
+          _tp_rc=$?
+          "$HEAD" -n 30 "$_tp_f"
+          "$RM" -f "$_tp_f"
+          return "$_tp_rc"
+        }
+        zeta_wp11_cdiag_rewait_api() {
+          # The API can die in the MIDDLE of a capture (run 36875247887: k3s's first
+          # exit landed during the mid capture and every later section read `connection
+          # refused`). A short bounded wait before each group, not a retry loop.
+          _cw2_end=$(( $(now_ts) + CLUSTER_DIAG_API_REWAIT_SECONDS ))
+          while true; do
+            if zeta_wp11_kcd get namespace kube-system -o name > /dev/null 2>&1; then
+              return 0
+            fi
+            if [ "$(now_ts)" -ge "$_cw2_end" ]; then
+              return 1
+            fi
+            "$SLEEP" 3
+          done
         }
         zeta_wp11_cluster_diag() {
           # $1 = why it ran (mid|end), $2 = roster classification file (optional).
@@ -834,6 +857,11 @@ in
           _cd_nodes_ok=true
           zeta_wp11_kcd get pods -A -o json > "$_cd_pods" 2>/dev/null || _cd_pods_ok=false
           zeta_wp11_kcd get nodes -o json > "$_cd_nodes" 2>/dev/null || _cd_nodes_ok=false
+          # ORDER IS PRIORITY. Run 36875247887 spent 400 of a 1000-line budget on
+          # `get pods -o wide` first and then dropped every per-Application section as
+          # `(budget)`, while the API died under the capture. What explains WHY goes
+          # first (capacity, the Pending census, Warning events, ArgoCD's own account of
+          # each unconverged app), the per-pod evidence next, and the bulk listing last.
           zeta_wp11_cdiag_section hard 20 "nodes" zeta_wp11_kcd get nodes -o wide
           if [ "$_cd_pods_ok" = "true" ] && [ "$_cd_nodes_ok" = "true" ]; then
             zeta_wp11_cdiag_section hard 40 "capacity-vs-requests" zeta_wp11_cdiag_capacity "$_cd_pods" "$_cd_nodes"
@@ -841,28 +869,16 @@ in
             log "[wp11-cluster-diag] capacity-vs-requests: FAILED -- the pod or node list could not be read -- this section measured nothing"
             CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL capacity-vs-requests(list)"
           fi
-          zeta_wp11_cdiag_section hard 400 "pods-wide" zeta_wp11_kcd get pods -A -o wide
           if [ "$_cd_pods_ok" = "true" ]; then
             zeta_wp11_cdiag_section hard 60 "pending-reason-census" zeta_wp11_cdiag_census "$_cd_pods"
-            if zeta_wp11_cdiag_unready_list "$_cd_pods" > "$_cd_events" 2>/dev/null; then
-              "$HEAD" -n "$CLUSTER_DIAG_POD_CAP" "$_cd_events" > "$_cd_list"
-            else
-              log "[wp11-cluster-diag] unready-pod-list: FAILED -- no per-pod describe or logs follow -- this section measured nothing"
-              CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL unready-pod-list(jq)"
-            fi
           else
             log "[wp11-cluster-diag] pending-reason-census: FAILED -- the pod list could not be read -- this section measured nothing"
             CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL pending-reason-census(list)"
           fi
-          zeta_wp11_cdiag_section soft 30 "top-nodes" zeta_wp11_kcd top nodes
-          zeta_wp11_cdiag_section soft 35 "top-pods-by-memory" zeta_wp11_cdiag_top_pods
-          zeta_wp11_cdiag_section hard 60 "warning-events" zeta_wp11_cdiag_events "$_cd_events"
-          while IFS=' ' read -r _cd_ns _cd_name _cd_restarts; do
-            [ -z "$_cd_ns" ] && continue
-            zeta_wp11_cdiag_section hard 75 "describe:$_cd_ns/$_cd_name(restarts=$_cd_restarts)" zeta_wp11_cdiag_pod_describe "$_cd_ns" "$_cd_name"
-            zeta_wp11_cdiag_section soft 70 "logs:$_cd_ns/$_cd_name" zeta_wp11_cdiag_pod_logs "$_cd_ns" "$_cd_name"
-          done < "$_cd_list"
+          zeta_wp11_cdiag_section hard 50 "warning-events" zeta_wp11_cdiag_events "$_cd_events"
+          zeta_wp11_cdiag_section soft 10 "top-nodes" zeta_wp11_kcd top nodes
           if [ -n "$_cd_class" ] && [ -r "$_cd_class" ]; then
+            zeta_wp11_cdiag_rewait_api || true
             # Not-Progressing rows first: an OutOfSync / Degraded / Missing row is
             # where a defect rather than a small box shows up.
             "$AWK" -F '\t' '
@@ -871,9 +887,26 @@ in
             ' "$_cd_class" | "$HEAD" -n "$CLUSTER_DIAG_APP_CAP" > "$_cd_list"
             while IFS= read -r _cd_app; do
               [ -z "$_cd_app" ] && continue
-              zeta_wp11_cdiag_section hard 40 "app:$_cd_app" zeta_wp11_cdiag_app "$_cd_app"
+              zeta_wp11_cdiag_section hard 30 "app:$_cd_app" zeta_wp11_cdiag_app "$_cd_app"
             done < "$_cd_list"
           fi
+          if [ "$_cd_pods_ok" = "true" ]; then
+            if zeta_wp11_cdiag_unready_list "$_cd_pods" > "$_cd_events" 2>/dev/null; then
+              "$HEAD" -n "$CLUSTER_DIAG_POD_CAP" "$_cd_events" > "$_cd_list"
+            else
+              log "[wp11-cluster-diag] unready-pod-list: FAILED -- no per-pod describe or logs follow -- this section measured nothing"
+              CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL unready-pod-list(jq)"
+              : > "$_cd_list"
+            fi
+            zeta_wp11_cdiag_rewait_api || true
+            while IFS=' ' read -r _cd_ns _cd_name _cd_restarts; do
+              [ -z "$_cd_ns" ] && continue
+              zeta_wp11_cdiag_section hard 45 "describe:$_cd_ns/$_cd_name(restarts=$_cd_restarts)" zeta_wp11_cdiag_pod_describe "$_cd_ns" "$_cd_name"
+              zeta_wp11_cdiag_section soft 40 "logs:$_cd_ns/$_cd_name" zeta_wp11_cdiag_pod_logs "$_cd_ns" "$_cd_name"
+            done < "$_cd_list"
+          fi
+          zeta_wp11_cdiag_section soft 25 "top-pods-by-memory" zeta_wp11_cdiag_top_pods
+          zeta_wp11_cdiag_section hard 200 "pods-wide" zeta_wp11_kcd get pods -A -o wide
           "$RM" -f "$_cd_pods" "$_cd_nodes" "$_cd_list" "$_cd_events"
           if [ -z "$CLUSTER_DIAG_LAST_DETAIL" ]; then
             CLUSTER_DIAG_LAST_STATE=captured
