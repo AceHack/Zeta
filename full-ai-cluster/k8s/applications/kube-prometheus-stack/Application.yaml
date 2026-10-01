@@ -46,8 +46,16 @@ spec:
         # small on purpose, not measurements of what each uses.
         prometheusOperator:
           resources: { requests: { cpu: 8m, memory: 128Mi } }
+          livenessProbe:
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 12
         prometheus-node-exporter:
           resources: { requests: { cpu: 3m, memory: 32Mi } }
+          livenessProbe:
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 12
         prometheus:
           prometheusSpec:
             resources: { requests: { cpu: 40m, memory: 512Mi } }
@@ -188,11 +196,28 @@ spec:
         # succeeds -- the correct primitive. periodSeconds 10 (chart default),
         # failureThreshold 30 -> startup kill budget 0+29*10=290s; the chart's own 25s
         # liveness resumes once startup succeeds.
+        #
+        # THE STEADY-STATE AXIS, WHICH THE STARTUP PROBE DOES NOT TOUCH. Once started, the
+        # chart's liveness probe (timeout 5s, period 10s, failureThreshold 3) kills a RUNNING
+        # kube-state-metrics after a 25s stall. failureThreshold 8 -> (8-1)*10 + 5 = 75s.
         kube-state-metrics:
           resources: { requests: { cpu: 2m, memory: 64Mi } }
           startupProbe:
             enabled: true
             failureThreshold: 30
+          livenessProbe:
+            failureThreshold: 8
+        # The operator and node-exporter ship `timeoutSeconds: 1, failureThreshold: 3`: a
+        # RUNNING container is killed after 21s of slow answers. That is the measured shape
+        # of the constrained first-boot replica's kills (usb-installer-first-boot-reliability
+        # RESUME section 1: pressure -> slow -> probe timeout -> SIGKILL, zero OOMKilled), and
+        # the operator is the controller that creates Prometheus and Alertmanager, so its
+        # restart loop is the whole stack's. timeout 5s x failureThreshold 12 at period 10s
+        # -> 115s stall tolerance; initialDelaySeconds 15 puts the first-kill budget at
+        # 15 + 11*10 = 125s, over the 120s startup-probe line, so neither axis needs an
+        # allowlist entry any more (liveness-kill-budget.ts floors both). The two probe
+        # blocks sit with their `resources` under `prometheusOperator:` and
+        # `prometheus-node-exporter:` near the top of this valuesObject -- one key each.
         # FOUR SCRAPE TARGETS THAT CANNOT EXIST ON THIS CLUSTER, AND THE ALERTS THEY FIRE.
         # The chart renders a ServiceMonitor + Service for kube-scheduler,
         # kube-controller-manager, kube-etcd and kube-proxy, plus the default rules that

@@ -82,6 +82,22 @@ spec:
             memory: 128Mi
           limits:
             memory: 256Mi
+        # THE PROBES ARE `exec: valkey-cli ping` WITH `timeoutSeconds: 1`. MEASURED (helm
+        # template valkey 0.12.0): startup is period 10 x failureThreshold 3 = a 30s budget
+        # to load the dataset and answer, and liveness is timeout 1s x 3 failures at period 10s
+        # = a 21s stall kills a RUNNING pod. An exec probe forks a process, which is the
+        # first thing a CPU-starved node cannot do inside a second -- the measured shape of
+        # the constrained first-boot replica's kills (usb-installer-first-boot-reliability
+        # RESUME section 1: pressure -> slow -> probe timeout -> SIGKILL, zero OOMKilled).
+        # This is Orleans' membership store, so a restart loop here is the silo cluster's.
+        # The chart merges these fields into the rendered probes (`hasKey`), so only the
+        # fields that change are named. liveness: timeout 5s x 6 failures = 55s stall
+        # tolerance. startup: failureThreshold 30 -> a 300s budget.
+        startupProbe:
+          failureThreshold: 30
+        livenessProbe:
+          timeoutSeconds: 5
+          failureThreshold: 6
         auth:
           # ACL users, not a bare password. The chart REFUSES to render with
           # auth.enabled and no `default` user -- a good refusal: without one,

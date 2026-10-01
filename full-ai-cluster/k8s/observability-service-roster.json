@@ -181,7 +181,7 @@
       "chart": "tempo",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "2.3.0",
-      "valuesHash": "sha256:50540142fc6bc491be5dc1c614c349ed2f9796a5e77a110b4d307b576b8ec42a",
+      "valuesHash": "sha256:88a181aaeb244d0466097373544a08a515a2e8c2d26e8aa20ad033d40eda4427",
       "services": {
         "tempo": [
           6831,

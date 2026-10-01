@@ -18,6 +18,15 @@ spec:
       releaseName: tempo
       valuesObject:
         tempo:
+          # LIVENESS PROBES `/ready`, WHICH IS A READINESS SIGNAL, with period 10s and
+          # failureThreshold 3 -- the chart default kills a RUNNING tempo after (3-1)*10 + 5
+          # = 25s of slow or not-ready answers, and its first-kill budget from start is only
+          # 30 + 2*10 = 50s. Tempo has no startupProbe key, so the one lever is the liveness
+          # failureThreshold: 12 -> 140s first-kill budget (over the 120s line, so tempo
+          # leaves liveness-kill-budget.ts's allowlist) and (12-1)*10 + 5 = 115s of tolerated
+          # stall. A merge, not a replacement: the chart's httpGet/period/timeout stay.
+          livenessProbe:
+            failureThreshold: 12
           # REQUESTS DECLARED, because the chart ships `resources: {}` and an unset request
           # is not a small request: it is BestEffort, cpu.weight 2 (the cgroup floor). On a
           # contended first boot that is a trace store the scheduler may evict first and the
