@@ -62,6 +62,37 @@ spec:
           enabled: true
           size: 20Gi
           storageClass: zeta-block-local   # or zeta-block-replicated for durable, replicated storage
+        # THE LONG-RUNNING CONTAINER WAS BestEffort. Rendered at this pin, the chart
+        # ships `resources: {}` for the `forgejo` container while its three init
+        # containers (init-directories, init-app-ini, configure-gitea) each request
+        # 100m/128Mi via `initContainers.resources`. Init containers exit before the
+        # server starts, so in steady state the pod held a request of NOTHING: cpu
+        # weight at the kubelet's floor of 2 and first in line for eviction, which is
+        # the failure measured for the ArgoCD control plane (PR #17666) and which
+        # `src/Core.TypeScript/cluster/storage-profiles.json` already recorded for this
+        # app in prose ("The sole app container declares NO requests") without acting.
+        #
+        # SIZED TO THE FIGURE THE BUDGET ALREADY CARRIES, deliberately: Kubernetes
+        # schedules a pod on max(sum of regular containers, max of init containers), so
+        # a regular request equal to the init request moves no rendered total -- the
+        # catalogue row (100m/128Mi), rendered-resource-requests snapshot and the dev
+        # lane's memory budget (already over by a registered amount) are unchanged.
+        # What changes is that the number is now HELD while the server runs instead of
+        # existing only for the seconds the init containers do. 128Mi is a floor, not a
+        # forecast: a busy git host uses more, and a request is a scheduling and
+        # eviction-order claim, not a cap.
+        #
+        # The memory LIMIT is the node's protection against a runaway `git gc` or an
+        # oversized push, set well above any steady state this host has so it cannot be
+        # the thing that crash-loops it. No CPU limit: throttling a git operation to
+        # protect a neighbour trades a slow push for a hung one.
+        # Guard: src/Core.TypeScript/cluster/workload-steady-state-requests.test.ts
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 2Gi
         # NO `postgresql:` key -- deliberately, and this is a BEHAVIOUR CHANGE.
         #
         # This manifest used to carry `postgresql.enabled: true` ("ships its own
