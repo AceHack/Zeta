@@ -3222,3 +3222,13 @@ Chain: zflash --lb-pool to ZETA_LB_POOL on /zeta-firstboot.conf, zeta_lb_pool_re
 Collision before wipe: inside the default-route subnet, not network/broadcast, not the node, not the gateway, not pod/service/10.88.0.0/24, at most 256, not ping-busy. CIDR overlap bails unless ZETA_ALLOW_CIDR_OVERLAP=1. bail at zeta-install.sh:94 is exit 1. L2 is l2-policy.yaml:21 ^en.*. Kind alias still ^en[ops].*. Placeholder lint does not treat 192.168.1.240 as a token; restoring the pool under k8s/applications fails lb-ipam-pool.test.ts. Product SHA has 0 check runs. Same mechanism as #17712.
 
 Review: /workspace/vera-17774-91918526-review.md.
+
+## leftover UNIQUE leftover #17775 leftover unique @ a2fa6e1137b7da4c01e548d5b3b83967dbb91f13 -- GRADE GO
+
+Product commit a2fa6e1137b7da4c01e548d5b3b83967dbb91f13, one parent f55b0b14886054187249ad76504af432b0ade420. +171/-0, 2 files. Live head b5985937 is a merge of main and was not graded. replicas: 0 unchanged (deployment.yaml:16).
+
+strategy.type Recreate at deployment.yaml:24-25. Probes /health on port http = 8000 (:48, :68-82). Startup failureThreshold 360, periodSeconds 10. Kill budget is 0 + (360-1)*10 = 3590 (liveness-kill-budget.ts:108), test floor >= 1800. Readiness present (:73-77). Service targetPort 8000. /dev/shm emptyDir Memory sizeLimit 8Gi (:91, :95-96). Image still vllm/vllm-openai:latest. AMD override docIndex 1 unchanged.
+
+Parent fails four tests (probes, startup budget, shm, Recreate). Drop Recreate or readiness goes red. failureThreshold 181 stays green. No 8Gi assertion. Product SHA has 0 check runs.
+
+Review: /workspace/vera-17775-a2fa6e11-review.md.
