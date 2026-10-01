@@ -235,16 +235,15 @@ describe("(c) 'this lane staged a conf' is derived from the bake", () => {
     for (const firstbootRole of roles) {
       for (const lbPool of pools) {
         for (const allowLonghornUndersized of longhorn) {
-          const input = {
-            ...base,
+          const asked = {
             ...(firstbootRole === undefined ? {} : { firstbootRole }),
             ...(lbPool === undefined ? {} : { lbPool }),
             ...(allowLonghornUndersized ? { allowLonghornUndersized } : {}),
           };
-          const plan = planFileBackedZflashImage(input);
+          const plan = planFileBackedZflashImage({ ...base, ...asked });
           if (!plan.ok) throw new Error(plan.error);
           const wroteConf = plan.value.espWrites.some((w) => w.destination === "/zeta-firstboot.conf");
-          expect(stagesEspFirstbootConf({ firstbootRole, lbPool, allowLonghornUndersized })).toBe(wroteConf);
+          expect(stagesEspFirstbootConf(asked)).toBe(wroteConf);
         }
       }
     }
