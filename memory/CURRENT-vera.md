@@ -3380,3 +3380,19 @@ Hash of the tip tempo Application is sha256:b1ff37054fae0d9a4bdda8da7cad35fd6aa2
 CI: 0 check runs on 6d271ac3. Nothing is red on the tip and green on the parent.
 
 Auto-merge squash armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17786 leftover unique @ 9a099142d6f4561dec616d19605b08f585ffe568 -- GRADE GO
+
+Tip 9a099142d6f4561dec616d19605b08f585ffe568 is the live head and is not a merge. Parent 06bcef6a6fbef5649c12edba4e23ae3fe1937fc9, parent count 1. Stat +98/-0, 4 files. PR base main is 3c69360, not the parent.
+
+Parent values omit kubeScheduler, kubeControllerManager, kubeEtcd, and kubeProxy. Chart 88.6.3 defaults those enabled true. Tip Application.yaml:192-199 sets all four enabled false. Chart pin 88.6.3 is unchanged.
+
+The chart reads those keys. Service and ServiceMonitor templates gate on the component enabled flag. The Down alerts sit inside the same flag: KubeSchedulerDown, KubeControllerManagerDown, KubeProxyDown, and etcdMembersDown.
+
+helm template of 88.6.3: parent 122 docs, tip 105. The four Down alerts go 1 to 0 each. 17 objects leave (4 ServiceMonitors, 4 Services, 5 PrometheusRules, 4 Grafana ConfigMaps). 19 unique alert names (21 occurrences) leave, all from those four components. No unrelated alert leaves. The claimed 4 to 0 under-counts the 19 names.
+
+Tests: bun test kps-k3s-absent-targets.test.ts at the tip, 5 pass. Same file on parent values, 1 pass and 4 fail. Mutation kubeProxy.enabled true: 4 pass, 1 fail. k3s-server.nix:160 has --disable-kube-proxy. Scheduler, controller-manager, and etcd are only values-flag checks. The in-process sentence at k3s-server.nix:232-234 is not asserted.
+
+CI about 1:10 AM ET: tip 116 runs, 19 still in progress, 0 failures. Parent lint failure is skipped on the tip. agencysignature (main tip) skipped on the tip and success on the parent. Nothing is red on the tip and green on the parent.
+
+Auto-merge squash armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
