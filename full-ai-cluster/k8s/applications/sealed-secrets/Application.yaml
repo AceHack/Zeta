@@ -35,6 +35,8 @@ spec:
       valuesObject:
         fullnameOverride: sealed-secrets-controller
         keyrenewperiod: 720h   # 30 days
+        resources:
+          requests: { cpu: 25m, memory: 48Mi }
         # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Chart default
         # is timeout 1s / period 10s / failureThreshold 3: a RUNNING controller
         # is killed after 21s of slow /healthz answers. The constrained

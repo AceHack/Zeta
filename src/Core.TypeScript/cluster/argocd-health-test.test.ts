@@ -1919,8 +1919,11 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // 8140 -> 8190 and 1990 -> 2040 on 2026-09-30: the oz (OpenZiti) controller was
       // PRICED at 50m/128Mi. It had rendered `resources: {}` -- BestEffort -- so the
       // lane totals had never included it. Same discipline again.
-      "[cite: lane-cpu metal 8190 over]",
-      "[cite: lane-cpu dev 2040 fits]",
+      // 8190 -> 8990 and 2040 -> 2435 on 2026-10-01: nine BestEffort platform controllers PRICED
+      // (cert-manager, trust-manager, sealed-secrets, external-secrets, argo-rollouts,
+      // argo-workflows, headlamp, dapr, spire). Same discipline, fourth time.
+      "[cite: lane-cpu metal 8990 over]",
+      "[cite: lane-cpu dev 2435 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
