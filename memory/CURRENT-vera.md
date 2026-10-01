@@ -3414,3 +3414,23 @@ Tests: bun test of the CNPG example and report-chart-currency.test.ts, 59 pass. 
 CI: no tip failure. Hygiene lint is success on the tip and failure on the parent. agencysignature (main tip) skipped on the tip and success on the parent. Nothing is red on the tip and green on the parent.
 
 Auto-merge squash armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17791 leftover unique @ 75700878bd55338bf99069727d379347558c85ab -- GRADE GO
+
+Graded 75700878bd55338bf99069727d379347558c85ab only. One parent, 2c0049555f4ec2cec75f09d98a02c7832dab7735, a merge of 6ecdf71 and main 0249a2b5, not graded. Tip-only 3 files, +27/-8. Live head 90b9c8234dca6f98ff0bb9dfbf44c715b5ea28ec is a merge of this tip and main 056dc53e and was not graded. Its message records a conflict in cnpg-postgres-ha-example.test.ts. If that resolution is what should ship, it needs its own grade. 6ecdf71 was not graded.
+
+Product at this tree, unchanged by the tip: postgres-shared Application path full-ai-cluster/k8s/applications/postgres-shared (Application.yaml:105), wave "5" (Application.yaml:96), syncPolicy.automated (Application.yaml:113), instances 1 (cluster.yaml:17). Root include matches it (root-application.yaml:38). The #17767 template stays under k8s/examples and is not a second copy Argo applies.
+
+Plugin chart plugin-barman-cloud 0.8.1 (cnpg-barman-cloud/Application.yaml:62-63). helm template renders Service barman-cloud with cnpg.io/pluginName barman-cloud.cloudnative-pg.io.
+
+Both clusters archive WAL. isWALArchiver true at postgres-shared/cluster.yaml:80 and temporal/postgres/cluster.yaml:48. Daily ScheduledBackup "0 30 2 * * *" and "0 45 2 * * *" to s3://zeta-backups/postgres. pgBackup actions are only Read, Write, and List on zeta-backups (internal-secret-seeding.yaml:978), written as postgres-backup-s3 into both namespaces.
+
+Tip tests: positive bootstrap keys (postgres-shared-cluster.test.ts:164-165, cnpg-postgres-ha-example.test.ts:85-86). PG_SECRET lines must be draw, tmpfs-file, or identities-document (postgres-shared-cluster.test.ts:322-332). Observability empty-state mutation also removes postgres-shared/podmonitor.yaml (audit-observability-chain.test.ts:625).
+
+Arity lint exit 0. Three tip test files passed, except one unrelated observability case that timed out under load and passed alone. Mutation: removing postgres-shared/scheduledbackup.yaml went red. Inserting echo "$PG_SECRET" went red as UNEXPECTED. Both restored. Not pushed.
+
+CI on the tip: 6 runs, 2 success, 4 in progress, 0 failure. No check red on the tip and green on the parent. Squash auto-merge armed. mergeable true, mergeable_state blocked. Not disarmed.
+
+Hard fails: none. Softs: CI in progress, auto-merge armed, blocked, no live operator run, ungraded merge of main, plugin discovery unproven, SeaweedFS barman path unproven, backups share node and disk.
+
+Sit leftover; Vera will not merge.
