@@ -51,3 +51,42 @@ the pre-fix tree with exactly 13 violations (every container above), green after
   external-secrets, dapr, spire, longhorn-manager, argo-rollouts, argo-workflows, headlamp --
   `missing-resource-requests.ts` lists them ACTIONABLE. Each needs a `resourceClaims` row in
   `storage-profiles.json`, a regenerated snapshot and a budget re-fit, so it is its own change.
+
+## Second change: BestEffort QoS (this PR)
+
+`missing-resource-requests.ts` listed 18 ACTIONABLE Applications. Nine platform controllers
+are priced here, with requests (no limits -- the ArgoCD WP32 precedent): cert-manager (3),
+trust-manager, sealed-secrets, external-secrets (3), argo-rollouts (2), argo-workflows (2),
+headlamp, dapr (5 workloads, scheduler is 3 pods even with ha disabled), spire (5 containers).
+Numbers are ESTIMATES sized to leave BestEffort, not usage readings -- said in each row.
+
+Cost, stated: dev lane CPU 2145m -> 2425m (still inside 2500m: a 10m dev floor, because the
+catalogue's usual 25m would not have fit beside the 105m the observability pricing just took), dev memory 11980Mi -> 13380Mi (the
+already-acknowledged shortfall re-keyed `dev memory 11396>9216`), metal all-50 13370m/29771Mi ->
+14170m/31747Mi against the smallest node's 16000m/62942Mi. Metal CPU is deliberately small
+(25m for idle controllers, 50-100m for the hot ones: +800m total) because of the next finding.
+
+### The request nobody counted: Longhorn's instance-manager pod
+
+Longhorn creates one instance-manager pod per node AT RUNTIME, requesting
+`guaranteedInstanceManagerCPU` percent of the node's total allocatable CPU (chart 1.12.1
+values/README: default `{"v1":"12","v2":"12"}`). No manifest renders it, so no ledger row
+has ever counted it. On the smallest registered node (16000m, 15250m allocatable after the
+750m kube+system reservation in k3s-server.nix) 12% is 1830m: the metal roster before this
+change (13370m) plus that pod was already 15200m of 15250m -- 99.7% -- and pricing the
+controllers at their first-draft 1000m would have made the last pods to schedule go Pending
+forever. Set to 5% (762m) through the chart's own key: roster 14170m + 762m = 14932m, 318m
+spare. STILL TIGHT: metal CPU requests are ~97% of a 16-core node before the kubelet's own
+overhead, so any further pricing on metal needs this arithmetic redone. Guarded by
+`platform-controllers-requests.test.ts` (roster + instance manager <= allocatable).
+
+Falsifier: `platform-controllers-requests.test.ts` reads the checked-in snapshot and fails on
+any non-hook workload of these nine that requests nothing -- red against the pre-change
+snapshot (13 workloads), green after.
+
+Still BestEffort in this group, not priced: longhorn-manager, cilium (agent/envoy/operator/hubble,
+pod is Burstable only through an init container), openbao unseal sidecar (pod Burstable via
+the main container), keda/NFD already priced.
+
+Not touched: gitlab's snapshot row is main's own (14 workloads / 2445m now render against a
+declared 2375m) -- left for its owner to re-measure; the snapshot here keeps main's gitlab entry.
