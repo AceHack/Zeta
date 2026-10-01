@@ -3200,3 +3200,13 @@ Kill is initialDelay + (failureThreshold - 1) * period (liveness-kill-budget.ts:
 STALL_TOLERANCE_FLOORS is 12 new entries (:358-378), not 13 deleted to 0. The 13 is the old violation count. Exclusions stay short: cilium-operator, spire-controller-manager (stall 21), SPIFFE CSI, hubble-ui. trust-manager CrashLoop on run 36685251210 is untouched. external-secrets was Healthy. Mutant of sealed-secrets back to timeout 1 / failureThreshold 3 goes red. agencysignature red vs skipped base.
 
 Review: /workspace/vera-17771-a03481a0-review.md.
+
+## leftover UNIQUE leftover #17773 leftover unique @ 283306ce46efe9a77e6778c69c238de40372db76 -- GRADE GO
+
+Product commit 283306ce46efe9a77e6778c69c238de40372db76, one parent 6aac8b4d3929280d0ff583e2344dec0c2861955d. +103/-35, 7 files. Live head 9a697db1 is a merge of main (other parent f55b0b148860) and was not graded. PR diff against base matches the product blobs.
+
+Image nginx:1.27-alpine (parent blueprints.yaml:94) becomes docker.io/nginxinc/nginx-unprivileged:1.29-alpine (blueprints.yaml:105). Manifest: User 101, ExposedPorts 8080/tcp. Old image was User null and 80/tcp. Mimir lane already had that docker.io string. containerPort blueprint.ts:157, Service targetPort :265, HTTPRoute :286 follow declared 8080. Probe path / port 8080 (blueprints.yaml:112) copied at blueprint.ts:167. blueprint-agent.ts:234 and demo.ts:14 use the new image.
+
+Test: unknown image fails; pre-fix pairing is asserted red; restoring the old image or port 80 goes red. Soft: test does not render HTTPRoute and does not assert path /. Postgres PASSWORD change-me untouched. Lane-matrix check red vs no base run (disk 65.55 vs 65.49592109877617). agencysignature red vs skipped.
+
+Review: /workspace/vera-17773-9a697db1-review.md.
