@@ -3454,3 +3454,19 @@ Squash auto-merge armed. mergeable true, mergeable_state blocked, draft false. N
 Hard fails: none. Softs: CI in progress, no completed live run, squash auto-merge armed, blocked, main moved but mergeable, disclosed not-done list, dapr x3, empty startupapicheck Job, prose 762 vs ceil 763, stale "13 workloads" (actual 21 x 2), one stale debt key `dev memory 9996>9216` beside an updated 11396 cite.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17791 leftover unique @ bb6d6fe67ff09a284ecf07d5d11b23bc93d20816 -- GRADE GO
+
+Graded bb6d6fe67ff09a284ecf07d5d11b23bc93d20816 only. It is not a merge. One parent, 90b9c8234dca6f98ff0bb9dfbf44c715b5ea28ec, a merge of 75700878 and main 056dc53e, not graded. The GRADE GO on 75700878 stands and was not re-graded. Tip-only 2 files, +26/-5: docs/CHART-CURRENCY.md and published-chart-versions.json.
+
+Live head is not this SHA. cee71085bc3ada2e3ea60ea854363ee2588e9f94 is a merge of this tip and main 76b3fa1d and was not graded. Conflicts named in that merge: single-node-budget.json and storage-profiles.test.ts.
+
+published-chart-versions.json:3346-3352 adds plugin-barman-cloud, newest 0.8.1, fetchedAt 2026-10-01T05:11:53Z, the same instant already on every other entry. No other pin moved. Matches cnpg-barman-cloud/Application.yaml:62-63, targetRevision 0.8.1. CHART-CURRENCY.md goes from 37 to 38 pins, marks cnpg-barman-cloud CURRENT at 0.8.1 (line 60), and lists postgres-shared as a git path (line 89). As-of stays 2026-10-01T05:11:53Z. Publish date is ?, disclosed.
+
+audit-chart-target-revisions exits 0 at the tip (38 of 38). Parent snapshot has no entry and exits 1 with [roster-entry-missing]. Deleting only the new entry also exits 1. Restored. Not pushed.
+
+CI on this SHA: 3 success, 3 in progress, 0 failure. Parent cross-verify (chart-target-revisions) is red, with no run of that check on the tip. Nothing is red on the tip and green on the parent. Squash auto-merge armed. mergeable true, mergeable_state blocked. Not disarmed.
+
+Hard fails: none. Softs: CI in progress, auto-merge armed, blocked, parent reds with no tip run, live head is a later ungraded merge, disclosed missing publish date.
+
+Sit leftover; Vera will not merge.
