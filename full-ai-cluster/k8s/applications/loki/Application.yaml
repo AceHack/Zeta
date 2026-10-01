@@ -35,6 +35,16 @@ spec:
         minio:
           enabled: false
         loki:
+          # REPLICATION FACTOR MUST BE REACHABLE BY THE WRITERS. MEASURED (helm template
+          # loki 18.12.1): the chart renders `common.replication_factor: 3` by default while
+          # `write.replicas` below is 1. Loki's write quorum is floor(RF/2)+1 = 2, so every
+          # push fails with "at least 2 live replicas required, could only find 1" while
+          # loki-write, the gateway and the Application all read Ready/Healthy -- logs
+          # shipped by Alloy were refused and nothing said so. RF 1 is the only value a
+          # one-writer ring can satisfy; raise it together with `write.replicas` (the
+          # audit-observability-chain `loki:` check refuses RF > writers).
+          commonConfig:
+            replication_factor: 1
           auth_enabled: false
           schemaConfig:
             configs:

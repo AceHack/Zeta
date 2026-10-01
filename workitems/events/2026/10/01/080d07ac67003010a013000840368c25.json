@@ -1,0 +1,14 @@
+{
+  "id": "080d07ac67003010a013000840368c25",
+  "at": "2026-10-01T03:40:45.446Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TRSR03087G0R0035B51JA",
+    "type": "bug",
+    "title": "GitLab runner bring-up: token mint had one attempt, runner skipped untagged jobs, redis and runner were BestEffort, HPAs sized for a cluster",
+    "slug": "gitlab-runner-bring-up-token-mint-had-one-attempt-runner-ski",
+    "priority": "P2",
+    "filename": "081M3TRSR03087G0R0035B51JA-gitlab-runner-bring-up-token-mint-had-one-attempt-runner-ski.md"
+  }
+}

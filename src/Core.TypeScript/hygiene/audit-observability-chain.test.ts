@@ -30,6 +30,9 @@ import {
   checkAuthoredRules,
   checkEndpoints,
   checkIncludedByApplication,
+  checkLokiReplication,
+  checkMimirTenancy,
+  checkAlloyOtlpTls,
   checkMonitoringSelectorLabel,
   checkScrapeOptIn,
   checkServiceMonitorTargets,
@@ -77,7 +80,8 @@ describe("CONTROL", () => {
     expect(r.failures).toEqual([]);
     // 3 chain invariants + 4 scrape/alerting invariants added 2026-08-20
     // + the ServiceMonitor -> Service resolution added 2026-08-21.
-    expect(r.checked.length).toBe(8);
+    // + the three sink-contract invariants (loki RF, mimir tenancy, otlp TLS) 2026-09-30.
+    expect(r.checked.length).toBe(11);
   });
 });
 
@@ -666,4 +670,66 @@ describe("alloyEdges escapes EVERY regex metacharacter, not just `.`", () => {
   // fail. Recorded rather than silently dropped: the crash case is not the
   // reachable defect here; the false edge is.
 
+});
+
+describe("SINK CONTRACTS -- the sink accepts what Alloy sends (2026-09-30)", () => {
+  // Each defect below rendered Ready/Healthy and stored nothing. The CONTROL test
+  // above (real tree, zero failures) is what fails on the pre-fix Application.yaml
+  // files; these pin each rule's own reason and both of its closures.
+
+  test("loki: RF 3 against one writer is refused (the shipped state)", () => {
+    expect(checkLokiReplication({ deploymentMode: "SimpleScalable", write: { replicas: 1 } })).toHaveLength(1);
+  });
+
+  test("loki: RF equal to writers is accepted; RF above is refused; chart defaults are 3/3", () => {
+    const mk = (rf: number, w: number) => ({ deploymentMode: "SimpleScalable", loki: { commonConfig: { replication_factor: rf } }, write: { replicas: w } });
+    expect(checkLokiReplication(mk(1, 1))).toEqual([]);
+    expect(checkLokiReplication(mk(3, 3))).toEqual([]);
+    expect(checkLokiReplication(mk(3, 2))).toHaveLength(1);
+    expect(checkLokiReplication({ deploymentMode: "SimpleScalable" })).toEqual([]);
+  });
+
+  test("loki: a non-SimpleScalable mode is out of scope", () => {
+    expect(checkLokiReplication({ deploymentMode: "SingleBinary" })).toEqual([]);
+  });
+
+  const pushNoHeader = [
+    'prometheus.remote_write "mimir" {',
+    '  endpoint { url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push" }',
+    "}",
+  ].join("\n");
+  const pushWithHeader = [
+    'prometheus.remote_write "mimir" {',
+    "  endpoint {",
+    '    url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"',
+    '    headers = { "X-Scope-OrgID" = "zeta" }',
+    "  }",
+    "}",
+  ].join("\n");
+
+  test("mimir: tenancy on (default) + no header is refused", () => {
+    expect(checkMimirTenancy({}, pushNoHeader)).toHaveLength(1);
+  });
+
+  test("mimir: either closure is accepted -- tenancy off, or the header present", () => {
+    expect(checkMimirTenancy({ mimir: { structuredConfig: { multitenancy_enabled: false } } }, pushNoHeader)).toEqual([]);
+    expect(checkMimirTenancy({}, pushWithHeader)).toEqual([]);
+  });
+
+  test("mimir: a remote_write to some other target is not this check's business", () => {
+    const other = 'prometheus.remote_write "x" { endpoint { url = "http://prometheus.monitoring.svc:9090/api/v1/write" } }';
+    expect(checkMimirTenancy({}, other)).toEqual([]);
+  });
+
+  const otlp = (body: string) => 'otelcol.exporter.otlp "tempo" {\n  client {\n' + body + "\n  }\n}";
+
+  test("alloy: a plaintext OTLP exporter with no tls block is refused (the shipped state)", () => {
+    expect(checkAlloyOtlpTls(otlp('    endpoint = "http://tempo.tempo.svc.cluster.local:4317"'))).toHaveLength(1);
+    expect(checkAlloyOtlpTls(otlp('    endpoint = "tempo.tempo.svc.cluster.local:4317"'))).toHaveLength(1);
+  });
+
+  test("alloy: insecure = true, or an https:// endpoint, is accepted", () => {
+    expect(checkAlloyOtlpTls(otlp('    endpoint = "tempo.tempo.svc.cluster.local:4317"\n    tls {\n      insecure = true\n    }'))).toEqual([]);
+    expect(checkAlloyOtlpTls(otlp('    endpoint = "https://tempo.example:4317"'))).toEqual([]);
+  });
 });
