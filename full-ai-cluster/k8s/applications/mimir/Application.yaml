@@ -116,18 +116,293 @@ spec:
         #                   the blocks stay in object storage, uncompacted.
         # The bound that DOES govern history is MinIO's, and it is not on this
         # StorageClass.
+        #
+        # EVERY COMPONENT THAT TOUCHES OBJECT STORAGE WAITS FOR ITS BUCKETS FIRST --
+        # the `initContainers` on ingester, store_gateway, compactor, querier, ruler and
+        # alertmanager (one definition repeated six times -- see below for why it is not a YAML
+        # anchor).
+        #
+        # MEASURED, not assumed. In the constrained first-boot replica (run 36831938019,
+        # 4 vCPU / 12 GiB) mimir's blocks-storage sanity check logged, over and over,
+        #   level=warn  msg="Unable to successfully connect to configured object storage (will retry)"
+        #   err="blocks storage: unable to successfully send a request to object storage:
+        #        The specified bucket does not exist"
+        # and, once its 20 retries (1-5s backoff, ~85s) ran out, `level=error ... msg="module
+        # failed" module=sanity-check`, `error running application`, exit 1 -- the pod then
+        # sat in CrashLoopBackOff (distributor/querier/ruler/store-gateway all showed
+        # restartCount 1-4). The same logs show the S3 Service refusing connections
+        # (`dial tcp ...:8333: connect: connection refused`) before the bucket question even
+        # arose. The pods recovered once the bucket existed; what they cost was restarts and
+        # the exponential kubelet backoff after them.
+        #
+        # WHY NOTHING UPSTREAM ORDERS THIS, and why the fix is here and not in a sync wave.
+        # `seaweedfs` is wave -5 and mimir wave 0, and sync-wave-dependency-graph.yaml says
+        # mimir dependsOn seaweedfs -- but the root's Application health check is
+        # DELIBERATELY non-gating (argocd/Application.yaml `resource.customizations.health.
+        # argoproj.io_Application` reports Healthy for every Application not annotated
+        # `zeta.io/gates-later-waves: "true"`), so wave 0 starts without waiting for wave -5.
+        # And even a gating seaweedfs would not close this: the buckets come from the chart's
+        # `post-install` hook Job (`blob-store-seaweedfs-bucket-hook`, ArgoCD PostSync), which
+        # only starts AFTER the all-in-one Deployment is Healthy. Making seaweedfs gate would
+        # put every wave after -5 behind one Application to fix one consumer; waiting in the
+        # consumer costs only the consumers.
+        #
+        # THE PROBE IS THE SAME REQUEST MIMIR MAKES: a SigV4-signed ListObjectsV2 against the
+        # same endpoint with the same access key and the same minted secret, so it checks the
+        # gateway, the credential AND the bucket at once. 200 = ready; 404 = bucket not there
+        # yet; 000 = gateway not up. It prints the status every 5s so `kubectl logs -c
+        # wait-for-s3-buckets` says what it is waiting for, and gives up after 1200s with exit
+        # 1 -- a visible `Init:Error`, not a pod that looks busy forever. Image: the
+        # seaweedfs image this cluster already pulls (curl 8.x, `--aws-sigv4` needs >= 7.75),
+        # so no new image enters the ledgers and the node has it cached.
+        #
+        # SIX COPIES, NOT AN ANCHOR AND SIX ALIASES. An anchor was tried first and the repo's own
+        # tooling refuses it: audit-observability-chain.ts re-stringifies this document to hash it
+        # and dies with `Unresolved alias (the anchor must be set before the alias)`. The six are
+        # pinned byte-identical to each other by mimir-wait-for-s3-buckets.test.ts, so a copy that
+        # drifts is a red test rather than a quiet divergence.
+        #
+        # Requests: none, deliberately -- init containers do not enter the pod's steady-state
+        # request (the scheduler takes max(init, sum of containers)), and this one is a
+        # shell loop around curl. BUCKETS and the access key are pinned to this file's own
+        # structuredConfig by mimir-wait-for-s3-buckets.test.ts.
         ingester:
           persistentVolume:
             storageClass: zeta-block-replicated
             size: 16Gi
+          initContainers:
+            - name: wait-for-s3-buckets
+              image: chrislusf/seaweedfs:4.45
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BLOB_STORE_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: zeta-blob-store
+                      key: BLOB_STORE_SECRET_KEY
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ ALL ] }
+              command: [ /bin/sh, -c ]
+              args:
+                - |
+                  endpoint=http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+                  access_key=zeta-blob-store
+                  deadline=$(( $(date +%s) + 1200 ))
+                  for bucket in mimir-tsdb mimir-ruler; do
+                    while :; do
+                      code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
+                        --aws-sigv4 'aws:amz:us-east-1:s3' --user "${access_key}:${BLOB_STORE_SECRET_KEY}" \
+                        "${endpoint}/${bucket}?list-type=2&max-keys=1") || true
+                      if [ "${code}" = 200 ]; then
+                        echo "bucket ${bucket} is ready"
+                        break
+                      fi
+                      echo "waiting for bucket ${bucket}: http ${code:-000}"
+                      if [ "$(date +%s)" -ge "${deadline}" ]; then
+                        echo "gave up: bucket ${bucket} not reachable after 1200s (last http ${code:-000})" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                  done
         store_gateway:
           persistentVolume:
             storageClass: zeta-block-replicated
             size: 16Gi
+          initContainers:
+            - name: wait-for-s3-buckets
+              image: chrislusf/seaweedfs:4.45
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BLOB_STORE_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: zeta-blob-store
+                      key: BLOB_STORE_SECRET_KEY
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ ALL ] }
+              command: [ /bin/sh, -c ]
+              args:
+                - |
+                  endpoint=http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+                  access_key=zeta-blob-store
+                  deadline=$(( $(date +%s) + 1200 ))
+                  for bucket in mimir-tsdb mimir-ruler; do
+                    while :; do
+                      code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
+                        --aws-sigv4 'aws:amz:us-east-1:s3' --user "${access_key}:${BLOB_STORE_SECRET_KEY}" \
+                        "${endpoint}/${bucket}?list-type=2&max-keys=1") || true
+                      if [ "${code}" = 200 ]; then
+                        echo "bucket ${bucket} is ready"
+                        break
+                      fi
+                      echo "waiting for bucket ${bucket}: http ${code:-000}"
+                      if [ "$(date +%s)" -ge "${deadline}" ]; then
+                        echo "gave up: bucket ${bucket} not reachable after 1200s (last http ${code:-000})" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                  done
         compactor:
           persistentVolume:
             storageClass: zeta-block-replicated
             size: 16Gi
+          initContainers:
+            - name: wait-for-s3-buckets
+              image: chrislusf/seaweedfs:4.45
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BLOB_STORE_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: zeta-blob-store
+                      key: BLOB_STORE_SECRET_KEY
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ ALL ] }
+              command: [ /bin/sh, -c ]
+              args:
+                - |
+                  endpoint=http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+                  access_key=zeta-blob-store
+                  deadline=$(( $(date +%s) + 1200 ))
+                  for bucket in mimir-tsdb mimir-ruler; do
+                    while :; do
+                      code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
+                        --aws-sigv4 'aws:amz:us-east-1:s3' --user "${access_key}:${BLOB_STORE_SECRET_KEY}" \
+                        "${endpoint}/${bucket}?list-type=2&max-keys=1") || true
+                      if [ "${code}" = 200 ]; then
+                        echo "bucket ${bucket} is ready"
+                        break
+                      fi
+                      echo "waiting for bucket ${bucket}: http ${code:-000}"
+                      if [ "$(date +%s)" -ge "${deadline}" ]; then
+                        echo "gave up: bucket ${bucket} not reachable after 1200s (last http ${code:-000})" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                  done
+        querier:
+          initContainers:
+            - name: wait-for-s3-buckets
+              image: chrislusf/seaweedfs:4.45
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BLOB_STORE_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: zeta-blob-store
+                      key: BLOB_STORE_SECRET_KEY
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ ALL ] }
+              command: [ /bin/sh, -c ]
+              args:
+                - |
+                  endpoint=http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+                  access_key=zeta-blob-store
+                  deadline=$(( $(date +%s) + 1200 ))
+                  for bucket in mimir-tsdb mimir-ruler; do
+                    while :; do
+                      code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
+                        --aws-sigv4 'aws:amz:us-east-1:s3' --user "${access_key}:${BLOB_STORE_SECRET_KEY}" \
+                        "${endpoint}/${bucket}?list-type=2&max-keys=1") || true
+                      if [ "${code}" = 200 ]; then
+                        echo "bucket ${bucket} is ready"
+                        break
+                      fi
+                      echo "waiting for bucket ${bucket}: http ${code:-000}"
+                      if [ "$(date +%s)" -ge "${deadline}" ]; then
+                        echo "gave up: bucket ${bucket} not reachable after 1200s (last http ${code:-000})" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                  done
+        ruler:
+          initContainers:
+            - name: wait-for-s3-buckets
+              image: chrislusf/seaweedfs:4.45
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BLOB_STORE_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: zeta-blob-store
+                      key: BLOB_STORE_SECRET_KEY
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ ALL ] }
+              command: [ /bin/sh, -c ]
+              args:
+                - |
+                  endpoint=http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+                  access_key=zeta-blob-store
+                  deadline=$(( $(date +%s) + 1200 ))
+                  for bucket in mimir-tsdb mimir-ruler; do
+                    while :; do
+                      code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
+                        --aws-sigv4 'aws:amz:us-east-1:s3' --user "${access_key}:${BLOB_STORE_SECRET_KEY}" \
+                        "${endpoint}/${bucket}?list-type=2&max-keys=1") || true
+                      if [ "${code}" = 200 ]; then
+                        echo "bucket ${bucket} is ready"
+                        break
+                      fi
+                      echo "waiting for bucket ${bucket}: http ${code:-000}"
+                      if [ "$(date +%s)" -ge "${deadline}" ]; then
+                        echo "gave up: bucket ${bucket} not reachable after 1200s (last http ${code:-000})" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                  done
+        alertmanager:
+          initContainers:
+            - name: wait-for-s3-buckets
+              image: chrislusf/seaweedfs:4.45
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BLOB_STORE_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: zeta-blob-store
+                      key: BLOB_STORE_SECRET_KEY
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ ALL ] }
+              command: [ /bin/sh, -c ]
+              args:
+                - |
+                  endpoint=http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+                  access_key=zeta-blob-store
+                  deadline=$(( $(date +%s) + 1200 ))
+                  for bucket in mimir-tsdb mimir-ruler; do
+                    while :; do
+                      code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 \
+                        --aws-sigv4 'aws:amz:us-east-1:s3' --user "${access_key}:${BLOB_STORE_SECRET_KEY}" \
+                        "${endpoint}/${bucket}?list-type=2&max-keys=1") || true
+                      if [ "${code}" = 200 ]; then
+                        echo "bucket ${bucket} is ready"
+                        break
+                      fi
+                      echo "waiting for bucket ${bucket}: http ${code:-000}"
+                      if [ "$(date +%s)" -ge "${deadline}" ]; then
+                        echo "gave up: bucket ${bucket} not reachable after 1200s (last http ${code:-000})" >&2
+                        exit 1
+                      fi
+                      sleep 5
+                    done
+                  done
         # DECLARED so the ladder can price it. mimir-distributed 6.2.0 turns the
         # INGEST-STORAGE architecture on by default -- `kafka.enabled: true` plus
         # `ingest_storage.enabled: true` in the chart's own values -- so writes now
