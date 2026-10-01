@@ -1,0 +1,12 @@
+{
+  "pr_number": 17823,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17823-fix-platform-the-blueprint-crd-never-learned-sidecar-configmaps-so-every-bluepri.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T14:00:02.343Z",
+  "schema_version": "v1",
+  "commit_sha": "8b978f359ef0af82dfc552b81518d1de752d64ff",
+  "title": "fix(platform): the Blueprint CRD never learned sidecar configMaps, so every Blueprint failed to apply",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T13:59:20Z",
+  "head_ref": "fix/platform-blueprint-sidecar-configmaps"
+}
