@@ -3119,3 +3119,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Tests 9/9 at tip. Base with this test is 7 red / 2 green (PR said 6 of 9). Survivors: reset_token! removed, SECONDS cap removed.
 - Softs: S1 blocked; S2 auto-merge armed; S3 CI in progress; S4 agencysignature PR body; S5 live node unverified; S6 stale pre-#17737 totals; S7 run_untagged is create-only (existing token skips Rails); S8 test gaps; S9 untagged jobs use the gitlab namespace admin SA; S10 redis request is not a maxmemory cap; S11 give-up exit 0 is pre-existing.
 - Hard fails: none.
+
+## leftover UNIQUE leftover #17765 leftover unique @ 48158a50076e154bdb82d0b84db0355c5216a93b -- GRADE GO
+
+- PR: KubeVirt and CDI first-boot sync, bounded, Windows VM template (maximdolphin). Tip 48158a50 is stage0-independence.baseline.json only, +2/-1, parent 87dd511c (product, +1342/-3, 14 files, parent base 6aac8b4d). Script blob unchanged 9484ae05. Test-merge d25e8108 not graded. Blocked, squash auto-merge armed. Main moved to 132f8d63 (#17762 squash); this PR is a sibling and still mergeable.
+- Exception path is full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh. Ratchet 18 + exceptions.length (measure-stage0-independence.ts:412); 8 exceptions allows 26. Script never calls bun.
+- Both Applications stay manual (no automated block). Script kubectl-gets kubevirts.kubevirt.io and cdis.cdi.kubevirt.io; present skips, absent syncs, probe failure exits 1 with no sentinel. Sync is one operation.sync patch. Second run issues 0 kubectl calls.
+- useEmulation only if the sentinel line is kubevirt=sync AND /dev/kvm is missing. Key is spec.configuration.developerConfiguration.useEmulation (CRD default false). Dry-run: kvm present or CRDs already present gives 0 CR patches.
+- Six memory limits on spec.customizeComponents.patches (virt-api 768Mi, virt-controller 1Gi, virt-handler 2Gi, cdi deployment/apiserver/uploadproxy 512Mi). Scratch class zeta-block-local exists. 64Gi Windows disk is under k8s/examples, outside the ledger.
+- Softs: S1 CI in progress; S2 auto-merge armed; S3 no Nix eval; S4 no cluster and no guest boot; S5 operators unbounded as disclosed; S6 template test checks the path string not the ledger total; S7 Type=simple with stamp files, not oneshot; S8 main moved.
+- Hard fails: none.
