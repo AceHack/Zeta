@@ -63,4 +63,4 @@ Application and in the first-boot HelmChart.
 
 - `full-ai-cluster/k8s/wp11-ci-envelope.json` -- the sanctioned exclusion mechanism; its arithmetic
   stops at "the three that tipped it" and does not reach the full envelope above.
-- `.claude/worktrees` is not durable: the two replica reports are artifacts of run 36831938019.
+- The two replica reports are the `first-boot-replica-report` and `first-boot-replica-constrained-report` artifacts of run 36831938019 (CI artifacts expire; the numbers above are copied from them).
