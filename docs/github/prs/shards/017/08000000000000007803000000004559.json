@@ -1,0 +1,12 @@
+{
+  "pr_number": 17753,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17753-fix-wp11-the-first-boot-freeze-was-the-ci-runner-disk-filling-not-the-guest.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T00:13:56.221Z",
+  "schema_version": "v1",
+  "commit_sha": "7a079a0cd10cab33399b1b74896ade9c9c57e923",
+  "title": "fix(wp11): the first-boot \"freeze\" was the CI runner disk filling, not the guest",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T00:13:12Z",
+  "head_ref": "claude/first-boot-freeze"
+}
