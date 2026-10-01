@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-27",
+  "measuredOn": "2026-10-01",
   "appsDiscovered": [
     "full-ai-cluster/agent-memory",
     "full-ai-cluster/alloy",
@@ -115,45 +115,51 @@
         },
         {
           "appId": "full-ai-cluster/argo-rollouts",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 30,
+          "memoryMib": 80,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/argo-rollouts",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 48
             },
             {
               "workload": "Deployment/argo-rollouts-dashboard",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 32
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/argo-rollouts/controller",
+            "full-ai-cluster/argo-rollouts/dashboard"
+          ]
         },
         {
           "appId": "full-ai-cluster/argo-workflows",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 30,
+          "memoryMib": 112,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/argo-workflows-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 48
             },
             {
               "workload": "Deployment/argo-workflows-workflow-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 64
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/argo-workflows/controller",
+            "full-ai-cluster/argo-workflows/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/argocd",
@@ -223,27 +229,27 @@
         },
         {
           "appId": "full-ai-cluster/cert-manager",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 55,
+          "memoryMib": 160,
           "pods": 4,
           "workloads": [
             {
               "workload": "Deployment/cert-manager",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/cert-manager-cainjector",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/cert-manager-webhook",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 32
             },
             {
               "workload": "Job/cert-manager-startupapicheck",
@@ -252,7 +258,11 @@
               "memoryMib": 0
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/cert-manager/cainjector",
+            "full-ai-cluster/cert-manager/controller",
+            "full-ai-cluster/cert-manager/webhook"
+          ]
         },
         {
           "appId": "full-ai-cluster/cilium",
@@ -365,42 +375,48 @@
         },
         {
           "appId": "full-ai-cluster/dapr",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 105,
+          "memoryMib": 496,
           "pods": 7,
           "workloads": [
             {
               "workload": "Deployment/dapr-operator",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/dapr-sentry",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 48
             },
             {
               "workload": "Deployment/dapr-sidecar-injector",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 48
             },
             {
               "workload": "StatefulSet/dapr-placement-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 48
             },
             {
               "workload": "StatefulSet/dapr-scheduler-server",
               "replicas": 3,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 96
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/dapr/operator",
+            "full-ai-cluster/dapr/placement",
+            "full-ai-cluster/dapr/scheduler",
+            "full-ai-cluster/dapr/sentry",
+            "full-ai-cluster/dapr/sidecar-injector"
+          ]
         },
         {
           "appId": "full-ai-cluster/deepseek-coder",
@@ -412,30 +428,34 @@
         },
         {
           "appId": "full-ai-cluster/external-secrets",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 45,
+          "memoryMib": 128,
           "pods": 3,
           "workloads": [
             {
               "workload": "Deployment/external-secrets",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/external-secrets-cert-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 32
             },
             {
               "workload": "Deployment/external-secrets-webhook",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 32
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/external-secrets/cert-controller",
+            "full-ai-cluster/external-secrets/controller",
+            "full-ai-cluster/external-secrets/webhook"
+          ]
         },
         {
           "appId": "full-ai-cluster/forgejo",
@@ -591,18 +611,20 @@
         },
         {
           "appId": "full-ai-cluster/headlamp",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 15,
+          "memoryMib": 64,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/headlamp",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 64
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/headlamp/headlamp"
+          ]
         },
         {
           "appId": "full-ai-cluster/headscale",
@@ -1177,18 +1199,20 @@
         },
         {
           "appId": "full-ai-cluster/sealed-secrets",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 15,
+          "memoryMib": 32,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/sealed-secrets-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 32
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/sealed-secrets/controller"
+          ]
         },
         {
           "appId": "full-ai-cluster/seaweedfs",
@@ -1215,30 +1239,36 @@
         },
         {
           "appId": "full-ai-cluster/spire",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 85,
+          "memoryMib": 296,
           "pods": 3,
           "workloads": [
             {
               "workload": "DaemonSet/spire-agent",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 64
             },
             {
               "workload": "DaemonSet/spire-spiffe-csi-driver",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 30,
+              "memoryMib": 56
             },
             {
               "workload": "StatefulSet/spire-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 40,
+              "memoryMib": 176
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/spire/agent",
+            "full-ai-cluster/spire/controller-manager",
+            "full-ai-cluster/spire/csi-driver",
+            "full-ai-cluster/spire/csi-registrar",
+            "full-ai-cluster/spire/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/spire-crds",
@@ -1332,22 +1362,26 @@
               "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/temporal/postgres/postgres"
+          ]
         },
         {
           "appId": "full-ai-cluster/trust-manager",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 15,
+          "memoryMib": 32,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/trust-manager",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 15,
+              "memoryMib": 32
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/trust-manager/trust-manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/vllm",
@@ -1445,45 +1479,51 @@
         },
         {
           "appId": "full-ai-cluster/argo-rollouts",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 50,
+          "memoryMib": 112,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/argo-rollouts",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/argo-rollouts-dashboard",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 48
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/argo-rollouts/controller",
+            "full-ai-cluster/argo-rollouts/dashboard"
+          ]
         },
         {
           "appId": "full-ai-cluster/argo-workflows",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 50,
+          "memoryMib": 160,
           "pods": 2,
           "workloads": [
             {
               "workload": "Deployment/argo-workflows-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/argo-workflows-workflow-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 96
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/argo-workflows/controller",
+            "full-ai-cluster/argo-workflows/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/argocd",
@@ -1553,27 +1593,27 @@
         },
         {
           "appId": "full-ai-cluster/cert-manager",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 100,
+          "memoryMib": 240,
           "pods": 4,
           "workloads": [
             {
               "workload": "Deployment/cert-manager",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 96
             },
             {
               "workload": "Deployment/cert-manager-cainjector",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 96
             },
             {
               "workload": "Deployment/cert-manager-webhook",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 48
             },
             {
               "workload": "Job/cert-manager-startupapicheck",
@@ -1582,7 +1622,11 @@
               "memoryMib": 0
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/cert-manager/cainjector",
+            "full-ai-cluster/cert-manager/controller",
+            "full-ai-cluster/cert-manager/webhook"
+          ]
         },
         {
           "appId": "full-ai-cluster/cilium",
@@ -1695,42 +1739,48 @@
         },
         {
           "appId": "full-ai-cluster/dapr",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 200,
+          "memoryMib": 672,
           "pods": 7,
           "workloads": [
             {
               "workload": "Deployment/dapr-operator",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 96
             },
             {
               "workload": "Deployment/dapr-sentry",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "Deployment/dapr-sidecar-injector",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "StatefulSet/dapr-placement-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 64
             },
             {
               "workload": "StatefulSet/dapr-scheduler-server",
               "replicas": 3,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 128
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/dapr/operator",
+            "full-ai-cluster/dapr/placement",
+            "full-ai-cluster/dapr/scheduler",
+            "full-ai-cluster/dapr/sentry",
+            "full-ai-cluster/dapr/sidecar-injector"
+          ]
         },
         {
           "appId": "full-ai-cluster/deepseek-coder",
@@ -1742,30 +1792,34 @@
         },
         {
           "appId": "full-ai-cluster/external-secrets",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 100,
+          "memoryMib": 192,
           "pods": 3,
           "workloads": [
             {
               "workload": "Deployment/external-secrets",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 96
             },
             {
               "workload": "Deployment/external-secrets-cert-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 48
             },
             {
               "workload": "Deployment/external-secrets-webhook",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 48
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/external-secrets/cert-controller",
+            "full-ai-cluster/external-secrets/controller",
+            "full-ai-cluster/external-secrets/webhook"
+          ]
         },
         {
           "appId": "full-ai-cluster/forgejo",
@@ -1921,18 +1975,20 @@
         },
         {
           "appId": "full-ai-cluster/headlamp",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 25,
+          "memoryMib": 96,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/headlamp",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 96
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/headlamp/headlamp"
+          ]
         },
         {
           "appId": "full-ai-cluster/headscale",
@@ -2507,18 +2563,20 @@
         },
         {
           "appId": "full-ai-cluster/sealed-secrets",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 25,
+          "memoryMib": 48,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/sealed-secrets-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 48
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/sealed-secrets/controller"
+          ]
         },
         {
           "appId": "full-ai-cluster/seaweedfs",
@@ -2545,30 +2603,36 @@
         },
         {
           "appId": "full-ai-cluster/spire",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 225,
+          "memoryMib": 408,
           "pods": 3,
           "workloads": [
             {
               "workload": "DaemonSet/spire-agent",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 96
             },
             {
               "workload": "DaemonSet/spire-spiffe-csi-driver",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 56
             },
             {
               "workload": "StatefulSet/spire-server",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 125,
+              "memoryMib": 256
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/spire/agent",
+            "full-ai-cluster/spire/controller-manager",
+            "full-ai-cluster/spire/csi-driver",
+            "full-ai-cluster/spire/csi-registrar",
+            "full-ai-cluster/spire/server"
+          ]
         },
         {
           "appId": "full-ai-cluster/spire-crds",
@@ -2662,22 +2726,26 @@
               "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/temporal/postgres/postgres"
+          ]
         },
         {
           "appId": "full-ai-cluster/trust-manager",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 25,
+          "memoryMib": 48,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/trust-manager",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 25,
+              "memoryMib": 48
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/trust-manager/trust-manager"
+          ]
         },
         {
           "appId": "full-ai-cluster/vllm",
