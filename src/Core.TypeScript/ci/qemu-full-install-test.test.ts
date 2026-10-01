@@ -1382,6 +1382,25 @@ describe("WP11 — installed-disk first-boot k3s verify", () => {
     const absentSummary = summarizeK3sFirstBootVerifyVerdict(rosterAbsent);
     expect(absentSummary.ok).toBe(false);
     expect(absentSummary.lines.join("\n")).toContain("ABSENT");
+
+    // The cluster-diagnostics capture is EVIDENCE, never a gate, and its three
+    // states are printed so a capture that FAILED cannot read as one that found
+    // nothing. It must not change the verdict in either direction.
+    const withDiag: K3sFirstBootVerifyVerdict = {
+      ...rosterFailed,
+      clusterDiagnostics: {
+        mid: { state: "captured", failedSections: "" },
+        atEnd: { state: "failed", failedSections: " api-unreachable(90s)" },
+      },
+    };
+    const diagSummary = summarizeK3sFirstBootVerifyVerdict(withDiag);
+    expect(diagSummary.ok).toBe(false);
+    expect(diagSummary.lines.join("\n")).toContain("cluster diagnostics: mid=captured, end=failed (api-unreachable(90s))");
+    expect(
+      summarizeK3sFirstBootVerifyVerdict({ ...passing, clusterDiagnostics: withDiag.clusterDiagnostics as NonNullable<K3sFirstBootVerifyVerdict["clusterDiagnostics"]> }).ok,
+    ).toBe(true);
+    // Absent on older JSON: no line, no crash.
+    expect(summarizeK3sFirstBootVerifyVerdict(passing).lines.join("\n")).not.toContain("cluster diagnostics");
   });
 
   it("has its own serial separator, distinct from phase 2/2b", () => {
