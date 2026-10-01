@@ -499,6 +499,37 @@ in
           done
           return "$_cg_rc"
         }
+        zeta_wp11_k3s_journal_tail() {
+          # MEASURED run 36832486494: the final 200 lines of this journal were
+          # ~190 `Found left-over process N (containerd-shim)` / `Unit process N
+          # remains running after unit stopped` lines -- systemd narrating every
+          # surviving shim of a restart -- and not one line of why k3s died. The
+          # same journal read at the restart that mattered was full of the cause
+          # (etcd `apply request took too long`, then `leaderelection lost`,
+          # then `Main process exited, status=1`). Filter the narration out.
+          # The journal is read FIRST and its failure is a failure; only then is
+          # an empty filtered tail just "nothing but narration".
+          _kj_log="$("$MKTEMP")"
+          if ! "$JOURNALCTL" -u k3s.service -b --no-pager -n 1500 > "$_kj_log"; then
+            "$RM" -f "$_kj_log"
+            return 1
+          fi
+          "$GREP" -vE 'left-over process|usually indicates unclean termination|remains running after unit stopped' "$_kj_log" | "$TAIL" -n 200
+          "$RM" -f "$_kj_log"
+          return 0
+        }
+        zeta_wp11_k3s_exits() {
+          # WHEN k3s died, and the lines that say why, across the whole boot --
+          # a run that restarted 14 times needs the timeline, not the last screen.
+          _ke_log="$("$MKTEMP")"
+          if ! "$JOURNALCTL" -u k3s.service -b --no-pager > "$_ke_log"; then
+            "$RM" -f "$_ke_log"
+            return 1
+          fi
+          "$GREP" -E 'Main process exited|Failed with result|Scheduled restart job|leaderelection lost|Consumed |level=fatal|panic:' "$_ke_log" | "$TAIL" -n 60
+          "$RM" -f "$_ke_log"
+          return 0
+        }
         zeta_wp11_pressure_diag() {
           # $1 = why it ran. Sets PRESSURE_LAST_STATE / PRESSURE_LAST_DETAIL.
           PRESSURE_LAST_DETAIL=""
@@ -510,7 +541,8 @@ in
           zeta_wp11_pressure_section "psi-io" "$CAT" "$PSI_DIR/io"
           zeta_wp11_pressure_section "kernel-oom" zeta_wp11_oom_lines
           zeta_wp11_pressure_section "cgroup-protection" zeta_wp11_cgroup_protection
-          zeta_wp11_pressure_section "k3s-journal" "$JOURNALCTL" -u k3s.service -b --no-pager -n 200
+          zeta_wp11_pressure_section "k3s-exits" zeta_wp11_k3s_exits
+          zeta_wp11_pressure_section "k3s-journal" zeta_wp11_k3s_journal_tail
           if [ -z "$PRESSURE_LAST_DETAIL" ]; then
             PRESSURE_LAST_STATE=captured
           else
@@ -519,6 +551,339 @@ in
           log "[wp11-pressure] result ($1): $PRESSURE_LAST_STATE$PRESSURE_LAST_DETAIL"
         }
         # ZETA-WP11-PRESSURE-END
+        HEAD=${pkgs.coreutils}/bin/head
+        SED=${pkgs.gnused}/bin/sed
+
+        # --- CLUSTER diagnostics (WHY an Application did not converge) ---------
+        #
+        # MEASURED run 36832486494: verdict 7 failed 26/48 and named the 17
+        # Applications that did not converge, but the log carried NOTHING that
+        # says WHY. Three gaps, each visible in that serial log:
+        #
+        #   1. `roster_app_diag` runs at the very END, and by then k3s was in
+        #      its 14th restart: four of its ten per-app dumps are the single
+        #      line `The connection to the server 127.0.0.1:6443 was refused`.
+        #      The evidence was requested after the witness had left. So this
+        #      captures ONCE MID-RUN (while the API still answers) and once at
+        #      the end, and at the end it WAITS (bounded) for the API to come
+        #      back instead of firing into a restart.
+        #   2. Nothing was ever printed about PODS: no describe, no Events, no
+        #      `logs --previous`, no Pending reason. The "pods 85/141" line
+        #      counts them and cannot say whether the 56 others were waiting
+        #      for capacity, an unbound claim, an image pull or a crash loop.
+        #   3. Nothing compared what the pods REQUEST with what the node HAS,
+        #      which is the question a 4 vCPU / 12 GiB guest running 141 pods
+        #      turns on.
+        #
+        # SAME THREE STATES AS THE PRESSURE BLOCK, and for the same reason: a
+        # capture that FAILED must not read as one that found nothing.
+        #   captured    every hard section ran and produced its output
+        #   failed      at least one did not -- named, with why (exit status,
+        #               line budget, deadline, or API never answering)
+        #   did-not-run the trigger never happened (a passing run, or k3s
+        #               never active)
+        # A SOFT section (`kubectl top` without metrics-server, `logs` for a
+        # pod that never started a container) is EXPECTED to fail on some
+        # guests; it says so and does not make the capture `failed`.
+        #
+        # BOUNDED THREE WAYS, because this runs inside a verdict that has its
+        # own deadline: a total line budget (CLUSTER_DIAG_MAX_LINES), a per
+        # section cap, and a wall-clock deadline after which every remaining
+        # section is skipped AND NAMED as skipped -- a skipped section is a
+        # failed capture, never a quiet one. It only OBSERVES: read-only
+        # kubectl, and every call carries --request-timeout.
+        #
+        # FAIL-SAFE: nothing in here can change the verdict. The caller treats
+        # the function as best-effort (`|| true`), no section aborts the unit
+        # (the script runs without `set -e`), and every variable is
+        # initialised first because the unit runs under `set -u`.
+        # ZETA-WP11-CLUSTERDIAG-BEGIN
+        CLUSTER_DIAG_MID_STATE=did-not-run
+        CLUSTER_DIAG_MID_DETAIL=""
+        CLUSTER_DIAG_END_STATE=did-not-run
+        CLUSTER_DIAG_END_DETAIL=""
+        CLUSTER_DIAG_LAST_STATE=did-not-run
+        CLUSTER_DIAG_LAST_DETAIL=""
+        CLUSTER_DIAG_MID_DONE=false
+        CLUSTER_DIAG_MID_AT_SECONDS=900
+        CLUSTER_DIAG_LINES=0
+        CLUSTER_DIAG_MAX_LINES=1000
+        CLUSTER_DIAG_SECTION_LINES=120
+        CLUSTER_DIAG_LINE_WIDTH=300
+        CLUSTER_DIAG_POD_CAP=20
+        CLUSTER_DIAG_APP_CAP=24
+        CLUSTER_DIAG_API_WAIT_SECONDS=90
+        CLUSTER_DIAG_DEADLINE_SECONDS=240
+        CLUSTER_DIAG_DEADLINE_TS=0
+        CLUSTER_DIAG_KUBECTL_TIMEOUT=20s
+        zeta_wp11_kcd() {
+          kc --request-timeout="$CLUSTER_DIAG_KUBECTL_TIMEOUT" "$@"
+        }
+        zeta_wp11_cdiag_emit() {
+          # $1 = label, $2 = file, $3 = cap for this section. Returns 3 when the
+          # total line budget ran out before the file was fully written.
+          _ce_label="$1"
+          _ce_file="$2"
+          _ce_cap="$3"
+          _ce_n=0
+          while IFS= read -r _ce_line; do
+            if [ "$CLUSTER_DIAG_LINES" -ge "$CLUSTER_DIAG_MAX_LINES" ]; then
+              return 3
+            fi
+            if [ "$_ce_n" -ge "$_ce_cap" ]; then
+              log "[wp11-cluster-diag] $_ce_label | ... truncated at $_ce_cap line(s) for this section"
+              return 0
+            fi
+            _ce_n=$(( _ce_n + 1 ))
+            CLUSTER_DIAG_LINES=$(( CLUSTER_DIAG_LINES + 1 ))
+            log "[wp11-cluster-diag] $_ce_label | ''${_ce_line:0:$CLUSTER_DIAG_LINE_WIDTH}"
+          done < "$_ce_file"
+          return 0
+        }
+        zeta_wp11_cdiag_section() {
+          # $1 = hard|soft, $2 = per-section line cap, $3 = name, rest = command.
+          # Never returns non-zero: a diagnostic must not be able to fail the unit.
+          _cs_kind="$1"
+          _cs_cap="$2"
+          _cs_name="$3"
+          shift 3
+          if [ "$(now_ts)" -ge "$CLUSTER_DIAG_DEADLINE_TS" ]; then
+            log "[wp11-cluster-diag] $_cs_name: SKIPPED (diagnostic deadline reached) -- this section measured nothing"
+            CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL $_cs_name(deadline)"
+            return 0
+          fi
+          _cs_out="$("$MKTEMP")"
+          "$@" > "$_cs_out" 2>&1 < /dev/null
+          _cs_rc=$?
+          zeta_wp11_cdiag_emit "$_cs_name" "$_cs_out" "$_cs_cap"
+          _cs_er=$?
+          "$RM" -f "$_cs_out"
+          if [ "$_cs_er" -eq 3 ]; then
+            log "[wp11-cluster-diag] $_cs_name: SKIPPED (line budget of $CLUSTER_DIAG_MAX_LINES exhausted) -- output past this point was dropped"
+            CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL $_cs_name(budget)"
+          elif [ "$_cs_rc" -eq 0 ]; then
+            log "[wp11-cluster-diag] $_cs_name: captured"
+          elif [ "$_cs_kind" = "soft" ]; then
+            log "[wp11-cluster-diag] $_cs_name: unavailable (exit $_cs_rc) -- expected on some guests; not counted as a failed capture"
+          else
+            log "[wp11-cluster-diag] $_cs_name: FAILED (exit $_cs_rc) -- this section measured nothing"
+            CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL $_cs_name(exit $_cs_rc)"
+          fi
+          return 0
+        }
+        zeta_wp11_cdiag_wait_api() {
+          # The end-of-run capture used to fire into a k3s restart. Poll a read
+          # that needs etcd (not /version, which answers without it).
+          _cw_end=$(( $(now_ts) + CLUSTER_DIAG_API_WAIT_SECONDS ))
+          while true; do
+            if zeta_wp11_kcd get namespace kube-system -o name > /dev/null 2>&1; then
+              return 0
+            fi
+            if [ "$(now_ts)" -ge "$_cw_end" ]; then
+              return 1
+            fi
+            "$SLEEP" 5
+          done
+        }
+        zeta_wp11_cdiag_capacity() {
+          # $1 = pods json, $2 = nodes json. What the node HAS vs what pods ASK
+          # for. Container requests only (initContainers are transient and
+          # DaemonSet overhead is already inside the pod list), so this is a
+          # lower bound on what the scheduler counted -- stated, not hidden.
+          "$JQ" -n -r --slurpfile p "$1" --slurpfile n "$2" '
+            def cpu: if . == null then 0 elif type == "number" then . * 1000 elif endswith("m") then (.[:-1] | tonumber) else (tonumber * 1000) end;
+            def mem: if . == null then 0 elif type == "number" then . else (capture("^(?<n>[0-9.]+)(?<u>[A-Za-z]*)$") | (.n | tonumber) * ({"": 1, "Ki": 1024, "Mi": 1048576, "Gi": 1073741824, "Ti": 1099511627776, "k": 1000, "K": 1000, "M": 1000000, "G": 1000000000}[.u] // 1)) end;
+            def mib: ((. / 1048576) | floor);
+            def pct($a; $b): if $b > 0 then (($a * 100 / $b) | floor) else -1 end;
+            ($p[0].items // []) as $pods
+            | ($n[0].items // []) as $nodes
+            | [$pods[] | select((.status.phase // "") != "Succeeded" and (.status.phase // "") != "Failed")] as $live
+            | ([$live[] | .spec.containers[] | (.resources.requests.cpu | cpu)] | add // 0) as $rcpu
+            | ([$live[] | .spec.containers[] | (.resources.requests.memory | mem)] | add // 0) as $rmem
+            | ([$live[] | .spec.containers[] | (.resources.limits.memory | mem)] | add // 0) as $lmem
+            | ([$nodes[] | (.status.allocatable.cpu | cpu)] | add // 0) as $acpu
+            | ([$nodes[] | (.status.allocatable.memory | mem)] | add // 0) as $amem
+            | ([$live[] | select(([.spec.containers[] | .resources.requests.cpu] | all(. == null)))] | length) as $nocpu
+            | ([$live[] | select(([.spec.containers[] | .resources.requests.memory] | all(. == null)))] | length) as $nomem
+            | ( ($nodes[] | "node \(.metadata.name): allocatable cpu=\(.status.allocatable.cpu) memory=\(.status.allocatable.memory) pods=\(.status.allocatable.pods)"),
+                "sum of container requests over \($live | length) live pod(s): cpu=\($rcpu)m of \($acpu)m allocatable (\(pct($rcpu; $acpu))%), memory=\($rmem | mib)Mi of \($amem | mib)Mi (\(pct($rmem; $amem))%)",
+                "sum of container memory LIMITS: \($lmem | mib)Mi = \(pct($lmem; $amem))% of allocatable memory (above 100% is overcommit: eviction becomes possible)",
+                "live pods with NO cpu request: \($nocpu); with NO memory request: \($nomem) (those schedule anywhere and are evicted first)",
+                "top 15 memory requesters:",
+                ( [$live[] | {n: "\(.metadata.namespace)/\(.metadata.name)", m: ([.spec.containers[] | (.resources.requests.memory | mem)] | add // 0), c: ([.spec.containers[] | (.resources.requests.cpu | cpu)] | add // 0)}] | sort_by(-.m) | .[:15][] | "  \(.n) memory=\(.m | mib)Mi cpu=\(.c)m" )
+              )
+          ' || return 1
+        }
+        zeta_wp11_cdiag_census() {
+          # $1 = pods json. The Pending-reason census: WHY each not-ready pod is
+          # not ready, grouped. Capacity (Insufficient cpu/memory), an unbound
+          # claim, an untolerated taint, an image pull and a crash loop are five
+          # different diseases that all read `0/1 Running` in `get pods`.
+          "$JQ" -r '
+            def notready: (.status.phase // "") != "Succeeded" and (((.status.phase // "") != "Running") or ([(.status.containerStatuses // [])[] | .ready] | all | not));
+            def cats:
+              ((.status.conditions // []) | map(select(.type == "PodScheduled" and .status == "False")) | .[0].message // null) as $sm
+              | ([((.status.initContainerStatuses // []) + (.status.containerStatuses // []))[] | (.state.waiting.reason // empty), ((.lastState.terminated.reason // empty) | "last-terminated: " + .)] | unique) as $r
+              | if $sm != null then
+                  [ (if ($sm | test("Insufficient cpu")) then "Pending: Insufficient cpu" else empty end),
+                    (if ($sm | test("Insufficient memory")) then "Pending: Insufficient memory" else empty end),
+                    (if ($sm | test("Insufficient ephemeral")) then "Pending: Insufficient ephemeral-storage" else empty end),
+                    (if ($sm | test("unbound")) then "Pending: unbound PersistentVolumeClaim" else empty end),
+                    (if ($sm | test("untolerated taint")) then "Pending: untolerated taint" else empty end),
+                    (if ($sm | test("affinity|selector")) then "Pending: node affinity or selector mismatch" else empty end),
+                    (if ($sm | test("[Tt]oo many pods")) then "Pending: too many pods" else empty end) ]
+                  | if length == 0 then ["Pending: unschedulable (" + ($sm | .[0:120]) + ")"] else . end
+                elif (.status.phase // "") == "Failed" then ["Failed: " + (.status.reason // "unknown")]
+                elif ($r | length) > 0 then $r
+                elif (.status.phase // "") == "Pending" then ["Pending: scheduled, no container status yet"]
+                else ["Running but not Ready"] end;
+            ([.items[] | select(notready)]) as $bad
+            | "\($bad | length) not-ready pod(s) of \(.items | length) total",
+              ( [$bad[] | {pod: "\(.metadata.namespace)/\(.metadata.name)", cats: cats} | . as $r | $r.cats[] | {cat: ., pod: $r.pod}]
+                | group_by(.cat) | sort_by(-length) | .[]
+                | "\(length)\t\(.[0].cat)\t\([.[:8][].pod] | join(", "))" )
+          ' "$1" || return 1
+        }
+        zeta_wp11_cdiag_unready_list() {
+          # $1 = pods json. "namespace name restarts", worst first, capped.
+          "$JQ" -r '
+            [.items[]
+              | select((.status.phase // "") != "Succeeded")
+              | select(((.status.phase // "") != "Running") or ([(.status.containerStatuses // [])[] | .ready] | all | not))
+              | {ns: .metadata.namespace, n: .metadata.name, r: ([(.status.containerStatuses // [])[] | .restartCount] | add // 0)}]
+            | sort_by([-.r, .ns, .n]) | .[] | "\(.ns) \(.n) \(.r)"
+          ' "$1" || return 1
+        }
+        zeta_wp11_cdiag_pod_describe() {
+          # Container states, requests and the Events tail -- the lines that
+          # name the cause -- not the whole 120-line describe.
+          _pd_f="$("$MKTEMP")"
+          zeta_wp11_kcd -n "$1" describe pod "$2" > "$_pd_f" 2>&1
+          _pd_rc=$?
+          "$GREP" -E '^(Name|Node|Status|Reason|Message|QoS Class):|^ *(State|Last State|Reason|Message|Exit Code|Restart Count|Requests|Limits|cpu|memory):' "$_pd_f" | "$HEAD" -n 50
+          echo "--- events ---"
+          "$SED" -n '/^Events:/,$p' "$_pd_f" | "$TAIL" -n 20
+          "$RM" -f "$_pd_f"
+          return "$_pd_rc"
+        }
+        zeta_wp11_cdiag_pod_logs() {
+          # Per container, previous instance first (that is the one that died),
+          # the current one as the fallback. At most four containers.
+          _pl_n=0
+          for _pl_c in $(zeta_wp11_kcd -n "$1" get pod "$2" -o jsonpath='{.status.initContainerStatuses[*].name} {.status.containerStatuses[*].name}' 2>/dev/null); do
+            _pl_n=$(( _pl_n + 1 ))
+            if [ "$_pl_n" -gt 4 ]; then
+              echo "... further containers omitted"
+              break
+            fi
+            echo "--- container $_pl_c: logs --previous --tail=60 ---"
+            if ! zeta_wp11_kcd -n "$1" logs "$2" -c "$_pl_c" --previous --tail=60 2>&1; then
+              echo "--- container $_pl_c: no previous instance; current logs --tail=30 ---"
+              zeta_wp11_kcd -n "$1" logs "$2" -c "$_pl_c" --tail=30 2>&1 || true
+            fi
+          done
+          if [ "$_pl_n" -eq 0 ]; then
+            echo "no container statuses: the pod never started a container"
+          fi
+          return 0
+        }
+        zeta_wp11_cdiag_app() {
+          # ArgoCD's own account of one Application: sync/health, the failing
+          # operation, conditions, and every resource that is not Synced+Healthy
+          # -- what `argocd app get` prints, read from the CR so no CLI is needed.
+          zeta_wp11_kcd -n argocd get application "$1" -o json | "$JQ" -r '
+            "sync=\(.status.sync.status // "-") health=\(.status.health.status // "-")",
+            "operation: \(.status.operationState.phase // "-") \((.status.operationState.message // "") | .[0:300])",
+            ((.status.conditions // [])[] | "condition \(.type): \((.message // "") | .[0:300])"),
+            ((.status.operationState.syncResult.resources // []) | map(select(((.status // "") != "Synced") or ((.hookPhase // "") | test("Failed|Error")))) | .[:6][] | "failed task \(.kind) \(.namespace // "-")/\(.name) status=\(.status // "-") hook=\(.hookPhase // "-"): \((.message // "") | .[0:200])"),
+            ((.status.resources // []) | map(select(((.health.status // "Healthy") != "Healthy") or ((.status // "Synced") != "Synced"))) | .[:15][] | "resource \(.kind) \(.namespace // "-")/\(.name) sync=\(.status // "-") health=\(.health.status // "-") \((.health.message // "") | .[0:160])")
+          ' || return 1
+        }
+        zeta_wp11_cdiag_events() {
+          zeta_wp11_kcd get events -A --field-selector type=Warning --sort-by=.lastTimestamp --no-headers > "$1" || return $?
+          "$TAIL" -n 60 "$1"
+        }
+        zeta_wp11_cdiag_top_pods() {
+          zeta_wp11_kcd top pods -A --sort-by=memory --no-headers | "$HEAD" -n 30
+        }
+        zeta_wp11_cluster_diag() {
+          # $1 = why it ran (mid|end), $2 = roster classification file (optional).
+          # Sets CLUSTER_DIAG_LAST_STATE / CLUSTER_DIAG_LAST_DETAIL.
+          _cd_why="$1"
+          _cd_class="''${2:-}"
+          CLUSTER_DIAG_LAST_DETAIL=""
+          CLUSTER_DIAG_LAST_STATE=did-not-run
+          CLUSTER_DIAG_LINES=0
+          CLUSTER_DIAG_DEADLINE_TS=$(( $(now_ts) + CLUSTER_DIAG_DEADLINE_SECONDS ))
+          log "[wp11-cluster-diag] --- cluster diagnostics ($_cd_why, t=$(elapsed)s) ---"
+          if ! zeta_wp11_cdiag_wait_api; then
+            log "[wp11-cluster-diag] api-wait: the API server did not answer within ''${CLUSTER_DIAG_API_WAIT_SECONDS}s -- every kubectl section was SKIPPED. This is a FAILED capture, not an empty cluster (see the pressure diagnostics and k3s journal for why)"
+            CLUSTER_DIAG_LAST_STATE=failed
+            CLUSTER_DIAG_LAST_DETAIL=" api-unreachable(''${CLUSTER_DIAG_API_WAIT_SECONDS}s)"
+            log "[wp11-cluster-diag] result ($_cd_why): $CLUSTER_DIAG_LAST_STATE$CLUSTER_DIAG_LAST_DETAIL"
+            return 0
+          fi
+          _cd_pods="$("$MKTEMP")"
+          _cd_nodes="$("$MKTEMP")"
+          _cd_list="$("$MKTEMP")"
+          _cd_events="$("$MKTEMP")"
+          # The pod list is read ONCE and every derived section reuses the file:
+          # four separate `get pods` against an API under pressure is how the
+          # capture itself becomes part of the load.
+          _cd_pods_ok=true
+          _cd_nodes_ok=true
+          zeta_wp11_kcd get pods -A -o json > "$_cd_pods" 2>/dev/null || _cd_pods_ok=false
+          zeta_wp11_kcd get nodes -o json > "$_cd_nodes" 2>/dev/null || _cd_nodes_ok=false
+          zeta_wp11_cdiag_section hard 20 "nodes" zeta_wp11_kcd get nodes -o wide
+          if [ "$_cd_pods_ok" = "true" ] && [ "$_cd_nodes_ok" = "true" ]; then
+            zeta_wp11_cdiag_section hard 40 "capacity-vs-requests" zeta_wp11_cdiag_capacity "$_cd_pods" "$_cd_nodes"
+          else
+            log "[wp11-cluster-diag] capacity-vs-requests: FAILED -- the pod or node list could not be read -- this section measured nothing"
+            CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL capacity-vs-requests(list)"
+          fi
+          zeta_wp11_cdiag_section hard 400 "pods-wide" zeta_wp11_kcd get pods -A -o wide
+          if [ "$_cd_pods_ok" = "true" ]; then
+            zeta_wp11_cdiag_section hard 60 "pending-reason-census" zeta_wp11_cdiag_census "$_cd_pods"
+            if zeta_wp11_cdiag_unready_list "$_cd_pods" > "$_cd_events" 2>/dev/null; then
+              "$HEAD" -n "$CLUSTER_DIAG_POD_CAP" "$_cd_events" > "$_cd_list"
+            else
+              log "[wp11-cluster-diag] unready-pod-list: FAILED -- no per-pod describe or logs follow -- this section measured nothing"
+              CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL unready-pod-list(jq)"
+            fi
+          else
+            log "[wp11-cluster-diag] pending-reason-census: FAILED -- the pod list could not be read -- this section measured nothing"
+            CLUSTER_DIAG_LAST_DETAIL="$CLUSTER_DIAG_LAST_DETAIL pending-reason-census(list)"
+          fi
+          zeta_wp11_cdiag_section soft 30 "top-nodes" zeta_wp11_kcd top nodes
+          zeta_wp11_cdiag_section soft 35 "top-pods-by-memory" zeta_wp11_cdiag_top_pods
+          zeta_wp11_cdiag_section hard 60 "warning-events" zeta_wp11_cdiag_events "$_cd_events"
+          while IFS=' ' read -r _cd_ns _cd_name _cd_restarts; do
+            [ -z "$_cd_ns" ] && continue
+            zeta_wp11_cdiag_section hard 75 "describe:$_cd_ns/$_cd_name(restarts=$_cd_restarts)" zeta_wp11_cdiag_pod_describe "$_cd_ns" "$_cd_name"
+            zeta_wp11_cdiag_section soft 70 "logs:$_cd_ns/$_cd_name" zeta_wp11_cdiag_pod_logs "$_cd_ns" "$_cd_name"
+          done < "$_cd_list"
+          if [ -n "$_cd_class" ] && [ -r "$_cd_class" ]; then
+            # Not-Progressing rows first: an OutOfSync / Degraded / Missing row is
+            # where a defect rather than a small box shows up.
+            "$AWK" -F '\t' '
+              ($1 == "unconverged" || $1 == "undecidable") { if ($3 ~ /^sync=Synced health=Progressing/) later[++m] = $2; else print $2 }
+              END { for (i = 1; i <= m; i++) print later[i] }
+            ' "$_cd_class" | "$HEAD" -n "$CLUSTER_DIAG_APP_CAP" > "$_cd_list"
+            while IFS= read -r _cd_app; do
+              [ -z "$_cd_app" ] && continue
+              zeta_wp11_cdiag_section hard 40 "app:$_cd_app" zeta_wp11_cdiag_app "$_cd_app"
+            done < "$_cd_list"
+          fi
+          "$RM" -f "$_cd_pods" "$_cd_nodes" "$_cd_list" "$_cd_events"
+          if [ -z "$CLUSTER_DIAG_LAST_DETAIL" ]; then
+            CLUSTER_DIAG_LAST_STATE=captured
+          else
+            CLUSTER_DIAG_LAST_STATE=failed
+          fi
+          log "[wp11-cluster-diag] result ($_cd_why): $CLUSTER_DIAG_LAST_STATE$CLUSTER_DIAG_LAST_DETAIL ($CLUSTER_DIAG_LINES line(s) of a $CLUSTER_DIAG_MAX_LINES budget)"
+          return 0
+        }
+        # ZETA-WP11-CLUSTERDIAG-END
 
         # --- verdict 2: k3s.service active -----------------------------------
         K3S_ACTIVE=false
@@ -1360,6 +1725,20 @@ in
               ROSTER_OK=true
               break
             fi
+            # ONE mid-run capture, while the API still answers (see the CLUSTER
+            # diagnostics block above for why the end-of-run one is not enough).
+            if [ "$CLUSTER_DIAG_MID_DONE" = "false" ] && [ "$(elapsed)" -ge "$CLUSTER_DIAG_MID_AT_SECONDS" ]; then
+              CLUSTER_DIAG_MID_DONE=true
+              _mid_t0=$(now_ts)
+              zeta_wp11_cluster_diag "mid" "$CLASS_FILE" || true
+              CLUSTER_DIAG_MID_STATE="$CLUSTER_DIAG_LAST_STATE"
+              CLUSTER_DIAG_MID_DETAIL="$CLUSTER_DIAG_LAST_DETAIL"
+              # The capture's own wall time comes OUT of the roster budget, not
+              # on top of it: the verdict JSON has to land inside the harness's
+              # window (see ROSTER_DEADLINE_SECONDS), and a verdict that never
+              # arrives is worse than a roster that was polled five minutes less.
+              roster_deadline=$(( roster_deadline - ( $(now_ts) - _mid_t0 ) ))
+            fi
             if [ "$(now_ts)" -ge "$roster_deadline" ]; then
               break
             fi
@@ -1394,6 +1773,15 @@ in
           [ -z "$_bucket" ] && continue
           log "[wp11-k3s-verify]   roster ''${_bucket}: ''${_name} -- ''${_detail}"
         done < "$CLASS_FILE"
+        # Verdict 7 FAILED with k3s up: the per-pod, capacity and per-Application
+        # capture. It waits (bounded) for the API first -- on run 36832486494 the
+        # API was mid-restart when the old capture below fired. Best-effort by
+        # construction: it cannot change the verdict.
+        if [ "$ROSTER_OK" != "true" ] && [ "$K3S_ACTIVE" = "true" ]; then
+          zeta_wp11_cluster_diag "end" "$CLASS_FILE" || true
+          CLUSTER_DIAG_END_STATE="$CLUSTER_DIAG_LAST_STATE"
+          CLUSTER_DIAG_END_DETAIL="$CLUSTER_DIAG_LAST_DETAIL"
+        fi
         if [ "$ROSTER_OK" != "true" ] && [ "$K3S_ACTIVE" = "true" ] && [ "$ROSTER_UNCONVERGED" -gt 0 ]; then
           roster_app_diag "$CLASS_FILE"
         fi
@@ -1452,6 +1840,10 @@ in
           --arg pressureOnApiUnreachableFailed "$PRESSURE_UNREACHABLE_DETAIL" \
           --arg pressureAtEnd "$PRESSURE_END_STATE" \
           --arg pressureAtEndFailed "$PRESSURE_END_DETAIL" \
+          --arg clusterDiagMid "$CLUSTER_DIAG_MID_STATE" \
+          --arg clusterDiagMidFailed "$CLUSTER_DIAG_MID_DETAIL" \
+          --arg clusterDiagEnd "$CLUSTER_DIAG_END_STATE" \
+          --arg clusterDiagEndFailed "$CLUSTER_DIAG_END_DETAIL" \
           --arg ciEnvelopeState "$CI_ENVELOPE_STATE" \
           --arg ciEnvelopeExclude "$CI_ENVELOPE_EXCLUDE" \
           --arg ciEnvelopeDetail "$CI_ENVELOPE_DETAIL" \
@@ -1460,6 +1852,10 @@ in
             pressureDiagnostics: {
               onApiUnreachable: {state: $pressureOnApiUnreachable, failedSections: $pressureOnApiUnreachableFailed},
               atEnd: {state: $pressureAtEnd, failedSections: $pressureAtEndFailed}
+            },
+            clusterDiagnostics: {
+              mid: {state: $clusterDiagMid, failedSections: $clusterDiagMidFailed},
+              atEnd: {state: $clusterDiagEnd, failedSections: $clusterDiagEndFailed}
             },
             bootedMultiUser: {ok: $bootedMultiUser, elapsedSeconds: $bootedMultiUserElapsedSeconds},
             k3sServiceActive: {ok: $k3sServiceActive, elapsedSeconds: $k3sServiceActiveElapsedSeconds},
