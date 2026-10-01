@@ -3244,3 +3244,17 @@ The tree is not byte-identical to 91918526 because the ungraded parent merge alr
 CI: 91918526 has 0 check runs. On e8b80656, codeql (required) failed because path-gate and analyze were cancelled and code_changed was empty (job 110223923001). Not a finding. Nineteen other runs cancelled, four in progress when read. agencysignature (main tip) skipped on this SHA and skipped, not green, on 9e57c17b. Softs only. No hard fail.
 
 Auto-merge still armed, squash, by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17777 leftover unique @ 2bbec324f9b6641c718cbf6ede3c21d179446c42 -- GRADE GO
+
+Tip 2bbec324f9b6641c718cbf6ede3c21d179446c42 is 1 parent. Parent ad01e435d38f9a8721cbc59b9ecca12a9df73c23. Stat +89/-89, 14 files. Live head 3d9890db456e1fa8dbfd67890b6a76ce5cc8f0e2 is a merge of 2bbec324 and 1ccd3262 and was not graded.
+
+This commit does not add requests or limits. It lowers ungoverned CPU on 19 values keys the parent already priced. Memory unchanged. No limits. Counting grafana's sidecar key as two containers, that is 20 templates. They stay Burstable. Addends: alloy 35 to 18 (ledger :1368), kube-prometheus-stack 95 to 27 (:1464), loki 120 to 32 (:1476), nats 95 to 26 (:1488), tempo 50 to 12 (:1530). Sum 395 to 115, delta -280.
+
+resourceTotal over 40 dev-lane dirs. Budget storage-profiles.json:498-504 is 4000-1500=2500m and 15360-6144=9216Mi. Tip 2095m / 11852Mi (spare 405m, memory over by 2636). Parent was 2375m / 11852Mi, already under 2500. 2375-280=2095.
+
+PR story is wrong in three places, none a hard fail. Memory key dev memory 11852>9216 at :487 was already on the parent. Parent was not over the CPU budget. observability-requests.test.ts is 14 pass at the tip and 14 pass on ad01e435. That gate came from 187814d7. Ledger test storage-profiles.test.ts:1477 pins dev.cpuMillis === 2095 (13 pass). Mutation alloy 18 back to 35 goes red (received 2112). Dropping alloy collector requests makes observability-requests.test.ts:107 red.
+
+mimir gateway still BestEffort (cpu 0, memory 0). Not in this commit. Disclosed on 187814d7. Significant soft.
+
+CI: 0 check runs on 2bbec324 and on ad01e435. Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
