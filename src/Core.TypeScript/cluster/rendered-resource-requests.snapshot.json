@@ -491,9 +491,9 @@
         },
         {
           "appId": "full-ai-cluster/gitlab",
-          "cpuMillis": 2275,
-          "memoryMib": 5574,
-          "pods": 14,
+          "cpuMillis": 2375,
+          "memoryMib": 5605,
+          "pods": 15,
           "workloads": [
             {
               "workload": "Deployment/gitlab-gitlab-exporter",
@@ -512,6 +512,12 @@
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 6
+            },
+            {
+              "workload": "Deployment/gitlab-kas",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 95
             },
             {
               "workload": "Deployment/gitlab-registry",
@@ -538,25 +544,25 @@
               "memoryMib": 2480
             },
             {
-              "workload": "Job/gitlab-migrations-2f10388",
-              "replicas": 1,
-              "cpuMillis": 250,
-              "memoryMib": 200
-            },
-            {
-              "workload": "Job/gitlab-runner-token",
-              "replicas": 1,
-              "cpuMillis": 50,
-              "memoryMib": 64
-            },
-            {
-              "workload": "Job/gitlab-shared-secrets-bcf9aab",
+              "workload": "Job/gitlab-gitlab-upgrade-check",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-bcf9aab-selfsign",
+              "workload": "Job/gitlab-migrations-7f8956d",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 200
+            },
+            {
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2",
+              "replicas": 1,
+              "cpuMillis": 50,
+              "memoryMib": 0
+            },
+            {
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
@@ -1849,9 +1855,9 @@
         },
         {
           "appId": "full-ai-cluster/gitlab",
-          "cpuMillis": 2275,
-          "memoryMib": 5574,
-          "pods": 14,
+          "cpuMillis": 2375,
+          "memoryMib": 5605,
+          "pods": 15,
           "workloads": [
             {
               "workload": "Deployment/gitlab-gitlab-exporter",
@@ -1870,6 +1876,12 @@
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 6
+            },
+            {
+              "workload": "Deployment/gitlab-kas",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 95
             },
             {
               "workload": "Deployment/gitlab-registry",
@@ -1896,25 +1908,25 @@
               "memoryMib": 2480
             },
             {
-              "workload": "Job/gitlab-migrations-2f10388",
-              "replicas": 1,
-              "cpuMillis": 250,
-              "memoryMib": 200
-            },
-            {
-              "workload": "Job/gitlab-runner-token",
-              "replicas": 1,
-              "cpuMillis": 50,
-              "memoryMib": 64
-            },
-            {
-              "workload": "Job/gitlab-shared-secrets-bcf9aab",
+              "workload": "Job/gitlab-gitlab-upgrade-check",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0
             },
             {
-              "workload": "Job/gitlab-shared-secrets-bcf9aab-selfsign",
+              "workload": "Job/gitlab-migrations-7f8956d",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 200
+            },
+            {
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2",
+              "replicas": 1,
+              "cpuMillis": 50,
+              "memoryMib": 0
+            },
+            {
+              "workload": "Job/gitlab-shared-secrets-8e3b4d2-selfsign",
               "replicas": 1,
               "cpuMillis": 50,
               "memoryMib": 0

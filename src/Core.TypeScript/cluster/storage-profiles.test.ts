@@ -1387,8 +1387,12 @@ describe("the checked-in resource ladder", () => {
     // 12965m against the smallest registered node's 16000m, green with 3035m spare.
     // 12965 -> 13215m / 27147 -> 27659Mi on 2026-09-27: temporal-postgres (a CNPG
     // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
-    expect(all.cpuMillis).toBe(13215);
-    expect(all.memoryMib).toBe(27659);
+    // 13215 -> 14215m / 27659 -> 29635Mi on 2026-10-01: nine more BestEffort platform
+    // Applications priced at the metal rung (cert-manager, trust-manager, sealed-secrets,
+    // external-secrets, argo-rollouts, argo-workflows, headlamp, dapr, spire):
+    // +1000m / +1976Mi. 14215m against the smallest registered node's 16000m, 1785m spare.
+    expect(all.cpuMillis).toBe(14215);
+    expect(all.memoryMib).toBe(29635);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the

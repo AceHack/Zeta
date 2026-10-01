@@ -51,3 +51,27 @@ the pre-fix tree with exactly 13 violations (every container above), green after
   external-secrets, dapr, spire, longhorn-manager, argo-rollouts, argo-workflows, headlamp --
   `missing-resource-requests.ts` lists them ACTIONABLE. Each needs a `resourceClaims` row in
   `storage-profiles.json`, a regenerated snapshot and a budget re-fit, so it is its own change.
+
+## Second change: BestEffort QoS (this PR)
+
+`missing-resource-requests.ts` listed 18 ACTIONABLE Applications. Nine platform controllers
+are priced here, with requests (no limits -- the ArgoCD WP32 precedent): cert-manager (3),
+trust-manager, sealed-secrets, external-secrets (3), argo-rollouts (2), argo-workflows (2),
+headlamp, dapr (5 workloads, scheduler is 3 pods even with ha disabled), spire (5 containers).
+Numbers are ESTIMATES sized to leave BestEffort, not usage readings -- said in each row.
+
+Cost, stated: dev lane CPU 1990m -> 2385m (still inside 2500m: a 15m dev floor, because the
+catalogue's usual 25m would have been 625m and tipped it), dev memory 9868Mi -> 11268Mi (the
+already-acknowledged shortfall re-keyed `dev memory 11268>9216`), metal all-50 13215m/27659Mi ->
+14215m/29635Mi against the smallest node's 16000m/62942Mi.
+
+Falsifier: `platform-controllers-requests.test.ts` reads the checked-in snapshot and fails on
+any non-hook workload of these nine that requests nothing -- red against the pre-change
+snapshot (13 workloads), green after.
+
+Still BestEffort in this group, not priced: longhorn-manager, cilium (agent/envoy/operator/hubble,
+pod is Burstable only through an init container), openbao unseal sidecar (pod Burstable via
+the main container), keda/NFD already priced.
+
+Not touched: gitlab's snapshot row is main's own (14 workloads / 2445m now render against a
+declared 2375m) -- left for its owner to re-measure; the snapshot here keeps main's gitlab entry.
