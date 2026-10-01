@@ -1,0 +1,12 @@
+{
+  "pr_number": 17762,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17762-fix-weaviate-stop-pulling-a-privileged-alpine-latest-init-container-on-first-boo.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:00:52.933Z",
+  "schema_version": "v1",
+  "commit_sha": "132f8d6398701d7339b734b85d702c643a1fbb34",
+  "title": "fix(weaviate): stop pulling a privileged alpine:latest init container on first boot",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:00:03Z",
+  "head_ref": "fix/weaviate-no-privileged-sysctl-init"
+}
