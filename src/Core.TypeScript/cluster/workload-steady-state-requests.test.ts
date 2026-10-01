@@ -57,10 +57,6 @@ const KNOWN_GAPS: Readonly<Record<string, string>> = {
     "total at the metal rung (10m/16Mi), which ripples into the catalogue row, the rendered snapshot and the " +
     "ladder's pinned totals for a container that does nothing by default. gmod is Burstable through its game " +
     "container, so the POD is not BestEffort; only this sidecar is.",
-  "full-ai-cluster/oz":
-    "ziti-controller renders `resources: {}`. Pricing it at the dev rung moves the dev lane's pinned memory " +
-    "debt (`dev memory 9868>9216`) and every literal that quotes it; tracked as its own change so that ripple " +
-    "is reviewable alone.",
 };
 
 const WORKLOAD_KINDS = new Set(["Deployment", "StatefulSet", "DaemonSet"]);

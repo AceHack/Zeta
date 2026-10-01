@@ -1916,8 +1916,11 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // GitOps engine that drives the lane. Same discipline as the pair above --
       // the citations move with the ladder, and `reason-truth.ts` caught this one
       // too, which is the third time that mechanism has found the drift first.
-      "[cite: lane-cpu metal 8140 over]",
-      "[cite: lane-cpu dev 1990 fits]",
+      // 8140 -> 8190 and 1990 -> 2040 on 2026-09-30: the oz (OpenZiti) controller was
+      // PRICED at 50m/128Mi. It had rendered `resources: {}` -- BestEffort -- so the
+      // lane totals had never included it. Same discipline again.
+      "[cite: lane-cpu metal 8190 over]",
+      "[cite: lane-cpu dev 2040 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

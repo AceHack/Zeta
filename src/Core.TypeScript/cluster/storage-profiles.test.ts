@@ -1368,11 +1368,13 @@ describe("the checked-in resource ladder", () => {
     // not move because ArgoCD started costing more, it moved because the cost became
     // VISIBLE. All five components rendered `resources: {}` and contributed zero to
     // every total here while running the lane. 081M3BQ5GX6087G0R003N44WMZ.
-    expect(lane.cpuMillis).toBe(8140);
+    // 8140 -> 8190 on 2026-09-30: the oz controller PRICED (+50m), same shape again.
+    expect(lane.cpuMillis).toBe(8190);
     // 17596 -> 15548 on 2026-09-07, same cause: gmod's 2048Mi left the dev lane's
     // denominator. Unchanged in the tree; simply no longer counted here.
     // 15548 -> 16956 on 2026-09-25: +1408Mi, the same ArgoCD pricing.
-    expect(lane.memoryMib).toBe(16956);
+    // 16956 -> 17084 on 2026-09-30: +128Mi, the oz controller.
+    expect(lane.memoryMib).toBe(17084);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
     // 12365 -> 12215m / 25867 -> 25739Mi on 2026-09-22: gitlab's bundled minio
     // subchart disabled (`global.minio.enabled: false`), removing
@@ -1383,8 +1385,10 @@ describe("the checked-in resource ladder", () => {
     // 12965m against the smallest registered node's 16000m, green with 3035m spare.
     // 12965 -> 13215m / 27147 -> 27659Mi on 2026-09-27: temporal-postgres (a CNPG
     // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
-    expect(all.cpuMillis).toBe(13215);
-    expect(all.memoryMib).toBe(27659);
+    // 13215 -> 13265m / 27659 -> 27787Mi on 2026-09-30: the oz controller priced at
+    // 50m/128Mi (it rendered `resources: {}`); 13265m still under the 16000m node, 2735m spare.
+    expect(all.cpuMillis).toBe(13265);
+    expect(all.memoryMib).toBe(27787);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the
@@ -1424,7 +1428,7 @@ describe("the checked-in resource ladder", () => {
   // for the same reason the previous two are still in it: a quietly-rewritten assertion
   // erases the sequence, and the sequence is the finding. The 52Mi of spare recorded by
   // inversion two is exactly why one Application was enough to tip it.
-  test("`dev` fits on CPU at 1990m and is OVER on memory at 9868Mi, carried as pinned debt", () => {
+  test("`dev` fits on CPU at 2040m and is OVER on memory at 9996Mi, carried as pinned debt", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     // 1140m/9100Mi -> 1165m/9164Mi on 2026-09-03: `agent-memory` joined the dev
@@ -1474,8 +1478,11 @@ describe("the checked-in resource ladder", () => {
     // that would restore the exact defect, in the lane whose job is to catch it, and
     // would join the three reasoned refusals recorded just above rather than answer
     // them.
-    expect(dev.cpuMillis).toBe(1990);
-    expect(dev.memoryMib).toBe(9868);
+    // 1990m/9868Mi -> 2040m/9996Mi on 2026-09-30: the oz controller PRICED at
+    // 50m/128Mi, also BestEffort until then. The "pricing them will make this number
+    // worse before it gets better" the register's own reason predicts, paid once.
+    expect(dev.cpuMillis).toBe(2040);
+    expect(dev.memoryMib).toBe(9996);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
     // IT FITS NOW, and the earlier note is kept rather than deleted because it records
     // a real mistake: "STILL OVER, and I briefly claimed otherwise. I recomputed the
@@ -1494,7 +1501,7 @@ describe("the checked-in resource ladder", () => {
     // here rather than overwritten. `auditRunnerBudget` convicts a revived entry as
     // STALE, so neither an empty register nor a populated one can hide a live overage.
     expect(catalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([
-      "dev memory 9868>9216",
+      "dev memory 9996>9216",
     ]);
 
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
@@ -1526,8 +1533,9 @@ describe("the checked-in resource ladder", () => {
     // request, while this is a request that did not exist at EITHER rung. The
     // hardware this rung describes really does run those five pods, so a metal number
     // that had stayed put would have been the wrong kind of stable.
-    expect(metal.cpuMillis).toBe(8140);
-    expect(metal.memoryMib).toBe(16956);
+    // +50m/+128Mi on 2026-09-30 from the oz controller, priced at both rungs.
+    expect(metal.cpuMillis).toBe(8190);
+    expect(metal.memoryMib).toBe(17084);
 
     // gmod is NO LONGER IN THE LANE, and this assertion is inverted rather than deleted
     // because what it used to say is the finding it replaced. It read: "gmod is still
@@ -1597,8 +1605,10 @@ describe("the checked-in resource ladder", () => {
     // 3.1.1 -> 3.3.1 on 2026-09-02 with the OpenZiti v2 upgrade.
     expect(pinnedChartVersion("oz")).toBe("3.3.1");
     const oz = catalogue.ungoverned.find((app) => app.dir === "oz");
-    expect(oz?.cpuMillis).toBe(0);
-    expect(oz?.memoryMib).toBe(0);
+    // 0m/0Mi -> 50m/128Mi on 2026-09-30: ziti-controller rendered `resources: {}`
+    // (BestEffort); the Application now sets requests, so the row is the real figure.
+    expect(oz?.cpuMillis).toBe(50);
+    expect(oz?.memoryMib).toBe(128);
   });
 
   // forgejo is the worked example of the register releasing an app: it is now

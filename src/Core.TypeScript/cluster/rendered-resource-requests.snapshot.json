@@ -1113,15 +1113,15 @@
         },
         {
           "appId": "full-ai-cluster/oz",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 50,
+          "memoryMib": 128,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/ziti-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 128
             }
           ],
           "overlaid": []
@@ -2443,15 +2443,15 @@
         },
         {
           "appId": "full-ai-cluster/oz",
-          "cpuMillis": 0,
-          "memoryMib": 0,
+          "cpuMillis": 50,
+          "memoryMib": 128,
           "pods": 1,
           "workloads": [
             {
               "workload": "Deployment/ziti-controller",
               "replicas": 1,
-              "cpuMillis": 0,
-              "memoryMib": 0
+              "cpuMillis": 50,
+              "memoryMib": 128
             }
           ],
           "overlaid": []
