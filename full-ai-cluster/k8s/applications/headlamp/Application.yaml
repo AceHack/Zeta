@@ -32,6 +32,8 @@ spec:
       releaseName: headlamp
       valuesObject:
         replicaCount: 1
+        resources:
+          requests: { cpu: 50m, memory: 96Mi }
         # Read-broad by default; actions gated by the caller's RBAC token.
         config:
           watchNamespaces: ""   # all namespaces (cluster-wide view)
