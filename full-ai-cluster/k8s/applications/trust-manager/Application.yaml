@@ -40,6 +40,12 @@ spec:
         crds:
           enabled: true
         replicaCount: 1
+        # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (it exists on every
+        # substrate, so there is no apply-order hazard) that outranks the default priority 0
+        # every optional app runs at. Under node pressure the scheduler preempts for, and the
+        # kubelet declines to evict, trust-manager before any optional workload.
+        # Pinned by cluster/essential-priority.test.ts.
+        priorityClassName: system-cluster-critical
         resources:
           requests: { cpu: 10m, memory: 48Mi }
         # Default-trust-bundle: pull from the cluster's own CA

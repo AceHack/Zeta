@@ -49,6 +49,12 @@ spec:
         # a no-op transition. Subsequent value changes happen here.
         global:
           domain: argocd.zeta.local
+          # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (it exists on every
+          # substrate, so there is no apply-order hazard) that outranks the default priority 0
+          # every optional app runs at. Under node pressure the scheduler preempts for, and the
+          # kubelet declines to evict, the GitOps control plane before any optional workload.
+          # Pinned by cluster/essential-priority.test.ts.
+          priorityClassName: system-cluster-critical
         server:
           service:
             type: ClusterIP   # ingress lands separately

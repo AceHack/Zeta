@@ -13,6 +13,10 @@ spec:
   # One instance: a single-node substrate. See the storage note below for why
   # durability grows by instances, not by the volume class.
   instances: 1
+  # ESSENTIAL TIER: `system-cluster-critical` -- the reason postgres-shared/cluster.yaml gives: a
+  # database is state, and an optional app must be evicted before it.
+  # Pinned by cluster/essential-priority.test.ts.
+  priorityClassName: system-cluster-critical
   # PostgreSQL 17 — the major gitlab 19.x also requires, so one image serves both
   # CNPG consumers. `minimal` = the server plus Debian's contrib modules, which is
   # where `btree_gin` (temporal's visibility schema) lives. Pinned by tag, like the

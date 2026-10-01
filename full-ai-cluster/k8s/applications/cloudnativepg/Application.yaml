@@ -97,6 +97,12 @@ spec:
         # The operator is a single controller with leader election; one replica is
         # the upstream default and the correct one for a single-node substrate.
         replicaCount: 1
+        # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (it exists on every
+        # substrate, so there is no apply-order hazard) that outranks the default priority 0
+        # every optional app runs at. Under node pressure the scheduler preempts for, and the
+        # kubelet declines to evict, the CNPG operator (it owns every Postgres cluster's failover) before any optional workload.
+        # Pinned by cluster/essential-priority.test.ts.
+        priorityClassName: system-cluster-critical
         crds:
           create: true
         # See the RESOURCES note in the header. Explicit because upstream is `{}`.
