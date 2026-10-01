@@ -1,0 +1,12 @@
+{
+  "pr_number": 17773,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17773-fix-platform-web-blueprint-ran-an-image-that-never-listened-on-its-declared-port.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:22:58.552Z",
+  "schema_version": "v1",
+  "commit_sha": "f2e61814b93b493471fbd071d13d44d217cafca8",
+  "title": "fix(platform): web Blueprint ran an image that never listened on its declared port",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:22:13Z",
+  "head_ref": "fix/platform-web-blueprint-port"
+}
