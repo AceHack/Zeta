@@ -1,11 +1,12 @@
 ---
 id: 081M0JX5KV3087G0R001DMWP1C
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: sealed-secrets-repourl-404s-the-chart-moved-from-bitnami-lab
 title: "sealed-secrets repoURL 404s -- the chart moved from bitnami-labs to bitnami and the Application cannot resolve"
 created: 2026-08-21T19:36:07.779Z
+completed: 2026-10-01T04:51:13.857Z
 depends_on: []
 composes_with: []
 ---
@@ -50,4 +51,18 @@ the **address** rotted. A resolvability check has to test the repo, not only the
 ## Evidence
 
 - `docs/research/2026-08-21-every-remote-helm-chart-pin-surveyed-against-its-own-upstream-index-two-were-never-published.md` §3.3
+
+## Resolved (measured 2026-10-01)
+
+Closed as already fixed: `sealed-secrets/Application.yaml` carries
+`repoURL: https://bitnami.github.io/sealed-secrets` and `targetRevision: 2.19.3` (the same-major
+bump the item called separate). Re-measured today, not inherited from the comment in the file:
+
+- `https://bitnami.github.io/sealed-secrets/index.yaml` -> HTTP 200, 70662 bytes, newest `2.20.0`,
+  the pinned `2.19.3` and `2.19.2` both listed.
+- `https://bitnami-labs.github.io/sealed-secrets/index.yaml` -> HTTP 404 (the address that rotted).
+- The 2026-09-29 and 2026-09-30 first-boot replica runs on main both show `sealed-secrets`
+  `Synced / Healthy` (unconstrained lane), so ArgoCD resolves and renders it.
+
+The tracking row was simply never closed after the fix landed 2026-08-21.
 
