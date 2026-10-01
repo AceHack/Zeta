@@ -193,6 +193,17 @@ spec:
           # An auth-token runner is a record created ONCE; the chart's default preStop
           # `unregister --all-runners` on every pod stop is the registration-token-era lifecycle.
           unregisterRunners: false
+          # THE RUNNER MUST NOT BE BESTEFFORT. The chart ships `resources: {}`, so the manager pod
+          # was the first thing the kubelet evicts under node pressure -- and an evicted manager
+          # re-registers against a GitLab that is itself slow to answer. Requests only (a limit
+          # on the manager is the OOM-kill lottery the budget notes warn about).
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+          # JOBS RUN ON THIS ONE NODE, beside GitLab itself (~6 GiB of requests). The chart default
+          # is 10 concurrent jobs, which on a single-node install is an OOM kill of GitLab
+          # waiting for a busy pipeline. 4 keeps a build burst inside what the node can hold; it
+          # is one `concurrent =` line to raise on a bigger machine.
+          concurrent: 4
           # Created only after the token Job (wave 5) has run, so the first pod reads a real
           # token instead of burning its 30 register attempts on an empty one and crash-looping.
           deploymentAnnotations:
@@ -202,11 +213,19 @@ spec:
             # The chart default, plus `clone_url` (see gitlabUrl above). This REPLACES the
             # chart's `runners.config`, whose only other content is a minio cache block gated on
             # `global.minio.enabled`, which is false here.
+            #
+            # JOB PODS CARRY REQUESTS TOO. Without them every CI job (build container + helper)
+            # is BestEffort: evicted first, and invisible to the scheduler's arithmetic, so ten
+            # parallel jobs "fit" on a node they do not. These are reservations, not limits.
             config: |
               [[runners]]
                 clone_url = "http://gitlab-webservice-default.gitlab.svc:8181"
                 [runners.kubernetes]
                 image = "ubuntu:22.04"
+                cpu_request = "100m"
+                memory_request = "256Mi"
+                helper_cpu_request = "25m"
+                helper_memory_request = "32Mi"
           # EXTRA OBJECTS OF THE GITLAB RELEASE. The umbrella chart has no values coordinate that
           # adds arbitrary objects; the runner subchart's `extraObjects`
           # (charts/gitlab-runner/templates/extra-manifests.yaml, rendered through `tpl` -- so no
@@ -265,6 +284,12 @@ spec:
             # runner chart already reads. Idempotent: an existing token is left alone, and an
             # existing `zeta-cluster` runner is reused rather than duplicated. The token is never
             # printed: it moves from the exec's stdout into a shell variable and a tmpfs file.
+            # The runner takes UNTAGGED jobs as well as its two tags (`run_untagged: true`): the
+            # first `.gitlab-ci.yml` anyone writes has no `tags:`, and a tags-only runner leaves
+            # that pipeline Pending forever with a perfectly healthy runner -- the failure that
+            # reads as "CI does not work". The Rails call is retried (see the script's RETRIES
+            # note) because one attempt turned a single cold-start blip into a permanent
+            # crash-loop; the retry budget is wall-clock and sits inside activeDeadlineSeconds.
             # NON-BLOCKING by design: any failure prints the operator step and exits 0, because a
             # failed Sync hook would block every later gitlab sync (upgrades included) over the
             # one optional component; the runner then crash-loops exactly as it did before.
@@ -354,6 +379,16 @@ spec:
                           - |
                             set -uo pipefail
                             SECRET=gitlab-gitlab-runner-secret
+                            # RETRIES: wave 5 means every wave-0 object reported Healthy, but a Ready
+                            # toolbox pod can still fail its first `gitlab-rails runner` (Rails boot
+                            # under a cold node, a connection pool still warming). ONE attempt turned
+                            # any such blip into a runner that crash-loops for good, so the call is
+                            # retried on a wall-clock budget that stays inside activeDeadlineSeconds
+                            # (900): a Job the deadline KILLS is a FAILED sync hook, which is exactly
+                            # what the exit-0 below exists to avoid. Both knobs are env-overridable
+                            # only so the falsifier does not have to wait 10 minutes.
+                            MAX_ATTEMPTS=${MINT_MAX_ATTEMPTS:-40}
+                            GIVE_UP_AFTER=${MINT_GIVE_UP_AFTER_SECONDS:-720}
                             operator_step() {
                               echo "runner token NOT minted: $1"
                               echo "Operator step: Admin > CI/CD > Runners > New instance runner (tags kubernetes,zeta-cluster), then"
@@ -367,15 +402,34 @@ spec:
                             root = User.find_by_username('root') || raise('no root user')
                             runner = Ci::Runner.instance_type.find_by(description: 'zeta-cluster')
                             unless runner
-                              result = Ci::Runners::CreateRunnerService.new(user: root, params: { runner_type: 'instance_type', description: 'zeta-cluster', tag_list: %w[kubernetes zeta-cluster], run_untagged: false }).execute
+                              result = Ci::Runners::CreateRunnerService.new(user: root, params: { runner_type: 'instance_type', description: 'zeta-cluster', tag_list: %w[kubernetes zeta-cluster], run_untagged: true }).execute
                               raise(result.message.to_s) unless result.success?
                               runner = result.payload[:runner]
                             end
-                            print "\n" + runner.token
+                            token = runner.token.to_s
+                            if token.empty?
+                              runner.reset_token!
+                              token = runner.token.to_s
+                            end
+                            print "\n" + token
                             RB
-                            out=$(kubectl -n gitlab exec deploy/gitlab-toolbox -c toolbox -- gitlab-rails runner "$RUBY" 2>/dev/null) || operator_step "gitlab-rails runner failed in deploy/gitlab-toolbox"
-                            token=$(printf '%s\n' "$out" | grep -o 'glrt-[A-Za-z0-9_-]*' | tail -n 1)
-                            [ -n "$token" ] || operator_step "the Rails call returned no glrt- token"
+                            run_rails() {
+                              if command -v timeout >/dev/null 2>&1; then timeout 150 kubectl "$@"; else kubectl "$@"; fi
+                            }
+                            attempt=0
+                            token=""
+                            while [ -z "$token" ]; do
+                              attempt=$((attempt + 1))
+                              out=$(run_rails -n gitlab exec deploy/gitlab-toolbox -c toolbox -- gitlab-rails runner "$RUBY" 2>/tmp/rails.err)
+                              token=$(printf '%s\n' "$out" | grep -o 'glrt-[A-Za-z0-9_-]*' | tail -n 1)
+                              [ -n "$token" ] && break
+                              if [ "$attempt" -ge "$MAX_ATTEMPTS" ] || [ "$SECONDS" -ge "$GIVE_UP_AFTER" ]; then
+                                tail -n 5 /tmp/rails.err
+                                operator_step "no glrt- token from deploy/gitlab-toolbox after $attempt attempts"
+                              fi
+                              echo "attempt $attempt: no glrt- token yet; retrying"
+                              sleep 15
+                            done
                             printf '{"data":{"runner-token":"%s","runner-registration-token":""}}' "$(printf '%s' "$token" | base64 | tr -d '\n')" > /tmp/patch.json
                             kubectl -n gitlab patch secret "$SECRET" --type merge --patch-file /tmp/patch.json >/dev/null || operator_step "patching $SECRET was refused"
                             echo "minted a glrt- runner token into $SECRET"
@@ -409,8 +463,31 @@ spec:
         #
         # failureThreshold: 20 (chart's own initialDelaySeconds/periodSeconds
         # unchanged) -> kill budget 10+19*10=200s.
+        #
+        # REPLICA BOUNDS -- THE CHART'S HPAs ARE SIZED FOR A CLUSTER, THIS IS ONE NODE.
+        # MEASURED (helm template, 8.7.0): webservice, registry and gitlab-shell render
+        # HorizontalPodAutoscalers with minReplicas 2, and webservice/sidekiq/registry/shell all
+        # maxReplicas 10. k3s ships metrics-server, so those HPAs are LIVE. Three consequences on
+        # one node: (1) the floor is TWO webservice pods at 2.5 GiB of memory request each --
+        # a 5.2 GiB webservice tier against a budget row that counted one; (2) first-boot GitLab
+        # is CPU-hot (migrations, seeding, asset compile), which is exactly the signal that
+        # scales sidekiq (2 GiB each) toward ten pods = 20 GiB of requests the node does not
+        # have -- the failure is Pending pods and kernel OOM kills, on the node that also runs
+        # every other app; (3) the rendered Deployments carry no `replicas`, so any budget
+        # arithmetic over them silently reads "1" while the cluster runs more.
+        # `minReplicas` is the floor the HPA enforces, so 1 is the honest single-node value;
+        # `maxReplicas` is a ceiling, kept at 2 where a second pod is still useful headroom
+        # (webservice, sidekiq) and 1 where more pods add nothing on one node (registry,
+        # shell). Raise them together with the node, not instead of it.
+        # Coordinates: webservice/sidekiq/gitlab-shell are subcharts of the umbrella's own
+        # `gitlab` chart (so `gitlab.<name>.minReplicas`); registry nests under `hpa`.
+        # Falsifier: cluster/gitlab-runner-bringup.test.ts (h).
         gitlab:
+          webservice: { minReplicas: 1, maxReplicas: 2 }
+          sidekiq: { minReplicas: 1, maxReplicas: 2 }
           gitlab-shell:
+            minReplicas: 1
+            maxReplicas: 1
             deployment:
               livenessProbe:
                 failureThreshold: 20
@@ -424,6 +501,9 @@ spec:
         # `storage.s3.*` YAML shape (`gitlab-registry` bucket, `secure: false` -- in-cluster,
         # no TLS -- `v4auth: true`).
         registry:
+          # Replica bounds: see the note on `gitlab:` above. The registry's own HPA nests the
+          # coordinate under `hpa` rather than at the subchart's top level.
+          hpa: { minReplicas: 1, maxReplicas: 1 }
           storage:
             secret: zeta-blob-store
             key: config
@@ -496,6 +576,11 @@ spec:
           metrics:
             image:
               repository: bitnamilegacy/postgres-exporter
+            # The exporter rendered `resources: {}`. The pod is Burstable anyway (the postgres
+            # container requests 250m/256Mi), but the exporter's own share was unreserved, so
+            # the scheduler's arithmetic and the budget both undercounted this pod.
+            resources:
+              requests: { cpu: 10m, memory: 16Mi }
             startupProbe:
               enabled: true
               failureThreshold: 30
@@ -514,11 +599,21 @@ spec:
           # periodSeconds 10, failureThreshold 30 -> startup kill budget 20+29*10=310s;
           # the chart's own 40s liveness resumes once startup succeeds.
           master:
+            # REDIS RENDERED BESTEFFORT: both containers (redis, exporter) shipped `resources: {}`,
+            # so the pod requested nothing and was the first thing the kubelet evicts under node
+            # pressure. GitLab keeps its Sidekiq queues, sessions and cache here -- an evicted
+            # Redis is every background job and every logged-in session gone at once, on the one
+            # node that is also running every CI job. Requests only; `maxmemory` is the
+            # chart's own bound, not a pod limit.
+            resources:
+              requests: { cpu: 100m, memory: 128Mi }
             startupProbe:
               enabled: true
               periodSeconds: 10
               failureThreshold: 30
           metrics:
+            resources:
+              requests: { cpu: 10m, memory: 16Mi }
             image:
               repository: bitnamilegacy/redis-exporter
   destination:
