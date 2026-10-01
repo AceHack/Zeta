@@ -175,6 +175,28 @@ spec:
           startupProbe:
             enabled: true
             failureThreshold: 30
+        # FOUR SCRAPE TARGETS THAT CANNOT EXIST ON THIS CLUSTER, AND THE ALERTS THEY FIRE.
+        # The chart renders a ServiceMonitor + Service for kube-scheduler,
+        # kube-controller-manager, kube-etcd and kube-proxy, plus the default rules that
+        # fire when those jobs are absent (KubeSchedulerDown, KubeControllerManagerDown,
+        # KubeProxyDown, etcdMembersDown -- 4 of them in the render). None has a pod to
+        # select: k3s runs the scheduler, controller-manager and datastore INSIDE the k3s
+        # server process (nixos/modules/k3s-server.nix: "apiserver, scheduler,
+        # controller-manager and the kine/etcd datastore all" live there), and kube-proxy is
+        # switched off outright (`--disable-kube-proxy`, Cilium replaces it). So the targets
+        # are permanently down and four alerts fire from the first minute -- noise that makes
+        # the one alert that must mean something (Watchdog, or a real outage) harder to read.
+        # MEASURED: with all four disabled the render loses every one of those ServiceMonitors,
+        # Services and rules (alert-name count 4 -> 0). If Prometheus ever scrapes k3s's own
+        # component metrics it will be through a different, deliberate mechanism.
+        kubeScheduler:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        kubeProxy:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

@@ -1,0 +1,14 @@
+{
+  "id": "080d07aea1d02810a0130008e790982b",
+  "at": "2026-10-01T04:58:41.541Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TX8EG4087G0R0000V64HC",
+    "type": "bug",
+    "title": "kube-prometheus-stack scrapes four k3s control-plane components that are not pods here: 4 *Down alerts fire from minute one",
+    "slug": "kube-prometheus-stack-scrapes-four-k3s-control-plane-compone",
+    "priority": "P2",
+    "filename": "081M3TX8EG4087G0R0000V64HC-kube-prometheus-stack-scrapes-four-k3s-control-plane-compone.md"
+  }
+}
