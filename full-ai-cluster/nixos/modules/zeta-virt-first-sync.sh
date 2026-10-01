@@ -102,7 +102,18 @@ write_sentinel() {
 # PHASE 1 -- the one-time sync. Write-once, checked first.
 # ---------------------------------------------------------------------------
 if [ ! -e "$SENTINEL_FILE" ]; then
-  PATCH='{"operation":{"initiatedBy":{"username":"zeta-virt-first-sync"},"sync":{"syncOptions":["ServerSideApply=true"]}}}'
+  # `retry` is load-bearing and is the whole point of this line's shape. A manual-sync
+  # Application has no `syncPolicy.automated`, and an `operation` written with no `retry` is
+  # tried EXACTLY ONCE: if the API server is mid-restart when ArgoCD discovers server
+  # resources (measured on the WP11 first-boot guest, run 36832486494: `cdi` read
+  # "one or more synchronization tasks are not valid: failed to discover server resources
+  # ... connection refused" while k3s had restarted 14 times under CPU/memory pressure),
+  # the operation ends `Failed`, nothing ever starts another, and this unit has already
+  # written its sentinel -- so the Application sat OutOfSync/Degraded for good. A bounded
+  # backoff makes the one-time sync survive the very boot instability it runs inside.
+  # 20 tries at 30s doubling to 5m is a bit over an hour: long enough to outlast a slow
+  # control plane, short enough that a genuinely invalid manifest ends loudly Failed.
+  PATCH='{"operation":{"initiatedBy":{"username":"zeta-virt-first-sync"},"retry":{"limit":20,"backoff":{"duration":"30s","factor":2,"maxDuration":"5m"}},"sync":{"syncOptions":["ServerSideApply=true"]}}}'
 
   # PASS 1 -- look at everything BEFORE touching anything, so a half-answerable
   # cluster never ends up with one app synced and the other unexamined.

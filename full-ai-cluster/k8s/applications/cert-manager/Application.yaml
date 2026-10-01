@@ -35,6 +35,13 @@ spec:
       valuesObject:
         crds:
           enabled: true
+        # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (it exists on every
+        # substrate, so there is no apply-order hazard) that outranks the default priority 0
+        # every optional app runs at. Under node pressure the scheduler preempts for, and the
+        # kubelet declines to evict, cert-manager (controller, cainjector and the admission webhook, whose absence blocks every Certificate) before any optional workload.
+        # Pinned by cluster/essential-priority.test.ts.
+        global:
+          priorityClassName: system-cluster-critical
         # Enable the Gateway API integration so cert-manager can solve ACME
         # HTTP-01 via http01.gatewayHTTPRoute and auto-provision certs for
         # Gateway listeners (zeta-public-gateway → portal-tls, install-time; see k8s/public-tls/). Requires the Gateway

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17817,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17817-fix-postgres-virt-postgres-shared-reads-synced-and-runs-3-instances-on-metal-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T15:14:46.066Z",
+  "schema_version": "v1",
+  "commit_sha": "894b5ee2fb9820d522e71ad8d7199025ea9ec1f5",
+  "title": "fix(postgres,virt): postgres-shared reads Synced and runs 3 instances on metal; the Windows VM template validates; VMs boot in CI",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T15:13:48Z",
+  "head_ref": "fix/postgres-shared-virt-live-lanes"
+}

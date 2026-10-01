@@ -1,0 +1,12 @@
+{
+  "pr_number": 17827,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17827-docs-workitem-wp11-unconverged-apps-per-app-evidence-from-the-first-live-run-wit.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T15:04:31.927Z",
+  "schema_version": "v1",
+  "commit_sha": "e827ebc9763bc629eca35542813d03605bf491fb",
+  "title": "docs(workitem): WP11 unconverged apps -- per-app evidence from the first live run with diagnostics",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T15:03:39Z",
+  "head_ref": "docs/wp11-unconverged-findings"
+}

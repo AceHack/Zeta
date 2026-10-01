@@ -21,10 +21,12 @@
 // handed agree with each other (names, namespaces, keys, buckets, endpoint, waves).
 
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { parseAllDocuments, parse as parseYaml } from "yaml";
 import { DEFAULT_ROOT_DEV_CATALOG } from "./ports.ts";
+import { applyRungOverrides, loadRungOverrides } from "./rung-overrides.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const K8S = resolve(REPO_ROOT, "full-ai-cluster/k8s");
@@ -101,22 +103,60 @@ describe("postgres-shared is sized, not guessed: a governed row, one instance on
     expect(req.memory).toBe(`${String(row.memoryMib.metal)}Mi`);
   });
 
-  test("the ledger's pod count IS the instance count (a bump to 3 must touch both)", () => {
+  test("the ledger's pod count IS the metal instance count (a change to either must touch both)", () => {
     expect(row.pods).toBe(cluster.spec.instances);
   });
 
-  test("one instance today; the knobs that depend on that number agree with it", () => {
-    const n = cluster.spec.instances as number;
-    expect(n).toBe(1);
+  /** instances, enablePDB and primaryUpdateMethod are ONE decision: assert they agree for a given spec. */
+  const expectTripleAgrees = (spec: Doc): void => {
+    const n = spec.instances as number;
     if (n === 1) {
       // A lone primary's PDB (minAvailable 1) makes `kubectl drain` hang on the only node, and a
-      // switchover has no replica to promote. Both flip when instances grows.
-      expect(cluster.spec.enablePDB).toBe(false);
-      expect(cluster.spec.primaryUpdateMethod).toBe("restart");
+      // switchover has no replica to promote.
+      expect(spec.enablePDB).toBe(false);
+      expect(spec.primaryUpdateMethod).toBe("restart");
     } else {
-      expect(cluster.spec.enablePDB).not.toBe(false);
-      expect(cluster.spec.primaryUpdateMethod).toBe("switchover");
+      expect(n).toBeGreaterThan(1);
+      expect(spec.enablePDB).not.toBe(false);
+      expect(spec.primaryUpdateMethod).toBe("switchover");
     }
+  };
+
+  test("METAL (the committed tree): three instances, and the knobs that depend on that number agree with it", () => {
+    expect(cluster.spec.instances).toBe(3);
+    expectTripleAgrees(cluster.spec);
+  });
+
+  test("DEV/CI (the rung override applied): one instance, and the same three knobs flip WITH it", () => {
+    // The override is the repo's per-rung field ladder (rung-overrides.yaml). Apply it to a copy of
+    // the real file and judge the result by the same rule as the committed one, so a half-done edit
+    // -- instances changed, the PDB or the update method left behind -- is red on EITHER rung.
+    const overrides = loadRungOverrides(["dev", "metal"], REPO_ROOT).filter((o) => o.id === "postgres-shared/single-instance-dev");
+    expect(overrides, "no postgres-shared/single-instance-dev override").toHaveLength(1);
+    const root = mkdtempSync(join(tmpdir(), "zeta-pg-rung-"));
+    const rel = "full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml";
+    mkdirSync(dirname(join(root, rel)), { recursive: true });
+    writeFileSync(join(root, rel), read(resolve(REPO_ROOT, rel)));
+    const edits = applyRungOverrides(overrides, "dev", root);
+    expect(edits.length).toBeGreaterThan(0);
+    const dev = parseYaml(read(join(root, rel))) as Doc;
+    expect(dev.spec.instances).toBe(1);
+    expectTripleAgrees(dev.spec);
+    // metal is untouched by a dev override
+    expect(cluster.spec.instances).toBe(3);
+  });
+
+  test("three instances on one node is ACKNOWLEDGED as nominal redundancy, not presented as HA", () => {
+    const budget = JSON.parse(read(resolve(K8S, "single-node-budget.json"))) as { acknowledgedFalseRedundancy: string[] };
+    expect(budget.acknowledgedFalseRedundancy).toContain("full-ai-cluster/postgres-shared");
+    // ...which is only honest while the anti-affinity is soft (hard would leave replicas Pending on one node)
+    expect(cluster.spec.affinity.podAntiAffinityType).toBe("preferred");
+  });
+
+  test("ArgoCD owns the instance count: nothing ignores it, so no out-of-band writer can disagree with git", () => {
+    const application = app("postgres-shared");
+    expect(application.spec.ignoreDifferences ?? []).toEqual([]);
+    expect(application.spec.syncPolicy.syncOptions).not.toContain("RespectIgnoreDifferences=true");
   });
 
   test("anti-affinity is on and PREFERRED, so it never leaves an instance Pending on one node", () => {
@@ -207,6 +247,23 @@ describe("a Postgres that is backed up is backed up by the PLUGIN, because the i
   });
 });
 
+describe("a consumer of CRDs it does not own must not give up", () => {
+  // WP11 run 36221053730 measured `platform` -- a consumer of kube-prometheus-stack's CRDs -- stuck
+  // OutOfSync/Degraded for good: "retried 5 times" and ArgoCD never re-attempts an automated sync for
+  // a revision whose sync already failed. The ISO run 36832486494 left postgres-shared
+  // OutOfSync/Unknown for 3000s on a control plane that restarted 14 times. Each of these
+  // Applications consumes a CRD or webhook another Application provides, so each carries the
+  // same unbounded, capped-backoff retry `platform` does.
+  for (const dir of ["postgres-shared", "temporal/postgres", "cnpg-barman-cloud"]) {
+    test(`${dir} retries without a limit`, () => {
+      const retry = app(dir).spec.syncPolicy.retry;
+      expect(retry, "no syncPolicy.retry: ArgoCD's default is 5 attempts, then never again for that revision").toBeDefined();
+      expect(retry.limit).toBe(-1);
+      expect(retry.backoff.maxDuration).toBe("5m");
+    });
+  }
+});
+
 describe("every archiving Cluster is wired end to end to the in-cluster object store", () => {
   const seeding = yamlDocs(resolve(K8S, "bootstrap/internal-secret-seeding.yaml"));
   const seedJob = seeding.find((d) => d.kind === "Job" && d.metadata.name === "seed-blob-store")!;
@@ -228,6 +285,15 @@ describe("every archiving Cluster is wired end to end to the in-cluster object s
         expect(store.metadata.name).toBe(plugin.parameters.barmanObjectName);
         expect(store.metadata.namespace).toBe(cluster.metadata.namespace);
         expect(store.metadata.namespace).toBe(c.namespace);
+      });
+
+      test("the plugin entry spells out the field CNPG's webhook defaults, so ArgoCD can read the Cluster as Synced", () => {
+        // MEASURED on live run 36855350178: with `enabled` omitted the webhook added `enabled: true`
+        // to the live list element; ArgoCD diffs a CRD's list ATOMICALLY, so desired (no `enabled`)
+        // never equalled live, the Cluster stayed OutOfSync, and selfHeal re-applied it in a loop
+        // (autoHealAttemptsCount 9) while the database itself was healthy. Every defaulted field of
+        // a list element we ship must therefore be written out.
+        expect(plugin.enabled).toBe(true);
       });
 
       test("a base backup is SCHEDULED, through the same plugin, for THIS cluster, with a six-field cron", () => {

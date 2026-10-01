@@ -1,0 +1,122 @@
+# Live proof that `postgres-shared` works: CloudNativePG + the Barman Cloud plugin +
+# SeaweedFS + the real first-boot seeding, driven by ArgoCD, on a kind cluster.
+#
+# WHY THIS EXISTS. `postgres-shared`, `cnpg-barman-cloud` and `temporal/postgres` are
+# deferred from the `included` lane (argocd-health-test.ts, DEV_EXCLUDED_REASONS), so
+# nothing in CI had ever applied a CNPG Cluster that archives through the plugin. The
+# first execution was the owner's USB ISO (WP11, run 36832486494), where
+# `postgres-shared` read sync=OutOfSync health=Unknown for the whole 3000s bound.
+# Everything statically checkable was green.
+#
+# WHAT IT ASSERTS is documented where it is implemented:
+#   src/Core.TypeScript/cluster/cnpg-postgres-shared-live-test.ts
+# (Application Synced+Healthy, Cluster healthy, a row written via -rw reads back with the
+# operator-minted credentials, ContinuousArchiving, a completed base Backup, and the bytes
+# in the bucket under the scoped credential). The committed tree is the `metal` rung, which
+# is three instances, so the lane also proves the replica set: the -ro Service reaches a
+# streaming replica, and after the PRIMARY POD IS DELETED another instance takes over, the
+# earlier row survives and a new write lands. It runs on one control plane plus three
+# workers, so the preferred anti-affinity has real nodes to spread over.
+#
+# DISPATCH-ONLY, and not in the `gate (required)` floor: it pulls ~1.5 GiB of images and
+# runs ~15 minutes, and a lane this heavy belongs on demand until it has a measured
+# history. Promoting it is a maintainer policy call.
+#
+# SECURITY NOTE: the commit under test reaches the script only through the env block
+# below and is then passed as a quoted argument. No title/body/branch text is interpolated
+# into a `run:` block. The only third-party action used is checkout, SHA-pinned per
+# docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md.
+
+name: k8s-cnpg-live
+
+on:
+  workflow_dispatch:
+    inputs:
+      keep_going_note:
+        description: "Unused; present so the dispatch form is not empty."
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  live-kind-cnpg:
+    name: live kind CloudNativePG + Barman plugin + SeaweedFS proof
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
+      - name: Run the CloudNativePG live proof
+        id: proof
+        env:
+          ZETA_CNPG_GIT_REF: ${{ github.sha }}
+          ZETA_CNPG_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/cnpg-postgres-shared-live-test.ts \
+            --run \
+            --cluster-name zeta-ci-cnpg \
+            --git-ref "$ZETA_CNPG_GIT_REF" \
+            --repo-url "$ZETA_CNPG_REPO_URL" \
+            --timeout-sec 900 \
+            | tee "$RUNNER_TEMP/cnpg-proof.log"
+
+      - name: Upload the proof log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cnpg-proof-log
+          path: ${{ runner.temp }}/cnpg-proof.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Tear down kind cluster
+        if: always()
+        run: |
+          set -euo pipefail
+          if ! command -v kind >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No kind on PATH, so the toolchain install never completed and no cluster was created."
+            exit 0
+          fi
+          kind delete cluster --name zeta-ci-cnpg || true

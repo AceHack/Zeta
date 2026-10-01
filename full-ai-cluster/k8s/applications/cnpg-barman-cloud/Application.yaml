@@ -67,6 +67,12 @@ spec:
         # One controller; it holds no state of its own (the ObjectStore CRs and the
         # object store are the state), so a restart only pauses backup RPCs.
         replicaCount: 1
+        # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (it exists on every
+        # substrate, so there is no apply-order hazard) that outranks the default priority 0
+        # every optional app runs at. Under node pressure the scheduler preempts for, and the
+        # kubelet declines to evict, the barman-cloud plugin (it carries every Postgres WAL archive) before any optional workload.
+        # Pinned by cluster/essential-priority.test.ts.
+        priorityClassName: system-cluster-critical
         crds:
           create: true
         # Upstream ships `resources: {}` -> BestEffort QoS, evicted first and
@@ -85,3 +91,12 @@ spec:
   syncPolicy:
     automated: { prune: false, selfHeal: true }   # owns a CRD that Cluster backups depend on
     syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    # UNBOUNDED retry, because this Application consumes cert-manager's Issuer/Certificate CRDs and the operator's webhook. With no `retry`
+    # block ArgoCD gives up after 5 attempts and never re-attempts an automated sync for a
+    # revision whose sync already failed, so losing a race against the operator's webhook or CRD
+    # (or against an API server that is restarting under first-boot load) is PERMANENT -- the
+    # measured shape on `platform` (WP11 run 36221053730) and the reason it carries the same
+    # block. limit -1 keeps retrying with backoff capped at 5m.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

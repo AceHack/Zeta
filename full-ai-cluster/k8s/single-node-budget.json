@@ -279,6 +279,11 @@
     "                               three co-scheduled pods on one disk.",
     "  full-ai-cluster/redis        replica.replicaCount=2. Async replication, so",
     "                               no quorum to lose - but no redundancy either.",
+    "  full-ai-cluster/postgres-shared  CNPG Cluster instances=3 on the metal rung,",
+    "                               podAntiAffinityType=preferred, node-local PVCs: the",
+    "                               three co-schedule on one node and stay there. Safe",
+    "                               and pod-resilient, NOT node-resilient. The CI rung",
+    "                               serves 1 (rung-overrides.yaml).",
     "  full-ai-cluster/platform     examples/gmod-server.yaml replicas=2. A sample",
     "                               workload, not part of the PoC critical path.",
     "  full-ai-cluster/kubevirt     virt-operator Deployment replicas=2, from the",
@@ -303,7 +308,8 @@
     "full-ai-cluster/nats",
     "full-ai-cluster/redis",
     "full-ai-cluster/platform",
-    "full-ai-cluster/kubevirt"
+    "full-ai-cluster/kubevirt",
+    "full-ai-cluster/postgres-shared"
   ],
   "$comment_acknowledgedCapacityShortfall": [
     "EMPTY, and that is the point of this round. It carried",
@@ -355,7 +361,7 @@
   "$comment_acknowledgedComputeShortfall": [
     "EMPTY, and unlike the storage list above it has never carried an entry.",
     "",
-    "The `metal` rung reserves 13997m / 32355Mi across the 52 Applications the",
+    "The `metal` rung reserves 14347m / 33379Mi across the 52 Applications the",
     "bootstrap root applies (+275m / +576Mi on 2026-10-01: postgres-shared 250m / 512Mi, the",
     "general-purpose CNPG instance, and the Barman Cloud plugin controller 25m / 64Mi. The",
     "plugin's sidecar in each instance pod, ~10m / 64Mi, is not in the figure: no row can",
@@ -375,7 +381,7 @@
     "LOWERED on 2026-09-22 when gitlab's bundled minio subchart was disabled, both its",
     "images having been withdrawn from Docker Hub (see gitlab/Application.yaml).",
     "The smallest registered node measures 16 logical CPUs (16000m) and 62942 MiB, so",
-    "the rung fits with 2003m / 30587Mi of the raw bound unspent. That is a REPORT,",
+    "the rung fits with 1653m / 29563Mi of the raw bound unspent. That is a REPORT,",
     "not a pass: the bound reserves nothing for the kubelet, the control plane,",
     "kube-system or the OS, and 24 of the 49 Applications still render BestEffort pods",
     "that no arithmetic here ever sees.",

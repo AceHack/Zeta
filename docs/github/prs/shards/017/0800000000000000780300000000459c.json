@@ -1,0 +1,12 @@
+{
+  "pr_number": 17820,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17820-fix-mimir-wait-for-the-s3-gateway-and-buckets-before-starting-sanity-check-exits.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T13:31:58.801Z",
+  "schema_version": "v1",
+  "commit_sha": "fbd9bf3eeb29f46ff6a9b6165ebe11a90f944203",
+  "title": "fix(mimir): wait for the S3 gateway and buckets before starting (sanity check exits 1 on a missing bucket)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T13:29:53Z",
+  "head_ref": "fix/mimir-wait-for-s3-buckets"
+}

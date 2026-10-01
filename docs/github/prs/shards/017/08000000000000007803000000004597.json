@@ -1,0 +1,12 @@
+{
+  "pr_number": 17815,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17815-feat-cluster-essential-tier-gitops-cert-secret-webhooks-cnpg-and-the-state-store.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T14:05:08.133Z",
+  "schema_version": "v1",
+  "commit_sha": "45a4dc0a57134a0685b1f1c617de99b2c89a8c7b",
+  "title": "feat(cluster): essential tier -- GitOps, cert/secret webhooks, CNPG and the state stores outrank everything optional",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T14:04:25Z",
+  "head_ref": "feat/essential-priority-class"
+}

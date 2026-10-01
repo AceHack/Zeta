@@ -133,7 +133,12 @@ spec:
             vpindex: {}
             runtime: {}
             synic: {}
-            stimer:
+            # `synictimer`, NOT `stimer`: KubeVirt's FeatureHyperv has no `stimer` field (the hv_stimer
+            # enlightenment is exposed as `synictimer`, which also needs `synic` above). The earlier
+            # spelling parsed as YAML and was rejected by the API server: found by the server-side
+            # dry-run in kubevirt-vm-live-test.ts (run 36862639220, KubeVirt v1.8.4), which is the
+            # only check that has ever asked KubeVirt's admission whether this template is valid.
+            synictimer:
               direct: {}
             tlbflush: {}
             ipi: {}

@@ -1,0 +1,14 @@
+{
+  "id": "080d07b9d1f68810a01300081b2ee322",
+  "at": "2026-10-01T11:29:44.657Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VKMFPG087G0R0013MR0WS",
+    "type": "task",
+    "title": "WP11 verdict-7 failure: per-pod, capacity and per-Application diagnostics, plus unconverged-app root-cause census",
+    "slug": "wp11-verdict-7-failure-per-pod-capacity-and-per-application",
+    "priority": "P2",
+    "filename": "081M3VKMFPG087G0R0013MR0WS-wp11-verdict-7-failure-per-pod-capacity-and-per-application.md"
+  }
+}

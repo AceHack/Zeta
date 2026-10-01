@@ -1,0 +1,14 @@
+{
+  "id": "080d07ba5f723010a01300085e7101b4",
+  "at": "2026-10-01T11:49:03.686Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VMQVJ5087G0R0034BEJJE",
+    "type": "bug",
+    "title": "kube-prometheus-stack: the operator-created Prometheus and Alertmanager pods are liveness-killed under CPU contention",
+    "slug": "kube-prometheus-stack-the-operator-created-prometheus-and-al",
+    "priority": "P2",
+    "filename": "081M3VMQVJ5087G0R0034BEJJE-kube-prometheus-stack-the-operator-created-prometheus-and-al.md"
+  }
+}

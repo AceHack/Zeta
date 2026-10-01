@@ -1,0 +1,12 @@
+{
+  "pr_number": 17824,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17824-fix-lb-ipam-the-gitlab-lan-address-job-s-wait-must-not-be-the-pool-application-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T14:04:19.970Z",
+  "schema_version": "v1",
+  "commit_sha": "db601f8cc0d679ca538b90c4de3940c700f31ad5",
+  "title": "fix(lb-ipam): the gitlab-lan-address Job's wait must not be the pool Application's health",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T14:01:42Z",
+  "head_ref": "fix/lb-pool-gitlab-job-not-health"
+}

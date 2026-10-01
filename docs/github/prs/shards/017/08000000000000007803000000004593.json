@@ -1,0 +1,12 @@
+{
+  "pr_number": 17811,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17811-fix-cilium-turn-the-unused-ingress-controller-off-its-loadbalancer-service-held-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T12:08:16.614Z",
+  "schema_version": "v1",
+  "commit_sha": "5931f71d2fe4c7b123b9966bcb74215dfa5f81ec",
+  "title": "fix(cilium): turn the unused ingress controller off -- its LoadBalancer Service held the CNI at Progressing",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T12:06:53Z",
+  "head_ref": "fix/cilium-no-unused-ingress-lb"
+}

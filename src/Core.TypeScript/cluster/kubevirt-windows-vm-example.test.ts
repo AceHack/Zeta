@@ -64,7 +64,7 @@ describe("the VirtualMachine is a Windows guest, not a Linux one with a Windows 
 
   test("carries the Hyper-V enlightenments, the clock policy and EFI Windows needs", () => {
     // Without relaxed/vapic/spinlocks Windows spends its time in timer interrupts.
-    for (const key of ["relaxed", "vapic", "spinlocks", "vpindex", "runtime", "synic", "stimer"]) {
+    for (const key of ["relaxed", "vapic", "spinlocks", "vpindex", "runtime", "synic", "synictimer"]) {
       expect(domain.features.hyperv).toHaveProperty(key);
     }
     expect(domain.features.hyperv.spinlocks.spinlocks).toBe(8191);

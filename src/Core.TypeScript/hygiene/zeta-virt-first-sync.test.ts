@@ -184,6 +184,25 @@ describe("a fresh cluster (neither operator present) -- the case the unit exists
     expect(r.calls.some((c) => /\b(apply|create)\b/.test(c))).toBe(false);
   });
 
+  test("the operation carries a bounded retry, so ONE transient API failure cannot strand the app forever", () => {
+    // A manual-sync Application has no `syncPolicy.automated`, so an operation with no
+    // `retry` is attempted once. On the WP11 first-boot guest the API server was restarting
+    // when `cdi`'s only attempt ran, the operation ended Failed, nothing started another and
+    // the sentinel below was already written: OutOfSync/Degraded for good. Fails without the fix.
+    expect(r.patches.length).toBeGreaterThan(0);
+    for (const p of r.patches) {
+      const body = /-p ({.*})$/.exec(p)?.[1];
+      expect(body).toBeDefined();
+      const operation = JSON.parse(body!).operation;
+      expect(operation.retry.limit).toBeGreaterThanOrEqual(5);
+      // finite: a genuinely invalid manifest must end loudly Failed, not retry forever
+      expect(operation.retry.limit).toBeLessThan(100);
+      expect(operation.retry.backoff.duration).toBe("30s");
+      expect(operation.retry.backoff.factor).toBe(2);
+      expect(operation.retry.backoff.maxDuration).toBe("5m");
+    }
+  });
+
   test("writes the sentinel and names each outcome", () => {
     expect(existsSync(r.sentinelFile)).toBe(true);
     expect(r.out).toContain("VERDICT synced: initiated the one-time sync of Application 'kubevirt'");
@@ -393,6 +412,18 @@ describe("wiring", () => {
       .filter((line) => !line.trim().startsWith("#"))
       .join("\n");
     expect(code).not.toMatch(/requiredBy|bindsTo|requires\s*=/);
+  });
+
+  test("retry-by-exit-1 can never land the unit in `failed`: RestartSec outlasts systemd's start-rate limit", () => {
+    // `waiting` exits 1 on purpose and `Restart=on-failure` retries it. systemd marks a unit
+    // `failed` (and `systemctl --failed` / is-system-running=degraded then report it) only
+    // when it is started StartLimitBurst times inside StartLimitIntervalSec. The defaults are
+    // 5 starts in 10s, so any RestartSec >= 2s stays under it. Asserting the number keeps a
+    // future "retry faster" edit from silently turning a patient retry into a failed unit.
+    const restartSec = /RestartSec\s*=\s*"(\d+)s"/.exec(nix)?.[1];
+    expect(restartSec).toBeDefined();
+    expect(Number(restartSec)).toBeGreaterThanOrEqual(2);
+    expect(nix).not.toMatch(/StartLimit(Interval|Burst)/);
   });
 
   test("it is imported by the server role, so a worker never runs it", () => {

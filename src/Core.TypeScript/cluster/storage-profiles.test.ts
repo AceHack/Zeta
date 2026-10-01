@@ -1393,8 +1393,10 @@ describe("the checked-in resource ladder", () => {
     // 13370 -> 13995m / 29771 -> 32323Mi on 2026-10-01: postgres-shared (250m/512Mi, the shared
     // CNPG instance) and the Barman Cloud plugin controller (25m/64Mi) joined; 13995m still
     // under the 16000m node, 2355m spare.
-    expect(all.cpuMillis).toBe(13997);
-    expect(all.memoryMib).toBe(32355);
+    // 13997 -> 14347m / 32355 -> 33379Mi on 2026-10-01: postgres-shared became three instances on the
+    // metal rung (3 x 200m / 3 x 512Mi, was 1 x 250m / 1 x 512Mi); 14347m still under the 16000m node.
+    expect(all.cpuMillis).toBe(14347);
+    expect(all.memoryMib).toBe(33379);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the

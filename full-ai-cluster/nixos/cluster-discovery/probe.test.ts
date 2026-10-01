@@ -12,6 +12,7 @@
 
 import { describe, expect, test } from "bun:test";
 
+import { decideClusterBoot } from "./decide";
 import {
   AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS,
   PASS_OFFSETS_MS,
@@ -252,5 +253,55 @@ describe("the argument list is one the shipped avahi-browse accepts (081M39K8ND1
       const decision = decideClusterBoot({ probe: outcome, credentials: { tokenAvailable } });
       expect(decision.action).toBe("refuse");
     }
+  });
+});
+
+describe("the dwell is honoured as MEASURED, not as requested", () => {
+  /** A sleeper whose timer wakes `earlyBy` ms short of what was asked, as a real one sometimes does. */
+  function earlyTime(earlyBy: number): { now: () => number; sleep: (ms: number) => Promise<void> } {
+    let clock = 0;
+    return {
+      now: () => clock,
+      sleep: async (ms: number) => {
+        clock += ms > earlyBy ? ms - earlyBy : ms;
+        await Promise.resolve();
+      },
+    };
+  }
+
+  test("a timer that wakes 1 ms early still yields elapsedMs >= dwellMs (run 36832486494: 29999 ms halted an install)", async () => {
+    const outcome = await probeForClusters({ runBrowse: async () => ok(""), ...earlyTime(1) });
+    expect(outcome.kind).toBe("silence");
+    if (outcome.kind !== "silence") {
+      return;
+    }
+    expect(outcome.elapsedMs).toBeGreaterThanOrEqual(outcome.dwellMs);
+    // And the decision accepts it: the strict admissibility check was never the defect.
+    expect(
+      decideClusterBoot({ probe: outcome, credentials: { tokenAvailable: false } }).action,
+    ).toBe("bootstrap");
+  });
+
+  test("a sleeper that never advances the clock cannot spin the probe: it falls through to the refusal", async () => {
+    let clock = 0;
+    let sleeps = 0;
+    const outcome = await probeForClusters({
+      runBrowse: async () => ok(""),
+      now: () => clock,
+      sleep: async () => {
+        sleeps += 1;
+        await Promise.resolve();
+      },
+    });
+    expect(outcome.kind).toBe("silence");
+    if (outcome.kind !== "silence") {
+      return;
+    }
+    expect(outcome.elapsedMs).toBeLessThan(outcome.dwellMs);
+    expect(sleeps).toBeLessThan(50);
+    expect(clock).toBe(0);
+    expect(
+      decideClusterBoot({ probe: outcome, credentials: { tokenAvailable: false } }).action,
+    ).toBe("refuse");
   });
 });

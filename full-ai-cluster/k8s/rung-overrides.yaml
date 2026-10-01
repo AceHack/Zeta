@@ -253,6 +253,32 @@ overrides:
   # ── AMD GPU FORMS (2026-09-23) ──────────────────────────────────────────────
   # Metal clusters whose GPU is AMD. The committed tree stays NVIDIA; these fire
   # only for a tree built with `gpuVendor: amd`.
+  # ── POSTGRES REPLICA COUNT (2026-10-01) ────────────────────────────────────────────
+  # The committed tree is `metal`, where postgres-shared is a three-instance CNPG Cluster. This is
+  # the one field-override that is a COUNT rather than a size: the owner asked for exactly that
+  # ("request maybe replica counts"), and it satisfies the substrate-fact bar below the way the
+  # GPU entry does -- a hosted runner is ONE node, so three instances can neither spread nor
+  # survive anything a single instance would not, and they triple the memory and PVCs a 4-vCPU
+  # runner has to find.
+  - id: postgres-shared/single-instance-dev
+    path: full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml
+    docIndex: 0
+    rung: dev
+    reason: >-
+      A GitHub-hosted runner is a single 4-vCPU node with no second failure domain, so the
+      three-instance replica set the metal rung ships cannot spread and protects against nothing
+      the one instance would not -- while costing three times the memory, three PVCs and three
+      Barman sidecars out of a lane budget measured in single cores. `instances`, `enablePDB` and
+      `primaryUpdateMethod` are one decision and move TOGETHER: a PodDisruptionBudget on a lone
+      primary makes `kubectl drain` hang forever, and a switchover has no replica to promote.
+      postgres-shared-cluster.test.ts applies this override and fails if the three disagree.
+    liftsWhen: >-
+      the dev lane runs on a substrate with three schedulable nodes, at which point dev and metal
+      want the same values and this entry is deleted rather than edited.
+    set:
+      "spec.instances": 1
+      "spec.enablePDB": false
+      "spec.primaryUpdateMethod": restart
   - id: ollama/amd-gpu-metal
     path: full-ai-cluster/k8s/applications/ollama/Application.yaml
     docIndex: 0

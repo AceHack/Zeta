@@ -1194,13 +1194,13 @@
         },
         {
           "appId": "full-ai-cluster/postgres-shared",
-          "cpuMillis": 100,
-          "memoryMib": 512,
-          "pods": 1,
+          "cpuMillis": 300,
+          "memoryMib": 1536,
+          "pods": 3,
           "workloads": [
             {
               "workload": "Cluster/postgres-shared",
-              "replicas": 1,
+              "replicas": 3,
               "cpuMillis": 100,
               "memoryMib": 512
             }
@@ -2593,14 +2593,14 @@
         },
         {
           "appId": "full-ai-cluster/postgres-shared",
-          "cpuMillis": 250,
-          "memoryMib": 512,
-          "pods": 1,
+          "cpuMillis": 600,
+          "memoryMib": 1536,
+          "pods": 3,
           "workloads": [
             {
               "workload": "Cluster/postgres-shared",
-              "replicas": 1,
-              "cpuMillis": 250,
+              "replicas": 3,
+              "cpuMillis": 200,
               "memoryMib": 512
             }
           ],
