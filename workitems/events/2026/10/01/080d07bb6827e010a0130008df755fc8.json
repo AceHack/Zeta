@@ -1,0 +1,14 @@
+{
+  "id": "080d07bb6827e010a0130008df755fc8",
+  "at": "2026-10-01T12:25:12.188Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VPT17V087G0R001Z6SS1E",
+    "type": "bug",
+    "title": "mimir: components crash-loop at first boot because they start before the S3 gateway and buckets exist",
+    "slug": "mimir-components-crash-loop-at-first-boot-because-they-start",
+    "priority": "P2",
+    "filename": "081M3VPT17V087G0R001Z6SS1E-mimir-components-crash-loop-at-first-boot-because-they-start.md"
+  }
+}
