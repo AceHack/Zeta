@@ -578,7 +578,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
   // cannot tell them apart and does not try -- it reports disagreement, and a
   // human decides which kind it was. That is the whole design.
   test("the lane totals and their fits/over verdicts both hold today", () => {
-    expect(checkCitation(only("[cite: lane-cpu metal 8140 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu metal 8940 over]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // `dev` has now cited THREE different pairs, and the sequence is the point:
     //   `1906 fits` -> `2906 over`  (gmod was always applied, never counted)
     //   `2906 over` -> `2006 fits`  (the rung learned to reach raw manifests)
@@ -605,7 +605,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     //                                no new pods -- see single-node-budget.json)
     // Neither transition was a number edited to agree with prose; both went red
     // HERE first, which is the entire job of this mechanism.
-    expect(checkCitation(only("[cite: lane-cpu dev 1990 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-cpu dev 2385 fits]"), EVIDENCE, subject("hindsight", ""))).toBe(null);
     // The two superseded pairs are still refused, so a revert of the prose
     // without a revert of the ladder cannot pass.
     expect(checkCitation(only("[cite: lane-cpu dev 2906 over]"), EVIDENCE, subject("hindsight", ""))?.rule).toBe(
@@ -631,11 +631,11 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     // was, and that inversion is why they are written out rather than
     // parameterised: `fits` is now the wrong verdict here, and a future edit
     // that flips it back must fail.
-    expect(checkCitation(only("[cite: lane-memory dev 9868 over]"), EVIDENCE, subject("gitlab", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-memory dev 11268 over]"), EVIDENCE, subject("gitlab", ""))).toBe(null);
     expect(checkCitation(only("[cite: lane-memory dev 9869 over]"), EVIDENCE, subject("gitlab", ""))?.rule).toBe(
       "cited-lane-total-disagrees",
     );
-    expect(checkCitation(only("[cite: lane-memory dev 9868 fits]"), EVIDENCE, subject("gitlab", ""))?.rule).toBe(
+    expect(checkCitation(only("[cite: lane-memory dev 11268 fits]"), EVIDENCE, subject("gitlab", ""))?.rule).toBe(
       "cited-lane-verdict-disagrees",
     );
     // The superseded pair stays refused, so reverting the prose without
@@ -643,7 +643,7 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     expect(checkCitation(only("[cite: lane-memory dev 9100 fits]"), EVIDENCE, subject("gitlab", ""))?.rule).toBe(
       "cited-lane-total-disagrees",
     );
-    expect(checkCitation(only("[cite: lane-memory metal 16956 over]"), EVIDENCE, subject("gitlab", ""))).toBe(null);
+    expect(checkCitation(only("[cite: lane-memory metal 18932 over]"), EVIDENCE, subject("gitlab", ""))).toBe(null);
   });
 
   test("the VERDICT is checked independently of the total", () => {
@@ -651,18 +651,18 @@ describe("resource-rung / lane-cpu are checked against the ladder, not the prose
     // claim. A citation that got the number right and the verdict wrong would
     // otherwise read as fully checked, so the polarity is resolved against the
     // envelope's own budget rather than trusted.
-    const wrongWay = checkCitation(only("[cite: lane-cpu metal 8140 fits]"), EVIDENCE, subject("hindsight", ""));
+    const wrongWay = checkCitation(only("[cite: lane-cpu metal 8940 fits]"), EVIDENCE, subject("hindsight", ""));
     expect(wrongWay?.rule).toBe("cited-lane-verdict-disagrees");
     expect(wrongWay?.detail).toContain("does NOT fit");
     // The dev side now needs the OTHER polarity to be the wrong one, because
     // the lane fits: right number, wrong verdict.
-    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 1990 over]"), EVIDENCE, subject("hindsight", ""));
+    const alsoWrong = checkCitation(only("[cite: lane-cpu dev 2385 over]"), EVIDENCE, subject("hindsight", ""));
     expect(alsoWrong?.rule).toBe("cited-lane-verdict-disagrees");
     expect(alsoWrong?.detail).toContain("FITS");
   });
 
   test("a verdict word outside the pair is refused rather than ignored", () => {
-    const verdict = checkCitation(only("[cite: lane-cpu dev 1990 tight]"), EVIDENCE, subject("hindsight", ""));
+    const verdict = checkCitation(only("[cite: lane-cpu dev 2385 tight]"), EVIDENCE, subject("hindsight", ""));
     expect(verdict?.rule).toBe("cited-lane-verdict-disagrees");
   });
 
@@ -763,9 +763,16 @@ describe("hindsight is the symptom, and the ladder still says so", () => {
     //                                            measures -- worth stating, because a
     //                                            green CPU assertion here is no longer
     //                                            evidence that the lane fits.
-    expect(laneAtDev.cpuMillis).toBe(1990);
+    //   2026-10-01  platform controllers PRICED  2385m, 115m of spare -- cert-manager,
+    //                                            trust-manager, sealed-secrets,
+    //                                            external-secrets, argo-rollouts,
+    //                                            argo-workflows, headlamp, dapr and spire
+    //                                            took +395m at `dev` (a 15m floor; the
+    //                                            catalogue's 25m was 230m too many for
+    //                                            the lane) and memory 9868Mi -> 11268Mi.
+    expect(laneAtDev.cpuMillis).toBe(2385);
     expect(laneAtDev.cpuMillis).toBeLessThanOrEqual(budget.cpuMillis);
-    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(510);
+    expect(budget.cpuMillis - laneAtDev.cpuMillis).toBe(115);
     // gmod is NO LONGER IN THE LANE, and this is inverted rather than deleted because
     // the sentence it replaces was the finding at the time: "gmod is still COUNTED, not
     // excluded -- reachability is not removal." True while the lane could afford it.

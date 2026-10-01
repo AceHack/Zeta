@@ -1916,8 +1916,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // GitOps engine that drives the lane. Same discipline as the pair above --
       // the citations move with the ladder, and `reason-truth.ts` caught this one
       // too, which is the third time that mechanism has found the drift first.
-      "[cite: lane-cpu metal 8140 over]",
-      "[cite: lane-cpu dev 1990 fits]",
+      "[cite: lane-cpu metal 8940 over]",
+      "[cite: lane-cpu dev 2385 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

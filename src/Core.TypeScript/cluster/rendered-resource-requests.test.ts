@@ -625,7 +625,7 @@ describe("eight mutations against the live validators", () => {
     // single edit cannot satisfy at once -- the LIVE key must be carried, and a key whose
     // arithmetic has moved on must still be convicted STALE rather than quietly honoured.
     expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([
-      "dev memory 9868>9216",
+      "dev memory 11268>9216",
     ]);
     // Carried, so `dev` comes back clean. The acknowledgement is what suppresses it, and
     // the revived row below is what proves the suppression is not indiscriminate.
