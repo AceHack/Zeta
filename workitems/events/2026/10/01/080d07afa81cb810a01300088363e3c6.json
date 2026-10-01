@@ -1,0 +1,14 @@
+{
+  "id": "080d07afa81cb810a01300088363e3c6",
+  "at": "2026-10-01T05:34:30.295Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TZA0WP087G0R002CXBTYZ",
+    "type": "bug",
+    "title": "No Blueprint ships a known credential; placeholder image only on a workload scaled to zero",
+    "slug": "no-blueprint-ships-a-known-credential-placeholder-image-only",
+    "priority": "P1",
+    "filename": "081M3TZA0WP087G0R002CXBTYZ-no-blueprint-ships-a-known-credential-placeholder-image-only.md"
+  }
+}

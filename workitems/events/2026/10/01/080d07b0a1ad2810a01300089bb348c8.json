@@ -1,0 +1,14 @@
+{
+  "id": "080d07b0a1ad2810a01300089bb348c8",
+  "at": "2026-10-01T06:08:34.725Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3V18DD4087G0R000H8C6T6",
+    "type": "bug",
+    "title": "Console password is minted per install and locked after first use instead of a known default",
+    "slug": "console-password-is-minted-per-install-and-locked-after-firs",
+    "priority": "P1",
+    "filename": "081M3V18DD4087G0R000H8C6T6-console-password-is-minted-per-install-and-locked-after-firs.md"
+  }
+}

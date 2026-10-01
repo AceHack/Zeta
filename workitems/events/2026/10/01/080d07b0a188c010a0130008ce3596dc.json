@@ -1,0 +1,14 @@
+{
+  "id": "080d07b0a188c010a0130008ce3596dc",
+  "at": "2026-10-01T06:08:33.560Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3V18C8Q087G0R0013YP7RF",
+    "type": "bug",
+    "title": "Forgejo ROOT_URL, headscale base domain and gmod-sftp Service follow install-time config instead of shipping example.com / .zeta.local / always-LoadBalancer",
+    "slug": "forgejo-root-url-headscale-base-domain-and-gmod-sftp-service",
+    "priority": "P1",
+    "filename": "081M3V18C8Q087G0R0013YP7RF-forgejo-root-url-headscale-base-domain-and-gmod-sftp-service.md"
+  }
+}

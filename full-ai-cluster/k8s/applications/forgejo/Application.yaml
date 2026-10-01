@@ -58,6 +58,28 @@ spec:
         gitea:
           admin:
             existingSecret: forgejo-initial-admin
+          # ITS OWN URL -- NOT `git.example.com`. MEASURED 2026-10-01 (helm template, chart 17.1.5):
+          # with nothing set the chart renders app.ini with DOMAIN=git.example.com,
+          # ROOT_URL=http://git.example.com and SSH_DOMAIN=git.example.com -- an RFC 2606 name that
+          # resolves nowhere, baked into every clone URL and redirect Forgejo emits. Nothing in this
+          # repo set any of them, and nothing exposes Forgejo off-cluster, so there was no value to
+          # set: a chart default was the "configuration".
+          #
+          # UNSET (no install-time public domain): the Service Forgejo IS reachable on -- the
+          # in-cluster one, which resolves and is true for every client that can reach it. A LAN
+          # client port-forwards (`kubectl -n forgejo port-forward svc/forgejo-http 3000`), and the
+          # URL it is handed is wrong for it only in the way a port-forward always is.
+          #
+          # SET (install-time public domain): `platform-public-tls` publishes git.<domain> and its
+          # Job `forgejo-public-hosts` merge-patches this Application's
+          # `spec.source.helm.parameters` to https://git.<domain>/ (helm parameters override this
+          # valuesObject); bootstrap/root-application.yaml ignores exactly that field.
+          # Keep `spec.source.helm.parameters` ABSENT here (forgejo-public.test.ts pins it).
+          config:
+            server:
+              DOMAIN: forgejo-http.forgejo.svc
+              ROOT_URL: http://forgejo-http.forgejo.svc:3000/
+              SSH_DOMAIN: forgejo-ssh.forgejo.svc
         persistence:
           enabled: true
           size: 20Gi

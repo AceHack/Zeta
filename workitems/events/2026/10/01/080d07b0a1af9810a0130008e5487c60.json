@@ -1,0 +1,14 @@
+{
+  "id": "080d07b0a1af9810a0130008e5487c60",
+  "at": "2026-10-01T06:08:34.803Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3V18DFJ087G0R000BFT3JD",
+    "type": "task",
+    "title": "Audit helm-rendered chart output for placeholders; record the cluster-tracks-main ADR (INSTALL-TIME-CONFIG row 22)",
+    "slug": "audit-helm-rendered-chart-output-for-placeholders-record-the",
+    "priority": "P1",
+    "filename": "081M3V18DFJ087G0R000BFT3JD-audit-helm-rendered-chart-output-for-placeholders-record-the.md"
+  }
+}

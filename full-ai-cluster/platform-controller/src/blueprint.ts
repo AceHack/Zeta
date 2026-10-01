@@ -112,9 +112,17 @@ export function resolveValues(bp: Blueprint, cr: Deployable): Record<string, str
   return out;
 }
 
-/** A Secret-sourced env entry -> a Kubernetes container env entry with secretKeyRef. */
-function secretEnv(e: BlueprintEnvFrom): Record<string, unknown> {
-  return { name: e.name, valueFrom: { secretKeyRef: { name: e.secret, key: e.key } } };
+/**
+ * A Secret-sourced env entry -> a Kubernetes container env entry with secretKeyRef.
+ *
+ * The Secret NAME is templated with the same ${VAR} map as env values, so a Blueprint can name
+ * a PER-INSTANCE Secret (`${RESOURCE_NAME}-credentials`) instead of a fixed one. That is what lets
+ * a credential-bearing Blueprint (postgres) carry NO default password: the instance's Secret either
+ * exists, or the pod fails loudly with CreateContainerConfigError naming it -- never a known
+ * password that every instance shares.
+ */
+function secretEnv(e: BlueprintEnvFrom, sub: (s: string) => string): Record<string, unknown> {
+  return { name: e.name, valueFrom: { secretKeyRef: { name: sub(e.secret), key: e.key } } };
 }
 
 /** Shape a Probe into a Kubernetes probe object, dropping the absent timing fields. */
@@ -151,8 +159,8 @@ export function renderDeployable(bp: Blueprint, cr: Deployable): K8sObject[] {
   // plaintext env first, then Secret-sourced env (blueprint, then instance) — credentials never inline.
   const env = [
     ...Object.entries(bp.env ?? {}).map(([k, v]) => ({ name: k, value: sub(v) })),
-    ...(bp.envFrom ?? []).map(secretEnv),
-    ...(cr.spec.envFrom ?? []).map(secretEnv),
+    ...(bp.envFrom ?? []).map((e) => secretEnv(e, sub)),
+    ...(cr.spec.envFrom ?? []).map((e) => secretEnv(e, sub)),
   ];
   const ports = (bp.ports ?? []).map((p) => ({ name: p.name, containerPort: p.port, protocol: p.protocol ?? "TCP" }));
   const volumeMounts = bp.storage ? [{ name: "data", mountPath: bp.storage.mountPath }] : [];

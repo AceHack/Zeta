@@ -46,7 +46,15 @@ metadata:
   namespace: headscale
 data:
   config.yaml: |
-    server_url: https://headscale.zeta.local
+    # THE ONE URL THIS INSTALL ACTUALLY SERVES: the in-cluster Service. This was
+    # `https://headscale.zeta.local` -- a `.local` (RFC 6762, mDNS-only) name nothing resolves, over
+    # a TLS listener nothing terminates, on a control server nothing exposes off-cluster. A name
+    # that cannot be reached is not a default, it is a placeholder. HEADSCALE IS NOT PUBLISHED:
+    # the public Gateway has no headscale listener, and publishing a Tailscale control server is a
+    # decision for the operator (it is an internet-facing registration endpoint), not something a
+    # public domain being set should do as a side effect. To publish it, add a listener + route
+    # (k8s/public-tls/) and set this to that URL. Pinned by cluster/headscale-config.test.ts.
+    server_url: http://headscale.headscale.svc:8080
     listen_addr: :8080
     metrics_listen_addr: :9090
     grpc_listen_addr: :50443
@@ -89,9 +97,12 @@ data:
       # than starting and failing later. The chart shipped `example.com` here; the
       # conflict was introduced by changing it to `zeta.local` for tidiness.
       #
-      # `tailnet.zeta.local` is disjoint from `headscale.zeta.local` (a sibling
-      # label, not an ancestor), which is what the check requires.
-      base_domain: tailnet.zeta.local
+      # `zeta-tailnet.internal` is disjoint from `headscale.headscale.svc` (neither is
+      # an ancestor of the other), which is what the check requires. `.internal` is the
+      # TLD ICANN reserved (2024) for private-use names -- it is MagicDNS-only, never
+      # resolved by the public DNS, and unlike `.local` it is not claimed by mDNS, so
+      # a Linux resolver does not divert a tailnet name to multicast.
+      base_domain: zeta-tailnet.internal
       override_local_dns: false
     tls_cert_path: ""
     tls_key_path: ""

@@ -21,6 +21,22 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: game-hosting
+  # `gmod-sftp` IS CLUSTER-INTERNAL UNTIL AN OPERATOR OPTS IN, and opting in changes its `type`
+  # on the live object (service.yaml header: `kubectl patch svc gmod-sftp ... LoadBalancer`).
+  # ArgoCD must neither report that as drift nor selfHeal it back, so exactly the fields the
+  # opt-in and the type change allocate are ignored -- and RespectIgnoreDifferences below makes
+  # a later sync of this Application leave them alone too. Pinned by
+  # cluster/gmod-sftp-service.test.ts.
+  ignoreDifferences:
+    - kind: Service
+      name: gmod-sftp
+      namespace: game-hosting
+      jsonPointers:
+        - /spec/type
+      jqPathExpressions:
+        - .spec.ports[]?.nodePort
+        - .spec.externalTrafficPolicy
+        - .spec.allocateLoadBalancerNodePorts
   syncPolicy:
     automated:
       prune: false      # never auto-delete a game server + its world volume
@@ -37,3 +53,4 @@ spec:
     # last-applied-configuration is subject to.
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true

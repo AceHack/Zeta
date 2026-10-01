@@ -221,15 +221,37 @@ describe("(d) GitLab follows the install-time public domain", () => {
     const role = kinds(pub, "Role").find((r) => name(r) === "gitlab-public-hosts");
     const patchRules = ((role?.["rules"] ?? []) as Array<Record<string, unknown>>).filter((r) => (r["verbs"] as string[]).includes("patch"));
     expect(patchRules).toEqual([{ apiGroups: ["argoproj.io"], resources: ["applications"], resourceNames: ["gitlab"], verbs: ["patch"] }]);
-    expect(kinds(pub, "Job").map(name)).toEqual(["gitlab-public-hosts"]);
+    // Two Jobs now, one per git host, each scoped to ITS Application (forgejo-public.test.ts pins the other).
+    expect(kinds(pub, "Job").map(name)).toEqual(["gitlab-public-hosts", "forgejo-public-hosts"]);
   });
 
-  test("root ignores exactly the patched field on Application/gitlab, so selfHeal does not revert it", () => {
+  test("root ignores exactly the patched fields on Application/gitlab, so selfHeal does not revert them", () => {
     const root = parseYaml(readFileSync(join(REPO_ROOT, ROOT_APPLICATION), "utf8")) as {
       spec: { ignoreDifferences?: unknown; syncPolicy: { syncOptions: string[] } };
     };
+    // The public-TLS parameters, plus the three valuesObject leaves the LoadBalancer-range Job
+    // writes (cluster/lb-ipam-pool.test.ts (e) pins that half and that the two are disjoint).
     expect(root.spec.ignoreDifferences).toEqual([
-      { group: "argoproj.io", kind: "Application", name: "gitlab", namespace: "argocd", jsonPointers: [GITLAB_APPLICATION_PARAMETERS_POINTER] },
+      {
+        group: "argoproj.io",
+        kind: "Application",
+        name: "gitlab",
+        namespace: "argocd",
+        jsonPointers: [
+          GITLAB_APPLICATION_PARAMETERS_POINTER,
+          "/spec/source/helm/valuesObject/global/hosts/gitlab/name",
+          "/spec/source/helm/valuesObject/global/hosts/registry/name",
+          "/spec/source/helm/valuesObject/global/zeta/lanAddress",
+        ],
+      },
+      // Forgejo's public URL parameters (cluster/forgejo-public.test.ts pins that half).
+      {
+        group: "argoproj.io",
+        kind: "Application",
+        name: "forgejo",
+        namespace: "argocd",
+        jsonPointers: [GITLAB_APPLICATION_PARAMETERS_POINTER],
+      },
     ]);
     expect(root.spec.syncPolicy.syncOptions).toContain("RespectIgnoreDifferences=true");
   });

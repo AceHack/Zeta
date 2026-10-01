@@ -101,8 +101,9 @@ inject, or is write-protected. There is no flag to clear it.
 `zeta_install_prompts_enabled()` is `[[ "${ZETA_AUTO_CONFIRM:-}" != "WIPE" ]] && [[ -t 0 ]]`. So the
 console-password prompt (A7), the credential-blob passphrase (A8) and `gh auth login` (A9) all print
 their banner and then `non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping …`.
-Consequences you should expect rather than debug: the node comes up with the **default password
-`zeta-change-me`**, with **no** `/zeta-creds.enc`, and with **no** GitHub auth. Do those after first
+Consequences you should expect rather than debug: the node comes up with a **random one-time console password minted for that install**
+(shown ONCE on the console during the install, not in the log -- or **locked** if it could not be
+shown, in which case use the SSH key), with **no** `/zeta-creds.enc`, and with **no** GitHub auth. Do those after first
 login, over SSH. The typed `Type WIPE to confirm:` prompt is skipped by the same mechanism — the
 cancel window (B6) is the only consent gate that survives on this path.
 
@@ -387,7 +388,7 @@ named. Verified present on this Mac: `~/.ssh/id_ed25519.pub` and
   re-run `bun src/Core.TypeScript/zflash/setup.ts --install-alias`
 - `Flash complete.` but no `wrote pubkey to …` → the ESP inject skipped; the node will come up
   **without** your SSH key. On the default path A7 also no longer sets a password, so your console
-  fallback is the built-in default `zeta-change-me`
+  fallback is the one-time password the install showed on the console (there is no shared default any more)
 
 > **There is no dry-run.** `--test` is not one — `zflash --help`: *"QEMU/CI-only: inject
 > zeta-test-infra.pub alongside the operator pubkey"*. It changes the ESP payload only; the `dd`
@@ -621,7 +622,7 @@ then `non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping …`
 
 **So expect, rather than debug:**
 
-- the `zeta` user keeps the default password **`zeta-change-me`** — rotate it after first login
+- the `zeta` user has a **random one-time console password** minted for this install (shown once on the console; **locked** if it could not be shown) — rotate it after first login with `passwd zeta`
 - **no** `/zeta-creds.enc` is written, so CP-4 / CP-5 of `zflash-end-to-end.md` (passphrase-only
   reboots, zero device-flow) are **not exercised by this bringup**
 - **no** GitHub auth on the node; run `gh auth login` yourself over SSH afterwards

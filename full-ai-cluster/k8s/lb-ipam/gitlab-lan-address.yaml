@@ -1,0 +1,119 @@
+# full-ai-cluster/k8s/lb-ipam/gitlab-lan-address.yaml -- GitLab's LAN address FOLLOWS the
+# resolved LoadBalancer range (docs/ops/INSTALL-TIME-CONFIG.md row 6).
+#
+# GitLab's LAN Gateway (`gitlab-lan`) is pinned to ONE LoadBalancer address, because an address
+# is the only identity a LAN client reaches without DNS and GitLab must know its own URL at
+# render time. That address used to be the literal 192.168.1.250 -- the last address of a pool
+# that only existed on one home subnet -- so on every other LAN the Gateway stayed <pending> and
+# GitLab was unreachable. The address is now the LAST address of the range this directory's pool
+# carries, and it reaches GitLab the way the public hostnames do (k8s/public-tls/resources.yaml,
+# Job `gitlab-public-hosts`): a Job merge-patches the git-owned `gitlab` Application.
+#
+# WHICH FIELD, AND WHY IT CANNOT CLOBBER THE OTHER JOB. `gitlab-public-hosts` writes
+# `spec.source.helm.parameters`, and a merge patch REPLACES an array wholesale. This Job writes
+# three LEAVES of `spec.source.helm.valuesObject` instead -- a merge patch merges objects key by
+# key, so nothing else in valuesObject is touched -- and the two fields are disjoint. When a
+# public domain is also set, its helm parameters override these hosts values (helm parameters
+# outrank valuesObject), which is exactly right: the external URL is public, while the LAN
+# Gateway keeps this address.
+#
+# THIS FILE CARRIES NO ADDRESS. The ConfigMap's `patch.json` is added by the Application's inline
+# patch (argocd-application.yaml.in) from the same last-address token the pool patch uses.
+# Nothing here is applied on an install with no resolved range, so GitLab keeps the documentation
+# sentinel 192.0.2.250 and `gitlab-lan` stays <pending> -- loud and unreachable rather than
+# pointing at somebody else's subnet.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-lan-address
+  namespace: kube-system
+data: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-lan-address
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitlab-lan-address
+  namespace: argocd
+rules:
+  # `kubectl wait --for=create` lists+watches; the only WRITE is the next rule.
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    resourceNames: ["gitlab"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitlab-lan-address
+  namespace: argocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gitlab-lan-address
+subjects:
+  - kind: ServiceAccount
+    name: gitlab-lan-address
+    namespace: kube-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitlab-lan-address
+  namespace: kube-system
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      serviceAccountName: gitlab-lan-address
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: patch
+          configMap: { name: gitlab-lan-address }
+      initContainers:
+        # The gitlab Application is created by zeta-root at its own sync wave, which can be long
+        # after this Application first syncs on a fresh node.
+        - name: wait-for-gitlab-application
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+          command: ["/bin/kubectl"]
+          args: ["wait", "--for=create", "applications.argoproj.io/gitlab", "-n", "argocd", "--timeout=24h"]
+      containers:
+        - name: patch
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 128Mi }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: patch, mountPath: /patch, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "applications.argoproj.io", "gitlab", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/patch.json"]

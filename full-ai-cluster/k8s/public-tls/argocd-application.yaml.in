@@ -50,6 +50,15 @@ spec:
           patch: '[{"op":"add","path":"/spec/hostnames","value":["registry.@ZETA_PUBLIC_DOMAIN@"]}]'
         - target: { version: v1, kind: ConfigMap, name: gitlab-public-hosts }
           patch: '[{"op":"add","path":"/data/patch.json","value":"{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"global.hosts.domain\",\"value\":\"@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"global.hosts.https\",\"value\":\"true\"},{\"name\":\"global.hosts.gitlab.name\",\"value\":\"gitlab.@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"global.hosts.registry.name\",\"value\":\"registry.@ZETA_PUBLIC_DOMAIN@\"}]}}}}"}]'
+        # Forgejo (docs/ops/INSTALL-TIME-CONFIG.md row 28): git.<domain>, replacing the chart's own
+        # `git.example.com` default -- listener index 4, its route, and the helm parameters the
+        # Job `forgejo-public-hosts` merge-patches onto the forgejo Application.
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/4/hostname","value":"git.@ZETA_PUBLIC_DOMAIN@"}]'
+        - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: forgejo-public }
+          patch: '[{"op":"add","path":"/spec/hostnames","value":["git.@ZETA_PUBLIC_DOMAIN@"]}]'
+        - target: { version: v1, kind: ConfigMap, name: forgejo-public-hosts }
+          patch: '[{"op":"add","path":"/data/patch.json","value":"{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"gitea.config.server.DOMAIN\",\"value\":\"git.@ZETA_PUBLIC_DOMAIN@\"},{\"name\":\"gitea.config.server.ROOT_URL\",\"value\":\"https://git.@ZETA_PUBLIC_DOMAIN@/\"},{\"name\":\"gitea.config.server.SSH_DOMAIN\",\"value\":\"git.@ZETA_PUBLIC_DOMAIN@\"}]}}}}"}]'
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-platform

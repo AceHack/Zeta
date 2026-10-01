@@ -9,13 +9,16 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { parseAllDocuments } from "yaml";
 import { yamlDocs, PUBLIC_TLS_TEMPLATE } from "../cluster/public-tls.ts";
 import { LB_POOL_TEMPLATE } from "../cluster/lb-ipam-pool.ts";
 import {
   appliedCorpus,
   auditPlaceholders,
   KNOWN_PLACEHOLDERS,
+  LIVE_PLACEHOLDER_IMAGE,
   PLACEHOLDER_PATTERNS,
+  placeholderImagesOnLiveWorkloads,
   scanDocs,
   stripEmbeddedComments,
 } from "./lint-rendered-manifest-placeholders.ts";
@@ -41,6 +44,8 @@ describe("each pattern catches the defect it names", () => {
     ["CHANGEME", { password: "CHANGEME" }, "change-me value"],
     ["a :placeholder image tag", { image: "ghcr.io/org/op:placeholder" }, "image tag :placeholder"],
     ["an UNRENDERED install-time token", { email: "@ZETA_ACME_EMAIL@" }, "unrendered install-time token"],
+    ["an RFC 5737 documentation address (a sentinel must be named, not shipped silently)", { addresses: [{ type: "IPAddress", value: "192.0.2.250" }] }, "RFC 5737 documentation address"],
+    ["RFC 5737 198.51.100/24 and 203.0.113/24 too", { a: "198.51.100.7", b: "203.0.113.9" }, "RFC 5737 documentation address"],
   ];
   for (const [name, doc, pattern] of MUTANTS) {
     test(name, () => {
@@ -129,5 +134,51 @@ describe("the install-time templates are scanned RENDERED, and render clean", ()
       const raw = readFileSync(join(REPO_ROOT, t), "utf8");
       expect(scanDocs(yamlDocs(raw), t).map((f) => f.pattern)).toContain("unrendered install-time token");
     }
+  });
+});
+
+describe("a :placeholder image is tolerated ONLY on a workload scaled to zero", () => {
+  const dep = (replicas: number | undefined, image = "ghcr.io/org/op:placeholder") => ({
+    kind: "Deployment",
+    metadata: { name: "op" },
+    spec: { ...(replicas === undefined ? {} : { replicas }), template: { spec: { containers: [{ name: "operator", image }] } } },
+  });
+
+  test("replicas: 0 -> inert by construction, not a live finding", () => {
+    expect(placeholderImagesOnLiveWorkloads([dep(0)], "d.yaml")).toEqual([]);
+  });
+
+  test("THE FAILURE: scaled up (or replicas omitted = 1) with the placeholder still in place -> a finding no baseline entry can excuse", () => {
+    for (const replicas of [1, 2, undefined]) {
+      const f = placeholderImagesOnLiveWorkloads([dep(replicas)], "d.yaml");
+      expect(f.map((x) => x.pattern)).toEqual([LIVE_PLACEHOLDER_IMAGE]);
+    }
+    // and it is not a pattern name the baseline can list: KNOWN_PLACEHOLDERS entries use PLACEHOLDER_PATTERNS names
+    expect(PLACEHOLDER_PATTERNS.map((p) => p.name)).not.toContain(LIVE_PLACEHOLDER_IMAGE);
+  });
+
+  test("a real tag is never flagged; a DaemonSet (no replica count) is live", () => {
+    expect(placeholderImagesOnLiveWorkloads([dep(3, "ghcr.io/org/op:v1.2.3")], "d.yaml")).toEqual([]);
+    const ds = { kind: "DaemonSet", metadata: { name: "d" }, spec: { template: { spec: { containers: [{ name: "c", image: "x:placeholder" }] } } } };
+    expect(placeholderImagesOnLiveWorkloads([ds], "d.yaml")).toHaveLength(1);
+  });
+
+  test("the real hat-system operator is scaled to zero, so it is inert; scaling it up without a real image would fail this audit", () => {
+    const text = readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/applications/hat-system/deployment.yaml"), "utf8");
+    const docs = parseAllDocuments(text).map((d) => d.toJS() as unknown);
+    const op = docs.find((d) => (d as any)?.kind === "Deployment" && (d as any)?.metadata?.name === "hat-system-operator") as any;
+    expect(op.spec.replicas).toBe(0);
+    expect(placeholderImagesOnLiveWorkloads(docs, "hat")).toEqual([]);
+    const scaledUp = JSON.parse(JSON.stringify(op));
+    scaledUp.spec.replicas = 1;
+    expect(placeholderImagesOnLiveWorkloads([scaledUp], "hat")).toHaveLength(1);
+  });
+});
+
+describe("the postgres Blueprint no longer ships `change-me` (docs/ops/INSTALL-TIME-CONFIG.md row 24)", () => {
+  test("it is gone from the applied corpus, so the baseline holds no entry for it", () => {
+    expect(KNOWN_PLACEHOLDERS.some((k) => k.origin.endsWith("platform/blueprints.yaml"))).toBe(false);
+    const audit = auditPlaceholders(REPO_ROOT);
+    expect(audit.unexpected.filter((f) => f.origin.endsWith("platform/blueprints.yaml"))).toEqual([]);
   });
 });

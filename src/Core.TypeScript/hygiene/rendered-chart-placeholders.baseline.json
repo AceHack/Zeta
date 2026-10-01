@@ -1,0 +1,141 @@
+{
+  "$comment": "Placeholders that remain in RENDERED chart output, each with an owner and a reason (audit-rendered-chart-placeholders.ts). The measured case it exists for - Forgejo's `git.example.com` - is FIXED and absent. A finding not listed fails; an entry that no longer renders fails as STALE.",
+  "entries": [
+    {
+      "app": "full-ai-cluster/dapr",
+      "document": "CustomResourceDefinition//subscriptions.dapr.io",
+      "path": ".spec.conversion.webhook.clientConfig.service.namespace",
+      "pattern": "change-me value",
+      "owner": "upstream chart (dapr) / workloads lane",
+      "reason": "the dapr chart ships `replaceme` as the conversion-webhook namespace of its subscriptions CRD - its own template marker. Dapr's operator is designed to patch CRD conversion settings at runtime (upstream behaviour, NOT verified on this tree). Baselined, owned, and not ours to rewrite: the CRD is vendored by the chart."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-migrations",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-migrations",
+      "path": ".data.pages_redirect_uri",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-registry",
+      "path": ".data.config.yml.tpl",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-sidekiq",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-sidekiq",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-toolbox",
+      "path": ".data.configure",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-toolbox",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-toolbox",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-webservice",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-webservice",
+      "path": ".data.gitlab.yml.erb",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "ConfigMap/gitlab/gitlab-webservice-tests",
+      "path": ".data.test_login",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "Gateway/gitlab/gitlab-lan",
+      "path": ".spec.addresses[0].value",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "Job/gitlab/gitlab-shared-secrets-*-selfsign",
+      "path": ".spec.template.spec.containers[0].command[2]",
+      "pattern": "RFC 5737 documentation address",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "Job/gitlab/gitlab-shared-secrets-*-selfsign",
+      "path": ".spec.template.spec.initContainers[0].env[3].value",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/gitlab",
+      "document": "Job/gitlab/gitlab-shared-secrets-*-selfsign",
+      "path": ".spec.template.spec.initContainers[0].env[4].value",
+      "pattern": "RFC 2606 reserved TLD",
+      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
+      "reason": "`gitlab.invalid` is GitLab's DELIBERATE never-resolves sentinel for names this install neither runs nor exposes (pages, minio, the e-mail sender domain; applications/gitlab/Application.yaml global.hosts.domain). It is the chart's ASSEMBLED name, never a value a client dials."
+    },
+    {
+      "app": "full-ai-cluster/hat-system",
+      "document": "Deployment/hat-system/hat-system-operator",
+      "path": ".spec.template.spec.containers[0].image",
+      "pattern": "image tag :placeholder",
+      "owner": "workloads lane (hat-system)",
+      "reason": "`...hat-system-operator:placeholder` on a Deployment with `replicas: 0`: inert by construction, and that is a CHECKED property (placeholderImagesOnLiveWorkloads in lint-rendered-manifest-placeholders.ts fails the moment it is scaled up). Remove when a real tag is pinned."
+    }
+  ]
+}

@@ -172,3 +172,25 @@ describe("blueprint agent — drafts satisfy the rendered-pod contract (shared w
     });
   }
 });
+
+// docs/ops/INSTALL-TIME-CONFIG.md row 24: the builder's TEMPLATES are Blueprints in waiting, so they
+// must not ship a known credential either. `postgres` and `valheim` used to default PASSWORD to
+// "change-me" (every saved server then shared one password, in plaintext in its pod spec).
+describe("builder templates ship no known credential", () => {
+  const CREDENTIAL_NAME = /pass(word|wd)|secret|token|credential|\bkey\b|_key$|_pwd$/i;
+  const MESSAGES = ["a postgres database", "valheim server", "gmod server", "unturned server", "arma reforger server", "rust server", "minecraft server"];
+  for (const message of MESSAGES) {
+    test(`${message}: no credential-named variable has a default, no credential env is plaintext`, () => {
+      const spec = build(message).spec;
+      if (spec === undefined) return;
+      const withDefault = (spec.variables ?? []).filter((v) => CREDENTIAL_NAME.test(v.name) && v.default !== undefined).map((v) => v.name);
+      expect(withDefault).toEqual([]);
+      expect(Object.keys(spec.env ?? {}).filter((k) => CREDENTIAL_NAME.test(k))).toEqual([]);
+    });
+  }
+
+  test("postgres and valheim take their credential from a Secret named for the instance", () => {
+    expect(build("a postgres database").spec!.envFrom).toEqual([{ name: "POSTGRES_PASSWORD", secret: "${RESOURCE_NAME}-credentials", key: "password" }]);
+    expect(build("valheim server").spec!.envFrom).toEqual([{ name: "SRV_PWD", secret: "${RESOURCE_NAME}-credentials", key: "password" }]);
+  });
+});

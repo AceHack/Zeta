@@ -56,6 +56,9 @@ export const PLACEHOLDER_PATTERNS: readonly PlaceholderPattern[] = [
   { name: "change-me value", re: /\bchange-?me\b|\breplace-?me\b/i },
   { name: "image tag :placeholder", re: /:placeholder\b/i },
   { name: "unrendered install-time token", re: /@ZETA_[A-Z0-9_]+@/ },
+  // RFC 5737 documentation addresses are NEVER a real endpoint: where one appears in an applied
+  // manifest it is a sentinel for "nothing was resolved here", and must be named as such.
+  { name: "RFC 5737 documentation address", re: /\b(192\.0\.2|198\.51\.100|203\.0\.113)\.\d{1,3}\b/ },
 ];
 
 export interface Finding {
@@ -100,6 +103,35 @@ function visit(v: unknown, path: string, origin: string, out: Finding[]): void {
 export function scanDocs(docs: readonly unknown[], origin: string): Finding[] {
   const out: Finding[] = [];
   for (const d of docs) visit(d, "", origin, out);
+  return out;
+}
+
+export const LIVE_PLACEHOLDER_IMAGE = "placeholder image on a workload that is scaled up";
+
+/**
+ * A `:placeholder` image tag is tolerable in exactly one shape: a workload SCALED TO ZERO, which is
+ * inert by construction (the hat-system operator ships `replicas: 0` until its image is published, so
+ * nothing pulls it). The instant such a workload is scaled up with the placeholder still in place, the
+ * pod takes ImagePullBackOff on every install - so THAT is a finding that no baseline entry can
+ * excuse, because it is a different pattern name from the one the baseline lists.
+ */
+export function placeholderImagesOnLiveWorkloads(docs: readonly unknown[], origin: string): Finding[] {
+  const out: Finding[] = [];
+  for (const d of docs) {
+    if (typeof d !== "object" || d === null) continue;
+    const o = d as Record<string, any>;
+    if (!["Deployment", "StatefulSet", "DaemonSet", "ReplicaSet"].includes(String(o["kind"]))) continue;
+    // A DaemonSet has no replica count: it is never scaled to zero by replicas.
+    const replicas = o["kind"] === "DaemonSet" ? undefined : (o["spec"]?.["replicas"] ?? 1);
+    if (replicas === 0) continue;
+    const containers = [...(o["spec"]?.["template"]?.["spec"]?.["initContainers"] ?? []), ...(o["spec"]?.["template"]?.["spec"]?.["containers"] ?? [])];
+    for (const c of containers as Array<Record<string, unknown>>) {
+      const image = String(c["image"] ?? "");
+      if (/:placeholder\b/i.test(image)) {
+        out.push({ origin, path: `.spec.template.spec.containers[${String(c["name"])}].image`, pattern: LIVE_PLACEHOLDER_IMAGE, excerpt: image });
+      }
+    }
+  }
   return out;
 }
 
@@ -186,21 +218,23 @@ export const KNOWN_PLACEHOLDERS: readonly KnownPlaceholder[] = [
     reason:
       "`gitlab.invalid` is a DELIBERATE never-resolves sentinel for chart-assembled names this install neither runs nor exposes (pages, smartcard, minio, mail sender); the value that matters is global.hosts.gitlab.name. Tracked in docs/ops/INSTALL-TIME-CONFIG.md; it is the one entry here that is a documented sentinel rather than a forgotten value.",
   },
+  ...[".spec.source.helm.valuesObject.global.hosts.gitlab.name", ".spec.source.helm.valuesObject.global.hosts.registry.name", ".spec.source.helm.valuesObject.global.zeta.lanAddress"].map(
+    (path): KnownPlaceholder => ({
+      origin: "full-ai-cluster/k8s/applications/gitlab/Application.yaml",
+      path,
+      pattern: "RFC 5737 documentation address",
+      owner: "installer (docs/ops/INSTALL-TIME-CONFIG.md row 6)",
+      reason:
+        "192.0.2.250 is the DELIBERATE 'no LoadBalancer range was resolved' sentinel for GitLab's LAN address: an RFC 5737 documentation address no network can route. The installer-resolved range's last address replaces it (cilium-lb-ipam-pool's gitlab-lan-address Job; pinned by cluster/lb-ipam-pool.test.ts and gitlab-exposure.test.ts). Replaces the old literal 192.168.1.250, which was a home subnet's address applied on every LAN.",
+    }),
+  ),
   {
     origin: "full-ai-cluster/k8s/applications/hat-system/deployment.yaml",
     path: ".spec.template.spec.containers[0].image",
     pattern: "image tag :placeholder",
     owner: "workloads lane (hat-system)",
     reason:
-      "`ghcr.io/lucent-financial-group/hat-system-operator:placeholder` - the operator image tag is a placeholder, so the Deployment cannot pull on a fresh install (ImagePullBackOff). Needs a real published tag or a build-time pin.",
-  },
-  {
-    origin: "full-ai-cluster/k8s/applications/platform/blueprints.yaml",
-    path: ".spec.variables[2].default",
-    pattern: "change-me value",
-    owner: "workloads lane (Blueprint postgres)",
-    reason:
-      "the `postgres` Blueprint's PASSWORD variable defaults to `change-me`: every Deployable of it that does not set one runs with a known password. Needs a generated-per-instance default.",
+      "`ghcr.io/lucent-financial-group/hat-system-operator:placeholder`: the operator image is not published yet, so the Deployment ships `replicas: 0` and nothing pulls it. INERT BY CONSTRUCTION, and that is now a CHECKED property, not a comment: placeholderImagesOnLiveWorkloads fails (and no baseline entry can excuse it) the moment a workload carries a :placeholder image with replicas != 0. Remove this entry when a real tag is pinned.",
   },
 ];
 
@@ -215,7 +249,7 @@ export interface Audit {
 
 export function auditPlaceholders(repoRoot: string, known: readonly KnownPlaceholder[] = KNOWN_PLACEHOLDERS): Audit {
   const corpus = appliedCorpus(repoRoot);
-  const findings = corpus.flatMap((c) => scanDocs(c.docs, c.origin));
+  const findings = corpus.flatMap((c) => [...scanDocs(c.docs, c.origin), ...placeholderImagesOnLiveWorkloads(c.docs, c.origin)]);
   const knownKeys = new Set(known.map(keyOf));
   const seen = new Set(findings.map(keyOf));
   return {

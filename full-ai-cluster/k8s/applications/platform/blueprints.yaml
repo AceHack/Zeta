@@ -126,8 +126,16 @@ spec:
   env:
     POSTGRES_DB: "${DB}"
     POSTGRES_USER: "${USER}"
-    POSTGRES_PASSWORD: "${PASSWORD}"
     PGDATA: /var/lib/postgresql/data/pgdata
+  # NO DEFAULT PASSWORD, and no plaintext one. This used to be a `PASSWORD` variable defaulting to
+  # `change-me`, so every instance that did not set one ran with the same known password, in the
+  # clear in its pod spec. The password now comes from a Secret NAMED FOR THE INSTANCE
+  # (`<instance>-credentials`, key `password`): if the operator has not created it the pod stops at
+  # CreateContainerConfigError naming exactly that Secret -- loud, and never a shared password.
+  #   kubectl -n <ns> create secret generic <instance>-credentials \
+  #     --from-literal=password="$(head -c 24 /dev/urandom | base64 | tr -d '/+=')"
+  envFrom:
+    - { name: POSTGRES_PASSWORD, secret: "${RESOURCE_NAME}-credentials", key: password }
   ports:
     - { name: sql, port: 5432, protocol: TCP }
   storage: { size: "20Gi", mountPath: /var/lib/postgresql/data }
@@ -135,7 +143,6 @@ spec:
   variables:
     - { name: DB, default: "app" }
     - { name: USER, default: "app" }
-    - { name: PASSWORD, default: "change-me" }
   defaultExpose: cluster
 ---
 # Plain pod / worker — stateless, no ports, no exposure. The "just run my

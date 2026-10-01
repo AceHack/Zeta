@@ -73,8 +73,10 @@ prompts in order:
 
 1. **iter-5.3 — initial password prompt** (Step 6.55)
    Set the `zeta` user's initial console password. Press Enter to
-   skip + keep the iter-4.x default `zeta-change-me` (rotate later
-   via `passwd zeta`).
+   skip: a RANDOM one-time password is minted for this install and shown
+   once on the console (never in the install log, never shared with another
+   install; rotate it with `passwd zeta`). The zero-typing path always takes
+   this branch -- watch the console, or use the SSH key.
 
 2. **081KSKBP80008QG0R003AX2A69.3b — cred-blob passphrase prompt** (Step 6.56;
    default-on per 081KSKBP80008QG0R003AX2A69.3c since 2026-05-27)

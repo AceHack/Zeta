@@ -32,6 +32,10 @@ spec:
       patches:
         - target: { group: cilium.io, kind: CiliumLoadBalancerIPPool, name: zeta-lb-pool }
           patch: '[{"op":"add","path":"/spec/blocks","value":[{"start":"@ZETA_LB_POOL_START@","stop":"@ZETA_LB_POOL_STOP@"}]}]'
+        # GitLab's LAN address is the LAST address of that range (gitlab-lan-address.yaml). The
+        # three leaves of the gitlab Application's valuesObject that carry it, as one merge patch.
+        - target: { version: v1, kind: ConfigMap, name: gitlab-lan-address }
+          patch: '[{"op":"add","path":"/data/patch.json","value":"{\"spec\":{\"source\":{\"helm\":{\"valuesObject\":{\"global\":{\"hosts\":{\"gitlab\":{\"name\":\"@ZETA_LB_POOL_STOP@\"},\"registry\":{\"name\":\"@ZETA_LB_POOL_STOP@\"}},\"zeta\":{\"lanAddress\":\"@ZETA_LB_POOL_STOP@\"}}}}}}}"}]'
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

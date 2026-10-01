@@ -95,7 +95,7 @@ describe("(a) the repo carries no LoadBalancer address range", () => {
       .filter((l) => !l.trimStart().startsWith("#"))
       .join("\n");
     expect(body).not.toMatch(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/);
-    expect([...body.matchAll(/@ZETA_[A-Z_]+@/g)].map((m) => m[0]).sort()).toEqual(
+    expect([...new Set([...body.matchAll(/@ZETA_[A-Z_]+@/g)].map((m) => m[0]))].sort()).toEqual(
       [LB_POOL_START_TOKEN, LB_POOL_STOP_TOKEN].sort(),
     );
   });
@@ -182,5 +182,97 @@ describe("(d) UNSET is a visible state, not a placeholder", () => {
       readFileSync(join(REPO_ROOT, `${K8S}/applications/cilium-lb-ipam/Application.yaml`), "utf8"),
     ) as Record<string, any>;
     expect(app.spec.source.directory.include).toBe("l2-policy.yaml");
+  });
+});
+
+describe("(e) GitLab's LAN address follows the resolved range (docs/ops/INSTALL-TIME-CONFIG.md row 6)", () => {
+  const gitlabApp = () =>
+    parseYaml(readFileSync(join(REPO_ROOT, `${K8S}/applications/gitlab/Application.yaml`), "utf8")) as Record<string, any>;
+  const root = () =>
+    parseYaml(readFileSync(join(REPO_ROOT, `${K8S}/bootstrap/root-application.yaml`), "utf8")) as Record<string, any>;
+  const LEAVES = [
+    "/spec/source/helm/valuesObject/global/hosts/gitlab/name",
+    "/spec/source/helm/valuesObject/global/hosts/registry/name",
+    "/spec/source/helm/valuesObject/global/zeta/lanAddress",
+  ];
+  const getAt = (o: unknown, pointer: string): unknown =>
+    pointer
+      .split("/")
+      .slice(1)
+      .reduce<unknown>((cur, k) => (typeof cur === "object" && cur !== null ? (cur as Record<string, unknown>)[k] : undefined), o);
+
+  test("the git-owned Application carries NO real address: the three leaves hold the RFC 5737 sentinel", () => {
+    for (const p of LEAVES) expect(getAt(gitlabApp(), p)).toBe("192.0.2.250");
+    // and no RFC 1918 literal anywhere in the Application's non-comment text
+    const body = readFileSync(join(REPO_ROOT, `${K8S}/applications/gitlab/Application.yaml`), "utf8")
+      .split("\n")
+      .filter((l) => !l.trimStart().startsWith("#"))
+      .join("\n");
+    expect(body).not.toMatch(/\b(192\.168|10\.\d{1,3}|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b/);
+  });
+
+  test("the Gateway READS global.zeta.lanAddress (via the runner subchart's tpl) instead of restating an address", () => {
+    const gw = (gitlabApp().spec.source.helm.valuesObject["gitlab-runner"].extraObjects as Array<Record<string, any>>).find(
+      (o) => o["kind"] === "Gateway" && o["metadata"]["name"] === "gitlab-lan",
+    );
+    expect(gw).toBeDefined();
+    expect(gw!["spec"]["addresses"]).toEqual([{ type: "IPAddress", value: "{{ .Values.global.zeta.lanAddress }}" }]);
+  });
+
+  test("the patch sets EXACTLY those three leaves, all to the range's LAST address, and nothing else in valuesObject", () => {
+    const cm = lbPoolObjects("10.20.30.200", "10.20.30.210").find((o) => o["kind"] === "ConfigMap");
+    const patch = JSON.parse((cm!["data"] as Record<string, string>)["patch.json"]!) as Record<string, any>;
+    expect(Object.keys(patch)).toEqual(["spec"]);
+    expect(Object.keys(patch.spec.source)).toEqual(["helm"]);
+    expect(Object.keys(patch.spec.source.helm)).toEqual(["valuesObject"]);
+    expect(patch.spec.source.helm.valuesObject).toEqual({
+      global: {
+        hosts: { gitlab: { name: "10.20.30.210" }, registry: { name: "10.20.30.210" } },
+        zeta: { lanAddress: "10.20.30.210" },
+      },
+    });
+  });
+
+  test("root ignores exactly those leaves (plus the public-TLS parameters), so selfHeal cannot revert them", () => {
+    const ign = (root().spec.ignoreDifferences as Array<Record<string, any>>).find((i) => i["name"] === "gitlab");
+    expect(ign).toBeDefined();
+    for (const p of LEAVES) expect(ign!["jsonPointers"]).toContain(p);
+    expect(ign!["jsonPointers"]).toContain("/spec/source/helm/parameters");
+    // ignoring is only honoured on apply with this option
+    expect(root().spec.syncPolicy.syncOptions).toContain("RespectIgnoreDifferences=true");
+  });
+
+  test("DISJOINT from the public-TLS Job: it writes valuesObject leaves, that one writes `parameters` (a merge patch replaces an array wholesale)", () => {
+    const publicApp = readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/public-tls/argocd-application.yaml.in"), "utf8");
+    expect(publicApp).toContain('\\"parameters\\"');
+    expect(publicApp).not.toContain("valuesObject");
+    const mine = readFileSync(join(REPO_ROOT, LB_POOL_TEMPLATE), "utf8");
+    expect(mine).toContain("valuesObject");
+    expect(mine).not.toContain('\\"parameters\\"');
+  });
+
+  test("the Job may patch ONLY Application/gitlab, and runs non-root with a read-only filesystem", () => {
+    const docs = yamlDocs(readFileSync(join(REPO_ROOT, `${K8S}/lb-ipam/gitlab-lan-address.yaml`), "utf8"));
+    const role = docs.find((d) => d["kind"] === "Role")!;
+    const rules = role["rules"] as Array<Record<string, any>>;
+    const writes = rules.filter((r) => (r["verbs"] as string[]).some((v) => ["patch", "update", "create", "delete"].includes(v)));
+    expect(writes).toHaveLength(1);
+    expect(writes[0]!["resourceNames"]).toEqual(["gitlab"]);
+    expect(writes[0]!["verbs"]).toEqual(["patch"]);
+    expect(writes[0]!["resources"]).toEqual(["applications"]);
+    const job = docs.find((d) => d["kind"] === "Job")!;
+    const pod = (job["spec"] as Record<string, any>)["template"]["spec"];
+    expect(pod.securityContext.runAsNonRoot).toBe(true);
+    for (const c of [...pod.initContainers, ...pod.containers]) {
+      expect(c.securityContext.readOnlyRootFilesystem).toBe(true);
+      expect(c.securityContext.allowPrivilegeEscalation).toBe(false);
+    }
+    expect(pod.containers[0].args).toEqual(["patch", "applications.argoproj.io", "gitlab", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/patch.json"]);
+  });
+
+  test("the base alone carries no address (the ConfigMap is empty until the Application's patch fills it)", () => {
+    const docs = yamlDocs(readFileSync(join(REPO_ROOT, `${K8S}/lb-ipam/gitlab-lan-address.yaml`), "utf8"));
+    const cm = docs.find((d) => d["kind"] === "ConfigMap")!;
+    expect(cm["data"]).toEqual({});
   });
 });

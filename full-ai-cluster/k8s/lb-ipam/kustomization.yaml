@@ -1,7 +1,8 @@
 # Kustomize base for the install-time `cilium-lb-ipam-pool` Application. The per-install
-# range arrives as that Application's inline patch -- see argocd-application.yaml.in and
-# pool.yaml's header.
+# range arrives as that Application's inline patches -- see argocd-application.yaml.in,
+# pool.yaml's header and gitlab-lan-address.yaml's header.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - pool.yaml
+  - gitlab-lan-address.yaml

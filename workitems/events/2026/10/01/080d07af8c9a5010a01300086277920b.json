@@ -1,0 +1,14 @@
+{
+  "id": "080d07af8c9a5010a01300086277920b",
+  "at": "2026-10-01T05:30:44.938Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TZ34T9087G0R000W4XZ09",
+    "type": "bug",
+    "title": "GitLab LAN address follows the resolved LoadBalancer range (was a literal 192.168.1.250)",
+    "slug": "gitlab-lan-address-follows-the-resolved-loadbalancer-range-w",
+    "priority": "P1",
+    "filename": "081M3TZ34T9087G0R000W4XZ09-gitlab-lan-address-follows-the-resolved-loadbalancer-range-w.md"
+  }
+}

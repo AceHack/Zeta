@@ -563,3 +563,51 @@ describe("library Blueprints serve on the port they declare", () => {
     }
   });
 });
+
+// ── no Blueprint ships a known credential ──────────────────────────────
+// docs/ops/INSTALL-TIME-CONFIG.md row 24. The postgres Blueprint had a `PASSWORD` variable that
+// defaulted to "change-me": every instance that did not set one ran with the SAME password, in the
+// clear in its pod spec. A default on a credential-shaped variable is a known credential on every
+// install, so the library may not carry one; a credential arrives from a per-instance Secret, and
+// a missing Secret stops the pod loudly (CreateContainerConfigError) instead of starting insecure.
+describe("no Blueprint ships a known credential", () => {
+  const CREDENTIAL_NAME = /pass(word|wd)|secret|token|credential|\bkey\b|_key$|_pwd$/i;
+
+  test("THE DEFECT: no shipped Blueprint has a credential-named variable with a default", () => {
+    const offenders = library().flatMap((bp) =>
+      (bp.variables ?? []).filter((v) => CREDENTIAL_NAME.test(v.name) && v.default !== undefined).map((v) => `${bp.name}.${v.name}=${JSON.stringify(v.default)}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  test("no shipped Blueprint passes a credential-named env var in plaintext", () => {
+    const offenders = library().flatMap((bp) =>
+      Object.keys(bp.env ?? {}).filter((k) => CREDENTIAL_NAME.test(k)).map((k) => `${bp.name}.env.${k}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  test("postgres takes its password from a Secret named for the instance, and renders no plaintext password", () => {
+    const pg = library().find((b) => b.name === "postgres")!;
+    const objs = renderDeployable(pg, instance("orders-db", { blueprint: "postgres" }));
+    const main = (one(objs, "StatefulSet").spec as any).template.spec.containers[0];
+    expect(main.env.filter((e: any) => e.name === "POSTGRES_PASSWORD")).toEqual([
+      { name: "POSTGRES_PASSWORD", valueFrom: { secretKeyRef: { name: "orders-db-credentials", key: "password" } } },
+    ]);
+    expect(JSON.stringify(objs)).not.toContain("change-me");
+  });
+
+  test("two instances get two DIFFERENT Secret names (no shared credential)", () => {
+    const pg = library().find((b) => b.name === "postgres")!;
+    const name = (n: string) =>
+      (one(renderDeployable(pg, instance(n, { blueprint: "postgres" })), "StatefulSet").spec as any).template.spec.containers[0].env.find((e: any) => e.name === "POSTGRES_PASSWORD").valueFrom.secretKeyRef.name;
+    expect(name("a-db")).toBe("a-db-credentials");
+    expect(name("b-db")).toBe("b-db-credentials");
+  });
+
+  test("a Secret name is templated with the same variable map as env values", () => {
+    const bp: Blueprint = { name: "x", image: "x:1", envFrom: [{ name: "TOKEN", secret: "${RESOURCE_NAME}-tok", key: "t" }] } as Blueprint;
+    const main = (one(renderDeployable(bp, instance("svc", { blueprint: "x" })), "Deployment").spec as any).template.spec.containers[0];
+    expect(main.env).toContainEqual({ name: "TOKEN", valueFrom: { secretKeyRef: { name: "svc-tok", key: "t" } } });
+  });
+});

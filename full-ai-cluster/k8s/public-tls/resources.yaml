@@ -118,6 +118,17 @@ spec:
           - { kind: Secret, name: gitlab-registry-tls }
       allowedRoutes:
         namespaces: { from: All }
+    # :443 for Forgejo, index 4 -> git.<domain>. Same rule: its own certificate, so Forgejo's name
+    # not having a DNS record yet cannot hold any other name's certificate hostage.
+    - name: https-forgejo
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: forgejo-tls }
+      allowedRoutes:
+        namespaces: { from: All }
 ---
 # The public portal route. `hostnames` is added by the Application's patch.
 apiVersion: gateway.networking.k8s.io/v1
@@ -262,3 +273,115 @@ spec:
             - { name: patch, mountPath: /patch, readOnly: true }
           command: ["/bin/kubectl"]
           args: ["patch", "applications.argoproj.io", "gitlab", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/patch.json"]
+# ═════════════════════════════ Forgejo, published ═════════════════════════════
+# docs/ops/INSTALL-TIME-CONFIG.md row 28. Forgejo's chart default renders DOMAIN / ROOT_URL /
+# SSH_DOMAIN = git.example.com (measured, chart 17.1.5); applications/forgejo/Application.yaml now
+# carries its in-cluster URL, and with a public domain THIS publishes git.<domain> the way GitLab is
+# published above: its own listener (index 4) and certificate, a route in namespace `forgejo` next to
+# the Service it points at (so no ReferenceGrant), and a Job that merge-patches the forgejo
+# Application's helm parameters with the content of ConfigMap `forgejo-public-hosts`. Nothing in the
+# `forgejo` Application waits on any of it, and with no public domain none of it exists.
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: forgejo-public
+  namespace: forgejo
+spec:
+  parentRefs:
+    - { name: zeta-public-gateway, namespace: zeta-platform }
+  rules:
+    - backendRefs:
+        - { name: forgejo-http, port: 3000 }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forgejo-public-hosts
+  namespace: zeta-platform
+data: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: forgejo-public-hosts
+  namespace: zeta-platform
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: forgejo-public-hosts
+  namespace: argocd
+rules:
+  # `kubectl wait --for=create` lists+watches; the only WRITE is the next rule.
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    resourceNames: ["forgejo"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: forgejo-public-hosts
+  namespace: argocd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: forgejo-public-hosts
+subjects:
+  - kind: ServiceAccount
+    name: forgejo-public-hosts
+    namespace: zeta-platform
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: forgejo-public-hosts
+  namespace: zeta-platform
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      serviceAccountName: forgejo-public-hosts
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: patch
+          configMap: { name: forgejo-public-hosts }
+      initContainers:
+        # The forgejo Application is created by zeta-root at its own sync wave, which can
+        # be long after this Application first syncs on a fresh node.
+        - name: wait-for-forgejo-application
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+          command: ["/bin/kubectl"]
+          args: ["wait", "--for=create", "applications.argoproj.io/forgejo", "-n", "argocd", "--timeout=24h"]
+      containers:
+        - name: patch
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: patch, mountPath: /patch, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "applications.argoproj.io", "forgejo", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/patch.json"]

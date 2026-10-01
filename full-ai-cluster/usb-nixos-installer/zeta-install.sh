@@ -3769,11 +3769,36 @@ else
   echo "--- what to do next ---"
   echo "  - photograph this diagnostic block + send to your AI collaborator"
   echo "  - install will continue with EMPTY operator-ssh-keys.nix"
-  echo "  - fallback (iter-4 v1): on first boot, login as zeta/zeta-change-me,"
-  echo "    passwd zeta, edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix,"
+  echo "  - fallback (iter-4 v1): on first boot, login at the console as zeta with the password you"
+  echo "    typed -- or the ONE-TIME password the password step below shows once on the console --"
+  echo "    then passwd zeta, edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix,"
   echo "    sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#$HOST"
   echo "=============================="
 fi
+
+# ZETA-CONSOLE-PW-BEGIN ------------------------------------------
+# docs/ops/INSTALL-TIME-CONFIG.md row 19 -- the console password when none was typed.
+# Pure helpers; replayed by src/Core.TypeScript/installer/console-password-shell.test.ts.
+#
+# A random one-time password: 15 bytes of /dev/urandom as 24 lowercase base32 characters (120 bits).
+# Prints ONLY the password. Callers must never route it through this script's tee'd stdout.
+zeta_mint_console_password() {
+  head -c 15 /dev/urandom | base32 | tr -d '=\n' | tr 'A-Z' 'a-z'
+}
+
+# Show the one-time password on the CONSOLE devices, never on stdout (stdout is tee'd into the
+# install log, which is copied onto the installed node). Returns 0 only if at least one device took it.
+# ZETA_CONSOLE_DEVICES overrides the device list (the test points it at files).
+zeta_console_password_show() {
+  local pw="$1" dev shown=1
+  for dev in ${ZETA_CONSOLE_DEVICES:-/dev/console /dev/tty1}; do
+    if printf '\n  ONE-TIME CONSOLE PASSWORD for user zeta (shown ONCE, not logged):  %s\n  Rotate it with: passwd zeta   (SSH uses the injected key, not this password)\n\n' "$pw" | sudo tee "$dev" >/dev/null 2>&1; then
+      shown=0
+    fi
+  done
+  return "$shown"
+}
+# ZETA-CONSOLE-PW-END --------------------------------------------
 
 # ── Step 6.55: iter-5.3 prompt-for-initial-password (081KSGS9H0008QG0R003V23XNZ) ────
 #
@@ -3804,8 +3829,9 @@ echo "[iter-5.3] ── prompt for initial password (instead of default) ──"
 echo "[iter-5.3] Set initial password for the 'zeta' user (used for"
 echo "[iter-5.3] console login; SSH uses the iter-4.2-injected pubkey)."
 echo "[iter-5.3] Operator can rotate later via 'passwd zeta' on the"
-echo "[iter-5.3] installed system. Press Enter to skip + keep the"
-echo "[iter-5.3] iter-4.x default ('zeta-change-me')."
+echo "[iter-5.3] installed system. Press Enter to skip: a RANDOM ONE-TIME password is"
+echo "[iter-5.3] minted for THIS install and shown once on the console -- never a"
+echo "[iter-5.3] password every install shares."
 echo
 INJECTED_PW=""
 INJECTED_PW_CONFIRM=""
@@ -3839,11 +3865,40 @@ if [ -n "$INJECTED_PW" ]; then
     echo "[iter-5.3]   operator-chosen password hash written + chmod 0600"
     unset INJECTED_HASH
   else
-    echo "[iter-5.3]   WARN: mkpasswd produced invalid hash; falling back to default"
+    # Falling back to the build-time default would be the shared known password this step exists to
+    # retire. LOCK the console account instead; the SSH key (or `sudo passwd zeta`) is the way in.
+    sudo mkdir -p /mnt/etc/zeta
+    printf '1\n' | sudo tee /mnt/etc/zeta/console-password-locked >/dev/null
+    sudo chmod 0644 /mnt/etc/zeta/console-password-locked
+    echo "[iter-5.3]   WARNING: mkpasswd produced an invalid hash; the zeta console password is LOCKED (not defaulted)." >&2
+    echo "[iter-5.3]   Log in over SSH with the injected key, then 'sudo passwd zeta'." >&2
   fi
 else
-  echo "[iter-5.3]   no password entered; iter-4.x default 'zeta-change-me' stays"
-  echo "[iter-5.3]   in effect (rotate via 'passwd zeta' after first SSH login)"
+  # docs/ops/INSTALL-TIME-CONFIG.md row 19. No password was typed -- which the zero-typing path
+  # always is -- and the installed node used to keep the iter-4.x default `zeta-change-me`: the
+  # SAME known password on every install. Now this install gets its OWN random one-time password,
+  # shown once on the console (NOT through this script's tee'd stdout, so it is not in the install
+  # log that is copied onto the node), hashed through the same hash file the typed password uses.
+  # If it cannot be shown anywhere, nobody could ever log in with it: the console account is LOCKED
+  # instead, loudly -- a secret nobody can read is worse than none.
+  ZETA_MINTED_PW="$(zeta_mint_console_password)"
+  MINTED_HASH="$(printf '%s\n' "$ZETA_MINTED_PW" | mkpasswd -m sha-512 -s 2>/dev/null || echo "")"
+  sudo mkdir -p /mnt/etc/zeta
+  if [ -n "$ZETA_MINTED_PW" ] && printf '%s' "$MINTED_HASH" | grep -Eq '^\$6\$' && zeta_console_password_show "$ZETA_MINTED_PW"; then
+    printf '%s\n' "$MINTED_HASH" | sudo tee /mnt/etc/zeta/initial-hashedpassword >/dev/null
+    sudo chmod 0600 /mnt/etc/zeta/initial-hashedpassword
+    sudo chown root:root /mnt/etc/zeta/initial-hashedpassword
+    printf '1\n' | sudo tee /mnt/etc/zeta/initial-password-minted >/dev/null
+    sudo chmod 0644 /mnt/etc/zeta/initial-password-minted
+    echo "[iter-5.3]   no password entered: MINTED a one-time console password for this install."
+    echo "[iter-5.3]   It was shown ONCE on the console (not in this log). Rotate it: 'passwd zeta'."
+  else
+    printf '1\n' | sudo tee /mnt/etc/zeta/console-password-locked >/dev/null
+    sudo chmod 0644 /mnt/etc/zeta/console-password-locked
+    echo "[iter-5.3]   WARNING: a one-time password could not be minted AND shown; the zeta console" >&2
+    echo "[iter-5.3]   password is LOCKED. Log in over SSH with the injected key, then 'sudo passwd zeta'." >&2
+  fi
+  unset ZETA_MINTED_PW MINTED_HASH
 fi
 echo
 
@@ -5749,6 +5804,7 @@ if [ "${ZETA_PUBLIC_TLS_SOURCE:-unset}" != "unset" ]; then
   echo "  PUBLIC TLS: portal.${ZETA_PUBLIC_TLS_DOMAIN} (ACME contact ${ZETA_PUBLIC_TLS_EMAIL})"
   echo "    The certificate CANNOT issue until you do both of these:"
   echo "      1. DNS: an A record  portal.${ZETA_PUBLIC_TLS_DOMAIN}  ->  your public IP"
+  echo "         (and gitlab.${ZETA_PUBLIC_TLS_DOMAIN}, registry.${ZETA_PUBLIC_TLS_DOMAIN}, git.${ZETA_PUBLIC_TLS_DOMAIN} -> the same IP to publish GitLab / Forgejo)"
   echo "      2. Router: forward TCP 80 and 443 to the public gateway's LoadBalancer IP:"
   echo "           sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'"
   echo "    Until then 'platform-public-tls' reads Progressing; the rest of the platform"
@@ -5766,10 +5822,8 @@ if [ "${ZETA_LB_POOL_SOURCE:-unset}" = "esp" ] || [ "${ZETA_LB_POOL_SOURCE:-unse
   echo "  LOADBALANCER RANGE: ${ZETA_LB_POOL_START} .. ${ZETA_LB_POOL_STOP} (source: ${ZETA_LB_POOL_SOURCE})"
   echo "    Cilium hands these to Services of type LoadBalancer; keep them out of your router's DHCP range."
   echo "      sudo k3s kubectl get ciliumloadbalancerippool zeta-lb-pool"
-  if [[ "${ZETA_LB_POOL_START}" != "192.168.1.240" ]] || [[ "${ZETA_LB_POOL_STOP}" != "192.168.1.250" ]]; then
-    echo "    NOTE: GitLab's LAN Gateway is still pinned to 192.168.1.250 in full-ai-cluster/k8s/applications/gitlab/."
-    echo "    Outside that address it stays <pending> until that pin follows this range (docs/ops/INSTALL-TIME-CONFIG.md, row 3)."
-  fi
+  echo "    GitLab on the LAN: http://${ZETA_LB_POOL_STOP}/  (the range's LAST address; set once the 'gitlab' Application exists:"
+  echo "      sudo k3s kubectl -n kube-system logs job/gitlab-lan-address)"
   echo
 elif [[ "${ZETA_ROLE:-}" != "joiner" ]]; then
   echo "  LOADBALANCER RANGE: NOT SET. No pool was applied, so every Service of type LoadBalancer"
@@ -5777,6 +5831,12 @@ elif [[ "${ZETA_ROLE:-}" != "joiner" ]]; then
   echo "    /etc/zeta/lb-pool and: sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#$HOST"
   echo
 fi
+# docs/DECISIONS/2026-10-01-the-cluster-tracks-main-while-the-os-is-pinned-to-the-iso-commit.md —
+# the node runs TWO trees by design; say so on every install instead of letting it be discovered.
+echo "  TWO TREES, BY DESIGN: this node's OS is pinned to ${REPO_PIN_ACTUAL_SHA:-<no pin: default-branch HEAD at install time>};"
+echo "    its cluster workloads (ArgoCD) follow github.com/Lucent-Financial-Group/Zeta 'main' HEAD, so a fix merged"
+echo "    to main reaches the cluster layer without re-flashing, and a node with no route to GitHub never receives updates."
+echo
 # 081M3K23YCP087G0R003BVDS1P — say where the dev toolchain went, so an operator
 # who logs in to a node with no dotnet/go/claude yet is not left guessing.
 echo "  DEV TOOLCHAIN: continues in the BACKGROUND after first boot (mise toolchains +"

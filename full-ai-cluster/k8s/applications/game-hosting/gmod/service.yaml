@@ -19,6 +19,15 @@ spec:
     - { name: game-tcp, port: 27015, targetPort: 27015, protocol: TCP }
 ---
 # Separate Service for SFTP (different IP/port lifecycle from the game port).
+#
+# CLUSTER-INTERNAL BY DEFAULT. SFTP is opt-in (statefulset.yaml: with no `gmod-sftp-keys` ConfigMap
+# the sidecar idles and nothing listens on :22), but this Service used to be a LoadBalancer
+# unconditionally, so a fresh install spent one of the LoadBalancer pool's addresses (the installer
+# resolves a range of at most a few dozen) on a port that answers nothing. ClusterIP takes none.
+# To open it on the LAN as well, at the same time as creating the keys ConfigMap:
+#   kubectl -n game-hosting patch svc gmod-sftp -p '{"spec":{"type":"LoadBalancer"}}'
+# (the Application ignores that field's drift: see gmod/Application.yaml `ignoreDifferences`).
+# Until then: kubectl -n game-hosting port-forward svc/gmod-sftp 2222:2222
 apiVersion: v1
 kind: Service
 metadata:
@@ -27,7 +36,7 @@ metadata:
   labels:
     app.kubernetes.io/name: gmod
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: gmod
   ports:

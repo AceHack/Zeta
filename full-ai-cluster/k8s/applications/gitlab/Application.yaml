@@ -31,19 +31,28 @@ spec:
           #
           # UNSET (no install-time public domain) -- THE LAN DEFAULT: GitLab is served by its own
           # hostname-less Gateway `gitlab-lan` (`gitlab-runner.extraObjects` below) whose
-          # LoadBalancer address is PINNED to 192.168.1.250, the LAST address of the cluster's LB
-          # pool (cilium-lb-ipam/ip-pool.yaml -- LB-IPAM allocates lowest-first, so the pin does
-          # not race automatic allocations). An address is the only identity a LAN client reaches
-          # without DNS, and pinning it is what lets GitLab know its own URL at render time:
-          #   web       http://192.168.1.250/
-          #   registry  192.168.1.250 (same address; `/v2/` routes to the registry -- GitLab
+          # LoadBalancer address is PINNED to the LAST address of the cluster's LB pool -- the
+          # install-time range the installer resolved (zflash --lb-pool / prompt;
+          # docs/ops/INSTALL-TIME-CONFIG.md row 6). LB-IPAM allocates lowest-first, so the pin
+          # does not race automatic allocations. An address is the only identity a LAN client
+          # reaches without DNS, and pinning it is what lets GitLab know its own URL at render time:
+          #   web       http://<last pool address>/
+          #   registry  <last pool address> (same address; `/v2/` routes to the registry -- GitLab
           #             serves nothing under /v2/). Plain HTTP: docker clients need it listed
           #             under `insecure-registries`.
+          # THE ADDRESS IS NOT IN THIS FILE. The three places that carry it below hold the RFC 5737
+          # documentation address 192.0.2.250 -- a sentinel that means "no LoadBalancer range was
+          # resolved" and that no network can route, so it can never be mistaken for a real
+          # endpoint (the old literal was a home subnet's address and was applied on every LAN).
+          # When a range IS resolved, `cilium-lb-ipam-pool` (k8s/lb-ipam/) carries Job
+          # `gitlab-lan-address`, which merge-patches `global.hosts.gitlab.name`,
+          # `global.hosts.registry.name` and `global.zeta.lanAddress` of THIS Application's
+          # valuesObject; bootstrap/root-application.yaml ignores exactly those paths so selfHeal
+          # keeps them. The Gateway's `addresses` below READS `global.zeta.lanAddress`, so the
+          # three can never disagree.
           # A dedicated Gateway rather than a route on `zeta-gateway`: that Gateway's single
           # hostname-less :80 listener is the portal's catch-all, and two catch-all routes on
-          # one listener cannot both win. If ip-pool.yaml is adjusted to another subnet, adjust
-          # these two names and the Gateway's `addresses` with it -- cluster/gitlab-exposure.test.ts
-          # (c) fails until all three agree and the pin lies inside the pool.
+          # one listener cannot both win.
           #
           # `domain` only feeds the chart's ASSEMBLED names for things this install neither runs
           # nor exposes (pages, smartcard, minio, the e-mail sender domain): RFC 2606 `.invalid`
@@ -59,8 +68,11 @@ spec:
           hosts:
             domain: gitlab.invalid
             https: false
-            gitlab: { name: "192.168.1.250" }
-            registry: { name: "192.168.1.250" }
+            gitlab: { name: "192.0.2.250" }     # sentinel; the resolved LB range replaces it
+            registry: { name: "192.0.2.250" }   # sentinel; the resolved LB range replaces it
+          # Read by the `gitlab-lan` Gateway below through the runner subchart's `tpl`.
+          zeta:
+            lanAddress: "192.0.2.250"            # sentinel; the resolved LB range replaces it
           # KAS (GitLab agent for Kubernetes) is OFF: its only exposure was the unserved
           # `gitlab-kas` Ingress, nothing in this cluster registers an agent, and it was two more
           # always-on pods. Re-enable together with a route for it.
@@ -240,10 +252,12 @@ spec:
                 namespace: gitlab
               spec:
                 gatewayClassName: cilium
-                # Cilium LB-IPAM honours spec.addresses (IPAddress type only). Must equal
-                # global.hosts.gitlab.name / registry.name and lie inside ip-pool.yaml.
+                # Cilium LB-IPAM honours spec.addresses (IPAddress type only). Read from
+                # global.zeta.lanAddress (rendered through `tpl`), which the install-time Job sets
+                # together with global.hosts.gitlab.name / registry.name, and which lies inside the
+                # resolved LB range by construction (it IS that range's last address).
                 addresses:
-                  - { type: IPAddress, value: "192.168.1.250" }
+                  - { type: IPAddress, value: "{{ .Values.global.zeta.lanAddress }}" }
                 listeners:
                   - name: http
                     protocol: HTTP

@@ -26,6 +26,8 @@ export interface BlueprintProposal {
   command?: string[];
   args?: string[];
   env?: Record<string, string>;
+  /** Secret-sourced env (credentials). The Secret name is templated with ${RESOURCE_NAME}. */
+  envFrom?: { name: string; secret: string; key: string }[];
   ports?: BlueprintPort[];
   storage?: { size: string; mountPath: string };
   resources?: { cpu?: string; memory?: string };
@@ -136,10 +138,15 @@ const GAMES: GameDef[] = [
       name: "valheim", category: "game", image: "ghcr.io/ich777/steamcmd:valheim",
       // start-server.sh: valheim_server.x86_64 -name "${SRV_NAME}" -port ${GAME_PORT}
       //   -world "${WORLD_NAME}" -password "${SRV_PWD}" -public ${PUBLIC} ${GAME_PARAMS}
-      env: { GAME_ID: "896660", SRV_NAME: "${SERVERNAME}", WORLD_NAME: "${WORLD}", SRV_PWD: "${PASSWORD}", GAME_PARAMS: "", GAME_PORT: "2456", VALIDATE: "${VALIDATE}" },
+      env: { GAME_ID: "896660", SRV_NAME: "${SERVERNAME}", WORLD_NAME: "${WORLD}", GAME_PARAMS: "", GAME_PORT: "2456", VALIDATE: "${VALIDATE}" },
+      // The join password comes from a Secret named for the instance, never from a default every
+      // server shares (this was `PASSWORD` defaulting to "change-me"). Create it with
+      //   kubectl -n <ns> create secret generic <name>-credentials --from-literal=password=<min 5 chars>
+      // or the pod stops at CreateContainerConfigError naming that Secret.
+      envFrom: [{ name: "SRV_PWD", secret: "${RESOURCE_NAME}-credentials", key: "password" }],
       ports: [{ name: "game", port: 2456, protocol: "UDP" }, { name: "query", port: 2457, protocol: "UDP" }],
       storage: { size: "8Gi", mountPath: ICH777_SERVER_DIR }, resources: { cpu: "2", memory: "4Gi" },
-      variables: [{ name: "SERVERNAME", default: "Zeta" }, { name: "WORLD", default: "Dedicated" }, { name: "PASSWORD", default: "change-me", description: "min 5 chars" }, { name: "VALIDATE", default: "true", description: "`true` validates the install on every start" }],
+      variables: [{ name: "SERVERNAME", default: "Zeta" }, { name: "WORLD", default: "Dedicated" }, { name: "VALIDATE", default: "true", description: "`true` validates the install on every start" }],
       sidecars: [SFTP_ICH777], defaultExpose: "lan",
     }),
   },
@@ -229,7 +236,7 @@ export function build(message: string, draft?: BlueprintProposal): BuildResult {
 
   // ── generic recipes by keyword ────────────────────────────────────
   if (/postgres|database|\bdb\b|sql/.test(t))
-    return { reply: "A PostgreSQL blueprint (stateful, cluster-internal). Tweak or save.", spec: { name: "postgres", category: "database", image: "postgres:16-alpine", env: { POSTGRES_DB: "${DB}", POSTGRES_USER: "${USER}", POSTGRES_PASSWORD: "${PASSWORD}", PGDATA: "/var/lib/postgresql/data/pgdata" }, ports: [{ name: "sql", port: 5432, protocol: "TCP" }], storage: { size: "20Gi", mountPath: "/var/lib/postgresql/data" }, resources: { cpu: "1", memory: "1Gi" }, variables: [{ name: "DB", default: "app" }, { name: "USER", default: "app" }, { name: "PASSWORD", default: "change-me" }], defaultExpose: "cluster" } };
+    return { reply: "A PostgreSQL blueprint (stateful, cluster-internal). Tweak or save.", spec: { name: "postgres", category: "database", image: "postgres:16-alpine", env: { POSTGRES_DB: "${DB}", POSTGRES_USER: "${USER}", PGDATA: "/var/lib/postgresql/data/pgdata" }, envFrom: [{ name: "POSTGRES_PASSWORD", secret: "${RESOURCE_NAME}-credentials", key: "password" }], ports: [{ name: "sql", port: 5432, protocol: "TCP" }], storage: { size: "20Gi", mountPath: "/var/lib/postgresql/data" }, resources: { cpu: "1", memory: "1Gi" }, variables: [{ name: "DB", default: "app" }, { name: "USER", default: "app" }], defaultExpose: "cluster" } };
   if (/web|site|nginx|static|frontend/.test(t))
     return { reply: "A static web blueprint (stateless, public HTTPS). Tweak or save.", spec: { name: "web", category: "web", image: "docker.io/nginxinc/nginx-unprivileged:1.29-alpine", ports: [{ name: "http", port: 8080, web: true }], resources: { cpu: "250m", memory: "256Mi" }, defaultExpose: "public" } };
 

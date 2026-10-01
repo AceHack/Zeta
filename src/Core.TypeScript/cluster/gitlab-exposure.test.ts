@@ -26,7 +26,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parse as parseYaml, parseAllDocuments, stringify as stringifyYaml } from "yaml";
 import { readAppSource } from "./crd-provider-consumer-order.ts";
-import { proposeLbPool } from "../installer/lan-config.ts";
+import { lbPoolObjects } from "./lb-ipam-pool.ts";
 import {
   advertisedUrls,
   annotationsOf,
@@ -44,22 +44,30 @@ import {
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const GITLAB_APP = resolve(REPO_ROOT, "full-ai-cluster/k8s/applications/gitlab/Application.yaml");
 /**
- * THE POOL THE PIN MUST FALL INSIDE.
+ * THE INSTALL-TIME PATCH, AS THE CLUSTER APPLIES IT.
  *
- * The cluster's LoadBalancer range is no longer in git (docs/ops/INSTALL-TIME-CONFIG.md
- * row 3): the installer resolves it per LAN. GitLab's LAN Gateway is still pinned to ONE
- * literal address, so the pin can only be correct on a LAN where the installer's own
- * proposal -- `.240-.250` of the node's /24 -- is the range in force. This is that
- * proposal on the reference LAN the pin was written for (192.168.1.0/24). On any other LAN
- * the pin lies outside the pool and `gitlab-lan` stays <pending>: a KNOWN GAP, recorded in
- * INSTALL-TIME-CONFIG.md and printed by the installer, until the pin is derived from the
- * resolved range instead of being a literal.
+ * GitLab's LAN address is not in git (docs/ops/INSTALL-TIME-CONFIG.md row 6): the Application
+ * carries the RFC 5737 sentinel 192.0.2.250, and `cilium-lb-ipam-pool`'s Job `gitlab-lan-address`
+ * merge-patches three leaves of its valuesObject with the LAST address of the resolved LoadBalancer
+ * range. `lbPoolObjects` renders that Application exactly as the node would; the ConfigMap it
+ * carries IS the patch the Job applies, so the tests below render GitLab with it merged in.
  */
-const REFERENCE_LAN = { nodeIp: "192.168.1.74", prefix: 24, gateway: "192.168.1.254" } as const;
-function referencePool(): Record<string, unknown> {
-  const p = proposeLbPool(REFERENCE_LAN, []);
-  if (p === null) throw new Error("the installer proposes no pool for the reference LAN");
-  return { spec: { blocks: [{ start: p.start, stop: p.stop }] } };
+function installTimeValuesPatch(start: string, stop: string): Record<string, unknown> {
+  const cm = lbPoolObjects(start, stop).find((o) => o["kind"] === "ConfigMap" && nameOf(o) === "gitlab-lan-address");
+  if (cm === undefined) throw new Error("the lb-ipam base carries no ConfigMap gitlab-lan-address");
+  const raw = (cm["data"] as Record<string, string>)["patch.json"];
+  if (raw === undefined) throw new Error("the ConfigMap gitlab-lan-address has no patch.json after patching");
+  const patch = JSON.parse(raw) as Record<string, any>;
+  return patch.spec.source.helm.valuesObject as Record<string, unknown>;
+}
+
+/** RFC 7386 merge-patch semantics for plain objects: what `kubectl patch --type merge` does. */
+function mergePatch(base: unknown, patch: unknown): unknown {
+  if (typeof patch !== "object" || patch === null || Array.isArray(patch)) return patch;
+  const out: Record<string, unknown> =
+    typeof base === "object" && base !== null && !Array.isArray(base) ? { ...(base as Record<string, unknown>) } : {};
+  for (const [k, v] of Object.entries(patch as Record<string, unknown>)) out[k] = mergePatch(out[k], v);
+  return out;
 }
 const IN_CLUSTER_URL = "http://gitlab-webservice-default.gitlab.svc:8181";
 
@@ -110,14 +118,16 @@ function onPath(bin: string): boolean {
 const HELM = onPath("helm");
 if (!HELM) console.warn("gitlab-exposure.test: helm not on PATH -- the gitlab render half is SKIPPED, not passed");
 
-let cached: { text: string; docs: unknown[] } | null = null;
-function renderGitlab(): { text: string; docs: unknown[] } {
-  if (cached !== null) return cached;
+const cachedRenders = new Map<string, { text: string; docs: unknown[] }>();
+function renderGitlab(valuesPatch?: Record<string, unknown>): { text: string; docs: unknown[] } {
+  const key = JSON.stringify(valuesPatch ?? null);
+  const hit = cachedRenders.get(key);
+  if (hit !== undefined) return hit;
   const source = readAppSource(readFileSync(GITLAB_APP, "utf8"));
   const dir = mkdtempSync(join(tmpdir(), "gitlab-exposure-"));
   try {
     const valuesFile = join(dir, "values.yaml");
-    writeFileSync(valuesFile, stringifyYaml(source.valuesObject ?? {}), "utf8");
+    writeFileSync(valuesFile, stringifyYaml(valuesPatch === undefined ? (source.valuesObject ?? {}) : mergePatch(source.valuesObject ?? {}, valuesPatch)), "utf8");
     const result = Bun.spawnSync(
       [
         "helm", "template", source.releaseName ?? "gitlab", source.chart ?? "", "--repo", source.repoURL ?? "",
@@ -127,8 +137,9 @@ function renderGitlab(): { text: string; docs: unknown[] } {
     );
     if (result.exitCode !== 0) throw new Error(`helm template gitlab failed: ${result.stderr.toString()}`);
     const text = result.stdout.toString();
-    cached = { text, docs: parseAllDocuments(text).map((d) => d.toJS({ maxAliasCount: -1 }) as unknown) };
-    return cached;
+    const rendered = { text, docs: parseAllDocuments(text).map((d) => d.toJS({ maxAliasCount: -1 }) as unknown) };
+    cachedRenders.set(key, rendered);
+    return rendered;
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -193,19 +204,44 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(hits).toEqual([]);
   }, T);
 
-  test("(c) the advertised host is the LAN Gateway's pinned address, inside the LB-IPAM pool", () => {
-    const { docs } = renderGitlab();
-    const urls = advertisedUrls(docs);
-    const lan = ofKind(docs, "Gateway").find((g) => nameOf(g) === "gitlab-lan");
+  /** The LAN Gateway's address, and what GitLab advertises as its own host. */
+  function lanFacts(rendered: { docs: unknown[] }): { pinned: string; urls: ReturnType<typeof advertisedUrls>; listenerHostnames: unknown[] } {
+    const lan = ofKind(rendered.docs, "Gateway").find((g) => nameOf(g) === "gitlab-lan");
     expect(lan).toBeDefined();
-    const addresses = ((lan!["spec"] as Record<string, unknown>)["addresses"] ?? []) as Array<Record<string, unknown>>;
+    const spec = lan!["spec"] as Record<string, unknown>;
+    const addresses = (spec["addresses"] ?? []) as Array<Record<string, unknown>>;
     expect(addresses.map((a) => a["type"])).toEqual(["IPAddress"]);
-    const pinned = String(addresses[0]!["value"]);
-    expect(urls).toEqual({ gitlabHost: pinned, https: false, registryHost: pinned });
-    expect(inPool(pinned, poolRanges(referencePool()))).toBe(true);
+    return {
+      pinned: String(addresses[0]!["value"]),
+      urls: advertisedUrls(rendered.docs),
+      listenerHostnames: ((spec["listeners"] ?? []) as Array<Record<string, unknown>>).map((l) => l["hostname"]),
+    };
+  }
+
+  test("(c) UNSET (no resolved LB range): the Gateway and the advertised host are the RFC 5737 sentinel -- never a real LAN's address", () => {
+    const f = lanFacts(renderGitlab());
+    expect(f.pinned).toBe("192.0.2.250");
+    expect(f.urls).toEqual({ gitlabHost: f.pinned, https: false, registryHost: f.pinned });
+    // THE DEFECT this replaces: the literal was 192.168.1.250, applied on every LAN.
+    expect(renderGitlab().text).not.toMatch(/192\.168\.\d+\.\d+/);
+  }, T);
+
+  test("(c) SET: the advertised host IS the LAN Gateway's address IS the LAST address of the resolved range, inside it", () => {
+    const f = lanFacts(renderGitlab(installTimeValuesPatch("192.168.1.240", "192.168.1.250")));
+    expect(f.pinned).toBe("192.168.1.250");
+    expect(f.urls).toEqual({ gitlabHost: f.pinned, https: false, registryHost: f.pinned });
+    const pool = { spec: { blocks: [{ start: "192.168.1.240", stop: "192.168.1.250" }] } };
+    expect(inPool(f.pinned, poolRanges(pool))).toBe(true);
     // Every listener is hostname-less: the address alone must be enough to reach it.
-    for (const l of ((lan!["spec"] as Record<string, unknown>)["listeners"] ?? []) as Array<Record<string, unknown>>) {
-      expect(l["hostname"]).toBeUndefined();
+    expect(f.listenerHostnames.every((h) => h === undefined)).toBe(true);
+  }, T);
+
+  test("(c) SET on ANOTHER LAN: all three follow the range -- this fails against a literal pin", () => {
+    for (const [start, stop] of [["10.20.30.200", "10.20.30.210"], ["172.16.9.100", "172.16.9.120"], ["192.168.50.200", "192.168.50.230"]] as const) {
+      const f = lanFacts(renderGitlab(installTimeValuesPatch(start, stop)));
+      expect(f.pinned).toBe(stop);
+      expect(f.urls).toEqual({ gitlabHost: stop, https: false, registryHost: stop });
+      expect(inPool(f.pinned, poolRanges({ spec: { blocks: [{ start, stop }] } }))).toBe(true);
     }
   }, T);
 
