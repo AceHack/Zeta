@@ -1,0 +1,12 @@
+{
+  "pr_number": 17763,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17763-fix-cluster-gitlab-runner-bring-up-retry-the-token-mint-take-untagged-jobs-no-be.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:19:46.542Z",
+  "schema_version": "v1",
+  "commit_sha": "204c1bb6d096e4b486b70442a649090a425b36ea",
+  "title": "fix(cluster): GitLab runner bring-up -- retry the token mint, take untagged jobs, no BestEffort redis, single-node HPA bounds",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:18:50Z",
+  "head_ref": "fix/gitlab-runner-bringup"
+}
