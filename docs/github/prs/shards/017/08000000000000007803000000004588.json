@@ -1,0 +1,12 @@
+{
+  "pr_number": 17800,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17800-fix-cluster-price-nine-besteffort-platform-controllers-and-the-longhorn-pod-no-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T06:51:11.316Z",
+  "schema_version": "v1",
+  "commit_sha": "1147eb404959cd85e4cd1b8e30f83c2a930518c2",
+  "title": "fix(cluster): price nine BestEffort platform controllers - and the Longhorn pod no ledger row could see",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T06:50:26Z",
+  "head_ref": "fix/platform-controllers-priced8"
+}
