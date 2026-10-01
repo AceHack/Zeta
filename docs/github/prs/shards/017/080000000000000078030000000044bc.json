@@ -1,0 +1,12 @@
+{
+  "pr_number": 17596,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17596-deps-bump-meziantou-analyzer-from-3-0-262-to-3-0-290.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T00:32:06.133Z",
+  "schema_version": "v1",
+  "commit_sha": "29441a641171c972a9554f81257bf1f37547996b",
+  "title": "deps: Bump Meziantou.Analyzer from 3.0.262 to 3.0.290",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T00:31:25Z",
+  "head_ref": "dependabot/nuget/fsharp-and-tooling-4c74495f42"
+}

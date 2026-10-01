@@ -1,0 +1,12 @@
+{
+  "pr_number": 17470,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17470-perf-corporate-a-reviewer-is-handed-the-step-s-evidence-in-its-prompt-not-fetche.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T00:33:31.442Z",
+  "schema_version": "v1",
+  "commit_sha": "4f79dd541ec4d4657c5908d6b2c2e76669fd37fd",
+  "title": "perf(corporate): a reviewer is handed the step's evidence in its prompt, not fetched six times",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T00:32:43Z",
+  "head_ref": "perf/corporate-reviewer-inline-evidence"
+}

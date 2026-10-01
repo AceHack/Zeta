@@ -1,0 +1,12 @@
+{
+  "pr_number": 17584,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17584-deps-bump-messagepack-and-4-others.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T00:32:16.207Z",
+  "schema_version": "v1",
+  "commit_sha": "8a683215c679bb4c27798ae715befeb4ef0a24b6",
+  "title": "deps: Bump MessagePack and 4 others",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T00:31:31Z",
+  "head_ref": "dependabot/nuget/bench/Benchmarks/nuget-minor-patch-1c29c80f3a"
+}

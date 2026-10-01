@@ -1,0 +1,12 @@
+{
+  "pr_number": 17571,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17571-ci-hat-system-execute-the-gatekeeper-policies-with-gator-verify-fix-four-fail-op.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T00:54:19.183Z",
+  "schema_version": "v1",
+  "commit_sha": "9c90c7c645a91926e14a927f44e75041c66484b4",
+  "title": "ci(hat-system): execute the Gatekeeper policies with gator verify; fix four fail-open rules",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T00:53:31Z",
+  "head_ref": "shadow/gator-verify-hat-policies"
+}
