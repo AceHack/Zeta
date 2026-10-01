@@ -3319,3 +3319,21 @@ Tests: bun test of the six touched files at the tip, 563 pass, 5 fail, all five 
 CI: product SHA and parent both have 0 check runs. No tip-red and parent-green check.
 
 Auto-merge squash armed by maximdolphin. mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17780 leftover unique @ 5ddb8a06de2189b1b03a2e8e2d703e9d5e866ab8 -- GRADE GO
+
+Prior GO @ 970ea49b53c8837b1ffa31781533c1553509addd stands for the pin body. This cell is the follow-up tip only.
+
+Tip 5ddb8a06de2189b1b03a2e8e2d703e9d5e866ab8 is 1 parent. Parent f2ddf7a1303908501cc077c1910cacda64623805 is a merge of 970ea49b and 8df54dbd and was not graded. Stat +9/-3, 2 files. Live head ad19a83297e32bfbedbd7aff20b7ece09de8d6ed is a merge of 5ddb8a06 and 06bcef6a and was not graded.
+
+Hunk deletes persistence.image busybox and keeps imageTag 1.38.0 (Application.yaml:213-218). Test expects persistence.image to be undefined at opensearch-chown-image-pinned.test.ts:48.
+
+helm template of the new valuesObject: fsgroup-volume image busybox:1.38.0, runAsUser 0. Chart statefulset.yaml:252 defaults the name to busybox and appends imageTag. Not busybox:latest.
+
+Scan: imagesInDocuments keeps only key image (image-footprint.ts:80). parseImageReference defaults an untagged name to latest (image-footprint.ts:118). Parent Application collected busybox, which is reference latest. The ledger has 1.36 plus a digest, not latest. Tip Application collected no image values. imageTag is not walked. The ledger also has no measured 1.38.0, so writing image busybox:1.38.0 would still be ledger-tag-missing. This commit writes no image key.
+
+Tests: bun test opensearch-chown-image-pinned.test.ts at the tip, 2 pass. Putting image busybox back fails at line 48. Not pushed.
+
+CI: 0 check runs on 5ddb8a06. Nothing is red on the tip and green on the parent.
+
+Auto-merge squash still armed. mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
