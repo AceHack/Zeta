@@ -114,6 +114,25 @@ spec:
                             port: { type: integer }
                             protocol: { type: string, enum: [TCP, UDP], default: TCP }
                       mountDataAt: { type: string, description: "mount the shared data volume here (e.g. an SFTP sidecar)" }
+                      # DECLARED HERE BECAUSE THE BLUEPRINTS USE IT AND THE API SERVER REJECTS WHAT A
+                      # STRUCTURAL SCHEMA DOES NOT NAME. platform-controller/src/blueprint.ts has
+                      # `SidecarSpec.configMaps` and renders it (#17736 made the sftp sidecars read
+                      # their keys from `${RESOURCE_NAME}-sftp-keys`), blueprints.yaml sets it on gmod,
+                      # unturned and arma-reforger -- and this CRD never learned the field. MEASURED,
+                      # WP11 run 36858893664: Application `platform` stuck OutOfSync, all three
+                      # Blueprints `SyncFailed: failed to create typed patch object ... .spec.sidecars[0]
+                      # .configMaps: field not declared in schema`. Pinned by
+                      # cluster/platform-blueprints-schema.test.ts, which checks every Blueprint in
+                      # blueprints.yaml against this schema.
+                      configMaps:
+                        type: array
+                        items:
+                          type: object
+                          required: [name, mountPath]
+                          properties:
+                            name: { type: string, description: "ConfigMap name; ${RESOURCE_NAME} is substituted" }
+                            mountPath: { type: string }
+                            optional: { type: boolean, description: "pod starts without the ConfigMap when true" }
                 defaultExpose: { type: string, enum: [none, cluster, lan, public], default: none }
       additionalPrinterColumns:
         - { name: Category, type: string, jsonPath: ".spec.category" }
