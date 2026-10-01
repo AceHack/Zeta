@@ -1,0 +1,12 @@
+{
+  "pr_number": 17831,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17831-fix-wp11-cluster-diag-captures-the-why-first-earlier-and-survives-the-api-dying-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T17:03:44.601Z",
+  "schema_version": "v1",
+  "commit_sha": "aff38d8d1f6ee043f8ff50c87355c43d9599e02a",
+  "title": "fix(wp11): cluster-diag captures the WHY first, earlier, and survives the API dying mid-capture",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T17:02:20Z",
+  "head_ref": "fix/wp11-diag-reorder"
+}
