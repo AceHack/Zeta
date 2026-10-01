@@ -128,7 +128,7 @@ jobs:
           ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
           GITLAB_PROOF_REF: ${{ github.event.pull_request.head.sha || github.sha }}
           READY_SEC: ${{ inputs.ready_sec || '2700' }}
-          PHASE_SEC: ${{ inputs.phase_sec || '900' }}
+          PHASE_SEC: ${{ inputs.phase_sec || (github.event_name == 'push' && '420') || '900' }}
           PIN_MODE: ${{ inputs.pin || 'job' }}
         run: |
           set -o pipefail

@@ -199,6 +199,24 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(rules.map((r) => r["resourceNames"])).toEqual([["gitlab-gitlab-runner-secret"]]);
   }, T);
 
+  test("(f) the exposure objects sync AFTER the runner and the token Job -- a Gateway with no address must not hold the runner", () => {
+    // MEASURED LIVE, run 36871713092: the Gateway sat in wave 0, the install-time pin landed after ArgoCD's first
+    // sync had already rendered it with the 192.0.2.250 sentinel, Cilium could not assign that, and the operation
+    // waited on `Gateway/gitlab-lan` for 30+ minutes -- so `Job gitlab-runner-token` and the runner Deployment were
+    // never created. The same hold applies on an install with NO LB range. Nothing but exposure depends on exposure.
+    const { docs } = renderGitlab();
+    const runner = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-runner");
+    const mint = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-runner-token");
+    expect(runner).toBeDefined();
+    expect(mint).toBeDefined();
+    const exposure = [...ofKind(docs, "Gateway"), ...ofKind(docs, "HTTPRoute")];
+    expect(exposure.map(nameOf).sort()).toEqual(["gitlab-lan", "gitlab-registry", "gitlab-web"]);
+    for (const o of exposure) {
+      expect(syncWave(o)).toBeGreaterThan(syncWave(runner));
+      expect(syncWave(o)).toBeGreaterThan(syncWave(mint));
+    }
+  }, T);
+
   test("(c) no .zeta.local name appears anywhere in the render", () => {
     const hits = renderGitlab().text.split("\n").filter((l) => /\.zeta\.local\b/.test(l));
     expect(hits).toEqual([]);
