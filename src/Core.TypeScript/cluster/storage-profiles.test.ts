@@ -1368,10 +1368,10 @@ describe("the checked-in resource ladder", () => {
     // not move because ArgoCD started costing more, it moved because the cost became
     // VISIBLE. All five components rendered `resources: {}` and contributed zero to
     // every total here while running the lane. 081M3BQ5GX6087G0R003N44WMZ.
-    // 8140 -> 9140 on 2026-10-01: nine more BestEffort platform Applications PRICED
-    // (+1000m at metal): cert-manager, trust-manager, sealed-secrets, external-secrets,
+    // 8140 -> 8940 on 2026-10-01: nine more BestEffort platform Applications PRICED
+    // (+800m at metal): cert-manager, trust-manager, sealed-secrets, external-secrets,
     // argo-rollouts, argo-workflows, headlamp, dapr, spire. Visibility, not weight.
-    expect(lane.cpuMillis).toBe(9140);
+    expect(lane.cpuMillis).toBe(8940);
     // 17596 -> 15548 on 2026-09-07, same cause: gmod's 2048Mi left the dev lane's
     // denominator. Unchanged in the tree; simply no longer counted here.
     // 15548 -> 16956 on 2026-09-25: +1408Mi, the same ArgoCD pricing.
@@ -1387,11 +1387,11 @@ describe("the checked-in resource ladder", () => {
     // 12965m against the smallest registered node's 16000m, green with 3035m spare.
     // 12965 -> 13215m / 27147 -> 27659Mi on 2026-09-27: temporal-postgres (a CNPG
     // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
-    // 13215 -> 14215m / 27659 -> 29635Mi on 2026-10-01: nine more BestEffort platform
+    // 13215 -> 14015m / 27659 -> 29635Mi on 2026-10-01: nine more BestEffort platform
     // Applications priced at the metal rung (cert-manager, trust-manager, sealed-secrets,
     // external-secrets, argo-rollouts, argo-workflows, headlamp, dapr, spire):
-    // +1000m / +1976Mi. 14215m against the smallest registered node's 16000m, 1785m spare.
-    expect(all.cpuMillis).toBe(14215);
+    // +800m / +1976Mi. 14015m against the smallest registered node's 16000m, 1985m spare.
+    expect(all.cpuMillis).toBe(14015);
     expect(all.memoryMib).toBe(29635);
   });
 
@@ -1539,8 +1539,8 @@ describe("the checked-in resource ladder", () => {
     // request, while this is a request that did not exist at EITHER rung. The
     // hardware this rung describes really does run those five pods, so a metal number
     // that had stayed put would have been the wrong kind of stable.
-    // +1000m/+1976Mi on 2026-10-01 from the nine platform Applications priced at both rungs.
-    expect(metal.cpuMillis).toBe(9140);
+    // +800m/+1976Mi on 2026-10-01 from the nine platform Applications priced at both rungs.
+    expect(metal.cpuMillis).toBe(8940);
     expect(metal.memoryMib).toBe(18932);
 
     // gmod is NO LONGER IN THE LANE, and this assertion is inverted rather than deleted

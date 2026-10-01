@@ -18,6 +18,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
+import { parse as parseYaml } from "yaml";
 
 interface SnapshotWorkload {
   readonly workload: string;
@@ -109,5 +110,58 @@ describe("platform controllers are priced, not BestEffort (081M3TS67PE087G0R002Z
       for (const dir of PRICED_PLATFORM_CONTROLLERS) expect(dirs.has(dir)).toBe(true);
     }
     expect(bestEffortWorkloads(snapshot, PRICED_PLATFORM_CONTROLLERS)).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The request the ledger cannot see: Longhorn's runtime instance-manager pod.
+// ---------------------------------------------------------------------------
+
+/** Smallest registered node (single-node-budget.json): 16 logical CPUs. */
+const SMALLEST_NODE_CPU_MILLIS = 16000;
+/** k3s-server.nix: kube-reserved 500m + system-reserved 250m shrink Allocatable. */
+const KUBELET_RESERVED_CPU_MILLIS = 750;
+/** Chart 1.12.1 README: "The default value is {"v1":"12","v2":"12"}". */
+const LONGHORN_DEFAULT_PERCENT = 12;
+
+/** The v1 guaranteed-instance-manager-cpu percent the Application sets, or the chart default. */
+export function longhornInstanceManagerPercent(applicationYaml: string): number {
+  const app = parseYaml(applicationYaml) as {
+    spec?: { source?: { helm?: { valuesObject?: { defaultSettings?: { guaranteedInstanceManagerCPU?: unknown } } } } };
+  };
+  const setting = app.spec?.source?.helm?.valuesObject?.defaultSettings?.guaranteedInstanceManagerCPU;
+  if (setting === undefined || setting === null) return LONGHORN_DEFAULT_PERCENT;
+  const v1 = typeof setting === "object" ? (setting as { v1?: unknown }).v1 : setting;
+  const n = Number(v1);
+  return Number.isFinite(n) ? n : LONGHORN_DEFAULT_PERCENT;
+}
+
+describe("Longhorn's instance-manager request is accounted against the node (081M3TS67PE087G0R002ZZ1XYT)", () => {
+  const allocatable = SMALLEST_NODE_CPU_MILLIS - KUBELET_RESERVED_CPU_MILLIS;
+
+  test("unset means the chart default 12% -- 1830m on the smallest node, which no ledger row counts", () => {
+    expect(longhornInstanceManagerPercent("spec: { source: { helm: { valuesObject: { defaultSettings: {} } } } }")).toBe(12);
+    expect((allocatable * LONGHORN_DEFAULT_PERCENT) / 100).toBe(1830);
+  });
+
+  test("the committed metal roster plus the instance manager fits the smallest node's allocatable CPU", async () => {
+    const { loadResourceCatalogue, resourceTotal, metalAppliedDirs } = await import("./storage-profiles.ts");
+    const catalogue = loadResourceCatalogue();
+    const roster = resourceTotal(catalogue, "metal", metalAppliedDirs() ?? []).cpuMillis;
+    const yaml = readFileSync(
+      new URL("../../../full-ai-cluster/k8s/applications/longhorn/Application.yaml", import.meta.url),
+      "utf8",
+    );
+    const percent = longhornInstanceManagerPercent(yaml);
+    const instanceManager = Math.ceil((allocatable * percent) / 100);
+    // At the chart default this is the tree BEFORE the fix: roster + 1830m > allocatable.
+    expect(roster + instanceManager).toBeLessThanOrEqual(allocatable);
+    expect(percent).toBeLessThanOrEqual(5);
+  });
+
+  test("the pre-fix arithmetic is over: the priced metal roster with the 12% default exceeds allocatable", () => {
+    // The roster as it stands with the platform controllers priced and the default left alone.
+    const roster = 14015;
+    expect(roster + Math.ceil((allocatable * LONGHORN_DEFAULT_PERCENT) / 100)).toBeGreaterThan(allocatable);
   });
 });

@@ -79,7 +79,7 @@ spec:
         cainjector:
           replicaCount: 1
           resources:
-            requests: { cpu: 50m, memory: 96Mi }
+            requests: { cpu: 25m, memory: 96Mi }
         prometheus:
           enabled: true
           servicemonitor:

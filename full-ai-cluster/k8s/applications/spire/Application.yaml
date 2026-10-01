@@ -135,7 +135,7 @@ spec:
             requests: { cpu: 100m, memory: 192Mi }
           controllerManager:
             resources:
-              requests: { cpu: 50m, memory: 64Mi }
+              requests: { cpu: 25m, memory: 64Mi }
           caSubject:
             country: US
             commonName: zeta-spire-ca

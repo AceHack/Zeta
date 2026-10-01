@@ -556,7 +556,7 @@
       "consequence": "Reconciles Rollout objects; idle until one exists. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
       "cpuMillis": {
         "dev": 15,
-        "metal": 50
+        "metal": 25
       },
       "memoryMib": {
         "dev": 48,
@@ -594,7 +594,7 @@
       "consequence": "Workflow controller; idle until a Workflow exists. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
       "cpuMillis": {
         "dev": 15,
-        "metal": 50
+        "metal": 25
       },
       "memoryMib": {
         "dev": 64,
@@ -727,7 +727,7 @@
       "consequence": "Injects the CA bundle into every webhook configuration; the control path for all webhook trust in the cluster. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
       "cpuMillis": {
         "dev": 15,
-        "metal": 50
+        "metal": 25
       },
       "memoryMib": {
         "dev": 64,
@@ -841,7 +841,7 @@
       "consequence": "Embedded-etcd scheduler, THREE replicas even with global.ha.enabled=false (chart default). One request, three pods. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
       "cpuMillis": {
         "dev": 15,
-        "metal": 50
+        "metal": 25
       },
       "memoryMib": {
         "dev": 96,
@@ -974,7 +974,7 @@
       "consequence": "The cluster console; the near-term portal. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
       "cpuMillis": {
         "dev": 15,
-        "metal": 50
+        "metal": 25
       },
       "memoryMib": {
         "dev": 64,
@@ -1620,7 +1620,7 @@
       "consequence": "Sidecar of spire-server; reconciles ClusterSPIFFEID. Hardcoded 20s liveness (no values coordinate), so it needs real CPU share. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
       "cpuMillis": {
         "dev": 15,
-        "metal": 50
+        "metal": 25
       },
       "memoryMib": {
         "dev": 48,

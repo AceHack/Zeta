@@ -38,6 +38,25 @@ spec:
           # with any extra NVMe sitting idle. The three parts (label, annotation,
           # this setting) are all required; none works alone.
           createDefaultDiskLabeledNodes: true
+          # THE REQUEST THE LEDGER CANNOT SEE (081M3TS67PE087G0R002ZZ1XYT).
+          # Longhorn creates one instance-manager pod per node at RUNTIME, requesting
+          # `guaranteedInstanceManagerCPU` percent of the node's TOTAL ALLOCATABLE CPU --
+          # chart 1.12.1 values.yaml / README: "The default value is
+          # {"v1":"12","v2":"12"}". No manifest in this tree renders that pod, so no
+          # `resourceClaims` row, snapshot or budget has ever counted it. On the
+          # smallest registered node (16000m, 15500m allocatable after the kubelet
+          # reservations in k3s-server.nix) 12% is 1860m: the committed `metal` roster
+          # (13215m before the platform controllers were priced) plus that pod was
+          # already 15075m of 15500m, and pricing the controllers (+1000m) would have
+          # tipped it over -- the last pods to schedule go Pending, forever. The pod is
+          # a REQUEST, not a limit, so lowering it costs scheduling weight under
+          # contention and nothing else; 5% is 775m on that node. This is the
+          # lever the chart exposes (a map, rendered with toJson by
+          # `longhorn.multiTypeSetting`); defaultSettings only take effect on first
+          # install, which is the case this tree exists for.
+          guaranteedInstanceManagerCPU:
+            v1: "5"
+            v2: "5"
           # Single control-plane node today. A replica count > the number of
           # schedulable nodes leaves every volume permanently "Degraded"
           # (Longhorn can't place the extra replicas), which surfaces as

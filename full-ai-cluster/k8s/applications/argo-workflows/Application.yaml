@@ -101,7 +101,7 @@ spec:
               podGC: { strategy: OnPodCompletion }
           parallelism: 50
           resources:
-            requests: { cpu: 50m, memory: 96Mi }
+            requests: { cpu: 25m, memory: 96Mi }
         server:
           authModes: [ server ]
           resources:

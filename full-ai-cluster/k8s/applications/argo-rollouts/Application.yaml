@@ -24,7 +24,7 @@ spec:
         controller:
           replicas: 1
           resources:
-            requests: { cpu: 50m, memory: 64Mi }
+            requests: { cpu: 25m, memory: 64Mi }
           # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED (helm pull
           # argo-rollouts 2.43.0 --untar) that templates/controller/deployment.yaml
           # renders `livenessProbe` only (`{{ toYaml .Values.controller.livenessProbe }}`)
