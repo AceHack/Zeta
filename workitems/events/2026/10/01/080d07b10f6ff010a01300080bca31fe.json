@@ -1,0 +1,14 @@
+{
+  "id": "080d07b10f6ff010a01300080bca31fe",
+  "at": "2026-10-01T06:23:33.886Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3V23VFX087G0R002WDSN8W",
+    "type": "bug",
+    "title": "hindsight's bundled postgres password is the chart literal hindsight:hindsight and the chart offers no way to mint it (0.9.2 and 0.10.2)",
+    "slug": "hindsight-s-bundled-postgres-password-is-the-chart-literal-h",
+    "priority": "P2",
+    "filename": "081M3V23VFX087G0R002WDSN8W-hindsight-s-bundled-postgres-password-is-the-chart-literal-h.md"
+  }
+}
