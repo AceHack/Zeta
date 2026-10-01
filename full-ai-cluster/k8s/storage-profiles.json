@@ -484,8 +484,8 @@
   ],
   "acknowledgedLaneBudgetShortfall": [
     {
-      "key": "dev memory 9996>9216",
-      "reason": "THE FIRST HONEST PRICING OF ANY BestEffort APP WAS ALWAYS GOING TO TIP THIS LANE, and ArgoCD happened to be the one that did it. Before this change the dev lane declared 9100Mi against a 9216Mi budget -- 116Mi of headroom, 98.7% consumed -- while 26 of 49 Applications rendered pods requesting NOTHING and therefore contributed 0Mi to that total. The lane was not fitting; it was fitting because most of what it runs was invisible to the arithmetic. Pricing the ArgoCD control plane (768Mi at the dev rung across five components) makes 652Mi of that invisibility visible and nothing else about the lane changed. UPDATE 2026-09-30: the oz (OpenZiti) controller, also BestEffort, was priced at 128Mi for the same reason, moving the lane 9868Mi -> 9996Mi (780Mi over); it is the first of the 'other 25' named below to be paid. WHY THE OVERFLOW IS NOT ABSORBED BY SMALLER REQUESTS: the defect being repaired is an under-request. Dispatch 36097310492 watched the WP11 roster peak at 25/35 Synced+Healthy and fall BACKWARDS to 13/35, which rules out slowness -- more wall clock made it worse. Whether the fall was eviction or overlapping reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) is not settled and is not claimed; what is measured is that every ArgoCD pod was BestEffort, which is the first thing the kubelet evicts and the last thing a starved renderer needs to be. Shrinking these requests to clear a budget line would restore the exact condition that produced the regression, in the lane whose whole job is to catch it. The dev numbers are already the smaller of the two rungs, chosen against the 40-app kind/k3d workload rather than the 145-pod metal roster. WHAT IS ACTUALLY OWED: the other 25 Applications that still request nothing -- missing-resource-requests.ts names 18 remaining ACTIONABLE rows with the chart coordinate for each. Pricing them will make this number worse before it gets better, and that is the point: the budget must be measured against what the lane RUNS, not against what it happens to have declared.",
+      "key": "dev memory 11396>9216",
+      "reason": "THE FIRST HONEST PRICING OF ANY BestEffort APP WAS ALWAYS GOING TO TIP THIS LANE, and ArgoCD happened to be the one that did it. Before this change the dev lane declared 9100Mi against a 9216Mi budget -- 116Mi of headroom, 98.7% consumed -- while 26 of 49 Applications rendered pods requesting NOTHING and therefore contributed 0Mi to that total. The lane was not fitting; it was fitting because most of what it runs was invisible to the arithmetic. Pricing the ArgoCD control plane (768Mi at the dev rung across five components) makes 652Mi of that invisibility visible and nothing else about the lane changed. UPDATE 2026-09-30: the oz (OpenZiti) controller, also BestEffort, was priced at 128Mi for the same reason, moving the lane 9868Mi -> 9996Mi (780Mi over); it is the first of the 'other 25' named below to be paid. WHY THE OVERFLOW IS NOT ABSORBED BY SMALLER REQUESTS: the defect being repaired is an under-request. Dispatch 36097310492 watched the WP11 roster peak at 25/35 Synced+Healthy and fall BACKWARDS to 13/35, which rules out slowness -- more wall clock made it worse. Whether the fall was eviction or overlapping reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) is not settled and is not claimed; what is measured is that every ArgoCD pod was BestEffort, which is the first thing the kubelet evicts and the last thing a starved renderer needs to be. Shrinking these requests to clear a budget line would restore the exact condition that produced the regression, in the lane whose whole job is to catch it. The dev numbers are already the smaller of the two rungs, chosen against the 40-app kind/k3d workload rather than the 145-pod metal roster. WHAT IS ACTUALLY OWED: the other 25 Applications that still request nothing -- missing-resource-requests.ts names 18 remaining ACTIONABLE rows with the chart coordinate for each. Pricing them will make this number worse before it gets better, and that is the point: the budget must be measured against what the lane RUNS, not against what it happens to have declared. NEXT INSTALMENT, 2026-10-01 (081M3TS67PE087G0R002ZZ1XYT): pricing the platform controllers that WP32 left BestEffort -- cert-manager (3), trust-manager, sealed-secrets, external-secrets (3), argo-rollouts (2), argo-workflows (2), headlamp, dapr (5 workloads, 7 pods), spire (5 containers) -- adds 1400Mi at the dev rung (9996 -> 11396) and 395m of CPU (still inside the 2500m CPU budget at 2435m, so CPU needs no acknowledgement). The motive is the same measured one: the constrained first-boot replica on main (2026-09-30, run 36685251210) had 19 of 38 Applications FAIL while the unconstrained lane had them Healthy. The numbers are estimates sized to leave BestEffort, not usage readings.",
       "liftsWhen": "LIFTS WHEN: `storage-profiles.ts --resource-profile dev --budget` reports the dev lane's memory total at or under the 9216Mi runner budget -- the gate itself, not a paraphrase of it. Two routes reach it and either one suffices: the reserved headroom is re-measured against what the lane actually consumes (the 6144Mi reservation was sized when most of the lane was BestEffort and invisible), or the dev lane partition sheds enough Applications that the priced roster fits. Pricing MORE apps moves this number the wrong way and must not be read as a reason to stop."
     }
   ],
@@ -542,6 +542,82 @@
       "memoryMib": {
         "dev": 64,
         "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/argo-rollouts/controller",
+      "dir": "argo-rollouts",
+      "path": "full-ai-cluster/k8s/applications/argo-rollouts/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.controller.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Reconciles Rollout objects; idle until one exists. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/argo-rollouts/dashboard",
+      "dir": "argo-rollouts",
+      "path": "full-ai-cluster/k8s/applications/argo-rollouts/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.dashboard.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Read-only UI. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 48
+      }
+    },
+    {
+      "id": "full-ai-cluster/argo-workflows/controller",
+      "dir": "argo-workflows",
+      "path": "full-ai-cluster/k8s/applications/argo-workflows/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.controller.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Workflow controller; idle until a Workflow exists. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
+      }
+    },
+    {
+      "id": "full-ai-cluster/argo-workflows/server",
+      "dir": "argo-workflows",
+      "path": "full-ai-cluster/k8s/applications/argo-workflows/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.server.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "argo-server UI/API. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
       }
     },
     {
@@ -640,6 +716,63 @@
       }
     },
     {
+      "id": "full-ai-cluster/cert-manager/cainjector",
+      "dir": "cert-manager",
+      "path": "full-ai-cluster/k8s/applications/cert-manager/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.cainjector.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Injects the CA bundle into every webhook configuration; the control path for all webhook trust in the cluster. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
+      }
+    },
+    {
+      "id": "full-ai-cluster/cert-manager/controller",
+      "dir": "cert-manager",
+      "path": "full-ai-cluster/k8s/applications/cert-manager/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Issues every Certificate in the roster. BestEffort took cpu.weight 1 of the pod set; a starved controller does not renew, and every webhook CA hangs off it. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
+      }
+    },
+    {
+      "id": "full-ai-cluster/cert-manager/webhook",
+      "dir": "cert-manager",
+      "path": "full-ai-cluster/k8s/applications/cert-manager/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.webhook.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Admission webhook for every cert-manager.io object. A starved webhook turns each Certificate write into a timeout. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 48
+      }
+    },
+    {
       "id": "full-ai-cluster/cloudnativepg/manager",
       "dir": "cloudnativepg",
       "path": "full-ai-cluster/k8s/applications/cloudnativepg/Application.yaml",
@@ -659,6 +792,158 @@
       }
     },
     {
+      "id": "full-ai-cluster/dapr/operator",
+      "dir": "dapr",
+      "path": "full-ai-cluster/k8s/applications/dapr/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.dapr_operator.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Dapr control plane: reconciles Components/Subscriptions. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
+      }
+    },
+    {
+      "id": "full-ai-cluster/dapr/placement",
+      "dir": "dapr",
+      "path": "full-ai-cluster/k8s/applications/dapr/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.dapr_placement.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Actor placement table. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/dapr/scheduler",
+      "dir": "dapr",
+      "path": "full-ai-cluster/k8s/applications/dapr/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.dapr_scheduler.resources.requests",
+      "pods": 3,
+      "metalSource": "manifest",
+      "evidence": "MEASURED 2026-10-01 by `helm template dapr 1.18.3` with this Application valuesObject: StatefulSet/dapr-scheduler-server renders replicas 3 with ha disabled, and `dapr_scheduler.resources` reaches its one container. Sized as an ESTIMATE for an embedded etcd, not a measurement: a request is a reservation, and 128Mi metal / 96Mi dev is the floor that keeps a quorum member from being the first eviction candidate.",
+      "consequence": "Embedded-etcd scheduler, THREE replicas even with global.ha.enabled=false (chart default). One request, three pods. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 96,
+        "metal": 128
+      }
+    },
+    {
+      "id": "full-ai-cluster/dapr/sentry",
+      "dir": "dapr",
+      "path": "full-ai-cluster/k8s/applications/dapr/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.dapr_sentry.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Dapr mTLS CA; a starved sentry blocks every sidecar identity. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/dapr/sidecar-injector",
+      "dir": "dapr",
+      "path": "full-ai-cluster/k8s/applications/dapr/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.dapr_sidecar_injector.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Admission webhook that injects daprd into annotated pods. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/external-secrets/cert-controller",
+      "dir": "external-secrets",
+      "path": "full-ai-cluster/k8s/applications/external-secrets/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.certController.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Keeps the webhook serving cert valid; idle in steady state. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 48
+      }
+    },
+    {
+      "id": "full-ai-cluster/external-secrets/controller",
+      "dir": "external-secrets",
+      "path": "full-ai-cluster/k8s/applications/external-secrets/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Reconciles every ExternalSecret; a starved controller leaves Secrets unminted and their consumers in CreateContainerConfigError. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
+      }
+    },
+    {
+      "id": "full-ai-cluster/external-secrets/webhook",
+      "dir": "external-secrets",
+      "path": "full-ai-cluster/k8s/applications/external-secrets/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.webhook.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Admission webhook for ExternalSecret/SecretStore objects. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 48
+      }
+    },
+    {
       "id": "full-ai-cluster/game-hosting/gmod/server",
       "dir": "game-hosting/gmod",
       "path": "full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml",
@@ -675,6 +960,25 @@
       "memoryMib": {
         "dev": 2048,
         "metal": 2048
+      }
+    },
+    {
+      "id": "full-ai-cluster/headlamp/headlamp",
+      "dir": "headlamp",
+      "path": "full-ai-cluster/k8s/applications/headlamp/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "The cluster console; the near-term portal. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
       }
     },
     {
@@ -1248,6 +1552,25 @@
       }
     },
     {
+      "id": "full-ai-cluster/sealed-secrets/controller",
+      "dir": "sealed-secrets",
+      "path": "full-ai-cluster/k8s/applications/sealed-secrets/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Holds the sealing keypair. Evicting it first (BestEffort) is the one failure that matters for this chart. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 48
+      }
+    },
+    {
       "id": "full-ai-cluster/seaweedfs/all-in-one",
       "dir": "seaweedfs",
       "path": "full-ai-cluster/k8s/applications/seaweedfs/Application.yaml",
@@ -1264,6 +1587,101 @@
       "memoryMib": {
         "dev": 512,
         "metal": 1024
+      }
+    },
+    {
+      "id": "full-ai-cluster/spire/agent",
+      "dir": "spire",
+      "path": "full-ai-cluster/k8s/applications/spire/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.spire-agent.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "DaemonSet: one per node. On a multi-node cluster this value is multiplied by the node count. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 50
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 96
+      }
+    },
+    {
+      "id": "full-ai-cluster/spire/controller-manager",
+      "dir": "spire",
+      "path": "full-ai-cluster/k8s/applications/spire/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.spire-server.controllerManager.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Sidecar of spire-server; reconciles ClusterSPIFFEID. Hardcoded 20s liveness (no values coordinate), so it needs real CPU share. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 48,
+        "metal": 64
+      }
+    },
+    {
+      "id": "full-ai-cluster/spire/csi-driver",
+      "dir": "spire",
+      "path": "full-ai-cluster/k8s/applications/spire/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.spiffe-csi-driver.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "DaemonSet: one per node. Mounts SVIDs into pods. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 32
+      }
+    },
+    {
+      "id": "full-ai-cluster/spire/csi-registrar",
+      "dir": "spire",
+      "path": "full-ai-cluster/k8s/applications/spire/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.spiffe-csi-driver.nodeDriverRegistrar.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "DaemonSet sidecar: kubelet registration. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 24,
+        "metal": 24
+      }
+    },
+    {
+      "id": "full-ai-cluster/spire/server",
+      "dir": "spire",
+      "path": "full-ai-cluster/k8s/applications/spire/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.spire-server.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "SPIRE CA + registration; sqlite on the PVC. A starved server stops issuing SVIDs. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 100
+      },
+      "memoryMib": {
+        "dev": 128,
+        "metal": 192
       }
     },
     {
@@ -1360,6 +1778,25 @@
         "dev": 64,
         "metal": 128
       }
+    },
+    {
+      "id": "full-ai-cluster/trust-manager/trust-manager",
+      "dir": "trust-manager",
+      "path": "full-ai-cluster/k8s/applications/trust-manager/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE: `missing-resource-requests.ts` lists this Application ACTIONABLE (the chart takes a `resources` key and ships `resources: {}`), so the pod is BestEffort -- QoS class evicted first, cgroup cpu.weight 1. MEASURED 2026-10-01 by `helm template` at the pinned chart version with this Application's own valuesObject: the coordinate reaches the container's `resources.requests`. THE NUMBERS ARE ESTIMATES, NOT MEASUREMENTS -- a request is a reservation, not a usage reading; they are sized to keep the pod out of BestEffort and below typical idle use, and `metal` reproduces the committed literal exactly. WHY NOW: the constrained first-boot replica on main (2026-09-30, run 36685251210, 4 vCPU) had 19 of 38 Applications FAIL while the unconstrained lane the day before had them Healthy; BestEffort pods are first to starve and first to be reclaimed.",
+      "consequence": "Distributes the trust bundle (ziti-controller sources one). Crash-looped under the constrained first-boot replica with no liveness probe: a process exit, not a probe kill. Dev cuts CPU (compressible: a small share throttles, it never kills) and trims memory only to an idle working-set floor; a request cut below the working set would turn a Pending pod into an OOMKill, which is why these are flagged estimates.",
+      "cpuMillis": {
+        "dev": 15,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 48
+      }
     }
   ],
   "ungovernedRequests": [
@@ -1376,28 +1813,10 @@
       "evidence": "gha-runner-scale-set 0.12.1 rendered 2026-08-21: no container declares requests."
     },
     {
-      "dir": "argo-rollouts",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "argo-rollouts 2.39.5 rendered 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "argo-workflows",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "argo-workflows 0.42.5 rendered 2026-08-21: chart default resources are unset."
-    },
-    {
       "dir": "cdi",
       "cpuMillis": 100,
       "memoryMib": 150,
       "evidence": "In-repo vendored CDI operator manifest; summed 2026-08-21. Vendored byte-for-byte from upstream, so it is deliberately not governed -- editing it would make the checked-in copy diverge from what upstream ships."
-    },
-    {
-      "dir": "cert-manager",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "cert-manager v1.16.2 rendered 2026-08-21: chart default resources are unset."
     },
     {
       "dir": "cilium",
@@ -1418,22 +1837,10 @@
       "evidence": "cockroachdb 14.0.5 rendered with this Application's valuesObject, 2026-08-21: resources unset."
     },
     {
-      "dir": "dapr",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "dapr 1.14.4 rendered 2026-08-21: chart default resources are unset."
-    },
-    {
       "dir": "deepseek-coder",
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane."
-    },
-    {
-      "dir": "external-secrets",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "external-secrets 0.10.7 rendered 2026-08-21: chart default resources are unset."
     },
     {
       "dir": "forgejo",
@@ -1452,12 +1859,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "In-repo manifests declare no requests."
-    },
-    {
-      "dir": "headlamp",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "headlamp 0.30.1 rendered 2026-08-21: chart default resources are unset."
     },
     {
       "dir": "kube-prometheus-stack",
@@ -1508,18 +1909,6 @@
       "evidence": "In-repo manifests declare no requests. Glob-excluded from the dev lane."
     },
     {
-      "dir": "sealed-secrets",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "sealed-secrets 2.16.2 rendered 2026-08-21: chart default resources are unset. (Pulled from the GitHub release tarball. The note here used to say the pinned repoURL was stale because https://bitnami-labs.github.io/sealed-secrets 404s -- that URL still 404s, RE-CHECKED 2026-09-04, but the Application no longer uses it: the repoURL was corrected to https://bitnami.github.io/sealed-secrets on 2026-08-21 and that index.yaml answers 200. The stale claim was in this evidence string, not in the manifest.)"
-    },
-    {
-      "dir": "spire",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "spire 0.24.2 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
-    },
-    {
       "dir": "spire-crds",
       "cpuMillis": 0,
       "memoryMib": 0,
@@ -1530,12 +1919,6 @@
       "cpuMillis": 0,
       "memoryMib": 0,
       "evidence": "tempo 1.18.0 rendered with this Application's valuesObject, 2026-08-21: chart default resources are unset."
-    },
-    {
-      "dir": "trust-manager",
-      "cpuMillis": 0,
-      "memoryMib": 0,
-      "evidence": "trust-manager v0.15.0 rendered 2026-08-21: chart default resources are unset."
     },
     {
       "dir": "vllm",

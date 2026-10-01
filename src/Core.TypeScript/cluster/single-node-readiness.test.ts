@@ -1743,6 +1743,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // 6690m -> 7690m on 2026-09-04: `opensearch` was added, one StatefulSet pod at the
     // metal rung's 1000m (081M1Q1XHVV087G0R0034X846M). Same property, same mutation,
     // fourth value -- which is the point of writing the sequence rather than the number.
+    // 8190m -> 8990m on 2026-10-01: nine BestEffort platform controllers priced (+800m), a seventh value.
     // 8140m -> 8190m on 2026-09-30: the oz controller was priced (50m), a sixth value.
     // 7390m -> 8140m on 2026-09-25: the ArgoCD control plane was priced. All five of its
     // components requested NOTHING at every rung, so the lane's declared total had never
@@ -1750,7 +1751,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // Note what the sequence shows now it is five long: every entry is a number going UP
     // because something previously invisible was counted, and none of them is the tree
     // getting heavier. That is the sequence earning its keep over any single reading.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("8190m", "8641m"));
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("8990m", "9441m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });
