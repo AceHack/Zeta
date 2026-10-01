@@ -289,7 +289,7 @@ node = "24"
 #
 # Keep the version in sync with `devDependencies.markdownlint-cli2` in package.json
 # (audit-tool-pin-agreement.test.ts enforces it, table form included).
-"npm:markdownlint-cli2" = { version = "0.23.2", trust_policy_excludes = ["fastq@1.20.2"] }
+"npm:markdownlint-cli2" = { version = "0.23.3", trust_policy_excludes = ["fastq@1.20.2"] }
 # semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
 # here per the three-way-parity invariant (GOVERNANCE §24) — dev
 # laptops + CI runners + devcontainers all get the same semgrep
