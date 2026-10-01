@@ -1,0 +1,14 @@
+{
+  "id": "080d07c164355010a01300084fe432c1",
+  "at": "2026-10-01T15:54:22.762Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3W2S1N8087G0R00211ZZ6P",
+    "type": "bug",
+    "title": "k3s control plane exits on a lost leader-election lease under a CPU/IO burst",
+    "slug": "k3s-control-plane-exits-on-a-lost-leader-election-lease-unde",
+    "priority": "P2",
+    "filename": "081M3W2S1N8087G0R00211ZZ6P-k3s-control-plane-exits-on-a-lost-leader-election-lease-unde.md"
+  }
+}

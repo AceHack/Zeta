@@ -348,6 +348,58 @@
       # refuse to build a node whose Cilium manifests disagree with these values.
       "--cluster-cidr=${config.zeta.cluster.podCidr}"
       "--service-cidr=${config.zeta.cluster.serviceCidr}"
+
+      # ── LEADER ELECTION: a slow disk must be a DELAY, not an exit ─────────────
+      #
+      # THE DEFECT, MEASURED. WP11 run 36875247887 restarted k3s.service 19 times;
+      # the serial log's `k3s-exits` timeline ends every one of them on a lost
+      # lease -- `controllermanager.go:368 "leaderelection lost"`
+      # (kube-controller-manager), `controllermanager.go:265 "leaderelection lost"`
+      # (cloud-controller-manager), and k3s's own `level=fatal`. Upstream components
+      # treat a lost lease as FATAL and k3s runs them inside ONE process, so the
+      # whole control plane exits and systemd restarts it onto the same starved
+      # disk. What starved it was ordinary: CPU PSI 84%, IO PSI 96%, and etcd
+      # `apply request took too long` at 3-5 s with requests 5-10 s, against client
+      # lease renewals that give up after the defaults (lease 15 s, renew deadline
+      # 10 s, a 5 s request timeout). Nothing about it is specific to a CI guest: any
+      # first boot under a CPU/IO burst (the first k3s process pulled 4.3 GB and wrote 17.7 GB) is
+      # in the same position.
+      #
+      # THE FIX. Widen the three windows on all three components that elect, so a
+      # renewal can ride out a ~60 s stall:
+      #
+      #   lease-duration  90s   how long a lease stays valid without renewal
+      #   renew-deadline  60s   how long the leader keeps retrying a renewal before
+      #                         it gives up the lease (and the process exits)
+      #   retry-period    10s   how often it retries
+      #
+      # THE INVARIANT, which client-go enforces at startup and refuses to run
+      # without: lease-duration > renew-deadline > retry-period * 1.2 (JitterFactor).
+      # 90 > 60 > 12. The test pins it, because a "bigger" value that breaks the
+      # ordering turns a slow disk into a boot failure instead of curing it.
+      #
+      # THE COST, STATED. Failover is slower. On a multi-server cluster, a crashed
+      # LEADER is replaced only after its lease expires: up to lease-duration
+      # (90 s) instead of 15 s for the controller-manager, the scheduler and the
+      # cloud-controller-manager. Their work (reconciling, scheduling NEW pods) is
+      # paused for that long on a leader crash; running pods are untouched. On a
+      # single server there is no failover to delay. A slow-but-alive leader, which is
+      # what the measured failures were, now survives instead of killing the node.
+      #
+      # WHAT THIS DOES NOT COVER. k3s's own election (`leaderelection lost for k3s`,
+      # `... for k3s-etcd`, also seen in that timeline) is compiled into k3s and has
+      # no flag; and etcd's own heartbeat/election timeouts are untouched here.
+      # Neither is claimed fixed. The next WP11 run's `k3s-exits` timeline says
+      # whether these three were the ones that mattered.
+      "--kube-controller-manager-arg=leader-elect-lease-duration=90s"
+      "--kube-controller-manager-arg=leader-elect-renew-deadline=60s"
+      "--kube-controller-manager-arg=leader-elect-retry-period=10s"
+      "--kube-scheduler-arg=leader-elect-lease-duration=90s"
+      "--kube-scheduler-arg=leader-elect-renew-deadline=60s"
+      "--kube-scheduler-arg=leader-elect-retry-period=10s"
+      "--kube-cloud-controller-manager-arg=leader-elect-lease-duration=90s"
+      "--kube-cloud-controller-manager-arg=leader-elect-renew-deadline=60s"
+      "--kube-cloud-controller-manager-arg=leader-elect-retry-period=10s"
     ];
 
     # ORDERING: what the mechanism actually does.
