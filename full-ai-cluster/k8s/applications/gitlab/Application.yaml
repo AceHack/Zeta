@@ -216,6 +216,9 @@ spec:
           # waiting for a busy pipeline. 4 keeps a build burst inside what the node can hold; it
           # is one `concurrent =` line to raise on a bigger machine.
           concurrent: 4
+          # Stop the old manager before starting the new one (see the `strategy` note on `gitlab:` below):
+          # no spare capacity needed, and never two managers polling GitLab for the same jobs.
+          strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
           # Created only after the token Job (wave 5) has run, so the first pod reads a real
           # token instead of burning its 30 register attempts on an empty one and crash-looping.
           deploymentAnnotations:
@@ -245,11 +248,33 @@ spec:
           # ArgoCD Application, sync and prune scope as the Services they route to.
           extraObjects:
             # --- LAN exposure (see global.hosts above) ------------------------------------
+            # SYNC-WAVE 20 ON ALL THREE EXPOSURE OBJECTS -- AFTER THE RUNNER (10) AND THE TOKEN JOB (5).
+            #
+            # MEASURED LIVE, run 36871713092 (the first lane run on the production pin path): the Gateway
+            # sat in the default wave 0 and ArgoCD's health gate holds EVERY later wave until it is Healthy.
+            # But the install-time Job `gitlab-lan-address` can only patch this Application AFTER it exists,
+            # and ArgoCD starts its first sync the moment it does, so that first sync renders the Gateway
+            # with the 192.0.2.250 sentinel -- an address in no pool, so Cilium never assigns it. The
+            # operation then sat on `waiting for healthy state of Gateway/gitlab-lan` for 30+ minutes:
+            # Application OutOfSync/Progressing, the patched values never applied (a running operation does
+            # not re-apply objects it has already applied), `Job gitlab-runner-token` and the runner
+            # Deployment NEVER CREATED. GitLab itself was up and reachable in-cluster; its CI runner could
+            # not exist. The same hold applies on an install with NO resolved LB range, where the sentinel
+            # is never replaced.
+            #
+            # Exposure is the one part of this release that depends on something outside it (a pin that
+            # lands after the first sync starts, a pool that may not exist), and nothing else in the release
+            # depends on exposure -- the runner and the token Job reach GitLab through the in-cluster
+            # Service. So it syncs LAST. A wave that has not been reached yet is built from the Application's
+            # CURRENT values, so by the time wave 20 is applied the pin has long landed and the Gateway is
+            # created with the real address. Falsifier: gitlab-exposure.test.ts (f).
             - apiVersion: gateway.networking.k8s.io/v1
               kind: Gateway
               metadata:
                 name: gitlab-lan
                 namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "20"
               spec:
                 gatewayClassName: cilium
                 # Cilium LB-IPAM honours spec.addresses (IPAddress type only). Read from
@@ -269,6 +294,8 @@ spec:
               metadata:
                 name: gitlab-web
                 namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "20"
               spec:
                 parentRefs:
                   - { name: gitlab-lan }
@@ -282,6 +309,8 @@ spec:
               metadata:
                 name: gitlab-registry
                 namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "20"
               spec:
                 parentRefs:
                   - { name: gitlab-lan }
@@ -496,6 +525,19 @@ spec:
         # Coordinates: webservice/sidekiq/gitlab-shell are subcharts of the umbrella's own
         # `gitlab` chart (so `gitlab.<name>.minReplicas`); registry nests under `hpa`.
         # Falsifier: cluster/gitlab-runner-bringup.test.ts (h).
+        #
+        # ROLLOUTS MUST NOT NEED SPARE CAPACITY -- `deployment.strategy` IS maxSurge 0 / maxUnavailable 1 ON EVERY
+        # DEPLOYMENT HERE (webservice, sidekiq, gitlab-shell, registry below, the runner above).
+        # MEASURED LIVE, run 36881451548, on a 4-vCPU node already holding GitLab at 3160m of 4000m requested: the
+        # install-time address pin re-renders this Application after its first sync, so a FRESH install rolls every
+        # component once, and the Deployment default (RollingUpdate, maxSurge 25%) starts the NEW pod before it
+        # stops the old one. sidekiq asks 900m; 840m was free; the surge pod sat `Pending: 0/1 nodes are available:
+        # 1 Insufficient cpu` for 14 minutes, the rollout hit its progress deadline, the Application went Degraded,
+        # and the operation never reached the exposure wave -- so the LAN Gateway was never created at the pinned
+        # address. A single-replica workload on one node gains nothing from surge (there is no second node for the
+        # old pod to keep serving from, and its memory/CPU request is counted twice while both exist); it costs a
+        # stall whenever headroom < one pod. maxSurge 0 stops the old pod first, which needs no headroom at all.
+        # Falsifier: gitlab-exposure.test.ts (g).
         gitlab:
           gitaly:
             # ESSENTIAL TIER: `system-cluster-critical`. This StatefulSet holds the only copy of
@@ -503,14 +545,23 @@ spec:
             # evict it before any optional workload. Built-in class: no apply-order hazard.
             # Pinned by cluster/essential-priority.test.ts.
             priorityClassName: system-cluster-critical
-          webservice: { minReplicas: 1, maxReplicas: 2 }
-          sidekiq: { minReplicas: 1, maxReplicas: 2 }
+          webservice:
+            minReplicas: 1
+            maxReplicas: 2
+            deployment: { strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } } }
+          sidekiq:
+            minReplicas: 1
+            maxReplicas: 2
+            deployment: { strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } } }
           gitlab-shell:
             minReplicas: 1
             maxReplicas: 1
             deployment:
+              strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
               livenessProbe:
                 failureThreshold: 20
+          gitlab-exporter:
+            deployment: { strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } } }
         # Container registry's object storage is a SEPARATE config surface from
         # `global.appConfig.object_store` above -- `charts/registry` is a Go binary, not the
         # Rails app, and reads its own `storage.secret`/`storage.key` (default "config"),
@@ -536,6 +587,7 @@ spec:
           # failureThreshold: 20 (chart's own initialDelaySeconds/periodSeconds
           # unchanged) -> kill budget 5+19*10=195s.
           deployment:
+            strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
             livenessProbe:
               failureThreshold: 20
         # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.

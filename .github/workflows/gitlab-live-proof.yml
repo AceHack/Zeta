@@ -1,0 +1,240 @@
+# GitLab LIVE proof -- deploy GitLab on a hosted runner and assert that it works.
+#
+# WHY THIS LANE EXISTS
+# --------------------
+# GitLab had been repaired on paper four times (#17711, #17737, #17763, #17796) and had NEVER been
+# deployed by any CI lane: the WP11 installed-disk guest excludes `gitlab/**`
+# (full-ai-cluster/k8s/wp11-ci-envelope.json), the shared kind lanes exclude it
+# (DEFAULT_ROOT_DEV_CATALOG), and the docs say it was "never asserted Healthy anywhere". This lane
+# deploys ONLY what GitLab needs -- kind + the shipped Cilium (the Gateway API controller its `gitlab-lan`
+# Gateway uses), ArgoCD, the dev StorageClass aliases and dev-minted Secrets, SeaweedFS (its object
+# store) -- and then the `gitlab` Application itself, and asserts (a)..(f) as separately named checks
+# (src/Core.TypeScript/cluster/gitlab-live-proof.ts): each ends passed / failed / did-not-run, and
+# did-not-run is never a pass.
+#
+# WHEN IT RUNS. By hand (`gh workflow run gitlab-live-proof.yml --ref <branch>`), weekly, and on a pull
+# request that touches what it deploys or asserts. NOT on every PR: GitLab at the chart's own sizes is
+# ~5.8 GiB of memory requests on top of the cluster floor -- too much for the shared per-PR lanes' budget,
+# which is why it is deferred there, and fine for one 16 GiB runner (measured, run 36886512326: peak 7.0 GiB
+# used with 9.0 GiB still available, 13 GiB of the ~77 GiB free disk, load 5.1 on 4 vCPU, the proof step
+# 20 minutes). The path filter is the point of the PR
+# trigger: the four GitLab fixes before this lane existed were each a claim about a running system that
+# no CI run could contradict, and a change to those files now runs the system.
+#
+# MEASURED FINDINGS THIS LANE HAS ALREADY PRODUCED (each pinned by an offline falsifier):
+#   * kind has no metrics.k8s.io, k3s does; GitLab's HPAs then read Degraded and hold wave 0 (lane substrate);
+#   * the exposure Gateway sat in wave 0 and, with the install-time pin landing after ArgoCD's first sync,
+#     held the token Job and the runner forever -- the runner could not exist (gitlab-exposure.test.ts f);
+#   * the pin re-renders the Application, so a FRESH install rolls every Deployment once, and the default
+#     maxSurge needs a spare pod's worth of CPU that a single node does not have (gitlab-exposure.test.ts g).
+
+name: gitlab-live-proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      ready_sec:
+        description: "Seconds to wait for the five GitLab components to be Ready (from the Application being applied)"
+        required: false
+        default: "2700"
+        type: string
+      phase_sec:
+        description: "Seconds each later phase (login, token Job, runner, pipeline, gateway) may take"
+        required: false
+        default: "900"
+        type: string
+      pin:
+        description: "How GitLab's LAN address is pinned: `job` = the installer's lb-pool Application + Job gitlab-lan-address (what a node does); `inline` = the lane patches it itself (debug only; f0 then reads did-not-run)"
+        required: false
+        default: "job"
+        type: choice
+        options: ["job", "inline"]
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - ".github/workflows/gitlab-live-proof.yml"
+      - "src/Core.TypeScript/cluster/gitlab-live-proof.ts"
+      - "src/Core.TypeScript/cluster/gitlab-live-proof.test.ts"
+      # What it deploys: GitLab itself, its object store, the installer's address-pin Application, and the
+      # kind LB-IPAM alias the lane's address comes from.
+      - "full-ai-cluster/k8s/applications/gitlab/**"
+      - "full-ai-cluster/k8s/applications/seaweedfs/**"
+      - "full-ai-cluster/k8s/lb-ipam/**"
+      - "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml"
+      # The bring-up it reuses.
+      - "src/Core.TypeScript/cluster/dev-cluster/**"
+  schedule:
+    # Weekly, Monday 05:17 UTC (off :00/:30). Public repository, standard runner: zero billable minutes.
+    - cron: "17 5 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gitlab-live-proof-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  proof:
+    name: GitLab live proof (kind + Cilium, ubuntu-24.04)
+    # `.mise.full.toml` carries kind/kubectl/helm and the shim resolve needs MISE_ENV=full at install AND
+    # run time -- job level, never step level (workitem 081KTWQZY7F).
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Offline falsifiers for the proof
+        run: bun test src/Core.TypeScript/cluster/gitlab-live-proof.test.ts
+
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
+      - name: Preflight the WireGuard kernel path on the runner
+        run: |
+          set -euo pipefail
+          iface="$(bun src/Core.TypeScript/cluster/cilium-kind-lane.ts --print-wg-probe-iface)"
+          sudo modprobe wireguard
+          sudo ip link add dev "$iface" type wireguard
+          sudo ip link del dev "$iface"
+
+      - name: Measure the runner (the limiting resource, if there is one, is read off these numbers)
+        run: |
+          set -euo pipefail
+          {
+            echo "### Runner"
+            echo '```'
+            echo "cpus: $(nproc)"
+            grep -E 'MemTotal|MemAvailable|SwapTotal' /proc/meminfo
+            df -h / /var/lib/docker 2>/dev/null || df -h /
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          # A sampler that outlives this step: one line per 30s of memory / swap / disk / load, so an
+          # OOM or a full disk is visible in the log as a trend instead of as a mystery.
+          # The single quotes are the point: the inner shell, not this one, expands every `$`.
+          # shellcheck disable=SC2016
+          nohup bash -c 'while true; do printf "%s | " "$(date +%T)"; free -m | awk "/Mem:/{printf \"mem used=%sMi avail=%sMi \", \$3, \$7} /Swap:/{printf \"swap used=%sMi \", \$3}"; printf "| disk avail=%s | load=%s\n" "$(df -BM --output=avail / | tail -1 | tr -d " ")" "$(cut -d" " -f1 /proc/loadavg)"; sleep 30; done' > "$RUNNER_TEMP/sampler.log" 2>&1 &
+
+      - name: Bring up the lane, deploy GitLab, assert (a)-(f)
+        id: proof
+        env:
+          ZETA_GHCR_PULL_TOKEN: ${{ github.token }}
+          GITLAB_PROOF_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          READY_SEC: ${{ inputs.ready_sec || '2700' }}
+          PHASE_SEC: ${{ inputs.phase_sec || '900' }}
+          PIN_MODE: ${{ inputs.pin || 'job' }}
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/gitlab-live-proof.ts \
+            --run \
+            --cluster-name zeta-ci-gitlab \
+            --git-ref "$GITLAB_PROOF_REF" \
+            --ready-sec "$READY_SEC" \
+            --phase-sec "$PHASE_SEC" \
+            --pin "$PIN_MODE" \
+            --report "$RUNNER_TEMP/gitlab-proof.json" \
+            --summary "$GITHUB_STEP_SUMMARY" \
+            | tee "$RUNNER_TEMP/gitlab-proof.log"
+
+      - name: Resource trend during the run
+        if: always()
+        run: |
+          echo "=== sampler (every 30s) ==="
+          tail -n 140 "$RUNNER_TEMP/sampler.log" || true
+          echo "=== OOM kills the kernel recorded ==="
+          sudo dmesg 2>/dev/null | grep -i -E 'out of memory|oom-kill|killed process' | tail -n 20 || echo "none recorded (or dmesg unreadable)"
+          docker system df || true
+
+      - name: ArgoCD view of every Application
+        if: always()
+        run: |
+          kubectl -n argocd get applications.argoproj.io -o wide || true
+          bun src/Core.TypeScript/cluster/gitlab-live-proof.ts --diagnose || true
+          kubectl get apiservice v1beta1.metrics.k8s.io -o wide || true
+          kubectl -n gitlab get hpa || true
+
+      - name: GitLab namespace -- pods, events, describe, logs of everything not Ready or restarted
+        if: always()
+        run: |
+          kubectl -n gitlab get pods,svc,jobs,pvc,gateway,httproute -o wide || true
+          kubectl -n gitlab get events --sort-by=.lastTimestamp | tail -n 120 || true
+          kubectl get nodes -o wide || true
+          kubectl describe nodes | sed -n '/Allocated resources/,/Events/p' || true
+          kubectl -n gitlab get pods -o json 2>/dev/null \
+            | jq -r '.items[]
+                | select((.status.phase != "Running" and .status.phase != "Succeeded")
+                         or ((.status.containerStatuses // []) | map(.restartCount // 0) | add // 0) > 0
+                         or ((.status.conditions // []) | map(select(.type == "Ready" and .status != "True")) | length) > 0)
+                | .metadata.name' \
+            | while read -r pod; do
+                echo "=== gitlab/$pod"
+                kubectl -n gitlab describe pod "$pod" | tail -n 40 || true
+                echo "--- current logs"
+                kubectl -n gitlab logs "$pod" --all-containers=true --prefix=true --tail=80 | grep -v -E 'glrt-' || true
+                echo "--- PREVIOUS container logs"
+                kubectl -n gitlab logs "$pod" --all-containers=true --prefix=true --previous=true --tail=80 | grep -v -E 'glrt-' || true
+              done || true
+          echo "=== runner token Job log (token lines filtered) ==="
+          kubectl -n gitlab logs job/gitlab-runner-token --tail=60 | grep -v -E 'glrt-' || true
+          echo "=== runner manager log (token lines filtered) ==="
+          kubectl -n gitlab logs deploy/gitlab-gitlab-runner --tail=150 | grep -v -E 'glrt-' || true
+          echo "=== CI job (executor) pods the runner created ==="
+          kubectl -n gitlab get pods -o wide | grep -E '^runner-' || echo "no runner-* executor pod exists"
+          for pod in $(kubectl -n gitlab get pods -o name | grep -E '/runner-' || true); do
+            echo "--- $pod"
+            kubectl -n gitlab describe "$pod" | tail -n 30 || true
+            kubectl -n gitlab logs "$pod" --all-containers=true --prefix=true --tail=60 | grep -v -E 'glrt-' || true
+          done
+
+      - name: Cilium Gateway / LB-IPAM view
+        if: always()
+        run: |
+          kubectl -n kube-system get job gitlab-lan-address -o wide || true
+          kubectl -n kube-system logs job/gitlab-lan-address --all-containers=true --tail=30 || true
+          kubectl -n argocd get application cilium-lb-ipam-pool -o wide || true
+          kubectl get gatewayclass || true
+          kubectl get ciliumloadbalancerippools.cilium.io -o wide || true
+          kubectl get svc -A --field-selector spec.type=LoadBalancer -o wide || true
+          kubectl -n kube-system logs -l io.cilium/app=operator --tail=80 || true
+          docker network inspect kind --format '{{json .IPAM.Config}}' || true
+
+      - name: Tear down kind cluster
+        if: always()
+        run: |
+          set -euo pipefail
+          if ! command -v bun >/dev/null 2>&1; then
+            echo "::notice title=teardown skipped::No bun on PATH, so the toolchain install never completed and no cluster was created."
+            exit 0
+          fi
+          bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-gitlab

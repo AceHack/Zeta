@@ -199,6 +199,42 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(rules.map((r) => r["resourceNames"])).toEqual([["gitlab-gitlab-runner-secret"]]);
   }, T);
 
+  test("(f) the exposure objects sync AFTER the runner and the token Job -- a Gateway with no address must not hold the runner", () => {
+    // MEASURED LIVE, run 36871713092: the Gateway sat in wave 0, the install-time pin landed after ArgoCD's first
+    // sync had already rendered it with the 192.0.2.250 sentinel, Cilium could not assign that, and the operation
+    // waited on `Gateway/gitlab-lan` for 30+ minutes -- so `Job gitlab-runner-token` and the runner Deployment were
+    // never created. The same hold applies on an install with NO LB range. Nothing but exposure depends on exposure.
+    const { docs } = renderGitlab();
+    const runner = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-runner");
+    const mint = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-runner-token");
+    expect(runner).toBeDefined();
+    expect(mint).toBeDefined();
+    const exposure = [...ofKind(docs, "Gateway"), ...ofKind(docs, "HTTPRoute")];
+    expect(exposure.map(nameOf).sort()).toEqual(["gitlab-lan", "gitlab-registry", "gitlab-web"]);
+    for (const o of exposure) {
+      expect(syncWave(o)).toBeGreaterThan(syncWave(runner));
+      expect(syncWave(o)).toBeGreaterThan(syncWave(mint));
+    }
+  }, T);
+
+  test("(g) no Deployment needs spare capacity to roll: maxSurge 0 (or Recreate), because the install-time pin rolls every component once", () => {
+    // MEASURED LIVE, run 36881451548: 3160m of 4000m requested, sidekiq asks 900m, the Deployment-default surge pod
+    // sat `Pending: Insufficient cpu` for 14 minutes, the rollout hit its progress deadline and the operation never
+    // reached the exposure wave. A single-replica workload on one node gains nothing from surge.
+    const { docs } = renderGitlab();
+    const deployments = ofKind(docs, "Deployment");
+    expect(deployments.map(nameOf).sort()).toEqual(
+      expect.arrayContaining(["gitlab-gitlab-runner", "gitlab-gitlab-shell", "gitlab-registry", "gitlab-sidekiq-all-in-1-v2", "gitlab-webservice-default"]),
+    );
+    const offenders: string[] = [];
+    for (const d of deployments) {
+      const strategy = ((d["spec"] as Record<string, unknown>)["strategy"] ?? {}) as { type?: string; rollingUpdate?: { maxSurge?: unknown } };
+      if (strategy.type === "Recreate") continue;
+      if (strategy.rollingUpdate?.maxSurge !== 0) offenders.push(`${nameOf(d)} (maxSurge ${JSON.stringify(strategy.rollingUpdate?.maxSurge ?? "default 25%")})`);
+    }
+    expect(offenders).toEqual([]);
+  }, T);
+
   test("(c) no .zeta.local name appears anywhere in the render", () => {
     const hits = renderGitlab().text.split("\n").filter((l) => /\.zeta\.local\b/.test(l));
     expect(hits).toEqual([]);

@@ -567,7 +567,19 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "it -- there is now less than no room. CPU is compressible and could be floored at the dev rung; " +
       "memory is not, so no CPU override makes gitlab fit THIS lane. Its images add ~12.4 GiB on disk " +
       "(image-footprint.ts). SHARPENED LIFTS WHEN: a lane with >= 5.6 GiB of memory headroom runs it (the " +
-      "lane-partition work is where that comes from) AND its workloads get a dev form sized for that lane.",
+      "lane-partition work is where that comes from) AND its workloads get a dev form sized for that lane. " +
+      "UPDATE 2026-10-01 -- IT IS DEPLOYED AND ASSERTED NOW, BY A LANE OF ITS OWN, and the capacity prediction above " +
+      "is a measurement: `.github/workflows/gitlab-live-proof.yml` (src/Core.TypeScript/cluster/gitlab-live-proof.ts) " +
+      "brings up kind + the shipped Cilium + ArgoCD + SeaweedFS + gitlab on ONE hosted ubuntu-24.04 runner at the " +
+      "chart's own sizes, and run 36886512326 passed every blocking check -- webservice/sidekiq/gitaly/registry/shell " +
+      "Ready, root login, the runner-token Job and a glrt- Secret, the runner online and never restarted, an untagged " +
+      "pipeline succeeding in a Kubernetes executor pod, and the Gateway / external URL / registry route / clone URL " +
+      "reachable from outside the pod network -- peaking at 7.0 GiB of memory used with 9.0 GiB still available, " +
+      "13 GiB of disk, load 5.1 on 4 vCPU. So gitlab FITS a runner alone; it does not fit the SHARED lane's " +
+      "application budget alongside the other 40-odd Applications, and that is why THIS deferral stays. The lane " +
+      "also found three defects the four earlier fixes could not have: the exposure Gateway in sync-wave 0 held the " +
+      "token Job and the runner forever (gitlab-exposure.test.ts f), the default rolling-update surge stalled on a " +
+      "node with no spare CPU (g), and a kind node has no metrics API for the chart's HPAs (the lane installs it).",
   ],
   [
     "longhorn",
