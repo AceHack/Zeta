@@ -3355,3 +3355,28 @@ Image set versus pre-swap 6aac8b4d: platform dropped nginx:1.27-alpine (20971416
 CI: 0 check runs on 28702a0a. Parent still has derive the lane matrix in failure. Nothing is red here and green on the parent.
 
 Auto-merge squash still armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17783 leftover unique @ 6d271ac37c33a6ff1f5c9eb9d0fde2e4ac5c51e3 -- GRADE GO
+
+Tip 6d271ac37c33a6ff1f5c9eb9d0fde2e4ac5c51e3 is 1 parent. Parent ae12fe2e0d7e34834f78010b093e7efffc3c6345 is a merge of product body 9195d12b and a6209f1b and was not graded. Stat +1/-1, 1 file, observability-service-roster.json. The only hunk is tempo valuesHash 03ea652d to b1ff3705. Live head 6274cc6c1a17b8ac7969509f5d97cb3f7fad47dd is a merge of 6d271ac3 and 74fbc324 and was not graded.
+
+Product body 9195d12bcb05e70285d186541f86e3958323ec23 vs parent 8df54dbd is +90/-3, 6 files. Those paths are absent from the 6d271ac3 diff. Blob SHAs match, so the probes graded here are the product body.
+
+Formulas: stall is (failureThreshold-1)*period+timeout (liveness-kill-budget.ts:146-153). Kill is initialDelay+(failureThreshold-1)*period (:100-108). Floor compare is strict < (:407). Startup is required when liveness exists, no startup probe, and kill < 120 (:218-225).
+
+Helm of the pinned charts:
+- redis / redis-valkey, floor 50 (:371). Parent stall 21, kill 20. Tip Application.yaml:96-100. Stall 55, kill 50. Startup exists, so the 50s kill is not flagged.
+- tempo / tempo, floor 100 (:372). Parent stall 25, kill 50. Tip failureThreshold 12. Stall 115, kill 140. No startup. 140 is not under 120.
+- operator / kube-prometheus-stack, floor 100 (:373). Parent stall 21, kill 20. Tip Application.yaml:193-197. Stall 115, kill 125. Clears 120.
+- node-exporter, floor 100 (:374). Application.yaml:198-202. Stall 115, kill 125. Clears 120.
+- kube-state-metrics, floor 60 (:375). Parent stall 25, kill 25. Tip failureThreshold 8. Stall 75, kill 75. Pre-existing startup probe, so 75 under 120 does not flag.
+
+Allowlist: tempo, kube-prometheus-stack, and node-exporter removed. Kills 140, 125, and 125 are not under 120. Floors 12 before, 17 after. The test uses the array length, not a literal 17.
+
+Tests: the floor suite, 5 pass. Parent helm renders fail all five floors. Mutation redis liveness failureThreshold 6 to 3: stall 25, red against floor 50. Not pushed. The 50-app catalog test was not run.
+
+Hash of the tip tempo Application is sha256:b1ff37054fae0d9a4bdda8da7cad35fd6aa2dd0674602d0cb8fddd8a7b186e8e. Parent Application is sha256:03ea652daf6f33d513c58c96fb4a4702549ca996f0904ab221ed4caedb18c8a5. Putting the old hash back is STALE.
+
+CI: 0 check runs on 6d271ac3. Nothing is red on the tip and green on the parent.
+
+Auto-merge squash armed. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
