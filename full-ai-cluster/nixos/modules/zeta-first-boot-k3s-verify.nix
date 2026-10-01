@@ -1068,6 +1068,101 @@ in
 
         # ZETA-WP11-ROSTER-END
 
+        # ZETA-WP11-LBPOOL-BEGIN -- pure text processing: no kubectl. Extracted
+        # verbatim by src/Core.TypeScript/ci/wp11-lbpool-shell-parity.test.ts.
+        #
+        # THE QUESTION: did the LoadBalancer range the installer was given reach
+        # the CLUSTER, not merely the ESP? The host side already proves the ESP
+        # /zeta-firstboot.conf was READ (esp-conf=esp:...). That is one hop. The
+        # range then has to survive zeta-install.sh -> /etc/zeta/lb-pool ->
+        # injected-lb-pool.nix -> the zeta-lb-pool k3s manifest -> the
+        # `cilium-lb-ipam-pool` ArgoCD Application -> a CiliumLoadBalancerIPPool
+        # with a block. Every Service of type LoadBalancer and every Gateway
+        # stays <pending> / Programmed!=True if any hop drops it, and ArgoCD
+        # then reports the apps that own them Progressing forever.
+        #
+        # THREE-WAY, never two: a probe that could not ASK (API unreachable,
+        # timeout, binary missing) is UNKNOWN. Only an API that ANSWERED and said
+        # the object is not there is a miss. Folding the first into the second is
+        # the failed-probe-reported-as-negative defect verdict 7's own collection
+        # was bitten by (081M3BP768B087G0R0010C6GPR).
+        #
+        # zeta_wp11_lb_probe_class <kubectl-exit-code> <kubectl-stderr>
+        #   -> present | absent | unknown
+        zeta_wp11_lb_probe_class() {
+          if [ "$1" -eq 0 ]; then
+            echo present
+            return 0
+          fi
+          # Only phrases the API server itself produces. A bare "not found"
+          # would also match `command not found` -- a binary that is missing is
+          # a probe that did not run, not an object that is missing.
+          case "$2" in
+            *"(NotFound)"*|*"doesn't have a resource type"*|*"no matches for kind"*) echo absent ;;
+            *) echo unknown ;;
+          esac
+        }
+
+        # zeta_wp11_lb_pool_verdict <expected-range|""> <app-class> <pool-class> <blocks>
+        #   -> "<state><TAB><detail>"   state: ok | fail | unknown | not-configured
+        # <expected-range> is /etc/zeta/lb-pool as the installer wrote it
+        # (`<first>-<last>`); <blocks> is what the live pool reports, as
+        # space-separated `<first>-<last>` items.
+        zeta_wp11_lb_pool_verdict() {
+          _lb_expected="$1"; _lb_app="$2"; _lb_pool="$3"; _lb_blocks="$4"
+          if [ -z "$_lb_expected" ]; then
+            printf 'not-configured\tno /etc/zeta/lb-pool on the installed disk: the installer resolved no LoadBalancer range, so there is nothing to find in the cluster\n'
+            return 0
+          fi
+          if [ "$_lb_app" = "absent" ]; then
+            printf 'fail\tthe API answered and Application cilium-lb-ipam-pool does not exist, although /etc/zeta/lb-pool=%s was written\n' "$_lb_expected"
+            return 0
+          fi
+          if [ "$_lb_pool" = "absent" ]; then
+            printf 'fail\tthe API answered and CiliumLoadBalancerIPPool zeta-lb-pool does not exist, although /etc/zeta/lb-pool=%s was written\n' "$_lb_expected"
+            return 0
+          fi
+          if [ "$_lb_pool" = "present" ]; then
+            if [ -z "$_lb_blocks" ]; then
+              printf 'fail\tCiliumLoadBalancerIPPool zeta-lb-pool exists but lists NO block; the range %s never reached it\n' "$_lb_expected"
+              return 0
+            fi
+            if [ "$_lb_blocks" != "$_lb_expected" ]; then
+              printf 'fail\tCiliumLoadBalancerIPPool zeta-lb-pool lists %s but the installer wrote %s\n' "$_lb_blocks" "$_lb_expected"
+              return 0
+            fi
+          fi
+          if [ "$_lb_app" = "unknown" ] || [ "$_lb_pool" = "unknown" ]; then
+            printf 'unknown\tthe API could not be asked (application=%s pool=%s); this is NOT a pass and NOT a miss\n' "$_lb_app" "$_lb_pool"
+            return 0
+          fi
+          printf 'ok\tApplication cilium-lb-ipam-pool exists and CiliumLoadBalancerIPPool zeta-lb-pool lists %s\n' "$_lb_blocks"
+        }
+        # ZETA-WP11-LBPOOL-END
+
+        # Asks the cluster once. Sets LBP_EXPECTED / LBP_APP_CLASS / LBP_POOL_CLASS /
+        # LBP_BLOCKS / LBP_STATE / LBP_DETAIL. Every decision is in the block above.
+        collect_lb_pool_facts() {
+          LBP_EXPECTED=""
+          if [ -r /etc/zeta/lb-pool ]; then
+            LBP_EXPECTED="$(${pkgs.coreutils}/bin/tr -d '[:space:]' < /etc/zeta/lb-pool)"
+          fi
+          _lbp_err="$($MKTEMP)"
+          _lbp_out="$($MKTEMP)"
+          if kc -n argocd get application cilium-lb-ipam-pool --request-timeout=20s -o name >/dev/null 2>"$_lbp_err"; then _lbp_rc=0; else _lbp_rc=$?; fi
+          LBP_APP_CLASS="$(zeta_wp11_lb_probe_class "$_lbp_rc" "$(${pkgs.coreutils}/bin/cat "$_lbp_err")")"
+          if kc get ciliumloadbalancerippools.cilium.io zeta-lb-pool --request-timeout=20s \
+              -o 'jsonpath={range .spec.blocks[*]}{.start}-{.stop} {end}' >"$_lbp_out" 2>"$_lbp_err"; then _lbp_rc=0; else _lbp_rc=$?; fi
+          LBP_POOL_CLASS="$(zeta_wp11_lb_probe_class "$_lbp_rc" "$(${pkgs.coreutils}/bin/cat "$_lbp_err")")"
+          LBP_BLOCKS=""
+          if [ "$LBP_POOL_CLASS" = "present" ]; then
+            LBP_BLOCKS="$("$AWK" '{ $1 = $1; print }' < "$_lbp_out")"
+          fi
+          ${pkgs.coreutils}/bin/rm -f "$_lbp_err" "$_lbp_out"
+          _lbp_v="$(zeta_wp11_lb_pool_verdict "$LBP_EXPECTED" "$LBP_APP_CLASS" "$LBP_POOL_CLASS" "$LBP_BLOCKS")"
+          IFS="$(printf '\t')" read -r LBP_STATE LBP_DETAIL <<< "$_lbp_v"
+        }
+
         collect_roster_facts() {
           # Flattening ONLY -- every decision lives in the awk above, which is
           # the half a parity test can execute. jq here extracts fields and
@@ -1398,6 +1493,25 @@ in
           roster_app_diag "$CLASS_FILE"
         fi
 
+        # The LoadBalancer range: did it reach the CLUSTER? A DIAGNOSTIC NOTE
+        # beside verdict 7, not a numbered verdict -- the verdict numbering and
+        # every existing JSON key stay as consumers read them. The host decides
+        # what a `fail` costs (qemu-full-install-test.ts `evaluateLbPoolNote`).
+        # Bounded retry, because the zeta-lb-pool manifest is applied by k3s
+        # after ArgoCD's CRDs exist and verdict 7 can resolve first: a miss that
+        # an API ANSWERED is retried a few times before it is believed; an
+        # `unknown` is retried too, and reported as unknown if it stays one.
+        LBP_TRY=1
+        while :; do
+          collect_lb_pool_facts
+          if [ "$LBP_STATE" = "ok" ] || [ "$LBP_STATE" = "not-configured" ] || [ "$LBP_TRY" -ge 4 ]; then
+            break
+          fi
+          LBP_TRY=$(( LBP_TRY + 1 ))
+          "$SLEEP" 10
+        done
+        log "[wp11-k3s-verify] lb-pool: state=$LBP_STATE expected=''${LBP_EXPECTED:--} application=$LBP_APP_CLASS pool=$LBP_POOL_CLASS blocks=''${LBP_BLOCKS:--} attempts=$LBP_TRY -- $LBP_DETAIL"
+
         # What this guest was told NOT to deploy, every boot. An exclusion
         # nobody can see is how a verdict becomes decorative, so a missing state
         # file is its own answer (did-not-run), never "nothing excluded".
@@ -1455,8 +1569,15 @@ in
           --arg ciEnvelopeState "$CI_ENVELOPE_STATE" \
           --arg ciEnvelopeExclude "$CI_ENVELOPE_EXCLUDE" \
           --arg ciEnvelopeDetail "$CI_ENVELOPE_DETAIL" \
+          --arg lbPoolState "$LBP_STATE" \
+          --arg lbPoolDetail "$LBP_DETAIL" \
+          --arg lbPoolExpected "$LBP_EXPECTED" \
+          --arg lbPoolApplication "$LBP_APP_CLASS" \
+          --arg lbPoolPool "$LBP_POOL_CLASS" \
+          --arg lbPoolBlocks "$LBP_BLOCKS" \
           '{
             ciEnvelope: {state: $ciEnvelopeState, excludeGlob: $ciEnvelopeExclude, detail: $ciEnvelopeDetail},
+            lbPool: {state: $lbPoolState, detail: $lbPoolDetail, expected: $lbPoolExpected, application: $lbPoolApplication, pool: $lbPoolPool, blocks: $lbPoolBlocks},
             pressureDiagnostics: {
               onApiUnreachable: {state: $pressureOnApiUnreachable, failedSections: $pressureOnApiUnreachableFailed},
               atEnd: {state: $pressureAtEnd, failedSections: $pressureAtEndFailed}
