@@ -147,6 +147,18 @@
       "resolvedAt": "2026-09-22"
     },
     {
+      "repository": "quay.io/kubevirt/virtio-container-disk",
+      "tags": {
+        "v1.8.4": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-09-30"
+    },
+    {
       "repository": "registry-1.docker.io/atmoz/sftp",
       "tags": {
         "alpine": 200

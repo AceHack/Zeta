@@ -92,6 +92,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh",
   "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
+  "full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "githooks/pre-push",
@@ -195,6 +196,12 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // edge) to after first boot. A tracked `.sh` so
   // `dev-toolchain-post-boot.test.ts` EXECUTES every branch in CI.
   "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh": "host-service wrappers",
+  // zeta-virt-first-sync.service's ExecStart: the one-time sync of the
+  // manual-sync kubevirt + cdi Applications on a fresh cluster, ordered after
+  // k3s.service. Same retained-shell edge: boot path, no bun in the node's
+  // closure at first boot. A tracked `.sh` so `zeta-virt-first-sync.test.ts`
+  // EXECUTES every branch (an existing operator is never synced) in CI.
+  "full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message

@@ -41,6 +41,23 @@
 #   argocd app sync kubevirt
 # Turn on `automated: { prune: false, selfHeal: true }` only once a sync
 # has been observed to be a genuine no-op.
+#
+# FRESH INSTALLS ARE NOT LEFT WITHOUT IT (2026-09-30). The manual-sync
+# declaration above is about THAT cluster, but it sits in the one tree every
+# cluster syncs, so a freshly flashed node inherited it and came up with no
+# virtualisation layer at all -- this Application `Missing` forever, nothing on
+# first boot ever running `argocd app sync`. Rather than delete the protection
+# (an `automated:` block) this tree keeps the declaration and adds the one act it
+# was missing: `zeta-virt-first-sync.service`
+# (nixos/modules/zeta-virt-first-sync.nix, imported by the server role) starts ONE
+# ordinary sync of this Application and of `cdi`, ONCE, and ONLY where
+# `kubevirts.kubevirt.io` does not already exist -- so a cluster that already runs
+# the operator is never touched. On a host with no /dev/kvm it additionally sets
+# the CR's `useEmulation` (a cluster it synced itself, never an adopted one).
+# After that this is a manual-sync Application again. Decision logic and every
+# branch: zeta-virt-first-sync.sh + src/Core.TypeScript/hygiene/zeta-virt-first-sync.test.ts.
+# A Windows-guest template lives in full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml
+# (NOT applied, and kept outside this tree so no audit prices it; see its header).
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

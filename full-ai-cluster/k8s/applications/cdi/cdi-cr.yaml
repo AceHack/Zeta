@@ -22,6 +22,16 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   config:
+    # SCRATCH SPACE, NAMED RATHER THAN INHERITED. Importing a qcow2/ISO from an HTTP
+    # source converts through a scratch PVC. CDI falls back to the cluster default
+    # StorageClass when this is unset, which is `zeta-block-local` today
+    # (nixos/modules/local-storage.nix: is-default-class) -- so naming it changes
+    # nothing now and stops a future default flip (e.g. to a replicated class, where a
+    # throwaway scratch volume would be written 3x) from silently moving every
+    # Windows ISO import onto it. Node-local is right for scratch: it is discarded
+    # when the import finishes. WaitForFirstConsumer is why HonorWaitForFirstConsumer
+    # is on below.
+    scratchSpaceStorageClass: zeta-block-local
     featureGates:
       - HonorWaitForFirstConsumer
       - WebhookPvcRendering
@@ -32,7 +42,32 @@ spec:
       requests:
         cpu: 100m
         memory: 256Mi
-  customizeComponents: {}
+  # MEMORY LIMITS FOR THE THREE COMPONENTS THE OPERATOR DEPLOYS (2026-09-30). Same
+  # defect, same handle, same caveats as kubevirt-cr.yaml `customizeComponents` --
+  # read that block's header for the full reasoning; only what differs is here.
+  # CDI v1.65.0 sets a 100m/150Mi request on apiserver and uploadproxy and a request
+  # on the controller too, and no limit on any of them. The container name equals
+  # the Deployment name here as well (common.CDIControllerResourceName =
+  # "cdi-deployment", CDIApiServerResourceName, CDIUploadProxyResourceName), which a
+  # strategic merge needs: naming a container that does not exist would add an
+  # imageless one. Limits are UNMETERED reservations sized well above CDI's own
+  # request; the importer/uploader pods CDI launches per DataVolume are governed
+  # separately by `config.podResourceRequirements` above. The cdi-operator
+  # Deployment is in the vendored manifest and is out of reach of this field.
+  customizeComponents:
+    patches:
+      - resourceType: Deployment
+        resourceName: cdi-deployment
+        type: strategic
+        patch: '{"spec":{"template":{"spec":{"containers":[{"name":"cdi-deployment","resources":{"limits":{"memory":"512Mi"}}}]}}}}'
+      - resourceType: Deployment
+        resourceName: cdi-apiserver
+        type: strategic
+        patch: '{"spec":{"template":{"spec":{"containers":[{"name":"cdi-apiserver","resources":{"limits":{"memory":"512Mi"}}}]}}}}'
+      - resourceType: Deployment
+        resourceName: cdi-uploadproxy
+        type: strategic
+        patch: '{"spec":{"template":{"spec":{"containers":[{"name":"cdi-uploadproxy","resources":{"limits":{"memory":"512Mi"}}}]}}}}'
   imagePullPolicy: IfNotPresent
   infra:
     nodeSelector:

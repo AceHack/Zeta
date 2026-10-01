@@ -1,0 +1,207 @@
+# A Windows guest on KubeVirt + CDI — the template, NOT a deployed workload.
+#
+# THIS FILE IS NOT APPLIED, AND IT IS DELIBERATELY NOT UNDER k8s/applications/.
+# ArgoCD's root reads only `k8s/applications/*/Application.yaml`, so nothing ever
+# syncs this. It lives beside, not inside, the applications tree because every
+# audit that prices the cluster (the Longhorn-pool demand ledger, the storage-claim
+# render) walks that tree for volume claims and would count this file's 64Gi
+# DataVolume as demand that no sync ever provisions -- the number the installer's
+# capacity preflight checks against real disks. (`platform/examples/` avoids the
+# problem differently: its Deployables carry no claim an auditor can read.)
+# Applying it would also pull a multi-GiB Windows ISO and reserve 8 GiB of RAM and
+# 64 GiB of disk on every fresh install. Copy it, rename the `windows-example`
+# prefix, edit the three `EDIT:` lines, `kubectl apply -f`.
+#
+# WHAT IT ASSUMES (all provided by the first-boot roster, none by this file):
+#   - the `kubevirt` and `cdi` Applications are synced (operator + CR Available)
+#   - `zeta-block-replicated` (Longhorn, 3-way) for the guest disk, so a VM disk IS a
+#     replicated volume; `zeta-block-local` is the default class and is what CDI's
+#     scratch space lands on (cdi-cr.yaml: HonorWaitForFirstConsumer)
+#   - a node with /dev/kvm. Without it the virt-launcher pod stays Pending on the
+#     `devices.kubevirt.io/kvm` extended resource; the only fallback is the CR's
+#     `useEmulation`, which is ~10x slower and a CLUSTER-wide switch (see
+#     applications/kubevirt/kubevirt-cr.yaml). Windows under TCG is not usable.
+#
+# THE INSTALL PATH (a Windows guest has no virtio drivers until you give it some):
+#   1. the installer ISO is imported by CDI from an HTTP source (DataVolume `-iso`)
+#   2. the virtio-win driver ISO rides along as a second CD-ROM from a container
+#      disk (no import step, no PVC). In Windows Setup choose "Load driver", browse
+#      the virtio CD-ROM, `viostor` (disk) and `NetKVM` (network).
+#   3. the root disk is `virtio` from the start, so Setup must load `viostor` to see
+#      it. If you would rather not, flip `bus: virtio` to `bus: sata` and the NIC
+#      `model: virtio` to `e1000e` for the install, and flip them back afterwards
+#      — Windows will not boot a disk whose bus changed under it without the driver.
+#
+# REACHING THE GUEST:
+#   console : `virtctl vnc windows-example` (the VNC device is on by default)
+#   RDP     : the `windows-example-rdp` Service below, ClusterIP by default. To
+#             publish it on the LAN set `type: LoadBalancer` (Cilium LB-IPAM hands
+#             out the address) — and put a firewall in front of it first: an
+#             internet-facing 3389 is the single most-scanned port there is.
+#
+# SIZING: memory request == limit, so the pod is Guaranteed on the axis that
+# matters; a Windows guest that is OOM-killed by its own cgroup loses its disk's
+# page cache. CPU is a request only (4 vCPU), no CPU limit, for the usual reason:
+# a CFS quota throttles the vCPU threads and the guest sees steal time as a hang.
+# KubeVirt adds its own per-VM overhead on top of `guest` memory automatically.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: windows-example
+---
+# The installer ISO. EDIT: point `url` at an ISO you are licensed to use. CDI does
+# the fetch, so the importer pod (not this manifest) holds the bytes in flight;
+# its requests/limits come from cdi-cr.yaml `podResourceRequirements`.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: windows-example-iso
+  namespace: windows-example
+  annotations:
+    # An ISO is read once; do not keep the importer pod around after it succeeds.
+    cdi.kubevirt.io/storage.deleteAfterCompletion: "true"
+spec:
+  source:
+    http:
+      url: https://example.invalid/windows-server-2022-eval.iso # EDIT: your ISO
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    storageClassName: zeta-block-local
+    resources:
+      requests:
+        storage: 8Gi
+---
+# The guest's root disk. Blank: Windows Setup partitions it.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: windows-example-root
+  namespace: windows-example
+spec:
+  source:
+    blank: {}
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    storageClassName: zeta-block-replicated
+    resources:
+      requests:
+        storage: 64Gi # EDIT: charged to the Longhorn pool at 3 replicas; see storage-profiles.json
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: windows-example
+  namespace: windows-example
+spec:
+  # `Halted` until you have loaded the ISO: a VM that starts before the DataVolume
+  # has imported boots an empty disk and sits at "no bootable device".
+  runStrategy: Halted
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: windows-example
+    spec:
+      domain:
+        cpu:
+          cores: 4
+        memory:
+          guest: 8Gi
+        resources:
+          requests:
+            cpu: "4"
+            memory: 8Gi
+          limits:
+            memory: 8Gi
+        firmware:
+          bootloader:
+            efi:
+              # Windows 11 needs secureBoot: true, which in turn needs `features.smm.enabled:
+              # true` and a TPM (`devices.tpm: {persistent: true}`, a RWO PVC KubeVirt
+              # provisions itself). Server 2022 and Windows 10 boot fine without any of it.
+              secureBoot: false
+        features:
+          acpi: {}
+          apic: {}
+          # The Hyper-V enlightenments Microsoft's own guidance and KubeVirt's windows
+          # templates both turn on: without them Windows spends its time in timer
+          # interrupts and a 4-vCPU guest idles at 30% host CPU.
+          hyperv:
+            relaxed: {}
+            vapic: {}
+            spinlocks:
+              spinlocks: 8191
+            vpindex: {}
+            runtime: {}
+            synic: {}
+            stimer:
+              direct: {}
+            tlbflush: {}
+            ipi: {}
+            frequencies: {}
+            reset: {}
+        clock:
+          utc: {}
+          timer:
+            hpet:
+              present: false
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+            hyperv: {}
+        devices:
+          # Boot order is explicit: the root disk first once it has an OS, the ISO
+          # first for the install. EDIT bootOrder (swap 1 and 2) after Setup.
+          disks:
+            - name: iso
+              bootOrder: 1
+              cdrom:
+                bus: sata
+            - name: root
+              bootOrder: 2
+              disk:
+                bus: virtio
+            - name: virtio-win
+              cdrom:
+                bus: sata
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+          inputs:
+            - type: tablet
+              bus: usb
+              name: tablet
+      networks:
+        - name: default
+          pod: {}
+      # Windows shutdown is slow; the default 30s kills it mid-update.
+      terminationGracePeriodSeconds: 300
+      volumes:
+        - name: iso
+          dataVolume:
+            name: windows-example-iso
+        - name: root
+          dataVolume:
+            name: windows-example-root
+        - name: virtio-win
+          containerDisk:
+            image: quay.io/kubevirt/virtio-container-disk:v1.8.4
+---
+# RDP. The selector is the label KubeVirt stamps on the virt-launcher pod from
+# `template.metadata.labels`; there is no Service-for-a-VM object, it is an
+# ordinary Service over the launcher pod.
+apiVersion: v1
+kind: Service
+metadata:
+  name: windows-example-rdp
+  namespace: windows-example
+spec:
+  type: ClusterIP
+  selector:
+    kubevirt.io/domain: windows-example
+  ports:
+    - name: rdp
+      port: 3389
+      targetPort: 3389
+      protocol: TCP

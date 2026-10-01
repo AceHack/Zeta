@@ -88,6 +88,12 @@
     # circumstance. See that module's header for the full citation and the
     # one-way property this pair guarantees.
     ./k3s-datastore-bootstrap-recovery.nix
+
+    # One-time sync of the manual-sync `kubevirt` + `cdi` Applications on a
+    # FRESH cluster (no operator CRD present), so a flashed node comes up with
+    # the VM layer instead of two Applications `Missing` forever. Skips any
+    # cluster that already runs either operator. See that module's header.
+    ./zeta-virt-first-sync.nix
   ];
 
   # The server's reservation TARGETS (see "NODE RESERVATIONS" below for the
@@ -190,6 +196,13 @@
       # local-path-provisioner (none of which any Application renders). That
       # floor is ~124 today, already inside the default 110 ceiling's failure
       # zone, and it only grows as Applications are added.
+      #
+      # `cdi` and `kubevirt` are subtracted above because nothing AUTO-syncs them,
+      # but a fresh cluster now gets ONE sync of each from zeta-virt-first-sync
+      # (imported above): operators + KubeVirt's virt-api x2 / virt-controller x2 /
+      # virt-handler + CDI's apiserver / controller / uploadproxy, ~11 pods before
+      # any VM exists, plus one virt-launcher pod per running VM. ~135 still sits
+      # well under 220; a node that hosts many VMs spends the rest on them.
       #
       # 220 clears the default 110 by 2x and the measured ~124 by ~77%, while
       # staying under the 254 usable addresses Cilium's cluster-pool IPAM hands

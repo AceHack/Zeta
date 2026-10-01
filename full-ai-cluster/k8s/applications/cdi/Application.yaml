@@ -37,6 +37,11 @@
 # after reading the diff:
 #   argocd app diff cdi
 #   argocd app sync cdi
+#
+# FRESH INSTALLS ARE NOT LEFT WITHOUT IT (2026-09-30): `zeta-virt-first-sync.service`
+# starts ONE ordinary sync of this Application and of `kubevirt`, once, and only
+# where `cdis.cdi.kubevirt.io` does not already exist -- the full reasoning is in
+# kubevirt/Application.yaml. A cluster that already runs CDI is never touched.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

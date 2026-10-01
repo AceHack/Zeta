@@ -21,6 +21,57 @@ spec:
   configuration:
     developerConfiguration: {}
     imagePullPolicy: IfNotPresent
-  customizeComponents: {}
+  # MEMORY LIMITS FOR THE THREE COMPONENTS THE OPERATOR DEPLOYS (2026-09-30).
+  #
+  # THE DEFECT. The operator generates virt-api / virt-controller / virt-handler
+  # with a memory REQUEST only (150Mi / 275Mi / 325Mi, KubeVirt v1.8.4
+  # pkg/virt-operator/resource/generate/components) and NO LIMIT, so each is
+  # Burstable with an unbounded ceiling: a leak or a burst in one control-plane pod
+  # competes with the node's other tenants and is arbitrated by the kernel OOM
+  # killer rather than by its own cgroup. Nothing rendered in this tree names these
+  # pods (they exist only after the operator reconciles this CR), so the resource
+  # ledger cannot see them and no render check could ever have caught it.
+  #
+  # THE ONLY HANDLE is this field -- `customizeComponents.patches` reaches the
+  # components the operator DEPLOYS, never virt-operator's own Deployment, which
+  # comes from the vendored operator manifest (kubevirt-operator.yaml, byte-checked
+  # against upstream by vendored-upstream-parity.ts). So virt-operator keeps its
+  # upstream 450Mi request and no limit; that is a stated gap, not an oversight.
+  #
+  # LIMITS ONLY, REQUESTS UNTOUCHED, AND NO CPU LIMIT: a strategic merge by
+  # container name adds `limits.memory` beside the operator's own `requests`. A CPU
+  # limit would be a CFS quota, which throttles a controller into missing its
+  # liveness probe -- the failure the liveness-kill-budget audit exists to find.
+  # The container name equals the workload name for all three (verified against the
+  # v1.8.4 sources: newPodTemplateSpec / NewHandlerDaemonSet), which matters
+  # because a strategic merge naming a container that does NOT exist would ADD one
+  # with no image and wedge the rollout.
+  #
+  # THE VALUES ARE RESERVATIONS, NOT MEASUREMENTS (`toy-is-free-metered-must-be-earned`:
+  # unmetered). They are sized ~3-5x the operator's own request so a normal cluster
+  # sits far below them, and virt-handler's is the widest because it is the one whose
+  # footprint grows with the number of VMs on the node. Nothing here has been run
+  # against a loaded node; raise one the first time it is OOMKilled.
+  #
+  # THIS IS A REAL DIFF ON A CLUSTER THAT ALREADY RUNS KUBEVIRT. The header's "no-op
+  # adoption" held for the spec as captured; this adds to it. The Application is
+  # manual-sync, so it lands only when a human syncs it after `argocd app diff
+  # kubevirt`; virt-api / virt-controller (2 replicas) and the virt-handler
+  # DaemonSet then roll, and RUNNING GUESTS ARE NOT TOUCHED -- they live in
+  # virt-launcher pods, which are not restarted by a control-plane rollout.
+  customizeComponents:
+    patches:
+      - resourceType: Deployment
+        resourceName: virt-api
+        type: strategic
+        patch: '{"spec":{"template":{"spec":{"containers":[{"name":"virt-api","resources":{"limits":{"memory":"768Mi"}}}]}}}}'
+      - resourceType: Deployment
+        resourceName: virt-controller
+        type: strategic
+        patch: '{"spec":{"template":{"spec":{"containers":[{"name":"virt-controller","resources":{"limits":{"memory":"1Gi"}}}]}}}}'
+      - resourceType: DaemonSet
+        resourceName: virt-handler
+        type: strategic
+        patch: '{"spec":{"template":{"spec":{"containers":[{"name":"virt-handler","resources":{"limits":{"memory":"2Gi"}}}]}}}}'
   imagePullPolicy: IfNotPresent
   workloadUpdateStrategy: {}
