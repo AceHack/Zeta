@@ -121,6 +121,21 @@ export const INITIAL_INSTALL_SERIAL_MARKERS: readonly string[] = [INSTALL_COMPLE
 export const INSTALLER_BAIL_SERIAL_MARKER = "\nERROR: ";
 
 /**
+ * The installer's discovery gate HALTS for a c/w keypress, with no timeout, when its probe
+ * could not run (`zeta-first-boot.sh`: `[zeta-discovery] HALTED -- not founding a cluster on
+ * a segment nobody observed.`). Nobody presses keys in a lane, so without this the lane
+ * serves out its whole budget in silence. MEASURED run 36832486494: scenario 4's baseline
+ * install printed this line at about 30 s and then waited the full 1,800,000 ms for
+ * "ZETA CLUSTER NODE INSTALL COMPLETE" -- ~30 runner-minutes proving a determined stop.
+ * `ci/qemu-full-install-test.ts` already carried the same marker; this lane did not.
+ *
+ * NOT a softened assertion: a run that trips it still exits non-zero. Only the time to say so
+ * changes. The cause that run hit (a 29999 ms dwell measured against a 30000 ms floor) is
+ * fixed in `full-ai-cluster/nixos/cluster-discovery/probe.ts`; the marker is for the next one.
+ */
+export const INSTALLER_DISCOVERY_HALT_SERIAL_MARKER = "[zeta-discovery] HALTED";
+
+/**
  * Substring-scanned over the WHOLE serial log, so a broad marker fails GOOD installs.
  *
  * "Kernel panic", never bare "panic": nixpkgs 26.05 ships a stock systemd unit whose
@@ -136,6 +151,7 @@ export const RETENTION_FAILURE_SERIAL_MARKERS: readonly string[] = [
   "Refusing to wipe",
   "no internet",
   INSTALLER_BAIL_SERIAL_MARKER,
+  INSTALLER_DISCOVERY_HALT_SERIAL_MARKER,
 ];
 
 /**

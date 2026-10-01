@@ -1,0 +1,14 @@
+{
+  "id": "080d07b9f1e4b010a0130008bea90195",
+  "at": "2026-10-01T11:34:06.230Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VKWF4N087G0R00258SBT4",
+    "type": "task",
+    "title": "WP11 unconverged apps: cilium LB Service, essential-tier priority, guest capacity (run 36832486494)",
+    "slug": "wp11-unconverged-apps-cilium-lb-service-essential-tier-prior",
+    "priority": "P2",
+    "filename": "081M3VKWF4N087G0R00258SBT4-wp11-unconverged-apps-cilium-lb-service-essential-tier-prior.md"
+  }
+}

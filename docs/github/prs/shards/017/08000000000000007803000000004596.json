@@ -1,0 +1,12 @@
+{
+  "pr_number": 17814,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17814-fix-ci-stage-a-loadbalancer-range-in-the-wp11-installed-disk-lane.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T12:06:37.819Z",
+  "schema_version": "v1",
+  "commit_sha": "83bc32fcb5eed1e40e2d9c85ec89d02aa0ed8a00",
+  "title": "fix(ci): stage a LoadBalancer range in the WP11 installed-disk lane",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T12:05:22Z",
+  "head_ref": "fix/wp11-stage-lb-pool"
+}

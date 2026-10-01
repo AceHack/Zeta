@@ -1,0 +1,12 @@
+{
+  "pr_number": 17812,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17812-feat-wp11-capture-why-verdict-7-failed-pods-capacity-per-app-evidence.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T12:15:51.351Z",
+  "schema_version": "v1",
+  "commit_sha": "3ecf12f966671aecc87f8c6d4fd9dbd2c2e1c29e",
+  "title": "feat(wp11): capture WHY verdict 7 failed (pods, capacity, per-app evidence)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T12:15:08Z",
+  "head_ref": "fix/wp11-cluster-diagnostics"
+}

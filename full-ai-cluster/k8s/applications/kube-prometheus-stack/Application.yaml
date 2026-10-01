@@ -59,6 +59,36 @@ spec:
         prometheus:
           prometheusSpec:
             resources: { requests: { cpu: 40m, memory: 512Mi } }
+            # LIVENESS STALL TOLERANCE FOR THE OPERATOR-CREATED PROMETHEUS POD. The
+            # Prometheus CRD has NO probe field (its only probe-adjacent keys are
+            # `containers` and `maximumStartupDurationSeconds`, which times the STARTUP
+            # probe only), and the operator generates the liveness probe itself: MEASURED in
+            # the constrained first-boot replica (run 36831938019, 4 vCPU / 12 GiB, dev rung),
+            # `Liveness: http-get /-/healthy timeout=3s period=5s #failure=6` -- a RUNNING
+            # Prometheus is killed after (6-1)*5+3 = 28s of slow answers. The same pod showed
+            # `Restart Count: 6` there, with `Last State: Terminated / Completed / Exit Code: 0`
+            # -- Prometheus exits 0 on the kubelet's SIGTERM, so a liveness kill reads as a
+            # clean exit, not as the 137 an operator would grep for. This is the same
+            # pressure -> slow -> probe timeout -> kill mechanism the platform controllers
+            # and the other pods of this chart were widened for, and it was left standing on
+            # the one pod no render census contains (liveness-kill-budget.ts reads
+            # `helm template`, which has only the Prometheus CR, not the StatefulSet the
+            # operator builds from it).
+            #
+            # `containers` is the operator's own extension point: an entry sharing the name
+            # of an operator-generated container is STRATEGIC-MERGE PATCHED onto it
+            # (prometheus-operator v0.93.1 pkg/k8s/merge.go `MergePatchContainers`), so only
+            # the three timing fields are named and the operator's `httpGet` handler is kept.
+            # Timeout 5s x 12 failures at a 10s period: stall tolerance (12-1)*10+5 = 115s,
+            # the same figure the operator and node-exporter pods of this chart carry.
+            # Fires only AFTER the startup probe has passed (`maximumStartupDurationSeconds`
+            # default: 60 x 15s), so WAL replay is not affected by this line either way.
+            containers:
+              - name: prometheus
+                livenessProbe:
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 12
             # THE TWO BOUNDS BELOW ARE ONE SETTING. `retention` is a TIME bound
             # and cannot see the disk; kube-prometheus-stack 65.5.0 ships
             # `retentionSize: ""` (values.yaml:3732), i.e. UNSET, so before this
@@ -169,6 +199,18 @@ spec:
               - name: watchdog-REQUIRES-DEADMANSSWITCH
           alertmanagerSpec:
             resources: { requests: { cpu: 5m, memory: 64Mi } }
+            # LIVENESS STALL TOLERANCE FOR THE OPERATOR-CREATED ALERTMANAGER POD, same
+            # mechanism and same extension point as `prometheusSpec.containers` above.
+            # MEASURED (run 36831938019, constrained replica): `Liveness: http-get /-/healthy
+            # timeout=3s period=10s #failure=10` -> (10-1)*10+3 = 93s, and the pod showed
+            # `Restart Count: 6` (Completed / Exit Code 0: Alertmanager also exits cleanly on
+            # SIGTERM). Timeout 5s x 12 failures at 10s: 115s. Probe handler untouched.
+            containers:
+              - name: alertmanager
+                livenessProbe:
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 12
             storage:
               volumeClaimTemplate:
                 spec:

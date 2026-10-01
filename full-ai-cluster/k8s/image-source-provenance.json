@@ -171,6 +171,18 @@
       "resolvedAt": "2026-09-22"
     },
     {
+      "repository": "registry-1.docker.io/chrislusf/seaweedfs",
+      "tags": {
+        "4.45": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "seaweedfs/seaweedfs",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-10-01"
+    },
+    {
       "repository": "registry-1.docker.io/cm2network/steamcmd",
       "tags": {
         "root": 200
