@@ -1,0 +1,17 @@
+{
+  "pr_number": 17764,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17764-fix-installer-root-permission-defects-on-the-installed-system-first-session-dir-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM73df-2",
+    "comment:PRRC_kwDOSF9kNM73df-n",
+    "thread:PRRT_kwDOSF9kNM6nzKRF",
+    "thread:PRRT_kwDOSF9kNM6nzKRQ"
+  ],
+  "fetched_at": "2026-10-01T07:10:51.659Z",
+  "schema_version": "v1",
+  "commit_sha": "0ff9c1c66ce26cd63d614e4b3d5c81d21e8c3ece",
+  "title": "fix(installer): root/permission defects on the installed system (first-session dir, restored cred modes, wifi EISDIR, sudo order)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T07:10:05Z",
+  "head_ref": "fix/perms-first-session-and-creds-restore"
+}
