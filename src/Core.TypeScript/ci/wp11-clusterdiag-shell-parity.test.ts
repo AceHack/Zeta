@@ -341,6 +341,35 @@ describe("WP11 cluster diagnostics: three states, never two", () => {
     expect(r.stdout).not.toContain("app:ollama");
   });
 
+  it("ORDER IS PRIORITY: what explains WHY comes first, the bulk pod listing LAST (run 36875247887 dropped every per-app section to a spent budget)", () => {
+    const r = run(makeWorkdir(), 'zeta_wp11_cluster_diag end "./class.tsv"');
+    const at = (needle: string): number => r.stdout.indexOf(needle);
+    const census = at("pending-reason-census: captured");
+    const events = at("warning-events: captured");
+    const firstApp = at("app:platform: captured");
+    const firstDescribe = at("describe:forgejo/forgejo-0(restarts=7): captured");
+    const wide = at("pods-wide: captured");
+    expect(census).toBeGreaterThan(0);
+    expect(census).toBeLessThan(events);
+    expect(events).toBeLessThan(firstApp);
+    expect(firstApp).toBeLessThan(firstDescribe);
+    expect(firstDescribe).toBeLessThan(wide);
+  });
+
+  it("a tight budget costs the bulk listing, never the per-Application evidence", () => {
+    // Enough for the explanatory sections and the apps, not for the pod listing.
+    const r = run(makeWorkdir(), 'CLUSTER_DIAG_MAX_LINES=40; zeta_wp11_cluster_diag end "./class.tsv"');
+    expect(r.stdout).toContain("app:platform | sync=OutOfSync health=Degraded");
+    expect(r.stdout).toContain("pods-wide: SKIPPED (line budget of 40 exhausted)");
+  });
+
+  it("a healthy `kubectl top | head` is not read as unavailable (SIGPIPE, exit 141)", () => {
+    const r = run(makeWorkdir(), 'zeta_wp11_cdiag_top_pods; echo "::TOPRC=$?"');
+    // The fake kubectl answers `top` with an error, so the point here is only that the
+    // function reports kubectl's OWN status (1), not a pipeline artefact.
+    expect(r.stdout).toContain("::TOPRC=1");
+  });
+
   it("API never answers: FAILED and NAMED, kubectl sections skipped, still returns 0", () => {
     const r = run(makeWorkdir(), 'CLUSTER_DIAG_API_WAIT_SECONDS=0; zeta_wp11_cluster_diag end "./class.tsv"', { API_UP: "no" });
     expect(r.vars.STATE).toBe("failed");
