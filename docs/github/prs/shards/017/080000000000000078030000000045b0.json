@@ -1,0 +1,12 @@
+{
+  "pr_number": 17840,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17840-fix-argocd-every-automated-application-and-the-root-retries-without-a-bound.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T18:34:36.963Z",
+  "schema_version": "v1",
+  "commit_sha": "bd5c17da0f92f3ff3f4cb7866d5332b4a1d45f1d",
+  "title": "fix(argocd): every automated Application (and the root) retries without a bound",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T18:33:04Z",
+  "head_ref": "fix/platform-monitoring"
+}
