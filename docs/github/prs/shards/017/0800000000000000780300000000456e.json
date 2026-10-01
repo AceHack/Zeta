@@ -1,0 +1,12 @@
+{
+  "pr_number": 17774,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17774-fix-installer-loadbalancer-range-lan-collision-are-install-time-config-never-a-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:41:26.884Z",
+  "schema_version": "v1",
+  "commit_sha": "c05607533f9d36791b5fb76160f37d46c7f3a825",
+  "title": "fix(installer): LoadBalancer range + LAN collision are install-time config, never a placeholder",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:40:38Z",
+  "head_ref": "install-time-config/lb-pool-and-lan-collision"
+}

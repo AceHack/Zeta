@@ -1,0 +1,12 @@
+{
+  "pr_number": 17777,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17777-fix-observability-alloy-kube-prometheus-stack-loki-nats-tempo-were-besteffort-20.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:47:21.611Z",
+  "schema_version": "v1",
+  "commit_sha": "76b3fa1d9958009c6c4aa6b0709ed5eb5546e7d5",
+  "title": "fix(observability): alloy, kube-prometheus-stack, loki, nats, tempo were BestEffort (20 containers, incl. Prometheus + Alertmanager)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:46:35Z",
+  "head_ref": "fix/besteffort-observability-data"
+}
