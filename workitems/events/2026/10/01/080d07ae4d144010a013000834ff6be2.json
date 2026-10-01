@@ -1,0 +1,14 @@
+{
+  "id": "080d07ae4d144010a013000834ff6be2",
+  "at": "2026-10-01T04:47:07.400Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TWK8M7087G0R003SSTSVF",
+    "type": "bug",
+    "title": "opensearch's root chown init container ran busybox:latest (chart default, never pinned)",
+    "slug": "opensearch-s-root-chown-init-container-ran-busybox-latest-ch",
+    "priority": "P2",
+    "filename": "081M3TWK8M7087G0R003SSTSVF-opensearch-s-root-chown-init-container-ran-busybox-latest-ch.md"
+  }
+}
