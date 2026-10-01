@@ -3129,3 +3129,13 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Six memory limits on spec.customizeComponents.patches (virt-api 768Mi, virt-controller 1Gi, virt-handler 2Gi, cdi deployment/apiserver/uploadproxy 512Mi). Scratch class zeta-block-local exists. 64Gi Windows disk is under k8s/examples, outside the ledger.
 - Softs: S1 CI in progress; S2 auto-merge armed; S3 no Nix eval; S4 no cluster and no guest boot; S5 operators unbounded as disclosed; S6 template test checks the path string not the ledger total; S7 Type=simple with stamp files, not oneshot; S8 main moved.
 - Hard fails: none.
+
+## leftover UNIQUE leftover #17767 leftover unique @ 42ac1d3f63c610e65ce91fa940ea0d189753d69d -- GRADE GO
+
+- PR: HA CloudNativePG example, not an always-on cluster (maximdolphin). Single commit, parent 6aac8b4d, +242/-0, 2 files. Test-merge 43737788 not graded. Blocked, squash auto-merge armed. Main moved to 132f8d63 (#17762); this tip is a sibling and still mergeable.
+- Not applied. App-of-apps walks full-ai-cluster/k8s/applications for Application.yaml only (root-application.yaml:32-38, ports.ts:238). Ledger and the only kustomization do not walk k8s/examples. Affinity is preferred, not required.
+- Chart 0.29.0 CRD (appVersion 1.30.0): instances 3, primaryUpdateMethod switchover, primaryUpdateStrategy unsupervised (the default; unsupervised means switchover, not a restart). No superuser, no password, no bootstrap secret. Requests plus a memory limit, no CPU limit. zeta-block-local 10Gi. Image ghcr.io/cloudnative-pg/postgresql:17.11-minimal-trixie matches temporal exactly.
+- Only other postgresql.cnpg.io Cluster in the tree is temporal: instances 1, no backup. The example has no backup spec.
+- Tests: 12, YAML-parsed, bun 12 pass. Mutants die: instances 1, a password, a CPU limit, the image tag, spec.backup.barmanObjectStore.
+- Softs: S1 CI in progress; S2 auto-merge armed; S3 main moved; S4 no reconcile; S5 preferred anti-affinity does not spread 3 pods on one node (disclosed); S6 no backup means no PITR (disclosed); S7 agencysignature PR-body failed once then passed.
+- Hard fails: none.
