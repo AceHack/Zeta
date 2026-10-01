@@ -8,6 +8,7 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
 import { renderLbPoolApplicationText } from "./lb-ipam-pool.ts";
+import { SERVED_APPLICATIONS_DIR } from "./lane-tree-source.ts";
 import {
   buildGitlabLaneApplication,
   CHECKS,
@@ -156,11 +157,19 @@ describe("the LAN address pin follows the installer, not this lane", () => {
     expect(kindPoolRange(poolText)).toEqual({ start: "172.18.255.200", stop: "172.18.255.220" });
   });
 
-  test("the installer's lb-pool Application is rendered for the kind range and retargeted at the served tree -- nothing else moves", () => {
+  test("the lb-pool Application must NOT be pointed at the served lane tree: the served tree is pruned to applications/ and holds no lb-ipam directory", () => {
+    // Run 36865265497: the Application was pointed at the served tree, sat sync=Unknown, and Job
+    // gitlab-lan-address never existed -- so the pin was never exercised. The served tree keeps ONLY this:
+    expect("full-ai-cluster/k8s/lb-ipam".startsWith(SERVED_APPLICATIONS_DIR)).toBe(false);
     const rendered = renderLbPoolApplicationText("172.18.255.200", "172.18.255.220", ROOT);
-    const out = parse(laneLbPoolApplication(rendered, "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git", "main")) as unknown;
-    expect(getLeaf(out, ["spec", "source", "repoURL"])).toBe("http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git");
-    expect(getLeaf(out, ["spec", "source", "targetRevision"])).toBe("main");
+    expect(() => laneLbPoolApplication(rendered, "http://zeta-lane-tree.zeta-lane-tree.svc.cluster.local:8080/tree.git", "main")).toThrow(/not in the served lane tree/);
+  });
+
+  test("the installer's lb-pool Application is rendered for the kind range and pinned to the commit under test -- nothing else moves", () => {
+    const rendered = renderLbPoolApplicationText("172.18.255.200", "172.18.255.220", ROOT);
+    const out = parse(laneLbPoolApplication(rendered, "https://github.com/Lucent-Financial-Group/Zeta", "0123456789abcdef0123456789abcdef01234567")) as unknown;
+    expect(getLeaf(out, ["spec", "source", "repoURL"])).toBe("https://github.com/Lucent-Financial-Group/Zeta");
+    expect(getLeaf(out, ["spec", "source", "targetRevision"])).toBe("0123456789abcdef0123456789abcdef01234567");
     expect(getLeaf(out, ["spec", "source", "path"])).toBe("full-ai-cluster/k8s/lb-ipam");
     // The kustomize patches -- the thing the lane exists to exercise -- survive, with the range substituted.
     const text = JSON.stringify(getLeaf(out, ["spec", "source", "kustomize", "patches"]));
@@ -172,8 +181,8 @@ describe("the LAN address pin follows the installer, not this lane", () => {
 
   test("an unsubstituted token or a template with no patches is refused", () => {
     const raw = read(INSTALL_TIME_LB_APPLICATION_PATH);
-    expect(() => laneLbPoolApplication(raw, "http://x/tree.git", "main")).toThrow(/@ZETA_/);
-    expect(() => laneLbPoolApplication("kind: Application\nspec:\n  source: {}\n", "http://x/tree.git", "main")).toThrow(/no kustomize patches/);
+    expect(() => laneLbPoolApplication(raw, "https://github.com/x/y", "main")).toThrow(/@ZETA_/);
+    expect(() => laneLbPoolApplication("kind: Application\nspec:\n  source: {}\n", "https://github.com/x/y", "main")).toThrow(/no kustomize patches/);
   });
 
   test("a pool manifest with no pool is refused, not defaulted", () => {

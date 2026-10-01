@@ -48,7 +48,7 @@ import { parse, parseAllDocuments, stringify } from "yaml";
 import { bootstrapKindClusterInProcess, defaultKindCiliumConfigPath } from "./harness/bootstrap.ts";
 import { buildLaneTreeForProfile } from "./argocd-health-test.ts";
 import { liveDevClusterPorts } from "./dev-cluster/deps.ts";
-import { laneTreeRepoUrl, SERVED_GIT_REF } from "./lane-tree-source.ts";
+import { DEFAULT_GIT_REPO_URL } from "./dev-cluster/lib.ts";
 import { renderLbPoolApplicationText } from "./lb-ipam-pool.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
@@ -215,16 +215,22 @@ export function kindPoolLanAddress(poolManifestText: string): string {
 
 /**
  * The installer's own `cilium-lb-ipam-pool` Application, rendered for the kind pool's range exactly as
- * `injected-lb-pool.nix` renders it for a node (`renderLbPoolApplicationText`), and pointed at the in-cluster
- * served tree instead of GitHub -- the one substitution the lane needs, because that tree is the committed
- * tree at the dev rung. Applying THIS Application is what makes `Job gitlab-lan-address` run the way it does
- * on metal: wait for Application `gitlab`, then merge-patch the three address leaves.
+ * `injected-lb-pool.nix` renders it for a node (`renderLbPoolApplicationText`), pinned to the COMMIT UNDER TEST
+ * instead of `main` -- the one substitution the lane makes. Applying THIS Application is what makes
+ * `Job gitlab-lan-address` run the way it does on metal: wait for Application `gitlab`, then merge-patch the
+ * three address leaves.
+ *
+ * It is NOT pointed at the lane's in-cluster served tree, and that is a measured mistake (run 36865265497):
+ * the served tree is pruned to `applications/` (`pruneToServedApplications`), so `full-ai-cluster/k8s/lb-ipam`
+ * does not exist in it and the Application sat `sync=Unknown` with no Job ever created. The lb-ipam directory
+ * is plain kustomize with no resource rung, so the committed tree on GitHub is the right source.
  */
-export function laneLbPoolApplication(renderedTemplate: string, servedRepoUrl: string, servedRef: string): string {
+export function laneLbPoolApplication(renderedTemplate: string, repoUrl: string, revision: string): string {
   const app = parse(renderedTemplate) as Json;
   if (getLeaf(app, ["spec", "source", "kustomize", "patches"]) === undefined) throw new Error("the lb-ipam Application carries no kustomize patches");
   if (JSON.stringify(app).includes("@ZETA_")) throw new Error("the lb-ipam Application still carries an unsubstituted @ZETA_*@ token");
-  return stringify(jsonMergePatch(app, { spec: { source: { repoURL: servedRepoUrl, targetRevision: servedRef } } }));
+  if (repoUrl.includes("zeta-lane-tree")) throw new Error("the lb-ipam directory is not in the served lane tree (pruned to applications/); point it at the real repository");
+  return stringify(jsonMergePatch(app, { spec: { source: { repoURL: repoUrl, targetRevision: revision } } }));
 }
 
 type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
@@ -685,9 +691,9 @@ function installMetricsApi(): string {
 }
 
 /** What ArgoCD thinks of the gitlab Application, in enough detail to name the resource that holds a sync. */
-export function describeArgoApplication(app: ArgoApp | null): readonly string[] {
-  if (app === null) return ["application gitlab: <unreadable>"];
-  const out: string[] = [`application gitlab: sync=${app.status?.sync?.status ?? "?"} health=${app.status?.health?.status ?? "?"}`];
+export function describeArgoApplication(app: ArgoApp | null, name = "gitlab"): readonly string[] {
+  if (app === null) return [`application ${name}: <unreadable>`];
+  const out: string[] = [`application ${name}: sync=${app.status?.sync?.status ?? "?"} health=${app.status?.health?.status ?? "?"}`];
   const op = app.status?.operationState;
   if (op !== undefined) out.push(`  operation: phase=${op.phase ?? "?"} message=${(op.message ?? "").slice(0, 400)}`);
   for (const c of app.status?.conditions ?? []) out.push(`  condition ${c.type}: ${(c.message ?? "").slice(0, 400)}`);
@@ -720,8 +726,12 @@ export interface ArgoApp {
 }
 
 function dumpArgoState(): void {
-  const app = kubectlJson<ArgoApp>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
-  for (const line of describeArgoApplication(app)) log(line);
+  // The lb-pool Application is the one whose failure leaves `gitlab` Progressing on the sentinel address forever
+  // (Gateway AddressNotAssigned holds wave 0), so its conditions belong beside gitlab's.
+  for (const name of ["gitlab", "cilium-lb-ipam-pool"]) {
+    const app = kubectlJson<ArgoApp>(["get", `application.argoproj.io/${name}`, "-n", "argocd"]);
+    for (const line of describeArgoApplication(app, name)) log(line);
+  }
   const hpas = kubectlJson<{ items: { metadata: { name: string }; status?: { conditions?: { type: string; status: string; reason?: string; message?: string }[] } }[] }>(["get", "hpa", "-n", GITLAB_NAMESPACE]);
   for (const h of hpas?.items ?? []) {
     log(`  hpa ${h.metadata.name}: ${(h.status?.conditions ?? []).map((c) => `${c.type}=${c.status}${c.status === "True" ? "" : `(${c.reason ?? ""})`}`).join(" ")}`);
@@ -775,7 +785,7 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
 
   if (opts.pin === "job") {
     log("applying the installer's cilium-lb-ipam-pool Application (the one injected-lb-pool.nix renders on a node) ...");
-    const lbApp = laneLbPoolApplication(renderLbPoolApplicationText(range.start, range.stop, REPO_ROOT), laneTreeRepoUrl(), SERVED_GIT_REF);
+    const lbApp = laneLbPoolApplication(renderLbPoolApplicationText(range.start, range.stop, REPO_ROOT), DEFAULT_GIT_REPO_URL, opts.gitRef);
     const lb = kubectl(["apply", "-n", "argocd", "-f", "-"], { input: lbApp });
     if (lb.code !== 0) {
       report.record("a0-lane-up", "failed", `could not apply the cilium-lb-ipam-pool Application: ${lb.stderr.trim().slice(0, 300)}`);
@@ -1158,7 +1168,7 @@ if (import.meta.main) {
     const patch = installTimeGitlabPatch(readFileSync(join(REPO_ROOT, INSTALL_TIME_LB_APPLICATION_PATH), "utf8"), address);
     const app = buildGitlabLaneApplication(readFileSync(join(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8"), patch, address);
     const rng = kindPoolRange(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
-    const lbApp = laneLbPoolApplication(renderLbPoolApplicationText(rng.start, rng.stop, REPO_ROOT), laneTreeRepoUrl(), SERVED_GIT_REF);
+    const lbApp = laneLbPoolApplication(renderLbPoolApplicationText(rng.start, rng.stop, REPO_ROOT), DEFAULT_GIT_REPO_URL, "main");
     console.log(`lane address ${address} (pool ${rng.start}-${rng.stop}); rendered Application ${String(app.length)} bytes; lb-pool Application ${String(lbApp.length)} bytes; ${String(CHECKS.length)} checks:`);
     for (const c of CHECKS) console.log(`  ${c.id}${c.blocking ? "" : " (informational)"} <- [${c.dependsOn.join(", ")}]`);
     process.exit(0);
