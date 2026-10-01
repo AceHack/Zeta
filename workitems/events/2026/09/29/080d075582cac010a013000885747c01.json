@@ -1,0 +1,14 @@
+{
+  "id": "080d075582cac010a013000885747c01",
+  "at": "2026-09-29T01:03:40.888Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3NB0PAG087G0R000JQQCF4",
+    "type": "bug",
+    "title": "WP11 guest 'freeze' was the CI runner disk filling: B0891 lanes leave ~38 GiB of images, QEMU pauses the guest on ENOSPC",
+    "slug": "wp11-guest-freeze-was-the-ci-runner-disk-filling-b0891-lanes",
+    "priority": "P2",
+    "filename": "081M3NB0PAG087G0R000JQQCF4-wp11-guest-freeze-was-the-ci-runner-disk-filling-b0891-lanes.md"
+  }
+}

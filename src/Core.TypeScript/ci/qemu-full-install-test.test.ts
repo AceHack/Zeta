@@ -27,6 +27,8 @@ import {
   gib,
   parseQcowSizes,
   qcowAllocationIsConcerning,
+  RUNNER_DISK_EXHAUSTED_FLOOR_BYTES,
+  runnerDiskExhaustionReason,
   assertNothingToHealAfterGracefulShutdown,
   ESP_CONF_SCAN_PREFIX,
   espConfScanOutcome,
@@ -1908,6 +1910,65 @@ describe("WP27 — the qcow2 sparseness claim is measured, not asserted", () => 
   it("formats GiB without pretending to precision it does not have", () => {
     expect(gib(0)).toBe("0.0 GiB");
     expect(gib(1536 * 1024 * 1024)).toBe("1.5 GiB");
+  });
+});
+
+// 081M3NB0PAG087G0R000JQQCF4. MEASURED, run 36420588893: the WP11 guest's serial
+// stopped at `roster progress t=331s` and nothing followed for 70 minutes. The
+// job log carries `You are running out of disk space ... Free space left: 0 MB`
+// at 14:17:12 -- six minutes into phase 3, i.e. the same half-minute. QEMU's
+// default for a virtio drive is werror=enospc: a guest write that hits ENOSPC on
+// the HOST stops the whole VM, so the guest printed nothing because it was
+// paused, not frozen. Phase 1 had started with 14.3 GiB free (54.9 GiB earlier in
+// the same job) because the two B0891 lanes left ~38 GiB of images behind.
+describe("WP11 — a full RUNNER disk is named, never a 75-minute silent 'freeze'", () => {
+  const MiB = 1024 ** 2;
+  const GiB = 1024 ** 3;
+
+  it("names ENOSPC-paused guest when the runner has less than the floor left", () => {
+    const reason = runnerDiskExhaustionReason("phase 3 (WP11)", 0, "/tmp/zeta-q");
+    expect(reason).not.toBeNull();
+    expect(reason).toContain("phase 3 (WP11)");
+    expect(reason).toContain("RUNNER DISK EXHAUSTED");
+    expect(reason).toContain("/tmp/zeta-q");
+    expect(reason).toContain("werror");
+    expect(runnerDiskExhaustionReason("x", RUNNER_DISK_EXHAUSTED_FLOOR_BYTES - 1, "/d")).not.toBeNull();
+  });
+
+  it("is silent with headroom, and unknown free space cannot convict", () => {
+    expect(runnerDiskExhaustionReason("x", RUNNER_DISK_EXHAUSTED_FLOOR_BYTES, "/d")).toBeNull();
+    expect(runnerDiskExhaustionReason("x", 14 * GiB, "/d")).toBeNull();
+    expect(runnerDiskExhaustionReason("x", null, "/d")).toBeNull();
+  });
+
+  it("the floor is small enough to only fire when a write can no longer land", () => {
+    expect(RUNNER_DISK_EXHAUSTED_FLOOR_BYTES).toBeGreaterThanOrEqual(64 * MiB);
+    expect(RUNNER_DISK_EXHAUSTED_FLOOR_BYTES).toBeLessThanOrEqual(1 * GiB);
+  });
+
+  const workflow = readFileSync(
+    resolve(import.meta.dir, "../../../.github/workflows/build-ai-cluster-iso.yml"),
+    "utf8",
+  );
+
+  it("the B0891 lanes' disk images are reclaimed BEFORE the WP11 step, after their logs upload", () => {
+    const reclaim = workflow.indexOf("- name: Reclaim B0891 disk images before WP11");
+    const retentionLogs = workflow.indexOf("- name: Upload 081KSNY2Z0008QG0R0008PN7RQ retention serial logs");
+    const pathForkLogs = workflow.indexOf("- name: Upload 081KSNY2Z0008QG0R0008PN7RQ path-fork serial logs");
+    const wp11 = workflow.indexOf("- name: WP11 — installed-disk first-boot k3s verify");
+    expect(reclaim).toBeGreaterThan(-1);
+    expect(retentionLogs).toBeGreaterThan(-1);
+    expect(pathForkLogs).toBeGreaterThan(-1);
+    expect(reclaim).toBeGreaterThan(retentionLogs);
+    expect(reclaim).toBeGreaterThan(pathForkLogs);
+    expect(reclaim).toBeLessThan(wp11);
+    const step = workflow.slice(reclaim, wp11);
+    expect(step).toMatch(/if:\s*always\(\)/);
+    expect(step).toContain("b0891-retention-run");
+    expect(step).toContain("b0891-path-fork-run");
+    // The serial logs are the evidence those lanes produce; only images go.
+    expect(step).toContain("! -name '*.log'");
+    expect(step).toContain("df -h");
   });
 });
 

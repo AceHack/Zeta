@@ -1094,6 +1094,27 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+      # 081M3NB0PAG087G0R000JQQCF4 — MEASURED, run 36420588893: the two B0891
+      # lanes above leave their qcow2 / boot images in the workspace (~38 GiB),
+      # so WP11's phase 1 started with 14.3 GiB free (54.9 GiB earlier in the
+      # same job). Its first boot writes ~26 GiB (images + the dev toolchain);
+      # the runner hit "Free space left: 0 MB" six minutes in, QEMU paused the
+      # guest on ENOSPC (virtio werror=enospc), and the serial simply stopped --
+      # read as a guest freeze for 70 minutes. Their logs are uploaded above;
+      # only the images go. The preinstalled SDKs removed are the same ones the
+      # HA job below frees; no later step in this job uses them.
+      - name: Reclaim B0891 disk images before WP11
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        run: |
+          set -uo pipefail
+          df -h /
+          for d in "$GITHUB_WORKSPACE/b0891-retention-run" "$GITHUB_WORKSPACE/b0891-path-fork-run"; do
+            if [ -d "$d" ]; then find "$d" -type f ! -name '*.log' -print -delete; fi
+          done
+          rm -f /tmp/zflash-test-baseline.qcow2
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+
       # WP11 — closes the literal "plug in the USB and run it" gap. Every
       # QEMU scenario above stops at a serial marker on the INSTALLER side
       # (ZETA CLUSTER NODE INSTALL COMPLETE) or, for scenario 2, a login

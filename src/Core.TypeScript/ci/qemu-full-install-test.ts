@@ -708,6 +708,51 @@ export function qcowAllocationIsConcerning(
   return sizes.actualBytes > freeBytes;
 }
 
+/**
+ * 081M3NB0PAG087G0R000JQQCF4. Below this much free space on the filesystem that
+ * holds the qcow2, a guest write can no longer land on the host.
+ */
+export const RUNNER_DISK_EXHAUSTED_FLOOR_BYTES = 256 * 1024 ** 2;
+
+/**
+ * Exported for unit tests. The named failure for a RUNNER whose disk is full.
+ *
+ * QEMU's default for a virtio drive is `werror=enospc`: a guest write that hits
+ * ENOSPC on the host STOPS the VM. Nothing inside the guest can report that --
+ * its serial just ends -- so without this check the lane reads as a guest
+ * freeze and burns its whole timeout (run 36420588893: serial stopped at
+ * t=331s, the job log said "Free space left: 0 MB" the same half-minute, and
+ * the phase ran 70 more minutes). Unlike `qcowAllocationIsConcerning` this is
+ * not a heuristic: a paused guest cannot produce a verdict, so it is a failure.
+ * Unknown free space never convicts.
+ */
+export function runnerDiskExhaustionReason(
+  phaseLabel: string,
+  freeBytes: number | null,
+  dir: string,
+): string | null {
+  if (freeBytes === null || freeBytes >= RUNNER_DISK_EXHAUSTED_FLOOR_BYTES) return null;
+  return (
+    `${phaseLabel} RUNNER DISK EXHAUSTED — ${gib(freeBytes)} free under ${dir}. ` +
+    "QEMU stops a guest whose disk write hits ENOSPC on the host (virtio default werror=enospc), " +
+    "so the guest is PAUSED, not frozen: its serial ends mid-run and no verdict can follow. " +
+    "Free runner disk before this lane (earlier QEMU lanes' images) — this is not a guest defect."
+  );
+}
+
+function describeRunnerFree(freeBytes: number | null): string {
+  return freeBytes === null ? "runner free: unknown" : `runner free: ${gib(freeBytes)}`;
+}
+
+/** Free bytes on the filesystem holding `dir`, or null when df cannot say. */
+function readRunnerFreeBytes(dir: string): number | null {
+  const df = spawnSync("df", ["-B1", "--output=avail", dir], { encoding: "utf8" });
+  if (df.status !== 0) return null;
+  const line = (df.stdout ?? "").trim().split(/\r?\n/u).at(-1)?.trim();
+  const parsed = line === undefined ? Number.NaN : Number(line);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */
 export const PHASE2_SERIAL_SEPARATOR = "\n\n=== PHASE 2: boot installed disk (no ISO) ===\n\n";
 
@@ -2223,6 +2268,7 @@ async function waitForInstalledLoginThenK3sVerdict(
   expectedHostname: string | null,
   requireFirstSession: boolean,
   requireUefiKeyfileRestore: boolean,
+  diskDir: string,
 ): Promise<InstallResult> {
   const login = await waitForInstalledLogin(
     serialLogPath,
@@ -2235,12 +2281,19 @@ async function waitForInstalledLoginThenK3sVerdict(
     `[qemu-full-install-test] combined first boot — ${login.reason}; ` +
       "SAME boot continues into the WP11 k3s verdict (no reboot, so no half-initialised datastore)",
   );
-  const verdict = await waitForK3sFirstBootVerifyVerdict(serialLogPath);
+  console.log(
+    `[qemu-full-install-test] phase 3 (WP11) runner disk at start: ${describeRunnerFree(readRunnerFreeBytes(diskDir))} under ${diskDir}`,
+  );
+  const verdict = await waitForK3sFirstBootVerifyVerdict(serialLogPath, diskDir);
   // 081M3K23YCP087G0R003BVDS1P: the dev toolchain now runs in the background on
   // this SAME first boot. Keep the guest alive until it concludes (or the bound
   // expires) so the verdict is in this serial — killing the VM at the k3s
   // verdict would turn every run into `running`, a verdict nobody waited for.
-  await waitForDevToolchainConclusion(serialLogPath);
+  // A guest QEMU paused on a full runner disk can print nothing more, so there
+  // is nothing to wait for (081M3NB0PAG087G0R000JQQCF4).
+  if (!verdict.reason.includes("RUNNER DISK EXHAUSTED")) {
+    await waitForDevToolchainConclusion(serialLogPath, diskDir);
+  }
   return {
     ...verdict,
     ...(login.hostname !== undefined ? { hostname: login.hostname } : {}),
@@ -2250,7 +2303,7 @@ async function waitForInstalledLoginThenK3sVerdict(
 /** Bound on waiting for zeta-dev-toolchain.service AFTER the k3s verdict. */
 const DEV_TOOLCHAIN_WAIT_SECONDS = Number(process.env.QEMU_DEV_TOOLCHAIN_WAIT_SECONDS ?? "1200");
 
-async function waitForDevToolchainConclusion(serialLogPath: string): Promise<void> {
+async function waitForDevToolchainConclusion(serialLogPath: string, diskDir: string): Promise<void> {
   const start = Date.now();
   const deadline = start + DEV_TOOLCHAIN_WAIT_SECONDS * 1000;
   let lastReportedMinute = -1;
@@ -2259,10 +2312,16 @@ async function waitForDevToolchainConclusion(serialLogPath: string): Promise<voi
     if (state === "succeeded" || state === "failed") return;
     const elapsedMin = Math.floor((Date.now() - start) / 60000);
     if (elapsedMin > lastReportedMinute) {
+      const free = readRunnerFreeBytes(diskDir);
       console.log(
-        `[qemu-full-install-test] ${elapsedMin} min after the k3s verdict; zeta-dev-toolchain is ${state}`,
+        `[qemu-full-install-test] ${elapsedMin} min after the k3s verdict; zeta-dev-toolchain is ${state}; ${describeRunnerFree(free)}`,
       );
       lastReportedMinute = elapsedMin;
+      const exhausted = runnerDiskExhaustionReason("after the k3s verdict:", free, diskDir);
+      if (exhausted !== null) {
+        console.log(`[qemu-full-install-test] ${exhausted}`);
+        return;
+      }
     }
     await Bun.sleep(POLL_INTERVAL_MS);
   }
@@ -2544,7 +2603,7 @@ export function summarizeK3sFirstBootVerifyVerdict(verdict: K3sFirstBootVerifyVe
   return { ok, lines };
 }
 
-async function waitForK3sFirstBootVerifyVerdict(serialLogPath: string): Promise<InstallResult> {
+async function waitForK3sFirstBootVerifyVerdict(serialLogPath: string, diskDir: string): Promise<InstallResult> {
   const start = Date.now();
   const deadline = start + K3S_VERIFY_TIMEOUT_SECONDS * 1000;
   let lastReportedMinute = -1;
@@ -2553,10 +2612,23 @@ async function waitForK3sFirstBootVerifyVerdict(serialLogPath: string): Promise<
     const elapsedSec = Math.floor((Date.now() - start) / 1000);
     const elapsedMin = Math.floor(elapsedSec / 60);
     if (elapsedMin > lastReportedMinute) {
+      // 081M3NB0PAG087G0R000JQQCF4: the runner's free space rides every progress
+      // line, so a guest whose serial stops can be read against the host.
+      const free = readRunnerFreeBytes(diskDir);
       console.log(
-        `[qemu-full-install-test] phase 3 (WP11): ${elapsedMin} min elapsed; waiting for k3s first-boot verdict`,
+        `[qemu-full-install-test] phase 3 (WP11): ${elapsedMin} min elapsed; waiting for k3s first-boot verdict; ${describeRunnerFree(free)}`,
       );
       lastReportedMinute = elapsedMin;
+      const exhausted = runnerDiskExhaustionReason("phase 3 (WP11)", free, diskDir);
+      if (exhausted !== null) {
+        const content = readSerial(serialLogPath);
+        return {
+          exitCode: 1,
+          reason: exhausted,
+          serialLogTail: content.slice(-4000),
+          elapsedSeconds: elapsedSec,
+        };
+      }
     }
 
     const content = readSerial(serialLogPath);
@@ -2767,19 +2839,15 @@ function reportQcowAllocation(label: string, diskPath: string): void {
       console.log(`[qemu-full-install-test] ${label}: qcow2 size unknown (unparseable qemu-img output)`);
       return;
     }
-    let freeBytes: number | null = null;
-    const df = spawnSync("df", ["-B1", "--output=avail", dirname(diskPath)], { encoding: "utf8" });
-    if (df.status === 0) {
-      const line = (df.stdout ?? "").trim().split(/\r?\n/u).at(-1)?.trim();
-      const parsed = line === undefined ? Number.NaN : Number(line);
-      if (Number.isFinite(parsed)) freeBytes = parsed;
-    }
+    const freeBytes = readRunnerFreeBytes(dirname(diskPath));
     console.log(`[qemu-full-install-test] ${describeQcowAllocation(label, sizes, freeBytes)}`);
     if (qcowAllocationIsConcerning(sizes, freeBytes)) {
       console.warn(
         `[qemu-full-install-test] WARNING — ${label}: the image has allocated more than the runner has left. ` +
-          "The qcow2 sparseness this lane's disk size depends on may not be holding (WP27); " +
-          "check whether mkfs is writing inode tables eagerly.",
+          "Either the qcow2 sparseness this lane's disk size depends on is not holding (WP27; check " +
+          "whether mkfs is writing inode tables eagerly) or an earlier lane left its images on the " +
+          "runner (run 36420588893: 38 GiB of B0891 images). A later boot that writes past the " +
+          "remaining space is PAUSED by QEMU, not frozen.",
       );
     }
   } catch (err) {
@@ -3309,6 +3377,7 @@ async function main(): Promise<never> {
             hostname,
             requireFirstSession,
             requireUefiKeyfileRestore,
+            dirname(diskPath),
           )
         : waitForInstalledLogin(
             phase2SerialLogPath,

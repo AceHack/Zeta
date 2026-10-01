@@ -97,6 +97,26 @@ describe("zeta-dev-toolchain.nix — the unit is bounded and cannot compete with
   it("runs once: skipped when the success stamp exists, so a failure retries next boot", () => {
     expect(nix).toContain('ConditionPathExists = "!${cfg.home}/.zeta/dev-toolchain.ok"');
   });
+
+  // 081M3NB0PAG087G0R000JQQCF4. Nice=19 / SCHED_IDLE rank tasks only WITHIN the
+  // unit's own cgroup; between cgroups the kernel weighs the CGROUP. Left in
+  // system.slice, this unit rode the slice k3s-process-protection.nix raised to
+  // CPUWeight=1000 (vs ~127 for kubepods on the WP11 guest) and its memory counted
+  // against the MemoryLow that slice holds for k3s -- the opposite of "cannot
+  // compete with k3s".
+  it("lives in its own slice, OUTSIDE system.slice (where k3s's protection is set)", () => {
+    const m = nix.match(/Slice\s*=\s*"([^"]+)";/);
+    expect(m).not.toBeNull();
+    expect(m?.[1]).toBe("zeta-background.slice");
+    expect(nix).toMatch(/systemd\.slices\.zeta-background\s*=/);
+  });
+
+  it("that slice is cgroup-idle for CPU and its memory is capped below the node", () => {
+    const slice = nix.slice(nix.indexOf("systemd.slices.zeta-background"));
+    expect(slice).toMatch(/CPUWeight\s*=\s*"idle";/);
+    expect(slice).toMatch(/MemoryHigh\s*=\s*"\d+%";/);
+    expect(slice).toMatch(/MemoryMax\s*=\s*"\d+%";/);
+  });
 });
 
 // ── The runner, EXECUTED ────────────────────────────────────────────────────

@@ -13,6 +13,9 @@
 #   - after network-online.target, as the operator (runuser, inside the script).
 #   - Nice=19 + CPUSchedulingPolicy=idle + IOSchedulingClass=idle: it cannot
 #     compete with k3s's own first boot, which is the thing the node is FOR.
+#     Those rank tasks only inside the unit's cgroup, so the unit also runs in
+#     its own cgroup-idle, memory-capped `zeta-background.slice` (not the
+#     k3s-protected system.slice) -- see the Slice comment below.
 #   - bounded twice: per attempt inside the script (`timeout`, named rc 124),
 #     and TimeoutStartSec for the whole unit, whose expiry ExecStopPost turns
 #     into a named FAILED line + PARTIAL-PROVISION marker.
@@ -94,8 +97,31 @@ in
         Nice = 19;
         CPUSchedulingPolicy = "idle";
         IOSchedulingClass = "idle";
+        # Out of system.slice (081M3NB0PAG087G0R000JQQCF4). Nice and SCHED_IDLE
+        # only rank tasks WITHIN this unit's cgroup; between cgroups the kernel
+        # weighs the cgroup. system.slice is where k3s-process-protection.nix
+        # puts CPUWeight=1000 and MemoryLow=<kube-reserved> for k3s, so inside
+        # it this unit was weighted ABOVE every pod and its page cache counted
+        # against the protection meant for k3s. Its own root-level slice below
+        # is cgroup-idle and memory-capped instead.
+        Slice = "zeta-background.slice";
         StandardOutput = "journal";
         StandardError = "journal";
+      };
+    };
+
+    # A root-level slice for work that must never compete with the node's
+    # purpose. CPUWeight=idle is cgroup v2 `cpu.idle=1`: CPU only when nothing
+    # else wants it. MemoryHigh throttles and reclaims this slice first once it
+    # passes a quarter of the node; MemoryMax is the hard stop (the kernel
+    # OOM-kills inside THIS slice, never a pod or k3s, and the unit's retry /
+    # ExecStopPost names the failure).
+    systemd.slices.zeta-background = {
+      description = "Background provisioning that yields to k3s and its pods";
+      sliceConfig = {
+        CPUWeight = "idle";
+        MemoryHigh = "25%";
+        MemoryMax = "40%";
       };
     };
 
