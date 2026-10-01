@@ -3273,3 +3273,15 @@ Anonymous GHCR pull (401 challenge, then token exchange, then manifest) returned
 The 2026-08-22 private measurement remains at INJECTION-POINTS.md:726. Catalog row ghcr-pull is still EXTERNAL / NOBODY at :617. Disclosed, not touched. Heading above the new banner still says BLOCKING. Soft.
 
 CI: 0 check runs on the product SHA. No tip-red versus parent-green. Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17780 leftover unique @ 970ea49b53c8837b1ffa31781533c1553509addd -- GRADE GO
+
+Tip 970ea49b53c8837b1ffa31781533c1553509addd is 1 parent. Parent 1ccd3262ffa96372878c0e116ab1e019acaa286d. Stat +89/-0, 4 files. Product files: opensearch Application.yaml and opensearch-chown-image-pinned.test.ts. The other two are a backlog workitem and a created event. Live head at grade time f2ddf7a1303908501cc077c1910cacda64623805 was a merge of 970ea49b and 8df54dbd and was not graded. A later tip 5ddb8a06 is a separate grade and is not this cell.
+
+Parent Application.yaml had no image keys, so the chart default applied and helm rendered busybox:latest. Tip Application.yaml sets image busybox and imageTag 1.38.0. Chart 3.8.0 templates/statefulset.yaml:250-258 renders that onto the fsgroup-volume init with runAsUser 0. helm template: image busybox:1.38.0. sysctl init is not rendered (enabled false).
+
+Grafana init is docker.io/library/busybox:1.38.0. Same tag. OpenSearch omits the docker.io/library/ prefix. Soft.
+
+bun test opensearch-chown-image-pinned.test.ts: tip 2 pass. Parent exit 1 (unset imageTag is floating). Mutation imageTag latest exit 1. Mutation imageTag 9.9.9 stays green. The test does not lock 1.38.0. Significant soft. lane-footprints.json:173 still lists busybox:latest for opensearch. Soft.
+
+CI: 0 check runs on 970ea49b. Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
