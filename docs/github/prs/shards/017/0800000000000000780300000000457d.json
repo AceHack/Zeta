@@ -1,0 +1,12 @@
+{
+  "pr_number": 17789,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17789-fix-hygiene-unblock-the-lint-job-cnpg-example-absence-assertion-chart-snapshot-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:39:24.870Z",
+  "schema_version": "v1",
+  "commit_sha": "056dc53ec5a50ea02191e615b9ada7f9c97009ac",
+  "title": "fix(hygiene): unblock the lint job -- cnpg example absence assertion, chart snapshot, tempo major",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:38:38Z",
+  "head_ref": "fix/main-red-arity-census-chart-snapshot"
+}

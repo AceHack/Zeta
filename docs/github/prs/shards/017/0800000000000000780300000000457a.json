@@ -1,0 +1,12 @@
+{
+  "pr_number": 17786,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17786-fix-observability-stop-scraping-four-k3s-control-plane-components-that-are-not-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:24:24.188Z",
+  "schema_version": "v1",
+  "commit_sha": "c44c1a1007c1c1b53073deb99bdb2d00dc3b110b",
+  "title": "fix(observability): stop scraping four k3s control-plane components that are not pods",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:23:23Z",
+  "head_ref": "fix/kps-k3s-absent-control-plane-targets"
+}

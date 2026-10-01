@@ -1,0 +1,12 @@
+{
+  "pr_number": 17780,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17780-fix-opensearch-pin-the-root-chown-init-container-was-busybox-latest.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:26:12.125Z",
+  "schema_version": "v1",
+  "commit_sha": "da17bd29ea7dd35455dc2dcc3f44e6e508c46852",
+  "title": "fix(opensearch): pin the root chown init container (was busybox:latest)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:25:30Z",
+  "head_ref": "fix/opensearch-pin-chown-init-image"
+}
