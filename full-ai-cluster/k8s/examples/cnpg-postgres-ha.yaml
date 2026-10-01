@@ -1,0 +1,119 @@
+# A highly-available PostgreSQL for ONE application — the CloudNativePG template.
+# NOT a deployed workload, and NOT under k8s/applications/ (see "WHERE THIS LIVES").
+#
+# WHAT EXISTS TODAY, MEASURED (2026-09-30), and why this template is not a second
+# copy of it:
+#   * the `cloudnativepg` Application (wave -70) installs the OPERATOR on every
+#     install -- that is the capability. It creates no database.
+#   * `temporal/postgres/cluster.yaml` is the ONE Cluster CR the tree ships:
+#     `instances: 1`, node-local 10Gi, operator-minted credentials, and NO backup of
+#     any kind (no barman object store, no ScheduledBackup). It is temporal's, in
+#     temporal's namespace, and is a single point of failure by design on a
+#     single-node substrate.
+#   * there is NO general-purpose Postgres for applications, and this file does not
+#     add one: CloudNativePG's own model is ONE CLUSTER PER APPLICATION (the
+#     "microservice" pattern -- each app owns its database, its credentials and its
+#     failure domain, exactly as temporal-postgres does). A shared always-on cluster
+#     would be the appointed hub manifesto section 1 refuses, and would cost
+#     750m / 1.5 GiB of requests on every install whether or not anything used it.
+#     So the deliverable is the TEMPLATE a consumer copies, and a test that keeps
+#     it honest.
+#
+# HOW TO USE: copy this file next to the consuming Application (the way
+# `temporal/postgres/` sits under `temporal/`, so a lane that defers the consumer
+# defers its database by the same glob), rename `example-postgres`, and add an
+# Application like temporal/postgres/Application.yaml (wave AFTER cloudnativepg
+# -70, `directory.include` naming this CR, `prune: false` -- pruning the Cluster
+# deletes the PVCs). Add `dependsOn: [cloudnativepg]` for it in
+# sync-wave-dependency-graph.yaml and a resourceClaims row (pods = instances) in
+# storage-profiles.json. The consumer reads Secret `example-postgres-app` (keys
+# username / password / dbname / host / port / uri) and dials
+# `example-postgres-rw.<ns>.svc:5432`.
+#
+# WHAT "HA" MEANS HERE, AND WHAT IT DOES NOT:
+#   * 3 instances = one primary + two streaming replicas. Losing any ONE pod
+#     leaves a majority and CNPG promotes a replica; losing two does not. Two
+#     instances would survive one failure too but leave no spare while the first is
+#     rebuilding.
+#   * On ONE node this protects against a crashed or evicted POSTGRES POD, a
+#     rolling image update (switchover, not restart-the-primary), and a corrupted
+#     instance -- NOT against losing the node or its disk: all three PVCs are on the
+#     same node-local volume. Real durability needs three nodes; the Cluster then
+#     spreads by the pod anti-affinity below with no change to this file.
+#   * Replication is ASYNCHRONOUS by default (`minSyncReplicas: 0`): a failover can
+#     lose the last few transactions. Synchronous replication (`minSyncReplicas: 1`)
+#     gives zero loss but STOPS WRITES whenever no standby is reachable -- the right
+#     trade only with three nodes, so it is not the default on one.
+#   * THERE IS NO BACKUP in this template. Replication is not a backup: a bad
+#     DELETE replicates in milliseconds. A backup needs an object store plus a
+#     minted credential Secret and CNPG's barman-cloud plugin, none of which this
+#     tree provisions yet. That is the largest gap in the Postgres story and it is
+#     stated here rather than left implied by the word "HA".
+#
+# WHERE THIS LIVES: beside, not inside, k8s/applications/. ArgoCD's root reads only
+# `k8s/applications/*/Application.yaml`, so nothing syncs this -- and every audit
+# that prices the cluster walks that tree for volume claims and pod requests, so a
+# Cluster here would be counted as 30Gi + 750m that no sync provisions. Same
+# reason as kubevirt-windows-vm.yaml next to it.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-postgres
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: example-postgres
+  namespace: example-postgres
+spec:
+  instances: 3
+  # The SAME image temporal-postgres runs: one PostgreSQL image for every CNPG consumer
+  # (a second major would be a second upgrade path). `minimal` = the server plus
+  # Debian's contrib modules (pg_trgm, btree_gin, ...). Pinned by tag; the test
+  # requires it to equal temporal's, so a bump that moves one and forgets the other
+  # is red.
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.11-minimal-trixie
+  # NO `enableSuperuserAccess`: it defaults to false and a template must not offer
+  # the superuser password to the application. The application gets its own role.
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+      # NO `secret:` -- the operator generates `example-postgres-app` and that
+      # generated Secret is the ONE source of the password, minted at the same time
+      # as the role it belongs to. A password written here, or in a Secret a
+      # first-boot job mints separately, is a password with no account behind it
+      # (temporal's seed Job did exactly that and never converged).
+  postgresql:
+    parameters:
+      # CNPG's default is 100. Size it to the consumers: every pooled connection is a
+      # backend process, so raise it with the consumer's pool, not to a large round number.
+      max_connections: "100"
+  # Rolling updates: replicas first, then a SWITCHOVER to a promoted replica, so the
+  # primary is never simply restarted under the application.
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  # PREFERRED, not required: on a single node a REQUIRED anti-affinity would leave two
+  # of three instances Pending forever. Preferred spreads them the moment a second
+  # node exists and still schedules on one.
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: preferred
+    topologyKey: kubernetes.io/hostname
+  # Explicit: an unset request is BestEffort QoS, first evicted under node pressure,
+  # and it contributes 0m to every budget this repo computes. A request is a
+  # RESERVATION, not a measurement (unmetered). Memory has a limit, CPU does not: a
+  # CFS quota throttles a database into missing its liveness probe.
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+  # NODE-LOCAL on purpose, and CNPG's own guidance: CloudNativePG is shared-nothing and
+  # replicates at the PostgreSQL level, so a replicated block volume underneath
+  # replicates the same bytes twice and adds write latency. Durability comes from
+  # `instances`, not from the storage class. Per instance.
+  storage:
+    storageClass: zeta-block-local
+    size: 10Gi
