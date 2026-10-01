@@ -195,10 +195,18 @@ spec:
                 }
               }
 
-              // Traces -> Tempo (endpoint unchanged: it already resolves)
+              // Traces -> Tempo. The endpoint resolves; the TRANSPORT did not. An OTLP
+              // exporter dials TLS unless told otherwise (an `http://` prefix does not
+              // switch it off), and Tempo's in-cluster OTLP receiver is plaintext, so
+              // every export failed the handshake. Alloy docs: "If the server doesn't
+              // support TLS, you must set the `insecure` argument to `true`."
               otelcol.exporter.otlp "tempo" {
                 client {
-                  endpoint = "http://tempo.tempo.svc.cluster.local:4317"
+                  endpoint = "tempo.tempo.svc.cluster.local:4317"
+
+                  tls {
+                    insecure = true
+                  }
                 }
               }
 

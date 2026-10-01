@@ -52,6 +52,16 @@ spec:
 
         mimir:
           structuredConfig:
+            # SINGLE TENANT, ON PURPOSE. Mimir defaults `multitenancy_enabled` to TRUE
+            # (Mimir configuration reference), which makes every push and query require
+            # an X-Scope-OrgID header. Alloy's prometheus.remote_write sends none, so with
+            # the default every sample is refused (no org id) while all Mimir pods read
+            # Ready. Loki is already single-tenant (`auth_enabled: false`); with this set
+            # Mimir files everything under the tenant `anonymous`. If tenancy is ever
+            # wanted, flip this AND add the header to Alloy's remote_write in the same
+            # change -- the audit-observability-chain `mimir:` check refuses one without
+            # the other.
+            multitenancy_enabled: false
             blocks_storage:
               backend: s3
               s3:

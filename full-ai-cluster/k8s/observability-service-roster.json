@@ -24,7 +24,7 @@
       "chart": "loki",
       "repoURL": "https://grafana-community.github.io/helm-charts",
       "version": "18.12.1",
-      "valuesHash": "sha256:74edc3e447ede8a36fd11cbbf294ee74fad2f5c93f33a533215b690cf64991e3",
+      "valuesHash": "sha256:c4f40f802417153f484d7c070f39a5094da5a03cc8c12b47a9d57ec1163e4566",
       "services": {
         "loki-query-scheduler-discovery": [
           3100,
@@ -79,7 +79,7 @@
       "chart": "mimir-distributed",
       "repoURL": "https://grafana.github.io/helm-charts",
       "version": "6.2.0",
-      "valuesHash": "sha256:9aaf5f702a7f63640db01bbd512eb0462066b79ec6699897428ddf63f09805f3",
+      "valuesHash": "sha256:a14915f85a736acbb75002e968bb6961cec6df38c238e5f60cbbd59c40e97158",
       "services": {
         "mimir-rollout-operator": [
           443

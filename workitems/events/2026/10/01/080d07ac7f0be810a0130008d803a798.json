@@ -1,0 +1,14 @@
+{
+  "id": "080d07ac7f0be810a0130008d803a798",
+  "at": "2026-10-01T03:44:02.429Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TRZRBW087G0R0031TQP04",
+    "type": "bug",
+    "title": "Observability wiring: loki RF 3 on 1 writer, mimir tenant header, alloy->tempo plaintext TLS, SSA+VCT drift on helm StatefulSets",
+    "slug": "observability-wiring-loki-rf-3-on-1-writer-mimir-tenant-head",
+    "priority": "P2",
+    "filename": "081M3TRZRBW087G0R0031TQP04-observability-wiring-loki-rf-3-on-1-writer-mimir-tenant-head.md"
+  }
+}

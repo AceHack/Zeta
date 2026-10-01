@@ -403,6 +403,82 @@ export function checkAlertmanager(values: Record<string, unknown> | undefined): 
   return fails;
 }
 
+// ---- Sink contracts: the sinks accept what Alloy sends ---------------------
+//
+// `checkEndpoints` proves an Alloy sink names a Service that EXISTS. These three
+// prove the thing behind it ACCEPTS what is sent -- the class where every pod is
+// Ready, every Application is Healthy, and no byte is stored. All three were read
+// off the rendered charts (2026-09-30), not inferred:
+//
+//   Loki   `replication_factor` renders as 3 while `write.replicas` is 1. Loki's
+//          write quorum is floor(RF/2)+1 = 2, so every push is refused with
+//          "at least 2 live replicas required, could only find 1".
+//   Mimir  `multitenancy_enabled` defaults to TRUE (Mimir configuration reference),
+//          which requires an X-Scope-OrgID header; Alloy's remote_write sends none.
+//   Tempo  `otelcol.exporter.otlp` leaves TLS ON unless `tls { insecure = true }`
+//          (Alloy docs: "If the server doesn't support TLS, you must set the
+//          `insecure` argument to `true`"); the in-cluster Tempo receiver is plaintext.
+
+const dig = (o: unknown, ...path: string[]): unknown => {
+  let cur: unknown = o;
+  for (const k of path) {
+    if (typeof cur !== "object" || cur === null) return undefined;
+    cur = (cur as Record<string, unknown>)[k];
+  }
+  return cur;
+};
+
+/**
+ * Loki SimpleScalable: the ring's replication factor must be reachable by the
+ * writers. Chart defaults when a key is absent: `loki.commonConfig.replication_factor`
+ * is 3 and `write.replicas` is 3.
+ */
+export function checkLokiReplication(values: Record<string, unknown> | undefined): string[] {
+  const mode = dig(values, "deploymentMode");
+  if (mode !== undefined && mode !== "SimpleScalable") return [];
+  const rfRaw = dig(values, "loki", "commonConfig", "replication_factor");
+  const writersRaw = dig(values, "write", "replicas");
+  const rf = typeof rfRaw === "number" ? rfRaw : 3;
+  const writers = typeof writersRaw === "number" ? writersRaw : 3;
+  if (rf > writers) {
+    return ["loki: replication_factor " + String(rf) + " exceeds write.replicas " + String(writers) + " -- the write quorum (floor(RF/2)+1) can never be met, so every push is refused while every pod reads Ready"];
+  }
+  return [];
+}
+
+/**
+ * Mimir: with multitenancy on (its default) every Alloy `prometheus.remote_write`
+ * aimed at mimir must send an X-Scope-OrgID header; otherwise multitenancy must
+ * be switched off.
+ */
+export function checkMimirTenancy(mimirValues: Record<string, unknown> | undefined, alloyCfg: string): string[] {
+  if (dig(mimirValues, "mimir", "structuredConfig", "multitenancy_enabled") === false) return [];
+  const fails: string[] = [];
+  for (const c of parseAlloyComponents(alloyCfg)) {
+    if (c.kind !== "prometheus.remote_write") continue;
+    if (!/\bmimir[a-z-]*\.mimir\.svc/.test(c.body)) continue;
+    if (!/x-scope-orgid/i.test(c.body)) {
+      fails.push("alloy: " + c.id + " pushes to mimir with no X-Scope-OrgID header while mimir.structuredConfig.multitenancy_enabled is not false -- Mimir refuses every sample (no org id)");
+    }
+  }
+  return fails;
+}
+
+/** Alloy: a plaintext in-cluster OTLP target needs `tls { insecure = true }`. */
+export function checkAlloyOtlpTls(alloyCfg: string): string[] {
+  const fails: string[] = [];
+  for (const c of parseAlloyComponents(alloyCfg)) {
+    if (c.kind !== "otelcol.exporter.otlp") continue;
+    const m = /endpoint\s*=\s*"([^"]*)"/.exec(c.body);
+    const endpoint = m?.[1] ?? "";
+    if (endpoint.startsWith("https://")) continue;
+    if (!/insecure\s*=\s*true/.test(c.body)) {
+      fails.push("alloy: " + c.id + " targets plaintext " + JSON.stringify(endpoint) + " without tls { insecure = true } -- the exporter dials TLS by default and the receiver does not speak it");
+    }
+  }
+  return fails;
+}
+
 // ---- Scrape opt-in + non-vacuous alerting ---------------------------------
 
 /** Where the metric names Zeta actually emits are DECLARED, not guessed. */
@@ -910,6 +986,20 @@ export function runAudit(appsDir: string, rosterPath: string, repoRoot: string =
     }
     checked.push("alloy: every endpoint resolves to a Service the target chart renders");
     failures.push(...checkEndpoints(parseAlloyEndpoints(cfg), roster, hashes));
+  }
+
+  checked.push("alloy: plaintext OTLP exporters declare tls { insecure = true }");
+  failures.push(...checkAlloyOtlpTls(cfg));
+
+  const lokiApp = readApplication(appsDir, "loki");
+  if (lokiApp !== undefined) {
+    checked.push("loki: replication_factor is reachable by write.replicas");
+    failures.push(...checkLokiReplication(helmValues(lokiApp)));
+  }
+  const mimirApp = readApplication(appsDir, "mimir");
+  if (mimirApp !== undefined) {
+    checked.push("mimir: alloy remote_write is accepted (tenant header or multitenancy off)");
+    failures.push(...checkMimirTenancy(helmValues(mimirApp), cfg));
   }
 
   const kps = readApplication(appsDir, "kube-prometheus-stack");
