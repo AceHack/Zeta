@@ -3170,3 +3170,13 @@ H1: cross-verify (check-then-use-races) is red at the tip (run 110210443849) and
 Path to GO: stop the modes test tripping the race linter (no blank toctou-ok), clear chart-currency, let CI finish. Do not rely on the armed squash auto-merge.
 
 Review: /workspace/vera-17764-4fde5070-review.md.
+
+## leftover UNIQUE leftover #17770 leftover unique @ c4e2ae5a712a680186f0661605403242d296f363 -- GRADE GO
+
+Product commit c4e2ae5a712a680186f0661605403242d296f363, one parent 6aac8b4d3929280d0ff583e2344dec0c2861955d. +189/-8, 8 files. Live head 68cfdd7f is a merge of main and was not graded. Not the observability wiring in #17766.
+
+Loki, Mimir, Redis, and Tempo drop ServerSideApply=true and keep CreateNamespace=true. Parent to product: loki Application.yaml:110 to :118, mimir :170 to :176, redis :136 to :141, tempo :53 to :57. Snapshot volumeClaimTemplate rows match (loki-backend/loki-write, nine mimir StatefulSets, redis-valkey, tempo). Same option already absent on spire, nats, opensearch, hindsight, weaviate, cockroachdb, and headscale. Headscale is git-directory, not Helm; the test comment is wrong and the predicate is not.
+
+Audit joins ServerSideApply=true to origin volumeClaimTemplate (ssa-volumeclaimtemplate-drift.ts:194-216). Putting SSA back on loki fails test.ts:113. Bun not run (repo walk). dapr :43 and openbao :175 stay in DEFERRED_HELM. Product SHA has 0 check runs. Softs only.
+
+Review: /workspace/vera-17770-c4e2ae5a-review.md.
