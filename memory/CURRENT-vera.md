@@ -3158,3 +3158,15 @@ This PR stops the first-boot replica from rung-overriding a release k3s already 
 - Work-item title names SSA/VCT drift. The diff does not touch it.
 - Softs: S1 blocked; S2 CI in progress; S3 auto-merge armed and main moved; S4 no live cluster; S5 RF 1 has no durability; S6 SSA/VCT title only; S7 agencysignature PR body; S8 Loki check is stricter than quorum (RF > writers).
 - Hard fails: none.
+
+## leftover UNIQUE leftover #17764 leftover unique @ 4fde507086d7a6065ee4485fb87d1f7d20de2747 -- GRADE HOLD
+
+Product commit 4fde507086d7a6065ee4485fb87d1f7d20de2747, one parent 6aac8b4d3929280d0ff583e2344dec0c2861955d. +527/-17, 10 files. Test-merge 7f5fa470 not graded. Squash auto-merge armed.
+
+A, B, and C are real and were reproduced at umask 022. A: tmpfiles was root:root 0755; now zeta:users plus a Z re-own (zeta-first-session.nix:72-73). The conductor writes as cfg.user. B: named secrets 0600, stale 0644 rewritten via chmodSync (zeta-creds-restore.ts:363-371); wifi dir stays 755. C: keyfile zeta-restored-wifi.nmconnection inside the directory; status held until after chown -h on ${cfg.home} with no -maxdepth and no symlink descent. D is not a live bug: sudo 1.9.16p2 and the ISO pin 1.9.17p2 (parse_args.c:524-527) both accept VAR=value before -u. New order (zeta-install.sh:5029, :5074) is the documented form and works either way.
+
+H1: cross-verify (check-then-use-races) is red at the tip (run 110210443849) and green on base 6aac8b4d (run 110211894888). zeta-creds-restore-modes.test.ts adds three unbaselined stat-then-use pairs (lines 83, 84, 92). H2: lint (bash retirement inventory + hygiene unit tests) is red (run 110210551299) vs green base (110211891249) for that test and for chart-currency drift that is not in these 10 files.
+
+Path to GO: stop the modes test tripping the race linter (no blank toctou-ok), clear chart-currency, let CI finish. Do not rely on the armed squash auto-merge.
+
+Review: /workspace/vera-17764-4fde5070-review.md.
