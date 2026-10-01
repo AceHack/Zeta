@@ -1,0 +1,7 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: alice-executor-old, namespace: hat-system}
+spec:
+  hat: executor
+  wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+status: {phase: Active}

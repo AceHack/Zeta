@@ -1,0 +1,52 @@
+# gator verify suite -- 04-quorum (HatQuorum). Quorum sizes come from the
+# committed seed hats: policy-admin 5, hat-designer 3, observer not gated.
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-quorum
+tests:
+- name: hatquorum
+  template: _policies/04-quorum.template.yaml
+  constraint: _policies/04-quorum.constraint.yaml
+  cases:
+  - name: policy-admin-with-4-of-5-denied
+    object: reviews/create-policy-admin-alice-4-cosigners.yaml
+    inventory: [_hats/policy-admin.yaml]
+    assertions:
+    - violations: 1
+    - message: "requires quorum 5; only 4 cosignatures present"
+      violations: 1
+  - name: policy-admin-with-empty-cosigners-denied
+    object: reviews/create-policy-admin-alice-0-cosigners.yaml
+    inventory: [_hats/policy-admin.yaml]
+    assertions:
+    - violations: 1
+  # Found by this suite: `count(input.review.object.spec.cosignedBy)` is
+  # UNDEFINED when the field is absent (it is optional in the CRD), so omitting
+  # `cosignedBy` entirely -- rather than sending too few -- skipped the rule and
+  # bound a quorum-gated hat with zero signatures.
+  - name: policy-admin-with-cosigners-field-omitted-denied
+    object: reviews/create-policy-admin-alice.yaml
+    inventory: [_hats/policy-admin.yaml]
+    assertions:
+    - violations: 1
+  - name: hat-designer-with-2-of-3-denied
+    object: reviews/create-hat-designer-alice-2-cosigners.yaml
+    inventory: [_hats/hat-designer.yaml]
+    assertions:
+    - violations: 1
+  - name: policy-admin-with-5-of-5-admits
+    object: reviews/create-policy-admin-alice-5-cosigners.yaml
+    inventory: [_hats/policy-admin.yaml]
+    assertions:
+    - violations: no
+  - name: hat-designer-with-3-of-3-admits
+    object: reviews/create-hat-designer-alice-3-cosigners.yaml
+    inventory: [_hats/hat-designer.yaml]
+    assertions:
+    - violations: no
+  - name: ungated-hat-without-cosigners-admits
+    object: reviews/create-observer-alice.yaml
+    inventory: [_hats/observer.yaml]
+    assertions:
+    - violations: no

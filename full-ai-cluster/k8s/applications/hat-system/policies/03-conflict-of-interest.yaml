@@ -35,7 +35,13 @@ spec:
           existing := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatBinding"][name]
           existing.spec.wearer.spiffeID == wearer
           existing.spec.hat == conflict_name
-          existing.status.phase != "Revoked"
+          # A HatBinding carries NO status until the operator first reconciles it
+          # (the controller switches on `case "", PhasePending`). `x.status.phase
+          # != "Revoked"` is then UNDEFINED, not true, and an unreconciled binding
+          # silently dropped out of this rule -- with the operator down, forever.
+          # Found by executing the Rego (gator, 2026-09-23); `object.get` defaults
+          # the missing phase to "" so an unreconciled binding counts as held.
+          object.get(existing, ["status", "phase"], "") != "Revoked"
 
           msg := sprintf(
             "wearer %v cannot bind hat %v while holding conflicting hat %v",
@@ -73,7 +79,8 @@ spec:
           some name
           existing := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatBinding"][name]
           existing.spec.wearer.spiffeID == wearer
-          existing.status.phase != "Revoked"
+          # Same unreconciled-binding default as the rule above.
+          object.get(existing, ["status", "phase"], "") != "Revoked"
 
           existing_hat := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"][existing.spec.hat]
           existing_hat.spec.throttles.conflictsWith[_] == target_name

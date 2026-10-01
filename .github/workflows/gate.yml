@@ -1362,6 +1362,103 @@ jobs:
         # the pure-unit cases, which do not read the exit code. ~2.8 s.
         run: bun test src/Core.TypeScript/cluster/audit-agentic-org-manifests.test.ts
 
+  lint-gator-hat-policies:
+    # EXECUTES the hat-system Gatekeeper policies with `gator verify` -- Gatekeeper's
+    # own offline policy tester, pinned in .mise.full.toml to the same release as the
+    # gatekeeper chart (3.23.1). Before this job nothing in CI had ever run that Rego
+    # against an input: the kind lane proves it COMPILES and APPLIES,
+    # hat-constraint-roster.ts proves the sync Config feeds what it READS, and the
+    # conflict-of-interest symmetry test MODELS one rule from its text.
+    #
+    # MEASURED on first execution (2026-09-23): four policies failed open on a
+    # missing field -- 02 and 03 ignored a HatBinding the operator had not yet given a
+    # status, 04 bound a quorum-gated hat when `cosignedBy` was omitted, 07 admitted a
+    # self-supervising hat while no Hat was synced. All four fixed in the landing PR;
+    # the suites carry a case for each.
+    #
+    # DRIFT TIER, not in `gate (required)`'s needs: a red X here is signal for the
+    # policy's owners, never a lock on unrelated lanes. Promotion to the floor is the
+    # treaty-amendment consent path, not a line edit here.
+    #
+    # COST. The checks themselves are seconds (47 cases ~0.2 s; the mutation suite
+    # re-runs the whole set once per planted defect, 18 runs ~7 s). Wall clock is the
+    # full-tier toolchain install, which is why the cache key below is BYTE-IDENTICAL
+    # to helm-validate.yml's `charts` job: both need tier=full, so they share one warm
+    # cache rather than each paying for its own.
+    name: lint (gator hat policies)
+    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    env:
+      ZETA_HOST_TIER: full
+      MISE_ENV: full
+
+    needs: [path-filter]
+    # SELECTED FROM THE GRAPH, not from a hand-written path list. `legs` is
+    # `ace/build-graph.json`'s answer for this diff, as STRINGS; `!= 'false'` is the
+    # fail-closed half -- a leg the selector never emitted reads as `null`, and
+    # `null != 'false'` is true, so an unknown job RUNS. The string form is load-bearing:
+    # `!= false` against booleans SKIPPED instead (see path-filter's `legs` output).
+    if: fromJSON(needs.path-filter.outputs.legs).gate_lint_gator_hat_policies != 'false'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
+          key: install-${{ runner.os }}-${{ runner.arch }}-full-${{ hashFiles('.mise.toml', '.mise.full.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          # TIER DECLARED, not detected: gator ships in .mise.full.toml, which only
+          # tier=full merges (audit-install-tier-declared.ts refuses silence).
+          ZETA_HOST_TIER: full
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Confirm gator is on PATH
+        # Fail HERE, loudly, if the toolchain did not land. The runner exits 2 on a
+        # missing gator and the mutation suite fails under ZETA_REQUIRE_GATOR=1, but
+        # a named step is the clearer red.
+        run: |
+          set -euo pipefail
+          command -v gator
+          gator --version
+
+      - name: gator verify — every hat policy, must-violate and must-admit cases
+        # Also refuses before running if any ConstraintTemplate lacks a must-violate
+        # or a must-admit case, or if the gator on PATH is not the chart's version.
+        # No pipe: a pipeline would report its last stage's status, not gator's.
+        run: bun src/Core.TypeScript/cluster/gator-verify-hat-policies.ts
+
+      - name: gator verify — mutation suite (proves it goes red)
+        # Plants 17 defects one at a time in a copy of the policies -- including
+        # deleting 03's reverse-direction rule and reverting each of the four
+        # fail-open fixes -- and requires the real gator run to exit 1 on every one,
+        # plus an unmutated control that must exit 0. ZETA_REQUIRE_GATOR=1 turns an
+        # absent gator into a failure instead of the skip the hermetic lane takes.
+        env:
+          ZETA_REQUIRE_GATOR: "1"
+        run: bun test src/Core.TypeScript/cluster/gator-verify-hat-policies.test.ts
+
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.
     # Round 33 static-analysis expansion (Aaron: "as much static

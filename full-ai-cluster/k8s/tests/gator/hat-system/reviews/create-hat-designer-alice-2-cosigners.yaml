@@ -1,0 +1,20 @@
+apiVersion: admission.k8s.io/v1
+kind: AdmissionReview
+request:
+  uid: create-hat-designer-alice-2-cosigners
+  kind: {group: society.zeta.io, version: v1alpha1, kind: HatBinding}
+  resource: {group: society.zeta.io, version: v1alpha1, resource: hatbindings}
+  name: alice-hat-designer
+  namespace: hat-system
+  operation: CREATE
+  userInfo: {username: gator-suite}
+  object:
+    apiVersion: society.zeta.io/v1alpha1
+    kind: HatBinding
+    metadata: {name: alice-hat-designer, namespace: hat-system}
+    spec:
+      hat: hat-designer
+      wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+      cosignedBy:
+        - {spiffeID: "spiffe://zeta.local/agent/cosigner-0", signedAt: "2026-09-01T00:00:00Z"}
+        - {spiffeID: "spiffe://zeta.local/agent/cosigner-1", signedAt: "2026-09-01T00:00:00Z"}

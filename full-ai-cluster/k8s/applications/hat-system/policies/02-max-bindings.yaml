@@ -33,7 +33,13 @@ spec:
             some name
             b := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatBinding"][name]
             b.spec.wearer.spiffeID == wearer
-            b.status.phase != "Revoked"
+            # A HatBinding carries NO status until the operator first reconciles it
+            # (the controller switches on `case "", PhasePending`). `x.status.phase
+            # != "Revoked"` is then UNDEFINED, not true, and an unreconciled binding
+            # silently dropped out of this rule -- with the operator down, forever.
+            # Found by executing the Rego (gator, 2026-09-23); `object.get` defaults
+            # the missing phase to "" so an unreconciled binding counts as held.
+            object.get(b, ["status", "phase"], "") != "Revoked"
           ]
           count(existing) >= input.parameters.maxBindingsPerWearer
 

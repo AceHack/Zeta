@@ -1,0 +1,7 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: alice-hat-designer-old, namespace: hat-system}
+spec:
+  hat: hat-designer
+  wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+status: {phase: Active}

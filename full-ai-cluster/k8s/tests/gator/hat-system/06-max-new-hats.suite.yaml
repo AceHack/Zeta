@@ -1,0 +1,33 @@
+# gator verify suite -- 06-max-new-hats (HatMaxNew, maxNewHatsPerDay: 5).
+# creationTimestamps are rendered relative to the run (see 01-cooldown.suite.yaml).
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-max-new
+tests:
+- name: hatmaxnew
+  template: _policies/06-max-new-hats.template.yaml
+  constraint: _policies/06-max-new-hats.constraint.yaml
+  cases:
+  - name: sixth-hat-in-24h-denied
+    object: reviews/create-hat-new.yaml
+    inventory: [inventory/5-hats-created-1h-ago.yaml]
+    assertions:
+    - violations: 1
+    - message: "catalog grew by 5 hats in last 24h; max 5"
+      violations: 1
+  - name: fifth-hat-in-24h-admits
+    object: reviews/create-hat-new.yaml
+    inventory: [inventory/4-hats-created-1h-ago.yaml]
+    assertions:
+    - violations: no
+  - name: hats-older-than-24h-do-not-count
+    object: reviews/create-hat-new.yaml
+    inventory: [inventory/5-hats-created-2d-ago.yaml]
+    assertions:
+    - violations: no
+  - name: hatbinding-is-not-a-hat-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/5-hats-created-1h-ago.yaml]
+    assertions:
+    - violations: no

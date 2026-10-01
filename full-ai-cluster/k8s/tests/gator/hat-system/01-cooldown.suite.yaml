@@ -1,0 +1,48 @@
+# gator verify suite -- 01-cooldown (HatCooldown, cooldownSeconds: 300).
+#
+# `{{now-60s}}` placeholders are rendered to RFC 3339 by
+# `src/Core.TypeScript/cluster/gator-verify-hat-policies.ts` at run time. The
+# policy compares against `time.now_ns()` and gator has no clock injection, so a
+# fixed timestamp would either age out of the window (the deny case silently
+# turning into an admit) or have to be dated in the future, which would test the
+# negative-delta path rather than the one a real SwapOff takes.
+apiVersion: test.gatekeeper.sh/v1alpha1
+kind: Suite
+metadata:
+  name: hat-cooldown
+tests:
+- name: hatcooldown
+  template: _policies/01-cooldown.template.yaml
+  constraint: _policies/01-cooldown.constraint.yaml
+  cases:
+  - name: swapoff-60s-ago-same-wearer-same-hat-denied
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/swapoff-executor-alice-60s-ago.yaml]
+    assertions:
+    - violations: 1
+    - message: "in cooldown for hat executor"
+      violations: 1
+  - name: swapoff-1h-ago-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/swapoff-executor-alice-1h-ago.yaml]
+    assertions:
+    - violations: no
+  - name: swapoff-by-another-wearer-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/swapoff-executor-bob-60s-ago.yaml]
+    assertions:
+    - violations: no
+  - name: swapoff-of-another-hat-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/swapoff-observer-alice-60s-ago.yaml]
+    assertions:
+    - violations: no
+  - name: swapon-is-not-a-swapoff-admits
+    object: reviews/create-executor-alice.yaml
+    inventory: [inventory/swapon-executor-alice-60s-ago.yaml]
+    assertions:
+    - violations: no
+  - name: no-swap-history-admits
+    object: reviews/create-executor-alice.yaml
+    assertions:
+    - violations: no

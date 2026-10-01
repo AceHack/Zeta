@@ -1666,6 +1666,32 @@
       "note": ""
     },
     {
+      "id": "leg:gator-hat-policies",
+      "kind": "leg",
+      "sources": [
+        "full-ai-cluster/k8s/applications/hat-system/hats/**",
+        "full-ai-cluster/k8s/applications/hat-system/policies/**",
+        "full-ai-cluster/k8s/applications/open-policy-agent/Application.yaml",
+        "full-ai-cluster/k8s/tests/gator/**",
+        "src/Core.TypeScript/cluster/gator-verify-hat-policies.test.ts",
+        "src/Core.TypeScript/cluster/gator-verify-hat-policies.ts",
+        "src/Core.TypeScript/cluster/hat-constraint-roster.ts"
+      ],
+      "dependsOn": [],
+      "legs": ["gate/lint-gator-hat-policies"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:unknown:leg"],
+        "evidence": []
+      },
+      "note": "gator verify over the hat-system Gatekeeper policies: the policies, the seed hats the suites use as inventory, the suites and fixtures, the chart pin gator must equal, and the runner + its mutation suite. .mise.full.toml (the gator pin) is already in `always`."
+    },
+    {
       "id": "leg:markdown",
       "kind": "markdown",
       "sources": ["**/*.md"],

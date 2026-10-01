@@ -9,15 +9,32 @@
  * binding `executor` then `policy-admin` was DENIED while `policy-admin` then
  * `executor` was ALLOWED — the same pair, decided by arrival order.
  *
- * WHAT THIS TEST IS, HONESTLY. There is no OPA or conftest runner in this
- * repository, so this does NOT execute the Rego. It reads which directions the
+ * WHAT THIS TEST IS, HONESTLY. It does NOT execute the Rego (when written there
+ * was no Rego runner in this repository; see below for the one that now exists). It reads which directions the
  * policy implements out of the policy text, then simulates the admission
  * decision over the COMMITTED hat catalogue in both binding orders. That makes
  * it a model of the rule rather than a test of it — it would not catch a Rego
  * syntax error or a typo'd field path. What it does catch is the defect that
  * was actually there: a direction missing from the policy, and a conflict pair
- * whose outcome depends on order. Running the real engine is the better test
- * and is not available here.
+ * whose outcome depends on order.
+ *
+ * THE REAL ENGINE NOW RUNS TOO (2026-09-23). `gator-verify-hat-policies.ts`
+ * executes the Rego with Gatekeeper's own `gator` over the committed seed hats,
+ * in both binding orders for policy-admin/executor and executor/hat-designer,
+ * and its mutation suite shows deleting the reverse rule turns 5 of the 11 03
+ * cases red. That is the better test. This one is KEPT, as defence in depth,
+ * for two reasons that are about where each runs rather than what it proves:
+ *
+ *   1. TIER. The gator job is drift/advisory, and it needs a full-tier toolchain
+ *      install. This file runs in the hermetic TS lane with nothing but bun. If
+ *      it were retired, the only BLOCKING check on 03's symmetry would be gone.
+ *   2. GENERALITY OVER THE CATALOGUE. The gator suites name fixed pairs; this
+ *      derives every declared pair from the seed files, so a hat added later
+ *      with a one-sided `conflictsWith` is covered without editing a suite.
+ *
+ * RETIRE IT WHEN the gator job is promoted to the required gate AND its suite
+ * derives conflict pairs from the catalogue -- at that point both reasons are
+ * gone and this is a strictly weaker copy of a check that runs anyway.
  */
 import { describe, expect, test } from "bun:test";
 import { readFileSync, readdirSync } from "node:fs";

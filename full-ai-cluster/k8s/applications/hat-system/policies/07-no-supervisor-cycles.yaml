@@ -32,13 +32,26 @@ spec:
           }
         }
 
+        # The synced Hat catalogue, or {} when there is none. With NO Hat in the
+        # inventory -- gatekeeper's sync cache not yet warmed after a restart, or
+        # the first Hat ever created -- a bare lookup is UNDEFINED and the rule
+        # failed open: even `supervises: [self]` was admitted. Found by executing
+        # the Rego (gator, 2026-09-23). Spelled as a literal path, not via
+        # `object.get`, so `hat-constraint-roster.ts` still sees this read and
+        # keeps it tied to the sync Config.
+        hat_catalog = c {
+          c := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"]
+        } else = {} {
+          true
+        }
+
         violation[{"msg": msg}] {
           input.review.kind.kind == "Hat"
           {"CREATE", "UPDATE"}[input.review.operation]
           new_hat := input.review.object
           name := new_hat.metadata.name
 
-          existing := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"]
+          existing := hat_catalog
           catalog := object.union(existing, {name: new_hat})
 
           sup := new_hat.spec.supervises[_]

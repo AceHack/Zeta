@@ -1,0 +1,9 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: HatSwap
+metadata: {name: on-1, namespace: hat-system}
+spec:
+  hat: executor
+  event: SwapOn
+  wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+  previousWearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+  occurredAt: "{{now-60s}}"

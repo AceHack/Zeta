@@ -1,0 +1,23 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: bob-obs-0, namespace: hat-system}
+spec:
+  hat: observer
+  wearer: {spiffeID: "spiffe://zeta.local/agent/bob"}
+status: {phase: Active}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: bob-obs-1, namespace: hat-system}
+spec:
+  hat: observer
+  wearer: {spiffeID: "spiffe://zeta.local/agent/bob"}
+status: {phase: Active}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: bob-obs-2, namespace: hat-system}
+spec:
+  hat: observer
+  wearer: {spiffeID: "spiffe://zeta.local/agent/bob"}
+status: {phase: Active}

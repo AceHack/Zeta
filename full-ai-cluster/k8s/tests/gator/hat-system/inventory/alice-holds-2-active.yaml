@@ -1,0 +1,15 @@
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: alice-obs-0, namespace: hat-system}
+spec:
+  hat: observer
+  wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+status: {phase: Active}
+---
+apiVersion: society.zeta.io/v1alpha1
+kind: HatBinding
+metadata: {name: alice-obs-1, namespace: hat-system}
+spec:
+  hat: observer
+  wearer: {spiffeID: "spiffe://zeta.local/agent/alice"}
+status: {phase: Active}

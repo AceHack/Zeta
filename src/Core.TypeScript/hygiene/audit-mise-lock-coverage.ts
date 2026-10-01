@@ -137,6 +137,8 @@ export const UNLOCKABLE_BACKENDS: Readonly<Record<string, string>> = {
  */
 export const PARTIAL_COVERAGE: Readonly<Record<string, string>> = {
   "1password-cli": "vfox backend records the URL and no checksum; upstream publishes no windows-arm64 archive",
+  gator:
+    "upstream publishes no Windows build: the v3.23.1 release assets are gator-v3.23.1-{linux,darwin}-{amd64,arm64}.tar.gz plus sha256sums.txt (measured 2026-09-23)",
   java: "no vendor publishes a Java 26 build for windows-arm64 (install.ps1 measured Adoptium + Azul, 2026-09-09)",
 };
 
