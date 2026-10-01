@@ -1,0 +1,12 @@
+{
+  "pr_number": 17782,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17782-chore-workitems-close-sealed-secrets-repourl-404-fixed-2026-08-21-re-measured.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:57:20.423Z",
+  "schema_version": "v1",
+  "commit_sha": "06bcef6a6fbef5649c12edba4e23ae3fe1937fc9",
+  "title": "chore(workitems): close sealed-secrets repoURL 404 - fixed 2026-08-21, re-measured",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:56:44Z",
+  "head_ref": "chore/close-sealed-secrets-repourl-workitem"
+}

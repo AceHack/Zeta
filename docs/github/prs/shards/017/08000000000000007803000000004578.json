@@ -1,0 +1,12 @@
+{
+  "pr_number": 17784,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17784-docs-platform-the-ghcr-pull-token-is-no-longer-a-metal-blocker-the-packages-are-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:59:34.514Z",
+  "schema_version": "v1",
+  "commit_sha": "3c69360f99de663ba2696990627c7b98a862dc50",
+  "title": "docs(platform): the GHCR pull token is no longer a metal blocker - the packages are public",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:58:58Z",
+  "head_ref": "docs/ghcr-platform-images-are-public"
+}
