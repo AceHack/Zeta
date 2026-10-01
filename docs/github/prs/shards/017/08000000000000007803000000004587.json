@@ -1,0 +1,12 @@
+{
+  "pr_number": 17799,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17799-docs-workitems-hindsight-s-bundled-postgres-password-cannot-be-minted-through-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T06:45:54.739Z",
+  "schema_version": "v1",
+  "commit_sha": "08c024e519b556a2516ecb08580b76811bac1372",
+  "title": "docs(workitems): hindsight's bundled postgres password cannot be minted through the chart",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T06:45:14Z",
+  "head_ref": "docs/hindsight-postgres-password-cannot-be-minted"
+}

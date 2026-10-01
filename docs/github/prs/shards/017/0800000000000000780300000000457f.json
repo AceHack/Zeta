@@ -1,0 +1,12 @@
+{
+  "pr_number": 17791,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17791-feat-postgres-a-shared-postgres-on-by-default-and-the-first-backups-any-postgres.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T06:22:50.828Z",
+  "schema_version": "v1",
+  "commit_sha": "47f55ba56e3794a483f957b4fcb7eeb01dd3d630",
+  "title": "feat(postgres): a shared Postgres on by default, and the first backups any Postgres in the tree has",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T06:21:55Z",
+  "head_ref": "feat/postgres-shared-ha-backups"
+}
