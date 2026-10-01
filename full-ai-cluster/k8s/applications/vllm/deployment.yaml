@@ -14,6 +14,15 @@ metadata:
   namespace: vllm
 spec:
   replicas: 0
+  # RECREATE, NOT THE DEFAULT RollingUpdate. This pod holds the node's GPU and a
+  # ReadWriteOnce claim, so a rolling update's surge pod can never be scheduled
+  # while the old one is alive: it asks for the same `nvidia.com/gpu` (one card)
+  # and the same RWO volume, sits Pending, and the old pod is never retired because
+  # the rollout waits for the new one to become Ready. Any edit to this Deployment
+  # (a new `--model`, say) would hang as a perpetual Progressing. Recreate stops the
+  # old pod first. The ollama chart ships Recreate for the same reason.
+  strategy:
+    type: Recreate
   selector:
     matchLabels: { app.kubernetes.io/name: vllm }
   template:
@@ -40,11 +49,51 @@ spec:
           resources:
             requests: { cpu: "4", memory: "16Gi", "nvidia.com/gpu": 1 }
             limits:   { cpu: "8", memory: "64Gi", "nvidia.com/gpu": 1 }
+          # PROBES. This container had none, so (a) the Service routed to the pod the
+          # instant it started although the server does not listen until the weights
+          # are downloaded and loaded -- minutes to an hour for a 33B model on a cold
+          # cache -- and (b) a wedged engine was never restarted.
+          #
+          # startupProbe holds readiness and liveness off until /health first answers.
+          # Budget = failureThreshold x periodSeconds = 360 x 10s = 3600s (an hour) to
+          # download and load, so a slow first pull is not killed by a liveness probe
+          # that has nothing to measure yet -- the first-boot failure mode recorded in
+          # docs/trajectories/usb-installer-first-boot-reliability/RESUME.md
+          # (probes killing containers that are slow, not dead). After startup,
+          # liveness tolerates 6 x 30s = 180s of unanswered /health, generous because a
+          # busy engine is slow to answer, not dead; readiness is tight so traffic
+          # stops fast. /health is vLLM's own OpenAI-server endpoint and answers 200
+          # only once the engine is up; before that nothing listens (connection refused).
+          # Guard: src/Core.TypeScript/cluster/vllm-model-load-probes.test.ts
+          startupProbe:
+            httpGet: { path: /health, port: http }
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 360
+          readinessProbe:
+            httpGet: { path: /health, port: http }
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet: { path: /health, port: http }
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 6
           volumeMounts:
             - { name: cache, mountPath: /root/.cache/huggingface }
+            # PyTorch / NCCL use /dev/shm for inter-process tensors and the container
+            # runtime default is 64Mi. The usual symptom of exhausting it is a "bus
+            # error" or an NCCL shared-memory failure once more than one worker runs.
+            # A Memory emptyDir is the standard Kubernetes remedy (UNVERIFIED here: no
+            # GPU node was available to reproduce the failure; the mount costs nothing
+            # while replicas is 0 and counts against the 64Gi memory limit when it is not).
+            - { name: shm, mountPath: /dev/shm }
       volumes:
         - name: cache
           persistentVolumeClaim: { claimName: vllm-cache }
+        - name: shm
+          emptyDir: { medium: Memory, sizeLimit: 8Gi }
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
