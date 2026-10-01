@@ -35,13 +35,44 @@
 // own creds; passphrase NEVER logged; required-cred write failure surfaces
 // the failure rather than silently degrading.
 
-import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { writeFileSync, mkdirSync, readFileSync, existsSync, chmodSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { decrypt } from "./zeta-creds-crypto";
 import { decodeBundle, parseEnvelope } from "./zeta-creds-envelope";
 import { DEFAULT_MANIFEST, type CredentialEntry } from "./zeta-creds-manifest";
 import { selectCliBindingMaterial } from "./installer-binding-cli.ts";
+import { composeNmConnectionFromWifiEspJson } from "./wifi-esp-to-nm";
+
+/**
+ * Credential ids whose bytes are SECRETS and so are written 0600, never the process
+ * umask default.
+ *
+ * The restore unit runs as root under systemd (umask 022), and `writeFileSync` with
+ * no mode creates 0644. Measured consequences of that default, per id:
+ *   gh-cli / claude / gemini / codex  API tokens readable by every local user.
+ *   ssh-host-keys                     sshd REFUSES a private host key more open than
+ *                                     0600 ("UNPROTECTED PRIVATE KEY FILE") and drops
+ *                                     it, so the persisted key buys no known-hosts
+ *                                     continuity at all.
+ *   wifi                              NetworkManager IGNORES a keyfile under
+ *                                     system-connections that is not 0600 root-owned.
+ * Everything else the manifest carries (operator public keys, install answers, the
+ * seal pointers) keeps the pre-existing default: tightening a file a non-root reader
+ * needs would be a new defect, so the secret set is a named list, not "all of it".
+ */
+export const SECRET_CRED_IDS: ReadonlySet<string> = new Set(["gh-cli", "claude", "gemini", "codex", "ssh-host-keys", "wifi"]);
+
+/** The mode a restored file must carry, or `undefined` to leave the creation default. */
+export function restoreModeFor(id: string, path: string): number | undefined {
+  if (!SECRET_CRED_IDS.has(id)) return undefined;
+  // A public half of a key pair is not a secret, and ssh_config-style consumers read it.
+  if (path.endsWith(".pub")) return 0o644;
+  return 0o600;
+}
+
+/** The profile name a restored (non-ESP-baked) wifi blob is filed under. */
+export const RESTORED_WIFI_PROFILE = "zeta-restored-wifi.nmconnection";
 
 interface Args {
   readonly usbUuid: string | null;
@@ -154,22 +185,80 @@ export function resolveCredPaths(entry: CredentialEntry, targetRoot: string): re
 
 /** Plan + summarize what would be written (for dry-run + logging). */
 export interface RestorePlan {
-  readonly writes: readonly { readonly path: string; readonly bytes: number; readonly value: Buffer }[];
+  readonly writes: readonly {
+    readonly path: string;
+    readonly bytes: number;
+    readonly value: Buffer;
+    /** Mode the file must end up with; absent = the creation default (see `restoreModeFor`). */
+    readonly mode?: number;
+  }[];
   readonly skipped: readonly { readonly id: string; readonly reason: string }[];
   readonly errors: readonly string[];
 }
 
-function pushWriteUnlessAlreadyPresent(
-  writes: { path: string; bytes: number; value: Buffer }[],
-  skipped: { id: string; reason: string }[],
+type PlannedWrite = { path: string; bytes: number; value: Buffer; mode?: number };
+
+/**
+ * Where, and as what bytes, a credential lands.
+ *
+ * Every manifest path is a FILE except `wifi`, whose path is the NetworkManager
+ * `system-connections` DIRECTORY. Writing the blob "to" that path was EISDIR, and
+ * because `applyPlan` writes in bundle order and the unit runs under `set -e`, one
+ * such failure aborted the restore part-way and skipped the ownership pass that
+ * follows it -- leaving every earlier write root-owned in the operator's home. A
+ * JSON `{ssid, psk}` blob is converted to a keyfile; text is taken to already be one.
+ */
+function resolveTarget(
   id: string,
   path: string,
   value: Buffer,
+): { readonly path: string; readonly value: Buffer } | { readonly skip: string } {
+  if (id !== "wifi") return { path, value };
+  let bytes: Buffer = value;
+  try {
+    JSON.parse(value.toString("utf8"));
+    const composed = composeNmConnectionFromWifiEspJson(value.toString("utf8"));
+    if (!composed.ok) return { skip: `wifi blob is JSON but not a usable ssid/psk pair (${composed.error})` };
+    bytes = Buffer.from(composed.value, "utf8");
+  } catch {
+    // Not JSON: taken as keyfile text, which the persist-side handler already required to carry an ssid.
+  }
+  return { path: join(path, RESTORED_WIFI_PROFILE), value: bytes };
+}
+
+function modeMatches(path: string, mode: number | undefined): boolean {
+  if (mode === undefined) return true;
+  // NTFS has no POSIX mode bits: statSync reports 0o666 for everything, so a comparison there
+  // could never be satisfied and would re-write every file on every run.
+  if (process.platform === "win32") return true;
+  try {
+    return (statSync(path).mode & 0o777) === mode;
+  } catch {
+    return false;
+  }
+}
+
+function pushWriteUnlessAlreadyPresent(
+  writes: PlannedWrite[],
+  skipped: { id: string; reason: string }[],
+  id: string,
+  rawPath: string,
+  rawValue: Buffer,
 ): void {
+  const target = resolveTarget(id, rawPath, rawValue);
+  if ("skip" in target) {
+    skipped.push({ id, reason: target.skip });
+    return;
+  }
+  const { path, value } = target;
+  const mode = restoreModeFor(id, path);
   if (existsSync(path)) {
     try {
       const current = readFileSync(path);
-      if (current.equals(value)) {
+      // Right bytes at the WRONG mode is not "already present": a node restored by the
+      // 0644-default code still holds its tokens world-readable, and skipping here would
+      // leave them that way forever. Falling through rewrites them under the correct mode.
+      if (current.equals(value) && modeMatches(path, mode)) {
         skipped.push({ id, reason: "already-present" });
         return;
       }
@@ -178,7 +267,7 @@ function pushWriteUnlessAlreadyPresent(
       // any persistent filesystem failure at the write boundary.
     }
   }
-  writes.push({ path, bytes: value.length, value });
+  writes.push(mode === undefined ? { path, bytes: value.length, value } : { path, bytes: value.length, value, mode });
 }
 
 /**
@@ -203,7 +292,7 @@ export function planRestore(
   const bundle = decodeBundle(plaintext);
   if ("error" in bundle) return { error: `bundle decode: ${bundle.error}`, code: 6 };
 
-  const writes: { path: string; bytes: number; value: Buffer }[] = [];
+  const writes: PlannedWrite[] = [];
   const skipped: { id: string; reason: string }[] = [];
   const errors: string[] = [];
 
@@ -271,7 +360,15 @@ export function applyPlan(plan: RestorePlan): number {
   let writeCount = 0;
   for (const w of plan.writes) {
     mkdirSync(dirname(w.path), { recursive: true });
-    writeFileSync(w.path, w.value);
+    if (w.mode === undefined) {
+      writeFileSync(w.path, w.value);
+    } else {
+      // `mode` on writeFileSync only applies when the file is CREATED, so an existing file
+      // (the previous generation's 0644 copy) keeps its old bits unless chmod'd as well.
+      // Create it already-restricted so there is no window where the bytes are readable.
+      writeFileSync(w.path, w.value, { mode: w.mode });
+      chmodSync(w.path, w.mode);
+    }
     writeCount++;
   }
   return writeCount;

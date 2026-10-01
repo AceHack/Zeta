@@ -5580,7 +5580,10 @@ if [ -d "$ZETA_HOME" ]; then
     case "${CLAUDE_AUTH_REPLY:-y}" in
       [Yy]*|"")
         echo "[iter-5.5.0]   running 'claude login' (interactive)..."
-        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$CLAUDE_BIN" login || \
+        # Options BEFORE the VAR=value assignment: sudo stops option parsing at the
+        # first non-option word, so `sudo HOME=... -u uid cmd` hands `-u` to sudo as
+        # the COMMAND ("sudo: -u: command not found") and the login never runs as zeta.
+        sudo -u "#$ZETA_UID" HOME="$ZETA_HOME" "$CLAUDE_BIN" login || \
           echo "[iter-5.5.0]   WARN: claude login failed; can re-run post-reboot"
         # P0 security fix (PR #5388 Copilot review): restrict perms on
         # ~/.config/claude AFTER login completes — claude CLI may write
@@ -5625,7 +5628,7 @@ if [ -d "$ZETA_HOME" ]; then
     case "${CODEX_AUTH_REPLY:-y}" in
       [Yy]*|"")
         echo "[iter-5.5.0]   running 'codex login --device-auth' (interactive)..."
-        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$CODEX_BIN" login --device-auth || \
+        sudo -u "#$ZETA_UID" HOME="$ZETA_HOME" "$CODEX_BIN" login --device-auth || \
           echo "[iter-5.5.0]   WARN: codex login failed; can re-run post-reboot"
         # Codex stores at ~/.codex/auth.json (not ~/.config/codex);
         # restrict perms accordingly.

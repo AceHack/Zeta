@@ -1,0 +1,14 @@
+{
+  "id": "080d07ac535de810a01300089ac16a3e",
+  "at": "2026-10-01T03:38:04.605Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TRMTXW087G0R003E10WDE",
+    "type": "bug",
+    "title": "Root/permission defects: first-session marker dir root-owned, restored creds written 0644 + wifi EISDIR, sudo option order in installer logins",
+    "slug": "root-permission-defects-first-session-marker-dir-root-owned",
+    "priority": "P2",
+    "filename": "081M3TRMTXW087G0R003E10WDE-root-permission-defects-first-session-marker-dir-root-owned.md"
+  }
+}

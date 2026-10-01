@@ -370,20 +370,28 @@ EOF
           # bun was resolved above (passphrase-source.ts). Stay in the repo so
           # the restore CLI matches the same binary. WorkingDirectory stays "/".
           cd "${cfg.repoRoot}"
+          # The restore's exit status is HELD, not acted on, until the ownership
+          # pass below has run. This script runs under `set -e` and the CLI runs as
+          # ROOT with HOME=${cfg.home}: every file it (or the mise `bun` shim it
+          # launches) created before dying is root-owned inside the operator's
+          # home, and an early exit used to skip the only step that repairs that.
+          # A restore that fails half-way must not ALSO leave ~ unreadable to the
+          # user it was restoring for.
+          RESTORE_RC=0
           if [ -n "$_serial" ]; then
             "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \
-              $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial"
+              $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial" || RESTORE_RC=$?
           else
             "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \
-              $PERSONA_ARGS
+              $PERSONA_ARGS || RESTORE_RC=$?
           fi
 
           # Post-restore ownership fix: chown ${cfg.home} entries that
@@ -391,9 +399,18 @@ EOF
           # ~/.gemini, ~/.codex, etc.) so the zeta user can read them.
           # Only chown files OWNED BY ROOT (operator's pre-existing
           # configs stay untouched).
+          #
+          # NO depth cap. This was `-maxdepth 4`, which repaired the manifest's
+          # own paths (depth <= 3) but not what the root-run `bun`/mise shim
+          # leaves BELOW them (~/.cache/mise/..., ~/.local/state/mise/...,
+          # ~/.bun/install/cache/...) -- the same root-owned-path-in-~ class as
+          # the ~/.kube defect (081M3K16QKA087G0R002GT2F8X). `-h` so a root-owned
+          # symlink is re-owned itself, never its target; `-xdev` so a mount
+          # inside the home is not walked.
           if [ -d "${cfg.home}" ]; then
-            find "${cfg.home}" -maxdepth 4 -user root -exec chown ${cfg.user}:${cfg.group} {} + 2>/dev/null || true
+            ${pkgs.findutils}/bin/find "${cfg.home}" -xdev -user root -exec ${pkgs.coreutils}/bin/chown -h ${cfg.user}:${cfg.group} {} + 2>/dev/null || true
           fi
+          exit "$RESTORE_RC"
         '';
         Restart = "on-failure";
         RestartSec = "30s";

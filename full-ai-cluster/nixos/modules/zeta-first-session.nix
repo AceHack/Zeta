@@ -55,9 +55,22 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # State directory owned by root; marker write uses sudo in profile hook.
+    # The state directory belongs to the user who RUNS the conductor.
+    #
+    # It used to be `root root` with a comment saying "marker write uses sudo in
+    # profile hook" -- but the hook below has no sudo: it execs the conductor as
+    # the logged-in user, and first-session-run.ts then does
+    # `mkdirSync(dirname(marker))` + `writeFileSync(marker)` and appends its
+    # journal (journalPathFor(marker) is a sibling file) AS THAT USER. Against a
+    # root:root 0755 directory every one of those is EACCES: the marker never
+    # lands, so the credential adventure re-ran on EVERY interactive login for
+    # the life of the node, and the journal that lets a second run resume
+    # instead of restart was never written either. `d` creates it user-owned;
+    # `Z` re-owns a directory an earlier generation left root-owned.
+    # Guard: src/Core.TypeScript/cluster/first-session-state-dir-nix.test.ts
     systemd.tmpfiles.rules = [
-      "d /var/lib/zeta-first-session 0755 root root -"
+      "d ${builtins.dirOf cfg.markerPath} 0755 ${cfg.user} users -"
+      "Z ${builtins.dirOf cfg.markerPath} - ${cfg.user} users -"
     ];
 
     environment.etc."profile.d/zeta-first-session.sh" = {
