@@ -441,6 +441,58 @@ zeta_source_esp_repo_pin() {
 }
 zeta_source_esp_repo_pin || true
 
+# ── 081M3B7Z38Q087G0R003F9X7HM: NAME what /iso is mounted from ───────────────
+#
+# `boot-medium=` below says WHICH device. This says whether that device is one
+# the install can live with, as a verdict a log reader (and the QEMU harness) can
+# match on, decided from SYSFS ONLY -- never by opening the device, because the
+# case that matters is the one where the device holds itself O_EXCL.
+#
+# The kernel's own definition of "partition" is the `partition` attribute under
+# /sys/class/block/<dev>/ (it exists iff the device is a partition, which is also
+# what udev reports as DEVTYPE=partition). A whole disk has none, and its
+# partitions appear as children of its sysfs directory.
+#
+#   PARTITION                the boot medium is a partition: the healthy shape
+#   WHOLE-DISK-UNPARTITIONED a whole disk the kernel gave no partitions (sr0, a
+#                            plain iso9660 stick): nothing it could lock out
+#   WHOLE-DISK-CLAIMED       a whole disk that HAS partitions, mounted at /iso:
+#                            the O_EXCL claim that makes every one of them
+#                            unopenable. This is the defect; it must not occur
+#   NOT-MOUNTED              nothing is mounted at /iso
+#   UNRESOLVABLE             the source is not a block device the kernel knows
+#
+# Prints one line of key=value facts and returns 0 always. It reports; whether a
+# run proceeds is the caller's decision (and this script never `exit 1`s -- see
+# the header). ZETA_SYS_CLASS_BLOCK overrides the sysfs root for the tests.
+zeta_boot_medium_verdict() {
+  local src="${1:-}" root="${ZETA_SYS_CLASS_BLOCK:-/sys/class/block}" real name child kids=0
+  if [ -z "$src" ]; then
+    printf 'verdict=NOT-MOUNTED source=- partition-attr=- partitions=-'
+    return 0
+  fi
+  real="$(readlink -f "$src" 2>/dev/null)" || real=""
+  [ -n "$real" ] || real="$src"
+  name="${real##*/}"
+  if [ ! -e "$root/$name" ]; then
+    printf 'verdict=UNRESOLVABLE source=%s partition-attr=- partitions=-' "$src"
+    return 0
+  fi
+  if [ -e "$root/$name/partition" ]; then
+    printf 'verdict=PARTITION source=%s partition-attr=yes partitions=-' "$real"
+    return 0
+  fi
+  for child in "$root/$name/$name"*; do
+    if [ -e "$child/partition" ]; then kids=$((kids + 1)); fi
+  done
+  if [ "$kids" -gt 0 ]; then
+    printf 'verdict=WHOLE-DISK-CLAIMED source=%s partition-attr=no partitions=%s' "$real" "$kids"
+  else
+    printf 'verdict=WHOLE-DISK-UNPARTITIONED source=%s partition-attr=no partitions=0' "$real"
+  fi
+  return 0
+}
+
 HOST="${HOST:-control-plane}"
 ZETA_ROLE="${ZETA_ROLE:-first-control-plane}"
 # WP27 -- printed on EVERY boot, including (especially) the boots where the
@@ -456,6 +508,25 @@ ZETA_ROLE="${ZETA_ROLE:-first-control-plane}"
 # INFERRED rather than measured. Now both sides say it.
 ZETA_ESP_BOOT_MEDIUM="$(findmnt -n -o SOURCE /iso 2>/dev/null | head -1 | tr -d '[:space:]')" || ZETA_ESP_BOOT_MEDIUM=""
 echo "[081M392JR97087G0R003QAFH0Y-esp-conf] esp-conf=${ZETA_ESP_CONF} tried=${ZETA_ESP_CONF_TRIED:-<none>} boot-medium=${ZETA_ESP_BOOT_MEDIUM:-<not-mounted-at-/iso>}"
+ZETA_BOOT_MEDIUM_VERDICT="$(zeta_boot_medium_verdict "${ZETA_ESP_BOOT_MEDIUM}")" || ZETA_BOOT_MEDIUM_VERDICT="verdict=UNKNOWN"
+echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] ${ZETA_BOOT_MEDIUM_VERDICT}"
+case "${ZETA_BOOT_MEDIUM_VERDICT}" in
+  *verdict=WHOLE-DISK-CLAIMED*)
+    # Loud, and NOT fatal: the install is still correct when the ESP was read through
+    # rung 4 (esp-conf=esp:... via mtools), and stopping a stick that would have
+    # installed correctly is worse than saying so. What is NOT acceptable is saying
+    # nothing -- this used to pass silently until the CI harness read the log.
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] ############################################################"
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] BOOT MEDIUM MOUNTED FROM ITS WHOLE DISK: ${ZETA_ESP_BOOT_MEDIUM}"
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] It holds the disk O_EXCL, so none of its partitions can be opened"
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] for the rest of this install. The ESP was read the only way left"
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] (mtools through the disk); esp-conf=${ZETA_ESP_CONF}. If this stick"
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] was flashed with zflash and esp-conf is not esp:..., the hostname,"
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] SSH key and first-boot settings it carries were NOT applied."
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] This is a defect in the ISO, not in the stick: report it."
+    echo "[081M3B7Z38Q087G0R003F9X7HM-boot-medium] ############################################################"
+    ;;
+esac
 echo "[081KSNY2Z0008QG0R0008PN7RQ-role] role=${ZETA_ROLE} host=${HOST} source=${ZETA_ROLE_SOURCE}"
 if [[ "${ZETA_ROLE}" == "joiner" ]]; then
   echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   join server: ${ZETA_JOIN_SERVER_URL:-<unset>}"

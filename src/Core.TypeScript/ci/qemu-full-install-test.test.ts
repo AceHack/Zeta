@@ -33,6 +33,7 @@ import {
   ESP_CONF_SCAN_PREFIX,
   espConfScanOutcome,
   bootMediumShape,
+  bootMediumVerdictLine,
   assertWp11VerdictUnitEnabled,
   ESP_PROBE_NO_HOSTNAME,
   ESP_PROBE_NO_PUBKEY,
@@ -75,6 +76,7 @@ import {
   UEFI_KEYFILE_RESTORE_SERIAL,
   WRONG_QEMU_PASSPHRASE,
 } from "./qemu-full-install-test.ts";
+import { readIsoPin } from "../installer/install-medium-selection.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
 import { UEFI_KEYFILE_SERIAL } from "../installer/uefi-keyfile-esp.ts";
 import { USB_ISERIAL_SERIAL, usbISerialValueMarker } from "../installer/usb-iserial-probe.ts";
@@ -1846,13 +1848,22 @@ describe("081M3B7Z38Q087G0R003F9X7HM — the boot medium must be a partition, ne
       "utf8",
     );
     expect(nix).toContain('ENV{DEVTYPE}=="disk"');
-    expect(nix).toContain("ENV{ID_FS_LABEL}==\"${config.isoImage.volumeID}\"");
+    expect(nix).toContain("ENV{ID_FS_LABEL}==\"${volumeID}\"");
+    expect(nix).toContain("volumeID = config.isoImage.volumeID;");
     expect(nix).toContain('OPTIONS+="link_priority=-100"');
     expect(nix).toContain("boot.initrd.services.udev.rules = zetaInstallLabelOnePartition;");
     expect(nix).toContain("services.udev.extraRules = zetaInstallLabelOnePartition;");
     // The mount itself must go through the single-claimant symlink, not by-label
     // (install-medium-selection.test.ts shows by-label races the systemd initrd).
-    expect(nix).toContain('fileSystems."/iso".device = lib.mkForce "/dev/disk/zeta-install-medium";');
+    // 081M3B7Z38Q087G0R003F9X7HM, run 36870188468: the exact-string pin that used to stand here
+    // ("fileSystems./iso.device = lib.mkForce ...") PASSED while the line was discarded by the
+    // module system (installation-cd-base.nix sets fileSystems at priority 60, so a default-priority
+    // definition is dropped whole). A text pin cannot see a merge, so judge the pin by what the
+    // merge does with it, and refuse the inert spelling outright.
+    const pin = readIsoPin(nix, "ZETA_INSTALL");
+    expect(pin.device).toBe("/dev/disk/zeta-install-medium");
+    expect(pin.effect).toBe("merged");
+    expect(nix).not.toMatch(/^[ \t]*fileSystems\."\/iso"\.device\b/mu);
     expect(nix).toContain('SYMLINK+="disk/zeta-install-medium"');
     const installer = readFileSync(
       resolve(import.meta.dir, "../../../full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix"),
@@ -2049,5 +2060,44 @@ describe("WP27 — the QEMU disk is sized so BOTH Longhorn gates pass on the ari
     // And the falsifier for the stripper itself: something that IS live code
     // must survive it, or this test would pass on an empty string.
     expect(code).toContain("const QEMU_DISK_SIZE_GB");
+  });
+});
+
+describe("081M3B7Z38Q087G0R003F9X7HM — the guest's sysfs verdict convicts a whole-disk boot medium (run 36870188468)", () => {
+  // The two lines the failed WP11 USB guest printed, in this shape: the scan line (unchanged) and the new verdict.
+  const SCAN_WHOLE =
+    `${ESP_CONF_SCAN_PREFIX} esp-conf=esp:/dev/disk/by-label/EFIBOOT ` +
+    "tried=/dev/disk/by-label/EFIBOOT->/dev/sda2(mounted-via:mtools-copy:/dev/sda@@141312) boot-medium=/dev/sda\n";
+  const verdictLine = (v: string, src: string, rest = "partition-attr=no partitions=2"): string =>
+    `[081M3B7Z38Q087G0R003F9X7HM-boot-medium] verdict=${v} source=${src} ${rest}\n`;
+
+  it("parses the verdict and source off the line", () => {
+    expect(bootMediumVerdictLine(verdictLine("WHOLE-DISK-CLAIMED", "/dev/sda"))).toEqual({
+      verdict: "WHOLE-DISK-CLAIMED",
+      source: "/dev/sda",
+    });
+    expect(bootMediumVerdictLine("ordinary serial\n")).toBeNull();
+  });
+
+  it("the failed run's own two lines are convicted", () => {
+    const serial = SCAN_WHOLE + verdictLine("WHOLE-DISK-CLAIMED", "/dev/sda");
+    expect(bootMediumShape(serial)).toEqual({ kind: "whole-disk", device: "/dev/sda" });
+  });
+
+  it("WHOLE-DISK-CLAIMED convicts even a device name the regexes have never heard of", () => {
+    const scan = `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/mystery0\n`;
+    // The device-name fallback alone calls this 'not-reported' -- a check that did not run, not a failure.
+    expect(bootMediumShape(scan).kind).toBe("not-reported");
+    expect(bootMediumShape(scan + verdictLine("WHOLE-DISK-CLAIMED", "/dev/mystery0"))).toEqual({
+      kind: "whole-disk",
+      device: "/dev/mystery0",
+    });
+  });
+
+  it("a PARTITION verdict does not convict; the healthy shape still passes", () => {
+    const healthy =
+      `${ESP_CONF_SCAN_PREFIX} esp-conf=none tried= boot-medium=/dev/sda1\n` +
+      verdictLine("PARTITION", "/dev/sda1", "partition-attr=yes partitions=-");
+    expect(bootMediumShape(healthy)).toEqual({ kind: "partition", device: "/dev/sda1" });
   });
 });

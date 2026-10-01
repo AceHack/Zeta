@@ -98,6 +98,21 @@ Work item `081M3B7Z38Q087G0R003F9X7HM` proposes deleting the ambiguity at source
 (xorriso/isohybrid) rather than routing around it. The mtools rung is a workaround and
 the item says so.
 
+**Why #17751 did not fix it (run 36870188468, 2026-10-01; 3 of 5 USB runs after it still
+reported `boot-medium=/dev/sda`).** Its udev rules were right and never ran: the one line
+that points `/iso` at the single-claimant symlink was **discarded by the module system**.
+`installation-cd-base.nix` defines `fileSystems` at priority 60 (`mkImageMediaOverride`);
+the module system keeps or drops a *definition* by its top-level priority before it looks
+inside, so a default-priority `fileSystems."/iso".device = lib.mkForce …` (priority 50
+*nested*) lost to the 60 as a whole and `nix eval` still printed the by-label device.
+Every check that "verified" the pin read source text, where the line is present and
+correct. The fix meets the base at its own priority (both levels `mkImageMediaOverride`,
+only `device` carries `mkForce`) and is gated on the isohybrid MBR (`makeBiosBootable &&
+makeUsbBootable`) — aarch64 has no LBA-0 partition, so nothing would claim the symlink.
+The falsifier that can see this class is the flake check `install-medium-device-eval`
+(evaluates the real installer), not a regex. The source fix (change the ISO layout) was
+evaluated and **not** taken: see the work item.
+
 ---
 
 ## 4. Open — do not treat any of these as done

@@ -106,3 +106,44 @@ grep over a serial log rather than new machinery.
   at the time of writing (no local `nix`). The first ISO CI run carrying it is
   the measurement; until it prints `boot-medium=` a partition on every USB
   lane across repeated runs, this item stays open.
+
+## What the first measurement showed (2026-10-01) — #17751 was INERT
+
+Run 36870188468 (WP11 scoped dispatch) failed with `boot-medium=/dev/sda`; the
+WP11 USB lane's `boot-medium=` over every run since #17751 merged: `/dev/sda`
+in 36856972760, 36865505620, 36870188468 and `/dev/sda1` in 36858893664,
+36832486494. Three of five: not rare, and exactly what the unpinned by-label
+race predicts. Cause, found by the post-merge grade (Vera) and confirmed against
+the pinned nixpkgs source: `installation-cd-base.nix:36` sets
+`fileSystems = lib.mkImageMediaOverride config.lib.isoFileSystems` (priority 60
+on the whole option). The module system filters an option's definitions by
+**top-level** priority, so #17751's default-priority
+`fileSystems."/iso".device = lib.mkForce …` was dropped whole and the evaluated
+`/iso` device stayed `/dev/disk/by-label/ZETA_INSTALL`. The udev rules created
+a symlink nothing mounted. Every check that "verified" it read source text.
+
+Fixed by defining `fileSystems` at priority 60 at both levels (merges with the
+base; `device` alone carries `mkForce`), gated on the isohybrid MBR
+(`makeBiosBootable && makeUsbBootable`) so the aarch64 ISO — no LBA-0 partition,
+nothing to claim the symlink — keeps by-label. dm-/loop-/nbd- whole disks claim
+the symlink outright (nothing can partition them). New falsifiers: the flake
+check `install-medium-device-eval` (asks the real module system), a model that
+refuses a pin the base discards, a sysfs-derived `verdict=` line the guest
+prints on every boot (`zeta_boot_medium_verdict`) which the QEMU harness
+convicts on, and a fake-sysfs bash parity suite.
+
+**Source fix (delete the ambiguity in the image): evaluated, NOT taken.** The
+LBA-0 partition is the syslinux `isohdpfx.bin` MBR template that nixpkgs passes
+as `-isohybrid-mbr`; the ESP entry (`0xEF`, the one zflash's Windows flasher
+finds as `MBR 0xEF @ LBA 276`) is `-isohybrid-gpt-basdat` marking
+`boot/efi.img` inside the ISO, not an `-append_partition`. Moving or dropping the
+LBA-0 entry means replacing nixpkgs' ISO builder (`make-iso9660-image.sh` has no
+hook for xorriso flags), changes BIOS-USB, UEFI-USB and dd boot at once, and its
+BIOS half cannot be measured by any lane here (every QEMU lane is UEFI). With the
+pin effective the duplicate label no longer matters to the mount; it stays a
+possible future simplification, not a defect.
+
+**Still open until measured:** that the pin now holds on a built ISO across
+repeated USB lane runs (`verdict=PARTITION`), and that `ID_PART_TABLE_TYPE` is
+reported on an isohybrid whole disk by real udev (assumed by the rules, observed
+only indirectly).

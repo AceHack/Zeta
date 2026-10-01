@@ -884,6 +884,25 @@
               echo "$status" | tee "$out"
             '';
 
+          # EVAL-ONLY (no VM, no boot): what the module system actually DECIDED
+          # about the installer's /iso mount (081M3B7Z38Q087G0R003F9X7HM). PR #17751's
+          # pin to the single-claimant symlink was silently discarded by
+          # installation-cd-base.nix's priority-60 `fileSystems` and no source-text check
+          # could see it. Reads the REAL nixosConfigurations.installer and
+          # .installer-aarch64 (the latter proves the isohybrid gate leaves it alone).
+          # See nixos/tests/install-medium-device-eval-test.nix.
+          install-medium-device-eval =
+            let
+              report = import ./nixos/tests/install-medium-device-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.installer;
+                nixosConfigAarch64 = self.nixosConfigurations.installer-aarch64;
+              };
+            in
+            pkgs.runCommand "install-medium-device-eval" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # EVAL-ONLY (no VM, no boot): properties of k3s-etcd-peers.nix — the
           # opt-in, source-scoped etcd 2379/2380 admission multi-server HA needs,
           # and the evaluation-time refusal of a JOINING control plane nothing

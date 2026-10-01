@@ -86,32 +86,90 @@
 # initrd's 99-local.rules); `services.udev.extraRules` gives stage 2 the same
 # links, so the fstab entry for /iso names a device that exists there too.
 #
-# THE FALSIFIERS. src/Core.TypeScript/installer/install-medium-selection.test.ts
-# evaluates THESE rules over every legal uevent order and mount timing (red on
-# the priority rule alone, green here). zeta-first-boot.sh prints `boot-medium=`
-# on every boot, and src/Core.TypeScript/ci/qemu-full-install-test.ts
-# (`bootMediumShape`) FAILS a USB lane whose boot medium is a whole disk. The
-# mtools rung in the scan is kept as the second line, not the design: it reads
-# the ESP through the whole disk and works whether or not these rules hold.
+# WHY THE FIX WAS INERT FOR THREE DAYS (run 36870188468, 2026-10-01; 3 of 5 WP11
+# USB runs since #17751 reported `boot-medium=/dev/sda`). Everything above was
+# correct and none of it ran, because the one line that points /iso at the
+# symlink was DISCARDED by the module system before it reached the fstab:
+#
+#   installation-cd-base.nix:  fileSystems = lib.mkImageMediaOverride config.lib.isoFileSystems;
+#
+# That is a priority-60 definition of the WHOLE `fileSystems` option. A module
+# that says `fileSystems."/iso".device = lib.mkForce ...` defines `fileSystems`
+# at the DEFAULT priority (100) with the mkForce buried inside the value, and the
+# module system filters definitions of an option by their TOP-LEVEL priority
+# before it ever looks inside them: the 60 beats the 100 and the whole
+# definition -- nested mkForce included -- is dropped. `nix eval` of the shipped
+# ISO printed `/dev/disk/by-label/ZETA_INSTALL` for /iso, so stage 1 kept
+# mounting through the very symlink that races, and the udev rules above only
+# manufactured an unused link. (Found by the PR #17751 post-merge grade, which
+# evaluated it; the source-text pins that had "verified" the line could not.)
+#
+# THE FIX IS TO MEET THE BASE AT ITS OWN PRIORITY. Our `fileSystems` definition
+# is mkImageMediaOverride too (equal priority, so BOTH definitions survive and
+# merge per mount point), and so is the "/iso" element inside it; only the one
+# field we mean to change carries mkForce. A lower number (mkOverride 50 on the
+# whole attrset) would be worse: it would win outright and DELETE the base's
+# other entries (/, /nix/.ro-store, /nix/.rw-store, /nix/store).
+#
+# ONLY WHERE THE AMBIGUITY EXISTS. The duplicate label is the isohybrid MBR
+# (`-isohybrid-mbr isohdpfx.bin`, passed iff makeBiosBootable && makeUsbBootable).
+# An ISO built without it -- aarch64 -- carries a GPT with the EFI image as its
+# only partition, no partition mirrors the iso9660, and the rules above would
+# leave NO claimant: the mount would wait out its timeout. So the module is
+# gated on the same two options nixpkgs reads, and an ISO without the isohybrid
+# MBR keeps nixpkgs' by-label /iso, which is correct there.
+#
+# DEVICE-MAPPER AND LOOP MEDIA. Nothing partitions a dm-*/loop*/nbd* device, so
+# there is never a competing partition; such a device claims the symlink outright
+# (it is how a loop-booting medium would present the ISO). The partition-table
+# test is for real disks only.
+#
+# THE FALSIFIERS (three, because the first two could not see this defect):
+#   1. flake check `install-medium-device-eval` -- evaluates the REAL installer
+#      configuration and fails unless config.fileSystems."/iso".device is the
+#      symlink, the other base mounts survived, and both udev stages carry the
+#      rule. This is the one that would have caught the inert line.
+#   2. src/Core.TypeScript/installer/install-medium-selection.test.ts -- the
+#      uevent-order model, which now also refuses a pin the base discards.
+#   3. zeta-first-boot.sh prints `boot-medium=` and a named
+#      `[..-boot-medium] verdict=` on every boot, and
+#      src/Core.TypeScript/ci/qemu-full-install-test.ts (`bootMediumShape`)
+#      FAILS a USB lane whose boot medium is a whole disk. The mtools rung in the
+#      first-boot scan is the second line, not the design: it reads the ESP
+#      through the whole disk and works whether or not these rules hold.
 { config, lib, ... }:
 
 let
+  volumeID = config.isoImage.volumeID;
+
   zetaInstallLabelOnePartition = ''
     # 081M3B7Z38Q087G0R003F9X7HM: an isohybrid whole disk and its LBA-0 partition 1
     # both carry the ISO volume label; the partition must own by-label/by-uuid.
-    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{ID_FS_LABEL}=="${config.isoImage.volumeID}", OPTIONS+="link_priority=-100"
+    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{ID_FS_LABEL}=="${volumeID}", OPTIONS+="link_priority=-100"
     # 081M3B7Z38Q087G0R003F9X7HM: /iso mounts through disk/zeta-install-medium, which only
     # ONE device ever claims. A partitioned whole disk never does, so there is no race.
-    SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${config.isoImage.volumeID}", SYMLINK+="disk/zeta-install-medium"
-    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sr*", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${config.isoImage.volumeID}", SYMLINK+="disk/zeta-install-medium"
-    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL!="sr*", ENV{ID_PART_TABLE_TYPE}!="?*", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${config.isoImage.volumeID}", SYMLINK+="disk/zeta-install-medium"
+    SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${volumeID}", SYMLINK+="disk/zeta-install-medium"
+    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="sr*", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${volumeID}", SYMLINK+="disk/zeta-install-medium"
+    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="dm-*|loop*|nbd*", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${volumeID}", SYMLINK+="disk/zeta-install-medium"
+    SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL!="sr*|dm-*|loop*|nbd*", ENV{ID_PART_TABLE_TYPE}!="?*", ENV{ID_FS_TYPE}=="iso9660", ENV{ID_FS_LABEL}=="${volumeID}", SYMLINK+="disk/zeta-install-medium"
   '';
+
+  # The isohybrid MBR is what puts a partition at LBA 0. nixpkgs passes it iff both.
+  hasIsohybridMbr = config.isoImage.makeBiosBootable && config.isoImage.makeUsbBootable;
 in
 {
-  boot.initrd.services.udev.rules = zetaInstallLabelOnePartition;
-  services.udev.extraRules = zetaInstallLabelOnePartition;
+  config = lib.mkIf hasIsohybridMbr {
+    boot.initrd.services.udev.rules = zetaInstallLabelOnePartition;
+    services.udev.extraRules = zetaInstallLabelOnePartition;
 
-  # mkForce (50) beats iso-image.nix's mkImageMediaOverride (60) on this one
-  # field; fsType, neededForBoot and noCheck stay as nixpkgs sets them.
-  fileSystems."/iso".device = lib.mkForce "/dev/disk/zeta-install-medium";
+    # Same priority as installation-cd-base.nix's `fileSystems`, at BOTH levels, so
+    # this definition is merged with the base's instead of being discarded by it (see
+    # above). Only `device` carries mkForce; fsType, neededForBoot and noCheck stay as
+    # nixpkgs sets them, and so do the other iso mounts.
+    fileSystems = lib.mkImageMediaOverride {
+      "/iso" = lib.mkImageMediaOverride {
+        device = lib.mkForce "/dev/disk/zeta-install-medium";
+      };
+    };
+  };
 }

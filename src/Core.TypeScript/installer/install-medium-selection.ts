@@ -201,17 +201,133 @@ export function mountSourcesOverAllOrders(
   return [...seen].sort();
 }
 
+// ── Does the module's /iso pin SURVIVE the module system? ───────────────────
+//
+// 081M3B7Z38Q087G0R003F9X7HM, run 36870188468. PR #17751 shipped
+// `fileSystems."/iso".device = lib.mkForce "<symlink>"` and every check passed,
+// because every check read the SOURCE TEXT, where the line is present and
+// correct. It was discarded on evaluation: nixpkgs' installation-cd-base.nix
+// defines the whole `fileSystems` option as `lib.mkImageMediaOverride
+// config.lib.isoFileSystems` (priority 60), and the module system drops a
+// DEFINITION of an option by its top-level priority before it looks inside it.
+// A default-priority (100) definition with a mkForce nested in its value loses
+// to the 60 as a whole, so the evaluated /iso device stayed by-label and three
+// of five WP11 USB runs afterwards mounted the boot medium from the whole disk.
+//
+// This models exactly that one rule — "which definitions of an option survive" —
+// so the source text can be judged by what the merge would do with it. It is a
+// model (register: `unmetered`); the falsifier of the model is the flake check
+// `install-medium-device-eval`, which asks the real module system.
+
+/** installation-cd-base.nix:36 — `fileSystems = lib.mkImageMediaOverride config.lib.isoFileSystems;`. */
+export const BASE_FILESYSTEMS_PRIORITY = 60;
+/** Priority of an undecorated definition. */
+export const DEFAULT_PRIORITY = 100;
+
+const NIX_PRIORITY_FUNCTIONS: Readonly<Record<string, number>> = {
+  mkImageMediaOverride: 60,
+  mkForce: 50,
+  mkDefault: 1000,
+  mkOptionDefault: 1500,
+};
+
+/**
+ * What the module system does with a definition of `fileSystems` made at
+ * `priority`, against the base's definition at 60.
+ *
+ *   merged         priority == 60: both survive, per-mount-point merge — what we want
+ *   discarded      priority  > 60: the whole definition is dropped (the #17751 defect)
+ *   replaces-base  priority  < 60: ours wins outright and the base's other mounts
+ *                  (/, /nix/.ro-store, /nix/.rw-store, ...) are DELETED
+ */
+export type PinEffect = "merged" | "discarded" | "replaces-base";
+
+export function effectOfFileSystemsDefinition(priority: number): PinEffect {
+  if (priority === BASE_FILESYSTEMS_PRIORITY) return "merged";
+  return priority > BASE_FILESYSTEMS_PRIORITY ? "discarded" : "replaces-base";
+}
+
+export interface IsoPin {
+  /** The device the source text assigns to /iso, or null when it assigns none. */
+  readonly device: string | null;
+  /** Priority of the definition AT THE `fileSystems` OPTION — the only one the filter looks at. */
+  readonly optionPriority: number | null;
+  readonly effect: PinEffect | "no-pin";
+  /** The source shape that was recognised, for a failure message that names it. */
+  readonly form: "wrapped-at-option-priority" | "nested-under-default-priority" | "none";
+}
+
+function stripNixComments(nix: string): string {
+  return nix
+    .split("\n")
+    .filter((l) => !l.trim().startsWith("#"))
+    .join("\n");
+}
+
+function substituteVolumeId(s: string, volumeId: string): string {
+  return s.replaceAll("${config.isoImage.volumeID}", volumeId).replaceAll("${volumeID}", volumeId);
+}
+
+/** Read how the module pins /iso and say what the module system would do with that definition. */
+export function readIsoPin(nix: string, volumeId: string): IsoPin {
+  const code = stripNixComments(nix);
+
+  // Form A (the working one): `fileSystems = <prio-fn> { "/iso" = <prio-fn> { device = lib.mkForce "<dev>"; }; };`
+  const wrapped =
+    /fileSystems\s*=\s*lib\.(mkImageMediaOverride|mkForce|mkDefault|mkOptionDefault)\s*\{\s*"\/iso"\s*=\s*lib\.(?:mkImageMediaOverride|mkForce)\s*\{\s*device\s*=\s*lib\.mkForce\s*"([^"]+)"/u
+      .exec(code);
+  if (wrapped?.[1] !== undefined && wrapped[2] !== undefined) {
+    const optionPriority = NIX_PRIORITY_FUNCTIONS[wrapped[1]] ?? DEFAULT_PRIORITY;
+    return {
+      device: substituteVolumeId(wrapped[2], volumeId),
+      optionPriority,
+      effect: effectOfFileSystemsDefinition(optionPriority),
+      form: "wrapped-at-option-priority",
+    };
+  }
+
+  // Form B (the #17751 defect): the mkForce is the ONLY decoration, and it is nested
+  // inside a definition of `fileSystems` that is itself at the default priority.
+  const nested = /^[ \t]*fileSystems\."\/iso"\.device\s*=\s*(?:lib\.mkForce\s*)?"([^"]+)"/mu.exec(code);
+  if (nested?.[1] !== undefined) {
+    return {
+      device: substituteVolumeId(nested[1], volumeId),
+      optionPriority: DEFAULT_PRIORITY,
+      effect: effectOfFileSystemsDefinition(DEFAULT_PRIORITY),
+      form: "nested-under-default-priority",
+    };
+  }
+
+  return { device: null, optionPriority: null, effect: "no-pin", form: "none" };
+}
+
+/** What gates the whole module (`config = lib.mkIf <gate> { ... }`), or null when it is unconditional. */
+export function readModuleGate(nix: string): string | null {
+  const code = stripNixComments(nix);
+  const gate = /^[ \t]*config\s*=\s*lib\.mkIf\s+(\w+)\s*\{/mu.exec(code);
+  if (gate?.[1] === undefined) return null;
+  // Resolve a let-bound name to its definition so the test can compare the CONDITION, not a name.
+  const def = new RegExp(`^[ \\t]*${gate[1]}\\s*=\\s*([^;]+);`, "mu").exec(code);
+  return (def?.[1] ?? gate[1]).replace(/\s+/gu, " ").trim();
+}
+
 /**
  * Read the installer module: its udev rule text (with the volume ID
- * substituted) and the `/iso` device it pins, or the nixpkgs default when it
- * pins none.
+ * substituted) and the `/iso` device the EVALUATED configuration ends up with.
+ *
+ * That is the pinned device only when the pin survives the merge
+ * (`pin.effect === "merged"`); a pin the base discards leaves nixpkgs' by-label
+ * default in place, which is what the real evaluation did, so the model — and
+ * every test that replays it — sees the device that was actually mounted rather
+ * than the one the text wished for.
  */
-export function readInstallerMediumConfig(nix: string, volumeId: string): { rules: string; isoDevice: string } {
-  const blocks = [...nix.matchAll(/''\n([\s\S]*?)''/gu)].map((m) => m[1] ?? "");
-  const rules = blocks.join("\n").replaceAll("${config.isoImage.volumeID}", volumeId);
-  // Anchored at line start so a comment QUOTING the upstream default is not read as a pin.
-  const pinned = /^[ \t]*fileSystems\."\/iso"\.device\s*=\s*(?:lib\.mkForce\s*)?"([^"]+)"/mu.exec(nix);
-  const isoDevice = pinned?.[1]?.replaceAll("${config.isoImage.volumeID}", volumeId) ??
-    nixpkgsDefaultIsoDevice(volumeId);
-  return { rules, isoDevice };
+export function readInstallerMediumConfig(
+  nix: string,
+  volumeId: string,
+): { rules: string; isoDevice: string; pin: IsoPin; gate: string | null } {
+  const blocks = [...stripNixComments(nix).matchAll(/''\n([\s\S]*?)''/gu)].map((m) => m[1] ?? "");
+  const rules = substituteVolumeId(blocks.join("\n"), volumeId);
+  const pin = readIsoPin(nix, volumeId);
+  const isoDevice = pin.effect === "merged" && pin.device !== null ? pin.device : nixpkgsDefaultIsoDevice(volumeId);
+  return { rules, isoDevice, pin, gate: readModuleGate(nix) };
 }

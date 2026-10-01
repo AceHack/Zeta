@@ -646,8 +646,32 @@ export type BootMediumShape =
 const PARTITION_DEVICE = /^\/dev\/(?:(?:sd|vd|hd|xvd)[a-z]+[0-9]+|(?:nvme[0-9]+n[0-9]+|mmcblk[0-9]+|loop[0-9]+)p[0-9]+)$/u;
 const WHOLE_DISK_DEVICE = /^\/dev\/(?:(?:sd|vd|hd|xvd)[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|sr[0-9]+)$/u;
 
-/** Exported for unit tests. Classifies the guest-reported boot-medium device. */
+/**
+ * The guest's own sysfs-derived verdict on /iso (zeta-first-boot.sh zeta_boot_medium_verdict),
+ * or null when the line is absent (an ISO built before it existed).
+ */
+export function bootMediumVerdictLine(
+  phase1Serial: string,
+): { readonly verdict: string; readonly source: string } | null {
+  const m = phase1Serial.match(/\[081M3B7Z38Q087G0R003F9X7HM-boot-medium\] verdict=([A-Z-]+) source=(\S+)/u);
+  if (m === null || m[1] === undefined || m[2] === undefined) return null;
+  return { verdict: m[1], source: m[2] };
+}
+
+/**
+ * Exported for unit tests. Classifies the guest-reported boot-medium device.
+ *
+ * The guest's verdict line is read FIRST: it is decided from sysfs (the kernel's own
+ * `partition` attribute and the disk's partition children), so it needs no device-name
+ * pattern and cannot be fooled by a name this file has not heard of. `WHOLE-DISK-CLAIMED`
+ * is the defect and is convicted outright. The device-name regexes below remain the
+ * fallback for an ISO that predates the verdict line.
+ */
 export function bootMediumShape(phase1Serial: string): BootMediumShape {
+  const verdictLine = bootMediumVerdictLine(phase1Serial);
+  if (verdictLine?.verdict === "WHOLE-DISK-CLAIMED") {
+    return { kind: "whole-disk", device: verdictLine.source };
+  }
   const m = phase1Serial.match(/\[081M392JR97087G0R003QAFH0Y-esp-conf\][^\n]*\sboot-medium=(\S+)/u);
   if (m === null || m[1] === undefined) {
     return { kind: "not-reported", detail: "no esp-conf scan line carrying boot-medium= in the serial" };
@@ -3457,7 +3481,12 @@ async function main(): Promise<never> {
             "medium resolved to the disk instead of its LBA-0 partition, so /iso holds the " +
             "disk O_EXCL and the ESP is unopenable for the whole install. The /dev/disk/zeta-install-medium " +
             "symlink in nixos/modules/install-label-single-device.nix (never claimed by a partitioned " +
-            "whole disk) exists to make this impossible; either it is not in this ISO or it did not take effect.",
+            "whole disk) exists to make this impossible; either it is not in this ISO or it did not take effect. " +
+            "Check in this order: (1) the flake check install-medium-device-eval -- the EVALUATED /iso device must " +
+            "be that symlink (PR #17751's pin read correct in source and was silently discarded by the module " +
+            "system for days, run 36870188468); (2) the guest's [081M3B7Z38Q087G0R003F9X7HM-boot-medium] verdict= " +
+            "line, which names what /iso is mounted from and whether the disk has partitions; (3) whether udev set " +
+            "ID_PART_TABLE_TYPE on the whole disk when the symlink rules ran.",
           serialLogTail: phase1Serial.slice(-3000),
           ...(phase1.elapsedSeconds !== undefined ? { elapsedSeconds: phase1.elapsedSeconds } : {}),
         },
