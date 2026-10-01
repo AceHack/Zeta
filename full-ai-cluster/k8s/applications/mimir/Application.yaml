@@ -165,6 +165,12 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: mimir
+  # ServerSideApply DELIBERATELY ABSENT -- argo-cd#11143 / #18568 (see
+  # ssa-volumeclaimtemplate-drift.ts). Nine StatefulSets render here (ingester and
+  # store-gateway x3 zones, compactor, alertmanager, kafka), every one with
+  # volumeClaimTemplates; under SSA each reads as drift forever and selfHeal
+  # re-applies them every retry window. Largest rendered resource ~5 KB, far under
+  # the 262144-byte cap client-side apply needs.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

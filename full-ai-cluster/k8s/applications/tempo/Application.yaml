@@ -48,6 +48,10 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: tempo
+  # ServerSideApply DELIBERATELY ABSENT -- argo-cd#11143 / #18568 (see
+  # ssa-volumeclaimtemplate-drift.ts): StatefulSet/tempo carries a volumeClaimTemplate,
+  # so under SSA the Application reads OutOfSync forever. Largest rendered resource
+  # ~3 KB, far under the 262144-byte cap client-side apply needs.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

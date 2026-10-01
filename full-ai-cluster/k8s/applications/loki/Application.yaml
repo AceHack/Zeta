@@ -105,6 +105,14 @@ spec:
       kind: StatefulSet
       jqPathExpressions:
         - .status.terminatingReplicas
+  # ServerSideApply DELIBERATELY ABSENT -- argo-cd#11143 / #18568, the same class as
+  # spire, nats, opensearch, hindsight, weaviate, cockroachdb and headscale (see
+  # ssa-volumeclaimtemplate-drift.ts). loki-backend and loki-write are StatefulSets
+  # with volumeClaimTemplates; under SSA the local diff adds apiVersion/kind/
+  # creationTimestamp/volumeMode/status.phase to the embedded PVC template, so the
+  # Application reads OutOfSync forever and selfHeal re-applies it every retry window.
+  # The largest rendered resource (the gateway ConfigMap, ~15 KB) is far under the
+  # 262144-byte last-applied-configuration cap client-side apply needs.
   syncPolicy:
     automated: { prune: false, selfHeal: true }
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    syncOptions: [ CreateNamespace=true ]

@@ -26,10 +26,20 @@
 //   2. `argocd.argoproj.io/compare-options: ServerSideDiff=true` -- the diff is
 //      then a real dry-run apply, not a local prediction (argo-workflows, keda).
 //
-// SCOPE, honestly: git-directory Applications only, because their manifests are
-// on disk and can be read without a network. A Helm Application's StatefulSets
-// exist only after a chart render; those are covered by the per-Application
-// comments above, not by this check.
+// SCOPE, honestly: `auditSsaVolumeClaimTemplateDrift` covers git-directory
+// Applications, because their manifests are on disk and can be read without a
+// network. A Helm Application's StatefulSets exist only after a chart render, so
+// `auditHelmSsaVolumeClaimTemplateDrift` reads them from the COMMITTED render
+// census instead (`rendered-storage-claims.snapshot.json`, whose `volumeClaimTemplate`
+// rows are exactly the claim-templated StatefulSets). That snapshot is itself
+// re-measured and diffed by `rendered-storage-claims.ts`, so no helm and no network
+// are needed here and the two cannot silently disagree for long.
+//
+// WHY THE HELM HALF EXISTED AS A GAP: every Helm Application that had been measured
+// OutOfSync dropped SSA one at a time (spire, nats, opensearch, hindsight,
+// weaviate, cockroachdb, headscale), each recorded in its own comment. Nothing
+// stopped the NEXT one, and loki, mimir, tempo and redis -- all four Helm charts
+// rendering claim-templated StatefulSets, all four on SSA -- shipped that way.
 
 import { readdirSync, readFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
@@ -136,6 +146,71 @@ export function auditSsaVolumeClaimTemplateDrift(repoRoot = REPO_ROOT): readonly
     const text = readFileSync(resolve(repoRoot, manifestPath), "utf8");
     for (const doc of parseAllDocuments(text)) {
       out.push(...findingsForApplication(manifestPath, asObj(doc.toJS()), read));
+    }
+  }
+  return out;
+}
+
+// -- THE HELM HALF -----------------------------------------------------------
+
+export const HELM_CLAIMS_SNAPSHOT = "src/Core.TypeScript/cluster/rendered-storage-claims.snapshot.json";
+
+/**
+ * Helm Applications whose finding is KNOWN and owned elsewhere (key = Application
+ * name). Same contract as DEFERRED: each entry must still produce a finding, so
+ * the list cannot outlive the defect it excuses.
+ */
+export const DEFERRED_HELM: Readonly<Record<string, string>> = {
+  dapr: "StatefulSet/dapr-scheduler-server; owned by the app-group that holds dapr. Fix is the same one-liner: drop ServerSideApply=true.",
+  openbao:
+    "StatefulSet/openbao; owned by the root-permissions / operator-action group, whose openbao Application is mid-change. Fix is the same one-liner.",
+};
+
+/** Judge one parsed Helm Application against the claim-templated StatefulSets its chart renders. */
+export function helmFindingsForApplication(
+  manifestPath: string,
+  app: Obj,
+  renderedStatefulSets: readonly string[],
+): readonly SsaVctFinding[] {
+  if (app["kind"] !== "Application") return [];
+  if (!usesServerSideApply(app) || usesServerSideDiff(app)) return [];
+  const spec = asObj(app["spec"]);
+  const sources = Array.isArray(spec["sources"]) ? (spec["sources"] as unknown[]) : [spec["source"]];
+  if (!sources.some((s) => typeof asObj(s)["chart"] === "string" && asObj(s)["chart"] !== "")) return [];
+  const name = asObj(app["metadata"])["name"];
+  const application = typeof name === "string" ? name : manifestPath;
+  return renderedStatefulSets.map((statefulSet) => ({
+    manifestPath,
+    application,
+    statefulSetFile: `(helm render of ${application})`,
+    statefulSet,
+  }));
+}
+
+/**
+ * Every Helm Application that pairs SSA with a chart-rendered claim-templated
+ * StatefulSet, read from the committed render census (no helm, no network).
+ */
+export function auditHelmSsaVolumeClaimTemplateDrift(repoRoot = REPO_ROOT): readonly SsaVctFinding[] {
+  const snapshot = JSON.parse(readFileSync(resolve(repoRoot, HELM_CLAIMS_SNAPSHOT), "utf8")) as {
+    readonly rendered: readonly { readonly appId: string; readonly origin: string; readonly workload: string }[];
+  };
+  const byApp = new Map<string, Set<string>>();
+  for (const row of snapshot.rendered) {
+    if (row.origin !== "volumeClaimTemplate" || !row.workload.startsWith("StatefulSet/")) continue;
+    const set = byApp.get(row.appId) ?? new Set<string>();
+    set.add(row.workload.slice("StatefulSet/".length));
+    byApp.set(row.appId, set);
+  }
+  const out: SsaVctFinding[] = [];
+  for (const manifestPath of applicationManifestPaths(repoRoot)) {
+    const rel = /\/applications\/(.+)\/Application\.yaml$/.exec(manifestPath)?.[1];
+    if (rel === undefined) continue;
+    const sets = byApp.get(`full-ai-cluster/${rel}`);
+    if (sets === undefined) continue;
+    const text = readFileSync(resolve(repoRoot, manifestPath), "utf8");
+    for (const doc of parseAllDocuments(text)) {
+      out.push(...helmFindingsForApplication(manifestPath, asObj(doc.toJS()), [...sets].sort()));
     }
   }
   return out;

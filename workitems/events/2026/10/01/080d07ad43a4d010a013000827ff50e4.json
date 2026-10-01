@@ -1,0 +1,14 @@
+{
+  "id": "080d07ad43a4d010a013000827ff50e4",
+  "at": "2026-10-01T04:10:52.954Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3TTGX4S087G0R002RC4PD4",
+    "type": "bug",
+    "title": "ServerSideApply + claim-templated StatefulSets keeps loki, mimir, tempo, redis OutOfSync (Helm half of the SSA/VCT audit)",
+    "slug": "serversideapply-claim-templated-statefulsets-keeps-loki-mimi",
+    "priority": "P2",
+    "filename": "081M3TTGX4S087G0R002RC4PD4-serversideapply-claim-templated-statefulsets-keeps-loki-mimi.md"
+  }
+}
