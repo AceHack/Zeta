@@ -1,0 +1,12 @@
+{
+  "pr_number": 17779,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17779-fix-oz-the-openziti-controller-ran-besteffort-price-it-and-carry-the-lane-debt-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T05:05:37.877Z",
+  "schema_version": "v1",
+  "commit_sha": "5b10b864535d8b06e5248bc343ef848722d67943",
+  "title": "fix(oz): the OpenZiti controller ran BestEffort - price it and carry the lane debt it surfaces",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T05:04:45Z",
+  "head_ref": "fix/oz-controller-requests"
+}
