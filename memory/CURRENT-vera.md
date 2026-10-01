@@ -3434,3 +3434,23 @@ CI on the tip: 6 runs, 2 success, 4 in progress, 0 failure. No check red on the 
 Hard fails: none. Softs: CI in progress, auto-merge armed, blocked, no live operator run, ungraded merge of main, plugin discovery unproven, SeaweedFS barman path unproven, backups share node and disk.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17792 leftover unique @ ae37feb6be406ed9d03410c340e4372a387e64fe -- GRADE GO
+
+Graded ae37feb6be406ed9d03410c340e4372a387e64fe only. It is the live head and is not a merge. One parent, 0249a2b5a70d1be74680b97342febf5158465a12. Stat +1000/-236, 21 files. The #17781 GO on b30b01525181ec367185386d6565c8e3f5e7aac1 stands and was not re-graded. This grade is the rebase only.
+
+Nine apps, 23 containers, requests only, no limit quantities. cert-manager 3, trust-manager 1, sealed-secrets 1, external-secrets 3, argo-rollouts 2, argo-workflows 2, headlamp 1, dapr 5 (scheduler x3 pods with ha false), spire 5. Snapshot non-hook workloads are 21 because spire's 5 containers are 3 workloads. cert-manager startupapicheck Job stays 0/0 and the new test exempts it.
+
+Recomputed resourceTotal, not the old 14015 figure. Allocatable 15250m (16000-500-250). Parent metal roster 13265m / 27787Mi. Tip roster 14065m / 29763Mi (+800m / +1976Mi). Dev 2040m/9996Mi to 2435m/11396Mi. 5% gate Math.ceil(15250*5/100)=763m, sum 14828m, spare 422m, fits. Prose says 762 and 14827/423, 1m under the ceil, still fits. 12% is 1830m, total 15895m, over by 645m, so the drop is necessary. Parent plus 12% is 15095m, spare 155m.
+
+bun test src/Core.TypeScript/cluster/platform-controllers-requests.test.ts at the tip: 6 pass. Copied onto parent 0249a2b5: fails (42 BestEffort lines, not the claimed 13; percent 12). Mutated tip percent to 12: fit gate fails Received 15895 > 15250. Restored. Not pushed.
+
+Disclosed gaps still true: longhorn-manager, cilium agent/envoy/operator/hubble, openbao unseal sidecar. Gitlab snapshot JSON-equal to the parent on both profiles. Dapr scheduler still 3 with ha false. Spire pod totals equal the priced containers; no limits, so pods stay Burstable.
+
+CI at observation: tip 117 checks, no red. agencysignature (PR body) success; (main tip) skipped. In progress: lanes 1-6, live kind/k3d, TS hermetic. Parent has hygiene lint and TS hermetic red; those are skipped or in progress on the tip, not red on the tip and green on the parent.
+
+Squash auto-merge armed. mergeable true, mergeable_state blocked, draft false. Not disarmed. Not merged. Live main is 1c87a255, three commits past 0249a2b5, and the PR is still reported mergeable. A rebase onto 1c87a255 would be a new SHA.
+
+Hard fails: none. Softs: CI in progress, no completed live run, squash auto-merge armed, blocked, main moved but mergeable, disclosed not-done list, dapr x3, empty startupapicheck Job, prose 762 vs ceil 763, stale "13 workloads" (actual 21 x 2), one stale debt key `dev memory 9996>9216` beside an updated 11396 cite.
+
+Sit leftover; Vera will not merge.
