@@ -1,0 +1,14 @@
+{
+  "id": "080d07b100657810a0130008c9186391",
+  "at": "2026-10-01T06:21:30.671Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3V2035E087G0R003TRCZDP",
+    "type": "bug",
+    "title": "mimir gateway (nginx) rendered BestEffort: the one mimir container with no request and no ledger row",
+    "slug": "mimir-gateway-nginx-rendered-besteffort-the-one-mimir-contai",
+    "priority": "P2",
+    "filename": "081M3V2035E087G0R003TRCZDP-mimir-gateway-nginx-rendered-besteffort-the-one-mimir-contai.md"
+  }
+}

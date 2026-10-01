@@ -484,7 +484,7 @@
   ],
   "acknowledgedLaneBudgetShortfall": [
     {
-      "key": "dev memory 13380>9216",
+      "key": "dev memory 13412>9216",
       "reason": "THE FIRST HONEST PRICING OF ANY BestEffort APP WAS ALWAYS GOING TO TIP THIS LANE, and ArgoCD happened to be the one that did it. Before this change the dev lane declared 9100Mi against a 9216Mi budget -- 116Mi of headroom, 98.7% consumed -- while 26 of 49 Applications rendered pods requesting NOTHING and therefore contributed 0Mi to that total. The lane was not fitting; it was fitting because most of what it runs was invisible to the arithmetic. Pricing the ArgoCD control plane (768Mi at the dev rung across five components) makes 652Mi of that invisibility visible and nothing else about the lane changed. UPDATE 2026-09-30: the oz (OpenZiti) controller, also BestEffort, was priced at 128Mi for the same reason, moving the lane 9868Mi -> 9996Mi (780Mi over); it is the first of the 'other 25' named below to be paid. WHY THE OVERFLOW IS NOT ABSORBED BY SMALLER REQUESTS: the defect being repaired is an under-request. Dispatch 36097310492 watched the WP11 roster peak at 25/35 Synced+Healthy and fall BACKWARDS to 13/35, which rules out slowness -- more wall clock made it worse. Whether the fall was eviction or overlapping reconciliation sweeps (081M3BPJNRS087G0R0008WFXBZ) is not settled and is not claimed; what is measured is that every ArgoCD pod was BestEffort, which is the first thing the kubelet evicts and the last thing a starved renderer needs to be. Shrinking these requests to clear a budget line would restore the exact condition that produced the regression, in the lane whose whole job is to catch it. The dev numbers are already the smaller of the two rungs, chosen against the 40-app kind/k3d workload rather than the 145-pod metal roster. WHAT IS ACTUALLY OWED: the other 25 Applications that still request nothing -- missing-resource-requests.ts names 18 remaining ACTIONABLE rows with the chart coordinate for each. Pricing them will make this number worse before it gets better, and that is the point: the budget must be measured against what the lane RUNS, not against what it happens to have declared. AMENDED 2026-10-01 (observability): five more Applications stopped being BestEffort -- alloy, kube-prometheus-stack, loki, nats and tempo, which between them carried 20 containers that requested nothing. Same direction this entry already predicted, same refusal: the numbers are small floor reservations (requests only, no limits), and shrinking them to clear the line would put the observability and messaging layer back at the cgroup CPU floor in the lane whose job is to catch that. The CPU axis still fits, by a margin of a few hundred millicores -- which is why those CPU requests are 2-12m rather than a share worth tuning. NEXT INSTALMENT, 2026-10-01 (081M3TS67PE087G0R002ZZ1XYT): pricing the platform controllers that WP32 left BestEffort -- cert-manager (3), trust-manager, sealed-secrets, external-secrets (3), argo-rollouts (2), argo-workflows (2), headlamp, dapr (5 workloads, 7 pods), spire (5 containers) -- adds 1400Mi at the dev rung (11980 -> 13380) and 280m of CPU (inside the 2500m CPU budget at 2425m, 75m spare, so CPU needs no acknowledgement: the dev floor for these rows is 10m, the catalogue's usual 25m would not have fit). The motive is the same measured one: the constrained first-boot replica on main (2026-09-30, run 36685251210) had 19 of 38 Applications FAIL while the unconstrained lane had them Healthy. The numbers are estimates sized to leave BestEffort, not usage readings.",
       "liftsWhen": "LIFTS WHEN: `storage-profiles.ts --resource-profile dev --budget` reports the dev lane's memory total at or under the 9216Mi runner budget -- the gate itself, not a paraphrase of it. Two routes reach it and either one suffices: the reserved headroom is re-measured against what the lane actually consumes (the 6144Mi reservation was sized when most of the lane was BestEffort and invisible), or the dev lane partition sheds enough Applications that the priced roster fits. Pricing MORE apps moves this number the wrong way and must not be read as a reason to stop."
     }
@@ -1188,6 +1188,25 @@
       "memoryMib": {
         "dev": 192,
         "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/mimir/gateway",
+      "dir": "mimir",
+      "path": "full-ai-cluster/k8s/applications/mimir/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.gateway.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE. mimir-distributed 6.2.0 renders Deployment/mimir-gateway (nginx-unprivileged) with no `resources`, the only mimir container that did; every sibling carries a chart-default request and a row. MEASURED 2026-10-01 by `helm template` against this Application's own valuesObject: 1 replica, no requests. `metal` reproduces the committed literal exactly (2m / 32Mi), so `--resource-profile metal --verify` stays clean.",
+      "consequence": "An unset request is QoS BestEffort and cpu.weight 2, the first pod a node evicts and the last it feeds CPU, on the path every Grafana query and remote_write client would use. Requests only, no limits: a CPU limit would throttle a proxy and a memory limit would OOM-kill it mid-request. 2m / 32Mi is a floor reservation chosen to leave BestEffort, not a measurement of nginx. Same at both rungs on purpose: the dev lane's CPU axis has little slack and 2m is below the dev CPU floor, so there is nothing for the floor to cut.",
+      "cpuMillis": {
+        "dev": 2,
+        "metal": 2
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 32
       }
     },
     {

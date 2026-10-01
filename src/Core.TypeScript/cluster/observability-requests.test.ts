@@ -25,7 +25,7 @@ const SNAPSHOT = join(REPO_ROOT, "src/Core.TypeScript/cluster/rendered-resource-
 const APPS_DIR = join(REPO_ROOT, "full-ai-cluster/k8s/applications");
 
 /** Applications whose every rendered workload must reserve CPU and memory. */
-const GROUP = ["alloy", "kube-prometheus-stack", "loki", "nats", "tempo"] as const;
+const GROUP = ["alloy", "kube-prometheus-stack", "loki", "mimir", "nats", "tempo"] as const;
 
 interface Workload { readonly workload: string; readonly cpuMillis: number; readonly memoryMib: number }
 interface Snap {

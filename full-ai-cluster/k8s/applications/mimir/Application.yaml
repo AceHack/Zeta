@@ -148,6 +148,19 @@ spec:
             requests:
               cpu: 1
               memory: 1024Mi
+        # THE ONE MIMIR CONTAINER THAT RENDERED BestEffort. MEASURED (helm template
+        # mimir-distributed 6.2.0): `Deployment/mimir-gateway` -- the nginx in front of the
+        # query and push paths -- shipped with no `resources` at all, while every other mimir
+        # component carries a chart-default request and has a `resourceClaims` row. An unset
+        # request is cpu.weight 2 (the cgroup floor) and the first thing a node evicts, on the
+        # path Grafana and any remote_write client would use. Requests only, no limits. 2m /
+        # 32Mi is a floor reservation, not a measurement (nginx serving a handful of proxy
+        # hops); the row in storage-profiles.json carries the same numbers at both rungs.
+        gateway:
+          resources:
+            requests:
+              cpu: 2m
+              memory: 32Mi
         # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe. MEASURED (rendered this
         # Application at 6.2.0): `overrides-exporter` has no `startupProbe` key in
         # `templates/overrides-exporter/overrides-exporter-dep.yaml` -- only
