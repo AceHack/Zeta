@@ -1,0 +1,14 @@
+{
+  "id": "080d07b65350f810a013000800869600",
+  "at": "2026-10-01T09:27:35.711Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VCMTG7087G0R002GQ57KH",
+    "type": "bug",
+    "title": "Roster memory/CURRENT-vera.md as a prose stale-tree consumer",
+    "slug": "roster-memory-current-vera-md-as-a-prose-stale-tree-consumer",
+    "priority": "P1",
+    "filename": "081M3VCMTG7087G0R002GQ57KH-roster-memory-current-vera-md-as-a-prose-stale-tree-consumer.md"
+  }
+}

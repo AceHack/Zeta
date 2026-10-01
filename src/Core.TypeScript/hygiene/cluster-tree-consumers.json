@@ -167,6 +167,12 @@
       "migrateTo": "drop the provenance paragraph when the stale tree is gone; the packages stay."
     },
     {
+      "path": "memory/CURRENT-vera.md",
+      "disposition": "prose",
+      "note": "Vera leftover-grade notes cite infra/k8s/bootstrap/argocd-install.yaml as still rendering ecr-public redis (leftover UNIQUE #17656 / #17723 / #17725). The path is the SUBJECT of those grades, not a path anything resolves. Rewriting the notes to name full-ai-cluster would falsify what was graded. Arrived on main via the PR #17438 archive merge and turned lint (yaml/k8s), test (TS hermetic), and lint (bash retirement inventory + hygiene unit tests) red together — all three assert this same roster.",
+      "migrateTo": "NONE — do not repoint. Drop the row when the leftover-grade citations leave CURRENT, or with the tree."
+    },
+    {
       "path": "src/Core.TypeScript/ace/deps.ts",
       "disposition": "prose",
       "note": "`generateArgoCD` now emits `full-ai-cluster/k8s/applications/${chart}`; the only remaining mention is the comment recording what the path used to be and why it was wrong (the stale tree prunes, and it holds no per-chart directories, so the old path resolved to nothing). `deps.test.ts` asserts the emitted path and refuses any path under a roster-declared stale tree.",
