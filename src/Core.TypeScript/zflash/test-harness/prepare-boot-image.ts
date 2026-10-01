@@ -45,6 +45,7 @@ import {
   type NamedBaoElfAsk,
 } from "../firstboot-bao-elf.ts";
 import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
+import type { LbPoolSpec } from "../../installer/lan-config.ts";
 
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
 export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
@@ -108,9 +109,35 @@ export interface PrepareBootImageInput {
    * NixOS-module changes are what actually gets installed.
    */
   readonly repoPinCommit?: string;
+  /**
+   * docs/ops/INSTALL-TIME-CONFIG.md row 3: the Cilium LoadBalancer range, staged
+   * as `ZETA_LB_POOL='<first>-<last>'` on the ESP `/zeta-firstboot.conf` -- the
+   * same line a real `zflash --lb-pool` writes. Validated by `planLbPool` inside
+   * the bake; what only the LAN can decide is decided by the installer.
+   */
+  readonly lbPool?: LbPoolSpec;
+}
+
+/**
+ * Does this bake write an ESP `/zeta-firstboot.conf`? Exported so a harness
+ * derives "did this lane stage a conf?" from what it asked for instead of
+ * hardcoding it, which is how the WP27 read-back contract went dormant and
+ * stayed that way unnoticed.
+ *
+ * The conf is written by exactly the inputs below (zflash/lib.ts: the role
+ * block, the LoadBalancer range, the Longhorn override). A test cross-checks
+ * this against `planFileBackedZflashImage`, so a new conf-writing input that is
+ * not added here fails there instead of silently reading as "nothing staged".
+ */
+export function stagesEspFirstbootConf(
+  input: Pick<PrepareBootImageInput, "firstbootRole" | "lbPool" | "allowLonghornUndersized">,
+): boolean {
+  return input.firstbootRole !== undefined || input.lbPool !== undefined || input.allowLonghornUndersized === true;
 }
 
 export interface PrepareBootImageResult {
+  /** True when the bake wrote an ESP `/zeta-firstboot.conf` (see {@link stagesEspFirstbootConf}). */
+  readonly espFirstbootConfStaged: boolean;
   readonly outputImagePath: string;
   readonly credentialBlobPath?: string;
   readonly bootImageEnv: "ZFLASH_QEMU_RETENTION_BOOT_IMAGE" | "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
@@ -300,6 +327,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.allowLonghornUndersized === true ? { allowLonghornUndersized: true } : {}),
     ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
     ...(input.repoPinCommit === undefined ? {} : { repoPinCommit: input.repoPinCommit }),
+    ...(input.lbPool === undefined ? {} : { lbPool: input.lbPool }),
   });
 
   if (!result.ok) {
@@ -307,6 +335,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
   }
 
   return {
+    espFirstbootConfStaged: stagesEspFirstbootConf(input),
     outputImagePath: resolve(input.outputImagePath),
     espOffsetBytes,
     espOffsetSource: espOffset.source,
