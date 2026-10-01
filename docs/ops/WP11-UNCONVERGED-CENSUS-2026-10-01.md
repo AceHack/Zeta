@@ -2,8 +2,22 @@
 
 Work item 081M3VKMFPG087G0R0013MR0WS. Subject run: **36832486494** (main tip `07d5445638`),
 WP11 installed-disk first-boot lane, verdict 7 FAILED: 26/48 Synced+Healthy, 17 unconverged,
-1 undecidable (`dapr`), 4 excluded. Diagnostics run: **36856972760** (branch
-`wp11-diag-dispatch` = main + PR #17812's capture), see Part B.
+1 undecidable (`dapr`), 4 excluded. Instrumented run: **36875247887** (branch `wp11-diag-dispatch3` =
+main + the cluster-diag capture + the dwell fix), verdict 7 FAILED again, 19/49, 26 unconverged: Part B.
+A follow-up run with a better-ordered capture is **36887261429** (branch `wp11-diag-dispatch4`); its
+per-Application sections will fill the rows still marked OPEN.
+
+## TL;DR
+
+**The roster cannot fit the guest, and the control plane then dies of it.** Measured on the live node
+before anything collapsed (t=922 s): container requests are **9095 m CPU against 3250 m allocatable (279%)
+and 21.6 GiB memory against 8.9 GiB (242%)**; 60 of 132 pods are not Ready and **every Pending pod is
+Pending for capacity** (`Insufficient cpu` x48, `Insufficient memory` x17). `kubectl top` reads the node at
+**109% CPU, 93% memory**. Starved of CPU and disk, etcd stalls 3-10 s, the embedded controller-manager /
+cloud-controller-manager loses its leader-election lease, **k3s exits 1**, and it did so **19 times** in the
+run (every exit is `leaderelection lost`). Each outage then breaks Longhorn volumes, ArgoCD syncs, cert-manager
+containers and the seed Jobs. So the 17 are not 17 defects: most are **CAP** (cannot be scheduled on this
+guest, ever) and the rest are **CP** (casualties of the restarts).
 
 Register: every claim below is tagged **measured** (a line in a named log), **inferred** (follows
 from measured lines but nothing printed it), or **open** (no evidence yet). Nothing is rounded up.
@@ -107,11 +121,113 @@ second, independent confirmation of A.1.
 4. **What still cannot be said** is, per app, whether it would be Healthy on an un-flapping node.
    That is Part B's question.
 
-## Part B. Run 36856972760 (the instrumented dispatch)
+## Part B. Run 36875247887, the first instrumented run
 
-*To be filled from the run's `qemu-k3s-first-boot-verify-serial-log` artifact.* The capture prints,
-under `[wp11-cluster-diag]`, once at t>=900 s and once at the end: nodes, requests vs allocatable, the
-Pending-reason census, describe + `logs --previous` for the worst non-Ready pods, `top`, Warning events, and ArgoCD's
-conditions / failed tasks / non-Healthy resources for each unconverged app; plus a `k3s-exits` timeline
-in the pressure sections. Per app, the table above is to be re-cut into CAP / DEFECT / ORDER / CP with log
-lines.
+Two captures, `[wp11-cluster-diag]` in `qemu-k3s-first-boot-verify-serial-log`: **mid** at t=922 s (lines
+2728-3473) and **end** at t=3125 s (3908-4983). Both carry the state `failed`, honestly: at mid the API died
+under the capture (k3s's first exit, 11:04:18, landed inside it) so 24 per-app sections and 14 describes read
+`connection refused`; at the end the 1000-line budget was spent before the per-app sections (`get pods -o wide` alone took 400). Both defects of the
+capture itself are fixed in PR #17831 (order is now priority, a short API re-wait, budget 1600, mid at 600 s).
+What the capture did get is below. Everything is **measured** unless tagged.
+
+### B.1 Capacity (mid, before the first control-plane death)
+
+| fact | value |
+|---|---|
+| node allocatable | cpu 3250 m, memory 9111268 Ki (8897 Mi), pods 220 (guest: 4 vCPU / 11957 MiB, so 750 m and ~3 GiB are held back by the node reservations) |
+| sum of container requests, 124 live pods | **cpu 9095 m = 279%**, **memory 21600 Mi = 242%** of allocatable |
+| sum of memory limits | 23210 Mi = 260% (overcommit: eviction becomes possible) |
+| live pods with no cpu / no memory request | 29 / 30 (BestEffort, scheduled anywhere, evicted first) |
+| `kubectl top nodes` | **cpu 3573 m = 109%, memory 8312 Mi = 93%** |
+| Pending census (60 not-ready of 132) | **48 `Pending: Insufficient cpu`, 17 `Pending: Insufficient memory`**, 7 Running-not-Ready, 2 ContainerCreating, 2 PodInitializing, 1 `last-terminated: Error` (`mimir-distributor`) |
+| biggest requesters | opensearch-cluster-master-0 2 Gi/1 cpu; mimir-kafka-0 1 Gi/1 cpu; hindsight-api 1 Gi/0.5; seaweedfs all-in-one 1 Gi/0.5; argocd application-controller 512 Mi + repo-server 512 Mi; gatekeeper audit + controller 512 Mi each; **mimir: 17 pods, most 512 Mi** (distributor, 3 x ingester zone, store-gateway, compactor, ...) |
+| end of run (130 live pods) | 9485 m = **291%** CPU, 22592 Mi = **253%** memory |
+
+Nothing else in the Pending census: **no unbound PVC, no taint, no affinity mismatch, no image pull** in the
+Pending set at mid. A Pending pod on this guest is a pod the node cannot hold.
+
+### B.2 The control plane (end capture, `k3s-exits`, the timeline the first run could not give)
+
+`k3s.service` exited `status=1/FAILURE` repeatedly; **`NRestarts=19`** at the end capture (0 kernel OOM lines, both captures;
+IO pressure some-avg10 **96%** and CPU **84%** at the first death). Every exit in the captured
+window is a lost lease: `controllermanager.go:368 "leaderelection lost"` (kube-controller-manager),
+`controllermanager.go:265 "leaderelection lost"` (cloud-controller-manager), `level=fatal msg="leaderelection
+lost for k3s"` and `... for k3s-etcd`. First process: 16 min 31 s wall, 12 min 30 s CPU, **17.7 GB written**, 4.3 GB
+in. Later processes live 58 s to 4 min 21 s. The node was `NotReady` when the end capture ran. This confirms Part A
+with the cause printed on the exit line, and it refutes "memory": no `OOMKilled` control-plane exit appears.
+
+### B.3 Per-Application table (the unconverged set at the end of this run)
+
+**CAP** = pods of the app were Pending for `Insufficient cpu/memory` (measured census / pods-wide, mid) and would
+be on any run of this guest. **CP** = healthy or schedulable pods knocked over by control-plane exits.
+**ORDER** = waiting on a dependency that was itself CAP/CP. **OPEN** = no pod-level evidence yet.
+Namespaces map to apps one-to-one except `zeta-platform` = `platform` and `monitoring` = `kube-prometheus-stack`.
+
+| app | state at end | evidence | bucket |
+|---|---|---|---|
+| agent-memory | Progressing | mid: `agent-memory-0` Pending (cpu). end: PVC `memory-agent-memory-0` `ProvisioningFailed: zeta-block-replicated ... longhorn-backend:9500 ... 500` | CAP, then CP (Longhorn) |
+| arc-controller | Degraded | `arc-systems/arc-controller-gha-rs-controller` Pending, `Insufficient cpu` then `memory`, both captures | **CAP** |
+| argo-rollouts | Progressing | mid: 2 pods Pending (cpu); end: ContainerCreating | CAP, then CP |
+| argo-workflows | Progressing | mid: server + workflow-controller Pending (cpu); end: 1 Pending + 1 ContainerCreating | **CAP** |
+| cdi | Degraded (manual-sync, one first-sync) | `cdi-operator` Pending **`Insufficient memory`** (end census); run 36832486494: first sync failed `connection refused` | **CAP** (+ CP) |
+| cert-manager | Progressing | mid: 4/4 Running. end: **`RunContainerError` x2 (cert-manager, cainjector), last-terminated `StartError`**, trust-manager `Unknown` | **CP** (shims after k3s restarts) |
+| cilium | Progressing | mid: every cilium/envoy/operator/hubble pod 1/1 Running, yet the Application never reaches Healthy in either run. The installer banner on the same guest says `LOADBALANCER RANGE: NOT SET ... every Service of type LoadBalancer is <pending>`, and ArgoCD reads a pending LoadBalancer Service as Progressing | **OPEN**, strong hypothesis (LB pool unset). The mid capture lost its app section; #17831 captures non-Healthy resources |
+| dapr | Progressing | `dapr-placement-server-0`, `dapr-scheduler-server-2`, `dapr-sidecar-injector` Pending. **This answers the old `undecidable` row: the scheduler refusal is `Insufficient`** | **CAP** |
+| forgejo | Degraded | mid: `forgejo-...-ngcrq` Pending (cpu); end: 1 Pending + `seed-forgejo-admin` PodInitializing | **CAP** |
+| headlamp | Progressing | mid: Pending (cpu); end: ContainerCreating; events: `Readiness probe failed: connection refused` | CAP, then CP |
+| headscale | Progressing | `headscale-0` Pending, both captures | **CAP** |
+| keda | Progressing | `keda-operator` Pending (cpu) at mid, 3 Pending at end (webhooks Running at mid) | **CAP** |
+| kube-prometheus-stack | Degraded | `monitoring`: grafana (0/3), kube-state-metrics, operator, node-exporter all Pending at mid; 4 Pending + 1 Init at end | **CAP** |
+| kubevirt | Progressing (manual-sync) | `virt-operator` x2 Pending at mid; end `Unknown` x2; events: `Liveness probe failed ... connection refused` | **CAP**, then CP |
+| loki | Degraded | mid: `loki-write-0` Pending, `loki-backend-0` Terminating, `loki-read` 0/1; end: 2 Pending; events: readiness `context deadline exceeded`, `503` | CAP + CP |
+| mimir | Degraded | **mid: 17 Pending**, `mimir-distributor` CrashLoop (restarts 5 -> 34, exit 1 then 255; its log lines were empty); end: 16 Pending. `mimir-kafka-0` (1 cpu) Pending is the likely upstream of the distributor loop | **CAP** (the largest single block), distributor **ORDER** (inferred) |
+| nats | Progressing | `FailedMount ... MountDevice ... rpc error ... failed to get volume pvc-...` x3 (Longhorn volume unavailable) | **CP** (Longhorn) |
+| opensearch | Progressing | `opensearch-cluster-master-0` (2 Gi / 1 cpu) Pending at both captures | **CAP** (biggest single pod) |
+| openziti-controller | Degraded | `ziti-controller` Pending at mid, Init at end | **CAP** |
+| orleans | Progressing | `orleans-silo-0` Pending (cpu) at both captures | **CAP** |
+| platform | Degraded | `zeta-platform`: `platform-controller`, `portal-0` Pending at both captures | **CAP** |
+| postgres-shared | Progressing | `postgres-shared-3` PVC `ProvisioningFailed: failed to get target node ... 10.99.192.1:443 connection refused`; `postgres-shared-2` startup probe 500; `postgres-shared-2-join` Job Failed | **CP** |
+| redis | Progressing | `redis-valkey-0` Pending (cpu) at mid; `seed-redis-auth` Job x3 Failed (`BackoffLimitExceeded`, event `kube-root-ca.crt not registered`) | CAP, then CP |
+| seaweedfs | Progressing | all-in-one pod (1 Gi / 0.5) replaced and Pending at end; `seed-blob-store` x4 `Init:Error`/`Init:Unknown`, `BackoffLimitExceeded` | CAP + CP |
+| spire | Progressing | 3/3 Running at both captures; liveness `context deadline exceeded` on a starved node | **CP** (probes timing out on a starved node) |
+| tempo | Progressing | `tempo-0` Pending (cpu) at mid | **CAP** |
+
+Excluded by the verdict itself and unchanged: `hindsight` (needs an LLM key, operator action), `openbao` (sealed),
+`ollama`, `vllm` (manual-sync, replicas 0).
+
+Totals: **CAP is the primary bucket for 21 of the 26**: 15 purely (arc-controller, argo-workflows, cdi, dapr, forgejo,
+headscale, keda, kube-prometheus-stack, kubevirt, mimir, opensearch, openziti-controller, orleans, platform,
+tempo) and 6 CAP-then-CP (agent-memory, argo-rollouts, headlamp, redis, seaweedfs, loki); **CP** for 4
+(cert-manager, nats, postgres-shared, spire); **OPEN** for 1 (`cilium`).
+**No row is a manifest defect.** The one candidate for a real defect (`cilium` never Healthy) has a named
+config cause that is a property of the guest, not of the chart.
+
+### B.4 What to do with it
+
+1. **Shrink the roster to what the guest holds, or the guest to what the roster needs.** Requests must fall from
+   ~9.1 CPU / ~21.6 GiB to inside 3.25 CPU / 8.9 GiB (the CI envelope already excludes gitlab, temporal and gmod
+   hosting; it needs a second tranche, and `mimir` (17 pods), `opensearch`, `hindsight`, `kubevirt`+`cdi` are the
+   large blocks the capacity table names). A real install on a 64 GiB box is unaffected, so this belongs in
+   `k8s/wp11-ci-envelope.json`, not in the charts.
+2. **Stop the control plane dying of a slow disk** (separate, reviewed change, it touches production k3s):
+   widen `leader-elect-lease-duration` / `renew-deadline` for the controller-manager, cloud-controller-manager and
+   scheduler so an etcd stall is a delay rather than `status=1`, and give etcd headroom
+   (`heartbeat-interval` / `election-timeout`). Nothing in `full-ai-cluster/nixos` sets any of these today.
+3. Items 1 and 2 are independent and **both are needed for a green verdict 7**: with 1 alone the node is still
+   at the edge of the lease window during the pull burst (17.7 GB written by the first k3s process); with 2 alone
+   48 Applications still cannot be scheduled.
+
+## Part C. Other defects the same two runs exposed
+
+* **Scenario 4 (path-fork) timeout, run 36832486494: a real defect, fixed in PR #17813 (merged).** The baseline
+  install printed `discovery heard nothing in 29999 ms`, `dwell-too-short`, `[zeta-discovery] HALTED`, then waited
+  for a keypress for the full 1800 s. Cause: `probe.ts` slept once and re-read `Date.now()`; a timer can wake 1 ms
+  early, `elapsedMs` landed on `dwellMs - 1`, and the (correctly strict) admissibility check refused. The same
+  race hit scenario 2 of run 36856972760 (HALTED at 76 s, caught by the fail-fast marker that #17813 added to the
+  zflash lane) before the fix was in, so it was not rare. Falsifier fails with the top-up disabled.
+* **Whole-disk boot medium (open, not fixed here).** Runs 36856972760 and 36865505620 both failed WP11 in phase 1
+  with `boot medium mounted from the WHOLE disk (/dev/sda)` although the install completed (run 36832486494 had
+  `boot-medium=/dev/sda1`). `install-label-single-device.nix`'s `zeta-install-medium` rule is meant to make that
+  impossible and did not take effect twice running; the ESP was still read through the mtools rung. Run
+  36875247887 carried a dispatch-branch-only advisory (never merged) to get past it. This one needs its own
+  investigation: it is a hard stop for the WP11 lane and, per the installer's own header, for a real USB stick.
