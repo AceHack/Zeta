@@ -40,6 +40,8 @@ spec:
         crds:
           enabled: true
         replicaCount: 1
+        resources:
+          requests: { cpu: 10m, memory: 48Mi }
         # Default-trust-bundle: pull from the cluster's own CA
         # (cert-manager-issued) once both cert-manager + Vault are
         # healthy. Configure via a Bundle CR in a follow-up.

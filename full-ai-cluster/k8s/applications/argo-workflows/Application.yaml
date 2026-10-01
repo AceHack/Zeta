@@ -100,8 +100,12 @@ spec:
               ttlStrategy: { secondsAfterCompletion: 604800 }
               podGC: { strategy: OnPodCompletion }
           parallelism: 50
+          resources:
+            requests: { cpu: 10m, memory: 96Mi }
         server:
           authModes: [ server ]
+          resources:
+            requests: { cpu: 10m, memory: 64Mi }
         executor:
           image: { tag: "" }
   destination:

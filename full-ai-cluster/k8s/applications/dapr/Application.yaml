@@ -25,6 +25,20 @@ spec:
           ha: { enabled: false }   # bump once multi-control-plane
         dapr_placement:
           replicaCount: 1
+          resources:
+            requests: { cpu: 10m, memory: 64Mi }
+        dapr_operator:
+          resources:
+            requests: { cpu: 25m, memory: 96Mi }
+        dapr_sentry:
+          resources:
+            requests: { cpu: 10m, memory: 64Mi }
+        dapr_sidecar_injector:
+          resources:
+            requests: { cpu: 10m, memory: 64Mi }
+        dapr_scheduler:
+          resources:
+            requests: { cpu: 10m, memory: 128Mi }
         # Actors persistence: configure a Redis/CockroachDB state
         # store via a Dapr Component once those land. Example:
         # configuration:
