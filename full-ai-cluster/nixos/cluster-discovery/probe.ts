@@ -120,6 +120,9 @@ export const AVAHI_BROWSE_UNCONDITIONAL_LONG_OPTIONS: ReadonlySet<string> = new 
   "parsable",
 ]);
 
+/** How many times the dwell may be topped up after an early timer wake; see `probeForClusters`. */
+const MAX_DWELL_TOP_UPS = 8;
+
 /**
  * Run the dwell and report what was observed.
  *
@@ -180,9 +183,20 @@ export async function probeForClusters(options: ProbeOptions): Promise<Discovery
     }
   }
 
-  const remaining = dwellMs - elapsed();
-  if (remaining >= 1) {
-    await options.sleep(remaining);
+  // THE DWELL HAS TO BE HONOURED AS MEASURED, NOT AS REQUESTED. A timer can
+  // resolve early against the wall clock: `setTimeout(30000)` followed by
+  // `Date.now() - startedAt` reads 29999 on some boots (timer quantisation, and
+  // `Date.now` is not the clock the timer counts on). `decideClusterBoot` then
+  // rightly refuses -- "probe returned after 29999 ms of a 30000 ms dwell" is an
+  // inadmissible silence -- and the installer HALTS for a keypress that nobody
+  // is there to give. MEASURED run 36832486494: the WP11 install heard nothing in
+  // exactly 30000 ms and bootstrapped, scenario 4's baseline install heard
+  // nothing in 29999 ms and sat at that prompt for the full 1,800,000 ms. The
+  // admissibility check is correct and stays strict; it is this loop's job to
+  // hand it a dwell that really elapsed. Bounded, so a sleeper that never
+  // advances the clock falls through to the refusal instead of spinning.
+  for (let attempt = 0; attempt < MAX_DWELL_TOP_UPS && elapsed() < dwellMs; attempt += 1) {
+    await options.sleep(Math.max(1, dwellMs - elapsed()));
   }
   const elapsedMs = elapsed();
   const found = [...advertisements.values()];
