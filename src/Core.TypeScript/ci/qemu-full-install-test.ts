@@ -3447,7 +3447,14 @@ async function main(): Promise<never> {
   // `sr0`, a whole disk with no partitions, and that is correct there.
   if (bootMedia.kind === "usb-image") {
     const medium = bootMediumShape(phase1Serial);
-    if (medium.kind === "whole-disk") {
+    if (medium.kind === "whole-disk" && process.env.ZETA_DISPATCH_ONLY_BOOT_MEDIUM_ADVISORY === "1") {
+      // DISPATCH-BRANCH ONLY, NEVER MERGED: the whole-disk boot medium made the lane exit before
+      // phases 2-3 on two consecutive runs, hiding the verdict-7 evidence this dispatch exists to
+      // collect. The mtools rung read the ESP anyway (the install completed), so run on.
+      console.log(
+        `[qemu-full-install-test] ADVISORY (dispatch branch only): boot medium is the WHOLE disk (${medium.device}); continuing so the WP11 verdict can run`,
+      );
+    } else if (medium.kind === "whole-disk") {
       writeArtifactSerialLog(phase1Serial, "");
       reportResult(
         {

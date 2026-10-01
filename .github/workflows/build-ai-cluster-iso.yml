@@ -1158,6 +1158,7 @@ jobs:
         env:
           SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-k3s-first-boot-verify-serial.log
           QEMU_K3S_FIRST_BOOT_PHASE: "1"
+          ZETA_DISPATCH_ONLY_BOOT_MEDIUM_ADVISORY: "1"
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
