@@ -23,22 +23,50 @@ spec:
       valuesObject:
         global:
           ha: { enabled: false }   # bump once multi-control-plane
+        # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT). Every dapr control-plane
+        # component renders `initialDelaySeconds: 180, periodSeconds: 10,
+        # failureThreshold: 5` and the chart templates expose NO timeoutSeconds, so a
+        # RUNNING pod is killed after (5-1)*10+1 = 41s of slow /healthz answers. The
+        # constrained first-boot replica (run 36685251210, 4 vCPU) logged kubelet kills
+        # of dapr-operator, dapr-sentry and a dapr-scheduler-server replica. The one
+        # lever the chart gives is the threshold: 12 -> (12-1)*10+1 = 111s. The 180s
+        # startup delay is the chart's own and is left alone.
         dapr_placement:
           replicaCount: 1
           resources:
             requests: { cpu: 10m, memory: 64Mi }
+          livenessProbe:
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 12
         dapr_operator:
           resources:
             requests: { cpu: 25m, memory: 96Mi }
+          livenessProbe:
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 12
         dapr_sentry:
           resources:
             requests: { cpu: 10m, memory: 64Mi }
+          livenessProbe:
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 12
         dapr_sidecar_injector:
           resources:
             requests: { cpu: 10m, memory: 64Mi }
+          livenessProbe:
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 12
         dapr_scheduler:
           resources:
             requests: { cpu: 10m, memory: 128Mi }
+          livenessProbe:
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            failureThreshold: 12
         # Actors persistence: configure a Redis/CockroachDB state
         # store via a Dapr Component once those land. Example:
         # configuration:

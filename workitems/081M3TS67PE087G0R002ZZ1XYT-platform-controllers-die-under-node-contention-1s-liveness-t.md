@@ -89,3 +89,17 @@ the main container), keda/NFD already priced.
 
 Not touched: gitlab's snapshot row is main's own (14 workloads / 2445m now render against a
 declared 2375m) -- left for its owner to re-measure; the snapshot here keeps main's gitlab entry.
+
+## Third change: dapr's liveness (the kills the first change missed)
+
+Counting kubelet `failed liveness probe, will be restarted` events by container in the 2026-09-30
+constrained run (run 36685251210) after the first change was written showed dapr-operator,
+dapr-sentry and a dapr-scheduler-server replica killed -- all rendered with the chart's
+`initialDelaySeconds: 180, periodSeconds: 10, failureThreshold: 5` and NO `timeoutSeconds` in the
+chart templates, so a running pod died after (5-1)*10+1 = 41s of slow answers. The one lever is
+the threshold: 12 -> 111s, set on all five components (operator, sentry, sidecar-injector, placement,
+scheduler). Five new `STALL_TOLERANCE_FLOORS` entries; red against the pre-change tree with exactly
+5 violations. The same event count also names two containers whose probes are hardcoded in the
+spire charts (spire-controller-manager, spiffe-csi node-driver-registrar: 12 and 11 kills) -- no values
+coordinate exists, so the requests priced in the second change are the only lever available here.
+

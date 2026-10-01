@@ -356,13 +356,18 @@ export interface StallToleranceFloor {
   readonly why: string;
 }
 
-const STALL_WIDENED = "081M3TS67PE087G0R002ZZ1XYT: widened from the chart default (21s) via values";
+const STALL_WIDENED = "081M3TS67PE087G0R002ZZ1XYT: widened from the chart default via values";
 
 export const STALL_TOLERANCE_FLOORS: readonly StallToleranceFloor[] = [
   { app: "argocd", container: "server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "argocd", container: "repo-server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "cert-manager", container: "cert-manager-controller", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "cert-manager", container: "cert-manager-webhook", minStallToleranceSeconds: 60, why: STALL_WIDENED },
+  { app: "dapr", container: "dapr-operator", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "dapr", container: "dapr-placement-server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "dapr", container: "dapr-scheduler-server", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "dapr", container: "dapr-sentry", minStallToleranceSeconds: 100, why: STALL_WIDENED },
+  { app: "dapr", container: "dapr-sidecar-injector", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "headlamp", container: "headlamp", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "headscale", container: "headscale", minStallToleranceSeconds: 100, why: STALL_WIDENED },
   { app: "node-feature-discovery", container: "gc", minStallToleranceSeconds: 100, why: STALL_WIDENED },
