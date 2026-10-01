@@ -32,6 +32,9 @@ spec:
   valuesContent: |-
     crds:
       enabled: true
+    # EQUAL to k8s/applications/cert-manager/Application.yaml (shared Helm release); see its note.
+    global:
+      priorityClassName: system-cluster-critical
     replicaCount: 1
     # LIVENESS STALL TOLERANCE (081M3TS67PE087G0R002ZZ1XYT) -- EQUAL to
     # k8s/applications/cert-manager/Application.yaml, which adopts this release.

@@ -15,6 +15,11 @@ spec:
   # DEPARTURE FROM THE TEMPLATE (3): one node today. See Application.yaml "SIZING".
   # The ledger row `full-ai-cluster/postgres-shared/postgres` carries `pods: 1` to match.
   instances: 1
+  # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (no apply-order hazard). This is the
+  # owner's general-purpose database, so under node pressure the scheduler preempts for it and the
+  # kubelet declines to evict it before any optional workload. A departure from
+  # examples/cnpg-postgres-ha.yaml, which names no class. Pinned by cluster/essential-priority.test.ts.
+  priorityClassName: system-cluster-critical
   # The SAME image as temporal-postgres and the template: one PostgreSQL major for every
   # CNPG consumer. `minimal` has no Barman binaries -- backup runs in the plugin's sidecar
   # (cnpg-barman-cloud/Application.yaml says why that matters).

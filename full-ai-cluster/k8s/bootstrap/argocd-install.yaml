@@ -48,6 +48,8 @@ spec:
   valuesContent: |-
     global:
       domain: argocd.zeta.local
+      # EQUAL to k8s/applications/argocd/Application.yaml (shared Helm release); see its note.
+      priorityClassName: system-cluster-critical
     server:
       service:
         type: ClusterIP   # ingress lands separately

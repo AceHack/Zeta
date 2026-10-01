@@ -497,6 +497,12 @@ spec:
         # `gitlab` chart (so `gitlab.<name>.minReplicas`); registry nests under `hpa`.
         # Falsifier: cluster/gitlab-runner-bringup.test.ts (h).
         gitlab:
+          gitaly:
+            # ESSENTIAL TIER: `system-cluster-critical`. This StatefulSet holds the only copy of
+            # every repository GitLab hosts, so under node pressure the scheduler preempts for it and the kubelet declines to
+            # evict it before any optional workload. Built-in class: no apply-order hazard.
+            # Pinned by cluster/essential-priority.test.ts.
+            priorityClassName: system-cluster-critical
           webservice: { minReplicas: 1, maxReplicas: 2 }
           sidekiq: { minReplicas: 1, maxReplicas: 2 }
           gitlab-shell:
@@ -584,6 +590,7 @@ spec:
           # to failureThreshold 30 -> 30+29*10=320s; the chart's own liveness (80s /
           # 55s) resumes once startup succeeds.
           primary:
+            priorityClassName: system-cluster-critical   # essential tier (gitaly's note, above): GitLab's database
             startupProbe:
               enabled: true
               failureThreshold: 30
@@ -613,6 +620,7 @@ spec:
           # periodSeconds 10, failureThreshold 30 -> startup kill budget 20+29*10=310s;
           # the chart's own 40s liveness resumes once startup succeeds.
           master:
+            priorityClassName: system-cluster-critical   # essential tier (gitaly's note, above): queues, sessions, cache
             # REDIS RENDERED BESTEFFORT: both containers (redis, exporter) shipped `resources: {}`,
             # so the pod requested nothing and was the first thing the kubelet evicts under node
             # pressure. GitLab keeps its Sidekiq queues, sessions and cache here -- an evicted

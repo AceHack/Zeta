@@ -34,11 +34,19 @@ spec:
         resources:
           requests: { cpu: 25m, memory: 96Mi }
         replicaCount: 1
+        # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (it exists on every
+        # substrate, so there is no apply-order hazard) that outranks the default priority 0
+        # every optional app runs at. Under node pressure the scheduler preempts for, and the
+        # kubelet declines to evict, external-secrets (all three Deployments; the webhook gates every ExternalSecret) before any optional workload.
+        # Pinned by cluster/essential-priority.test.ts.
+        priorityClassName: system-cluster-critical
         webhook:
+          priorityClassName: system-cluster-critical
           replicaCount: 1
           resources:
             requests: { cpu: 10m, memory: 48Mi }
         certController:
+          priorityClassName: system-cluster-critical
           replicaCount: 1
           resources:
             requests: { cpu: 10m, memory: 48Mi }
