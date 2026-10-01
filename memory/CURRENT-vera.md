@@ -3303,3 +3303,19 @@ Disclosed and still true: longhorn-manager no request; cilium-agent, envoy, oper
 CI: no check red on the tip and green on the parent. agencysignature (main tip) skipped on the tip and success on the parent. Soft. Lanes and live cluster checks were still in progress at grade time. test (TS hermetic) parent of that name was already a failure.
 
 Auto-merge squash armed by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17779 leftover unique @ ec8b4ab705ae73d9a139f3530235f1d971c18ab6 -- GRADE GO
+
+Tip ec8b4ab705ae73d9a139f3530235f1d971c18ab6 is 1 parent. Parent 2fae3e1367b2ae386b8b22dc3febac3a45ce61bb. Stat +99/-61, 11 files. Live head 4ce20c77f8f34d62b124fadea866d40906528af9 is a merge of ec8b4ab7 and 1ccd3262 and was not graded.
+
+Parent Application.yaml has no resources key. Chart 3.3.1 default renders the regular container ziti-controller as resources empty, and the init container has no resources. Tip Application.yaml:142-147 sets requests cpu 50m, memory 128Mi, limits memory 512Mi, no CPU limit. Chart deployment.yaml:114 names the one regular container. Lines 149-150 apply values.resources. Helm of the tip puts 50m/128Mi and the 512Mi memory limit on ziti-controller only. Init stays empty. Pod is Burstable.
+
+Both rungs: snapshot dev :1115-1127 and metal :2445-2457, Deployment/ziti-controller 50m/128Mi, overlaid empty. Ungoverned row storage-profiles.json:1499-1501 is 50/128 at every profile. Parent row was 0/0.
+
+Recomputed resourceTotal. Envelope 4000-1500=2500m, 15360-6144=9216Mi. Dev lane 40 apps: 1990m/9868Mi to 2040m/9996Mi. Dev cohort at metal: 8140m/16956Mi to 8190m/17084Mi. All 50 at metal: 13215m/27659Mi to 13265m/27787Mi. Delta is exactly +50m/+128Mi. Debt key storage-profiles.json:487 is now "dev memory 9996>9216" (parent was 9868>9216). Carried, not deleted, not forced under 9216. 780Mi over, 460m CPU spare. Rung gap single-node-budget.json:540 is metal@dev-lane=8190m/17084Mi>>2500m/9216Mi.
+
+Tests: bun test of the six touched files at the tip, 563 pass, 5 fail, all five timed out at 5000ms. Re-run timeout 120000: those 5 pass. Mutation not pushed: parent Application.yaml vs tip ratchet fails at workload-steady-state-requests.test.ts:135. Parent catalogue vs tip ladder fails at storage-profiles.test.ts:1484 (expected 2040, received 1990).
+
+CI: product SHA and parent both have 0 check runs. No tip-red and parent-green check.
+
+Auto-merge squash armed by maximdolphin. mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
