@@ -1,0 +1,12 @@
+{
+  "pr_number": 17830,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17830-fix-installer-the-iso-pin-was-discarded-by-the-module-system-so-the-whole-disk-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T16:00:08.300Z",
+  "schema_version": "v1",
+  "commit_sha": "e59692aded0fb4a9c26eaf68716aa90aeadff4e7",
+  "title": "fix(installer): the /iso pin was discarded by the module system, so the whole disk still won the race",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T15:59:05Z",
+  "head_ref": "fix/installer-iso-pin-was-inert"
+}

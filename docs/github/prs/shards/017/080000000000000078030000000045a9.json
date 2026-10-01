@@ -1,0 +1,12 @@
+{
+  "pr_number": 17833,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17833-fix-k3s-widen-leader-election-windows-so-a-slow-disk-is-a-delay-not-a-control-pl.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T16:27:30.288Z",
+  "schema_version": "v1",
+  "commit_sha": "2adb5611fd36aa914716ec914794e9ce90e905bf",
+  "title": "fix(k3s): widen leader-election windows so a slow disk is a delay, not a control-plane exit",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T16:26:46Z",
+  "head_ref": "fix/k3s-leader-elect"
+}
