@@ -1,0 +1,12 @@
+{
+  "pr_number": 17771,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17771-fix-cluster-platform-controllers-killed-by-21s-of-contention-widen-liveness-stal.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:35:56.975Z",
+  "schema_version": "v1",
+  "commit_sha": "84fdf7e6e2b1a02bab39771698ad818afb96a85e",
+  "title": "fix(cluster): platform controllers killed by 21s of contention - widen liveness stall tolerance and gate it",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:35:12Z",
+  "head_ref": "fix/platform-controllers-liveness-stall-tolerance"
+}

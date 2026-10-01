@@ -1,0 +1,12 @@
+{
+  "pr_number": 17775,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17775-fix-vllm-make-the-deferred-deployment-enable-able-without-a-hung-rollout-or-prem.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T04:46:41.790Z",
+  "schema_version": "v1",
+  "commit_sha": "8df54dbd00ab98d49d1eab41301da1f84112f355",
+  "title": "fix(vllm): make the deferred Deployment enable-able without a hung rollout or premature route",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T04:45:57Z",
+  "head_ref": "fix/vllm-startup-readiness"
+}
