@@ -47,6 +47,7 @@ import { join, resolve } from "node:path";
 import { parse, parseAllDocuments, stringify } from "yaml";
 import { bootstrapKindClusterInProcess, defaultKindCiliumConfigPath } from "./harness/bootstrap.ts";
 import { buildLaneTreeForProfile } from "./argocd-health-test.ts";
+import { liveDevClusterPorts } from "./dev-cluster/deps.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 export const GITLAB_APPLICATION_PATH = "full-ai-cluster/k8s/applications/gitlab/Application.yaml";
@@ -479,31 +480,43 @@ async function pollUntil(
   }
 }
 
-/** A `kubectl proxy` to the apiserver: reaches the webservice Service with arbitrary methods and headers, no Gateway, no DNS. */
-class ApiProxy {
+/**
+ * `kubectl port-forward` to the webservice Service (Workhorse, :8181): arbitrary methods AND headers, no
+ * Gateway, no DNS, so (b)/(d)/(e) do not depend on (f).
+ *
+ * NOT `kubectl proxy`. The first run used it and measured the defect: the apiserver consumes the
+ * `Authorization` header for ITS OWN authentication and does not forward it, so GitLab saw an anonymous
+ * request -- `POST /oauth/token` returned a token and the next call, carrying it, was `401`. A port-forward
+ * is a plain TCP tunnel to the pod and forwards every header untouched.
+ */
+class ApiForward {
   private proc: ReturnType<typeof Bun.spawn> | null = null;
   private port = 0;
 
-  async start(): Promise<void> {
+  private async open(): Promise<void> {
+    this.proc?.kill();
     this.port = 18000 + Math.floor(Math.random() * 1000);
-    this.proc = Bun.spawn(["kubectl", "proxy", `--port=${String(this.port)}`, "--address=127.0.0.1"], { stdout: "ignore", stderr: "ignore" });
-    const up = await pollUntil(Date.now() + 30_000, 500, async () => {
+    this.proc = Bun.spawn(
+      ["kubectl", "port-forward", "-n", GITLAB_NAMESPACE, "svc/gitlab-webservice-default", `${String(this.port)}:8181`, "--address", "127.0.0.1"],
+      { stdout: "ignore", stderr: "ignore" },
+    );
+    const up = await pollUntil(Date.now() + 60_000, 1000, async () => {
       try {
-        const r = await fetch(`http://127.0.0.1:${String(this.port)}/version`);
-        return { done: r.ok, detail: `status ${String(r.status)}` };
+        const r = await fetch(`http://127.0.0.1:${String(this.port)}/users/sign_in`, { signal: AbortSignal.timeout(10_000) });
+        return { done: r.status === 200, detail: `status ${String(r.status)}` };
       } catch (e) {
         return { done: false, detail: String(e) };
       }
     });
-    if (!up.done) throw new Error(`kubectl proxy never answered: ${up.detail}`);
+    if (!up.done) throw new Error(`port-forward to gitlab-webservice-default never answered: ${up.detail}`);
+  }
+
+  async start(): Promise<void> {
+    await this.open();
   }
 
   stop(): void {
     this.proc?.kill();
-  }
-
-  url(path: string): string {
-    return `http://127.0.0.1:${String(this.port)}/api/v1/namespaces/${GITLAB_NAMESPACE}/services/gitlab-webservice-default:8181/proxy${path}`;
   }
 
   async request(method: string, path: string, opts: { token?: string; form?: Record<string, string>; json?: unknown } = {}): Promise<{ status: number; text: string; json: unknown }> {
@@ -517,7 +530,16 @@ class ApiProxy {
       headers["Content-Type"] = "application/json";
       body = JSON.stringify(opts.json);
     }
-    const r = await fetch(this.url(path), { method, headers, ...(body === undefined ? {} : { body }), signal: AbortSignal.timeout(60_000) });
+    const send = (): Promise<Response> =>
+      fetch(`http://127.0.0.1:${String(this.port)}${path}`, { method, headers, ...(body === undefined ? {} : { body }), signal: AbortSignal.timeout(60_000) });
+    let r: Response;
+    try {
+      r = await send();
+    } catch {
+      // A port-forward dies when the pod behind it is replaced; re-open once and retry.
+      await this.open();
+      r = await send();
+    }
     const text = await r.text();
     let json: unknown = null;
     try {
@@ -554,6 +576,82 @@ function snapshotLine(): string {
     .join(" ");
 }
 
+/** metrics-server chart, pinned to the app version k3s vendors (`k8s/bootstrap/k3s-metrics-server.yaml`: v0.9.0). */
+export const METRICS_SERVER_CHART = { repo: "https://kubernetes-sigs.github.io/metrics-server/", chart: "metrics-server/metrics-server", version: "3.14.0" } as const;
+
+/**
+ * The resource-metrics API a k3s node ships and a kind node does not.
+ *
+ * GitLab's chart renders HorizontalPodAutoscalers for webservice, sidekiq, registry and gitlab-shell. With no
+ * `metrics.k8s.io` backend each reports `ScalingActive=False` (FailedGetResourceMetric), which ArgoCD reads as a
+ * DEGRADED resource -- and a Degraded resource in sync-wave 0 holds back every later wave. That is the runner
+ * token Job (wave 5) and the runner Deployment (wave 10), so without this the runner is never even created.
+ * Metal does not have the problem: k3s packages metrics-server (`k8s/bootstrap/k3s-metrics-server.yaml`). The
+ * kind lane is the substrate that was missing it, and `--kubelet-insecure-tls` is the kind-only departure
+ * (kubelet serving certs on kind are self-signed).
+ */
+function installMetricsApi(): string {
+  const ports = liveDevClusterPorts({ clusterShape: "kind-in-docker" });
+  if (!ports.packages.releaseInstalled("kube-system", "metrics-server")) {
+    ports.packages.addRepo("metrics-server", METRICS_SERVER_CHART.repo);
+    ports.packages.updateRepo("metrics-server");
+    ports.packages.install({
+      release: "metrics-server",
+      chart: METRICS_SERVER_CHART.chart,
+      version: METRICS_SERVER_CHART.version,
+      namespace: "kube-system",
+      setValues: ["args[0]=--kubelet-insecure-tls"],
+      wait: true,
+    });
+  }
+  const avail = kubectl(["wait", "--for=condition=Available", "--timeout=180s", "apiservice/v1beta1.metrics.k8s.io"]);
+  return avail.code === 0 ? "metrics.k8s.io Available (metrics-server, as k3s ships it on metal)" : `metrics.k8s.io NOT Available: ${avail.stderr.trim().slice(0, 160)}`;
+}
+
+/** What ArgoCD thinks of the gitlab Application, in enough detail to name the resource that holds a sync. */
+export function describeArgoApplication(app: ArgoApp | null): readonly string[] {
+  if (app === null) return ["application gitlab: <unreadable>"];
+  const out: string[] = [`application gitlab: sync=${app.status?.sync?.status ?? "?"} health=${app.status?.health?.status ?? "?"}`];
+  const op = app.status?.operationState;
+  if (op !== undefined) out.push(`  operation: phase=${op.phase ?? "?"} message=${(op.message ?? "").slice(0, 400)}`);
+  for (const c of app.status?.conditions ?? []) out.push(`  condition ${c.type}: ${(c.message ?? "").slice(0, 400)}`);
+  for (const r of op?.syncResult?.resources ?? []) {
+    if (r.status !== "Synced" || (r.message ?? "") !== "" && !/created|configured|unchanged/.test(r.message ?? "")) {
+      out.push(`  syncResult ${r.kind}/${r.name}: ${r.status ?? "?"} ${r.hookPhase ?? ""} ${(r.message ?? "").slice(0, 300)}`);
+    }
+  }
+  for (const r of app.status?.resources ?? []) {
+    const healthy = (r.health?.status ?? "Healthy") === "Healthy";
+    if (r.status !== "Synced" || !healthy) {
+      out.push(`  resource ${r.kind}/${r.name}: sync=${r.status ?? "-"} health=${r.health?.status ?? "-"} ${(r.health?.message ?? "").slice(0, 300)}`);
+    }
+  }
+  return out;
+}
+
+export interface ArgoApp {
+  readonly status?: {
+    readonly sync?: { readonly status?: string };
+    readonly health?: { readonly status?: string };
+    readonly conditions?: readonly { readonly type: string; readonly message?: string }[];
+    readonly operationState?: {
+      readonly phase?: string;
+      readonly message?: string;
+      readonly syncResult?: { readonly resources?: readonly { readonly kind?: string; readonly name?: string; readonly status?: string; readonly hookPhase?: string; readonly message?: string }[] };
+    };
+    readonly resources?: readonly { readonly kind?: string; readonly name?: string; readonly status?: string; readonly health?: { readonly status?: string; readonly message?: string } }[];
+  };
+}
+
+function dumpArgoState(): void {
+  const app = kubectlJson<ArgoApp>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
+  for (const line of describeArgoApplication(app)) log(line);
+  const hpas = kubectlJson<{ items: { metadata: { name: string }; status?: { conditions?: { type: string; status: string; reason?: string; message?: string }[] } }[] }>(["get", "hpa", "-n", GITLAB_NAMESPACE]);
+  for (const h of hpas?.items ?? []) {
+    log(`  hpa ${h.metadata.name}: ${(h.status?.conditions ?? []).map((c) => `${c.type}=${c.status}${c.status === "True" ? "" : `(${c.reason ?? ""})`}`).join(" ")}`);
+  }
+}
+
 async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> {
   const address = kindPoolLanAddress(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
   const patch = installTimeGitlabPatch(readFileSync(join(REPO_ROOT, INSTALL_TIME_LB_APPLICATION_PATH), "utf8"), address);
@@ -576,13 +674,16 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
     kubectl(["config", "use-context", `kind-${opts.clusterName}`]);
   }
 
+  const metrics = installMetricsApi();
+  log(metrics);
+
   log("applying the gitlab Application (committed manifest + install-time address pin) ...");
   const applied = kubectl(["apply", "-n", "argocd", "-f", "-"], { input: application });
   if (applied.code !== 0) {
     report.record("a0-lane-up", "failed", `could not apply the gitlab Application: ${applied.stderr.trim().slice(0, 300)}`);
     return;
   }
-  report.record("a0-lane-up", "passed", `cluster ${opts.clusterName} up; gitlab Application applied with LAN address ${address}`);
+  report.record("a0-lane-up", "passed", `cluster ${opts.clusterName} up; ${metrics}; gitlab Application applied with LAN address ${address}`);
 
   const appliedAt = Date.now();
   const readyDeadline = appliedAt + opts.readySec * 1000;
@@ -613,7 +714,9 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
         log(`${id} PASSED after ${String(Math.round((Date.now() - appliedAt) / 1000))}s: ${r.detail}`);
       }
     }
-    if (tick++ % 4 === 0) log(`waiting on ${[...pending.keys()].join(",") || "nothing"} | ${snapshotLine()}`);
+    if (tick % 4 === 0) log(`waiting on ${[...pending.keys()].join(",") || "nothing"} | ${snapshotLine()}`);
+    if (tick % 16 === 8) dumpArgoState();
+    tick++;
     return { done: pending.size === 0, detail: "" };
   });
   for (const [id] of pending) report.record(id, "failed", `not Ready within ${String(opts.readySec)}s: ${lastDetail.get(id) ?? "no observation"}`);
@@ -633,13 +736,24 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
   }
 
   // ---- shared API proxy -----------------------------------------------------------------------
-  const proxy = new ApiProxy();
+  const proxy = new ApiForward();
   let accessToken: string | null = null;
   try {
-    await proxy.start();
+    // Only worth opening when the webservice is Ready: a forward to a Service with no ready pod would
+    // throw here and take (f2)/(f3), which do not need it, down with it.
+    let forwardError: string | null = null;
+    if (report.statusOf("a1-webservice-ready") === "passed") {
+      try {
+        await proxy.start();
+      } catch (e) {
+        forwardError = e instanceof Error ? e.message : String(e);
+        log(`the API forward did not open: ${forwardError}`);
+      }
+    }
+    if (forwardError !== null) report.record("b1-root-login", "failed", `no route to the GitLab API from the runner host: ${forwardError}`);
 
     // ---- (b) root login ----------------------------------------------------------------------
-    if (report.blockedBy("b1-root-login") === null) {
+    if (report.statusOf("b1-root-login") === "unrecorded" && report.blockedBy("b1-root-login") === null) {
       const secret = kubectlJson<{ data?: Record<string, string> }>(["get", "secret", ROOT_PASSWORD_SECRET, "-n", GITLAB_NAMESPACE]);
       const pw = secret?.data?.["password"] === undefined ? null : Buffer.from(secret.data["password"], "base64").toString("utf8");
       if (pw === null) {
@@ -668,6 +782,7 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
         return { done: jobComplete(job), detail: `Job ${RUNNER_TOKEN_JOB} succeeded=${String(job.status?.succeeded ?? 0)} failed=${String(job.status?.failed ?? 0)}` };
       });
       report.record("c1-token-job-complete", r.done ? "passed" : "failed", r.detail);
+      if (!r.done) dumpArgoState();
     }
     if (report.blockedBy("c2-runner-secret-token") === null) {
       const secret = kubectlJson<{ data?: Record<string, string> }>(["get", "secret", RUNNER_SECRET, "-n", GITLAB_NAMESPACE]);
@@ -805,17 +920,19 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
   // The runner Deployment (wave 10) and the token Job (wave 5) only exist after wave 0 is Healthy, so
   // judging the Application any earlier would read a sync that is simply not finished.
   {
-    const app = kubectlJson<{ status?: { sync?: { status?: string }; health?: { status?: string } } }>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
+    dumpArgoState();
+    const app = kubectlJson<ArgoApp>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
     const sync = app?.status?.sync?.status ?? "unreadable";
     const health = app?.status?.health?.status ?? "unreadable";
-    report.record("a6-argocd-application", sync === "Synced" && health === "Healthy" ? "passed" : "failed", `sync=${sync} health=${health}`);
+    const held = describeArgoApplication(app).filter((l) => l.startsWith("  resource ")).slice(0, 3).map((l) => l.trim()).join(" ; ");
+    report.record("a6-argocd-application", sync === "Synced" && health === "Healthy" ? "passed" : "failed", `sync=${sync} health=${health}${held === "" ? "" : ` | ${held}`}`);
   }
 }
 
 // ------------------------------------------------------------------ CLI ---
 
-function parseArgs(argv: readonly string[]): { mode: "run" | "dry-run"; opts: ProofOptions } | string {
-  let mode: "run" | "dry-run" | null = null;
+function parseArgs(argv: readonly string[]): { mode: "run" | "dry-run" | "diagnose"; opts: ProofOptions } | string {
+  let mode: "run" | "dry-run" | "diagnose" | null = null;
   const o = {
     clusterName: "zeta-ci-gitlab",
     gitRef: "main",
@@ -836,6 +953,7 @@ function parseArgs(argv: readonly string[]): { mode: "run" | "dry-run"; opts: Pr
     try {
       if (a === "--run") mode = "run";
       else if (a === "--dry-run") mode = "dry-run";
+      else if (a === "--diagnose") mode = "diagnose";
       else if (a === "--existing") o.existing = true;
       else if (a === "--cluster-name") o.clusterName = v();
       else if (a === "--git-ref") o.gitRef = v();
@@ -849,7 +967,7 @@ function parseArgs(argv: readonly string[]): { mode: "run" | "dry-run"; opts: Pr
       return e instanceof Error ? e.message : String(e);
     }
   }
-  if (mode === null) return "usage: gitlab-live-proof.ts --run|--dry-run [--cluster-name N] [--git-ref REF] [--existing] [--ready-sec N] [--phase-sec N] [--soak-sec N] [--report FILE] [--summary FILE]";
+  if (mode === null) return "usage: gitlab-live-proof.ts --run|--dry-run|--diagnose [--cluster-name N] [--git-ref REF] [--existing] [--ready-sec N] [--phase-sec N] [--soak-sec N] [--report FILE] [--summary FILE]";
   for (const [k, n] of [["--ready-sec", o.readySec], ["--phase-sec", o.phaseSec], ["--soak-sec", o.soakSec]] as const) {
     if (!Number.isFinite(n) || n < 0) return `${k} must be a non-negative number`;
   }
@@ -861,6 +979,11 @@ if (import.meta.main) {
   if (typeof parsed === "string") {
     console.error(parsed);
     process.exit(2);
+  }
+  if (parsed.mode === "diagnose") {
+    // Read-only: what ArgoCD thinks of the gitlab Application and what every HPA reports. For a failed lane.
+    dumpArgoState();
+    process.exit(0);
   }
   if (parsed.mode === "dry-run") {
     const address = kindPoolLanAddress(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));

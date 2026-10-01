@@ -148,9 +148,9 @@ jobs:
         if: always()
         run: |
           kubectl -n argocd get applications.argoproj.io -o wide || true
-          kubectl -n argocd get applications.argoproj.io gitlab -o json 2>/dev/null \
-            | jq -r '"conditions: \((.status.conditions // []) | map(.type + \": \" + .message) | join(\" ~ \"))", (.status.resources // [] | .[] | select((.status != "Synced") or ((.health.status // "Healthy") != "Healthy")) | "  \(.kind)/\(.name): sync=\(.status // "-") health=\(.health.status // "-") \(.health.message // "")")' \
-            || true
+          bun src/Core.TypeScript/cluster/gitlab-live-proof.ts --diagnose || true
+          kubectl get apiservice v1beta1.metrics.k8s.io -o wide || true
+          kubectl -n gitlab get hpa || true
 
       - name: GitLab namespace -- pods, events, describe, logs of everything not Ready or restarted
         if: always()
