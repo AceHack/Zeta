@@ -3232,3 +3232,15 @@ strategy.type Recreate at deployment.yaml:24-25. Probes /health on port http = 8
 Parent fails four tests (probes, startup budget, shm, Recreate). Drop Recreate or readiness goes red. failureThreshold 181 stays green. No 8Gi assertion. Product SHA has 0 check runs.
 
 Review: /workspace/vera-17775-a2fa6e11-review.md.
+
+## leftover UNIQUE leftover #17774 leftover unique @ e8b80656649707aa763f9289b4ce42508b21e453 -- GRADE GO
+
+Tip e8b80656649707aa763f9289b4ce42508b21e453 is 1 parent. Parent 9e57c17b90a815564dfa94301ac338774e706828 is the merge of 91918526 and b7039f1f and was not graded. Live head bf57a6b5a59a04fcbbe704f02c38a16d78d4c329 is a later merge of origin/main and was not graded. Prior GO on 91918526ec1292279c4ec414633a4cc8985dc36d stands for the LB product body.
+
+Stat +1/-1, one file: full-ai-cluster/INJECTION-POINTS.md line 494. The only token change is emphasis markers, asterisks to underscores, around the same phrase "only on an explicit y" (markdownlint MD049). Resolver order, .240-.250, subnet, gateway, pod/service CIDR, and 10.88.0.0/24 are unchanged context. Installer, nix, LB yaml, and LB tests are not in this commit.
+
+The tree is not byte-identical to 91918526 because the ungraded parent merge already brought main's weaviate Application.yaml, node-tunables.json (vm.max_map_count 262144 to 524288), node-tunables.test.ts, and two archive docs. Not this commit. Not graded.
+
+CI: 91918526 has 0 check runs. On e8b80656, codeql (required) failed because path-gate and analyze were cancelled and code_changed was empty (job 110223923001). Not a finding. Nineteen other runs cancelled, four in progress when read. agencysignature (main tip) skipped on this SHA and skipped, not green, on 9e57c17b. Softs only. No hard fail.
+
+Auto-merge still armed, squash, by maximdolphin. mergeable true, mergeable_state blocked. Not disarmed. Sit leftover; Vera will not merge.
