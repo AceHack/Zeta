@@ -1,0 +1,12 @@
+{
+  "pr_number": 17560,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17560-deps-bump-the-github-actions-minor-patch-group-across-1-directory-with-3-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T01:22:18.986Z",
+  "schema_version": "v1",
+  "commit_sha": "20ead21c533ed105960beaa66ef92551a2b703d6",
+  "title": "deps: Bump the github-actions-minor-patch group across 1 directory with 3 updates",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T01:21:01Z",
+  "head_ref": "dependabot/github_actions/github-actions-minor-patch-97c20ee9f3"
+}
