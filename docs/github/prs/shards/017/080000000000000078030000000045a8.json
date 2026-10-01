@@ -1,0 +1,12 @@
+{
+  "pr_number": 17832,
+  "archive_path": "docs/history/pr-reviews/2026/10/01/PR-17832-docs-ops-wp11-unconverged-app-census-capacity-then-a-control-plane-that-dies-of-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-01T15:57:38.957Z",
+  "schema_version": "v1",
+  "commit_sha": "24b1d2d753e275c321c5af9d3bcf2c40173a814b",
+  "title": "docs(ops): WP11 unconverged-app census (capacity, then a control plane that dies of it)",
+  "state": "MERGED",
+  "merged_at": "2026-10-01T15:56:46Z",
+  "head_ref": "docs/wp11-unconverged-census"
+}
