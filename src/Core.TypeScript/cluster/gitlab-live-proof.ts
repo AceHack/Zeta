@@ -373,18 +373,51 @@ export function runnerOnline(runners: readonly ApiRunner[], description: string)
   return { online, detail: `runner ${description} id=${String(r.id)} status=${String(r.status)} type=${String(r.runner_type)} run_untagged=${String(r.run_untagged)} tags=${(r.tag_list ?? []).join(",")}` };
 }
 
-/** The pipeline file. NO `tags:` -- the first file anyone writes has none, and a tags-only runner leaves it Pending forever. */
+/**
+ * The pipeline file. NO `tags:` -- the first file anyone writes has none, and a tags-only runner leaves it Pending forever.
+ *
+ * NO `: ` (colon-space) INSIDE A PLAIN SCALAR. The first version had `- echo "zeta live proof: running in ..."`,
+ * which YAML reads as a one-key MAPPING (`echo "zeta live proof` => `running in ...`) -- still a list item, so a
+ * check that only asked "is `script` an array" passed it -- and GitLab refused the whole file: the pipeline
+ * `failed` with ZERO jobs (run 36860368378). `ciScriptProblems` is the check that would have caught it.
+ */
 export const PROOF_CI_YAML = [
   "# Written by gitlab-live-proof.ts. Deliberately NO `tags:` -- see PROOF_CI_YAML.",
   "stages: [test]",
   "zeta-live-proof:",
   "  stage: test",
   "  script:",
-  "    - echo \"zeta live proof: running in $(hostname)\"",
-  "    - cat /etc/os-release | head -n 2",
+  "    - echo \"zeta live proof is running in $(hostname)\"",
+  "    - head -n 2 /etc/os-release",
   "    - test -n \"$CI_JOB_ID\"",
   "",
 ].join("\n");
+
+/** What is wrong with a `.gitlab-ci.yml`, as GitLab would read it: every `script` entry must be a STRING, and a tagged job is not the untagged case. */
+export function ciScriptProblems(yamlText: string): readonly string[] {
+  const problems: string[] = [];
+  let doc: unknown;
+  try {
+    doc = parse(yamlText);
+  } catch (e) {
+    return [`not valid YAML: ${e instanceof Error ? e.message : String(e)}`];
+  }
+  if (doc === null || typeof doc !== "object") return ["the document is not a mapping"];
+  for (const [name, job] of Object.entries(doc as Record<string, unknown>)) {
+    if (name === "stages" || typeof job !== "object" || job === null) continue;
+    const j = job as Record<string, unknown>;
+    if (j["tags"] !== undefined) problems.push(`job ${name} carries tags`);
+    const script = j["script"];
+    if (!Array.isArray(script)) {
+      problems.push(`job ${name}: script is not a list`);
+      continue;
+    }
+    script.forEach((entry, i) => {
+      if (typeof entry !== "string") problems.push(`job ${name}: script[${String(i)}] is a ${Array.isArray(entry) ? "list" : typeof entry}, not a string (an unquoted \`: \` makes it a mapping)`);
+    });
+  }
+  return problems;
+}
 
 export type PipelineVerdict = "success" | "failed" | "pending";
 
@@ -814,10 +847,17 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
         if (res.status !== 200 || !Array.isArray(res.json)) return { done: false, detail: `GET /runners/all -> ${String(res.status)} ${res.text.slice(0, 160)}` };
         const list = res.json as ApiRunner[];
         const o = runnerOnline(list, RUNNER_DESCRIPTION);
-        if (o.online) runnerId = list.find((x) => x.description === RUNNER_DESCRIPTION)?.id ?? null;
-        return { done: o.online, detail: o.detail };
+        if (!o.online) return { done: false, detail: o.detail };
+        runnerId = list.find((x) => x.description === RUNNER_DESCRIPTION)?.id ?? null;
+        // The LIST endpoint omits run_untagged and tag_list; the single-runner endpoint carries them. An
+        // online runner that refuses untagged jobs is the failure #17737 fixed, and it reads as healthy.
+        const one = await proxy.request("GET", `/api/v4/runners/${String(runnerId)}`, { token });
+        const full = one.json as ApiRunner | null;
+        if (one.status !== 200 || full === null) return { done: false, detail: `${o.detail}; GET /runners/${String(runnerId)} -> ${String(one.status)}` };
+        const detail = runnerOnline([full], RUNNER_DESCRIPTION).detail;
+        return { done: true, detail: full.run_untagged === true ? detail : `${detail}; BUT it does not take untagged jobs` };
       });
-      report.record("d2-runner-api-online", r.done ? "passed" : "failed", r.detail);
+      report.record("d2-runner-api-online", r.done && r.detail.includes("run_untagged=true") ? "passed" : "failed", r.detail);
     }
 
     // ---- (e) pipeline ------------------------------------------------------------------------
@@ -849,7 +889,19 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
             const jobs = await proxy.request("GET", `/api/v4/projects/${String(projectId)}/pipelines/${String(p.id)}/jobs`, { token });
             lastJobs = Array.isArray(jobs.json) ? (jobs.json as { id: number; status: string; stuck?: boolean }[]).map((j) => `job ${String(j.id)}:${j.status}${j.stuck === true ? "(stuck)" : ""}`).join(",") : "";
             const v = pipelineVerdict(p.status);
-            if (v === "failed") return { done: true, detail: `pipeline ${String(p.id)} ended ${p.status}; ${lastJobs}` };
+            if (v === "failed") {
+              // Say WHY: GitLab's own account (yaml_errors / failure_reason) and the tail of every failed job.
+              const det = await proxy.request("GET", `/api/v4/projects/${String(projectId)}/pipelines/${String(p.id)}`, { token });
+              const d = det.json as { yaml_errors?: string; detailed_status?: { text?: string } } | null;
+              const why = `yaml_errors=${d?.yaml_errors ?? "none"} status=${d?.detailed_status?.text ?? "?"}`;
+              const traces: string[] = [];
+              for (const j of Array.isArray(jobs.json) ? (jobs.json as { id: number; status: string; failure_reason?: string }[]) : []) {
+                if (j.status !== "failed") continue;
+                const t = await proxy.request("GET", `/api/v4/projects/${String(projectId)}/jobs/${String(j.id)}/trace`, { token });
+                traces.push(`job ${String(j.id)} failure_reason=${j.failure_reason ?? "?"}: ${t.text.split("\n").filter((l) => l.trim() !== "").slice(-6).join(" / ").slice(0, 600)}`);
+              }
+              return { done: true, detail: `pipeline ${String(p.id)} ended ${p.status}; ${why}; ${lastJobs}${traces.length === 0 ? "" : ` | ${traces.join(" | ")}`}` };
+            }
             return { done: v === "success", detail: `pipeline ${String(p.id)} ${p.status}; ${lastJobs}` };
           });
           const passed = pipe.done && /pipeline \d+ success/.test(pipe.detail);

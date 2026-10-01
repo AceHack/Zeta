@@ -175,6 +175,15 @@ jobs:
               done || true
           echo "=== runner token Job log (token lines filtered) ==="
           kubectl -n gitlab logs job/gitlab-runner-token --tail=60 | grep -v -E 'glrt-' || true
+          echo "=== runner manager log (token lines filtered) ==="
+          kubectl -n gitlab logs deploy/gitlab-gitlab-runner --tail=150 | grep -v -E 'glrt-' || true
+          echo "=== CI job (executor) pods the runner created ==="
+          kubectl -n gitlab get pods -o wide | grep -E '^runner-' || echo "no runner-* executor pod exists"
+          for pod in $(kubectl -n gitlab get pods -o name | grep -E '/runner-' || true); do
+            echo "--- $pod"
+            kubectl -n gitlab describe "$pod" | tail -n 30 || true
+            kubectl -n gitlab logs "$pod" --all-containers=true --prefix=true --tail=60 | grep -v -E 'glrt-' || true
+          done
 
       - name: Cilium Gateway / LB-IPAM view
         if: always()

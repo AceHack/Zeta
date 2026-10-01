@@ -10,6 +10,8 @@ import { parse } from "yaml";
 import {
   buildGitlabLaneApplication,
   CHECKS,
+  ciScriptProblems,
+  describeArgoApplication,
   componentReadiness,
   COMPONENT_LABELS,
   gatewayProgrammedAt,
@@ -21,6 +23,7 @@ import {
   jsonMergePatch,
   KIND_LB_POOL_MANIFEST_PATH,
   kindPoolLanAddress,
+  METRICS_SERVER_CHART,
   PINNED_LEAVES,
   pipelineVerdict,
   PROOF_CI_YAML,
@@ -250,6 +253,19 @@ describe("the pipeline", () => {
     expect(Array.isArray(job["script"])).toBe(true);
   });
 
+  test("every script entry is a STRING -- the first live pipeline failed with zero jobs because one entry was a one-key mapping", () => {
+    expect(ciScriptProblems(PROOF_CI_YAML)).toEqual([]);
+    // The exact line that shipped in run 36860368378. It is a valid YAML list item (a mapping), so
+    // "script is an array" passed it while GitLab refused the file.
+    const broken = PROOF_CI_YAML.replace('echo "zeta live proof is running in $(hostname)"', 'echo "zeta live proof: running in $(hostname)"');
+    expect(broken).not.toBe(PROOF_CI_YAML);
+    const problems = ciScriptProblems(broken);
+    expect(problems.length).toBe(1);
+    expect(problems[0]).toContain("not a string");
+    expect(ciScriptProblems("job:\n  tags: [x]\n  script:\n    - echo hi\n")[0]).toContain("carries tags");
+    expect(ciScriptProblems("a: [")[0]).toContain("not valid YAML");
+  });
+
   test("only `success` is success; failed/canceled/skipped are failures; the rest is still pending", () => {
     expect(pipelineVerdict("success")).toBe("success");
     for (const s of ["failed", "canceled", "skipped"]) expect(pipelineVerdict(s)).toBe("failed");
@@ -281,6 +297,52 @@ describe("the Gateway", () => {
     expect(routeAccepted({})).toBe(false);
     expect(routeAccepted({ status: { parents: [{ conditions: [{ type: "Accepted", status: "True" }] }] } })).toBe(true);
     expect(routeAccepted({ status: { parents: [{ conditions: [{ type: "Accepted", status: "False" }] }] } })).toBe(false);
+  });
+});
+
+describe("the ArgoCD account of a held sync", () => {
+  test("the resource that holds the sync, the operation message and a failed HPA are all named", () => {
+    const lines = describeArgoApplication({
+      status: {
+        sync: { status: "OutOfSync" },
+        health: { status: "Degraded" },
+        operationState: {
+          phase: "Running",
+          message: "waiting for healthy state of apps/Deployment/gitlab-sidekiq-all-in-1-v2 and 2 more resources",
+          syncResult: { resources: [{ kind: "HorizontalPodAutoscaler", name: "gitlab-registry", status: "Synced", hookPhase: "Failed", message: "the HPA was unable to compute the replica count" }] },
+        },
+        resources: [{ kind: "Deployment", name: "gitlab-gitlab-runner", status: "OutOfSync" }],
+      },
+    }).join("\n");
+    expect(lines).toContain("waiting for healthy state");
+    expect(lines).toContain("HorizontalPodAutoscaler/gitlab-registry");
+    expect(lines).toContain("Deployment/gitlab-gitlab-runner");
+  });
+
+  test("an unreadable Application is reported as unreadable, not as healthy", () => {
+    expect(describeArgoApplication(null)[0]).toContain("unreadable");
+  });
+});
+
+describe("the substrate the lane must provide before GitLab is applied", () => {
+  const source = readFileSync(join(ROOT, "src/Core.TypeScript/cluster/gitlab-live-proof.ts"), "utf8");
+
+  test("the metrics API is installed BEFORE the gitlab Application is applied, and is the version k3s vendors", () => {
+    // Measured, run 36855715576: with no metrics.k8s.io the chart's HPAs read ScalingActive=False, ArgoCD
+    // calls that Degraded, and the wave-5 token Job + wave-10 runner Deployment are never created.
+    const install = source.indexOf("const metrics = installMetricsApi()");
+    const apply = source.indexOf('kubectl(["apply", "-n", "argocd", "-f", "-"]');
+    expect(install).toBeGreaterThan(0);
+    expect(apply).toBeGreaterThan(install);
+    const vendored = read("full-ai-cluster/k8s/bootstrap/k3s-metrics-server.yaml");
+    expect(vendored).toContain("mirrored-metrics-server:v0.9.0");
+    expect(METRICS_SERVER_CHART.version).toBe("3.14.0"); // chart 3.14.0 == app v0.9.0, the metal metrics-server
+  });
+
+  test("the GitLab chart really does render HPAs (so the dependency is real, not remembered)", () => {
+    const app = read(GITLAB_APPLICATION_PATH);
+    expect(app).toContain("minReplicas: 1");
+    expect(app).toContain("maxReplicas: 2");
   });
 });
 
