@@ -704,6 +704,21 @@ entry; the persist/restore code reads the manifest + iterates.
 
 ### The GHCR pull token is the first entry here that is BLOCKING something today
 
+> **STATUS 2026-10-01 -- NO LONGER BLOCKING; the exit below was taken.** An ANONYMOUS
+> pull (a token-less `ghcr.io/token` exchange, then a manifest GET on `:latest`) returns
+> **HTTP 200** for `zeta-platform-controller`, `zeta-portal` and `zeta-orleans-silo` --
+> and `k8s/image-source-provenance.json` has recorded all three as `artifact: public`
+> since 2026-09-22. So the platform pods do not take `ImagePullBackOff` on metal, the
+> missing `zeta-platform/ghcr-pull` Secret is a kubelet warning and not a failure (an
+> absent `imagePullSecrets` entry is skipped and the pull proceeds anonymously), and the
+> `imagePullSecrets` reference in `platform/controller.yaml` and `platform/portal.yaml` is
+> INERT, exactly as the last paragraph of this section predicted. What remains true:
+> the row stays an inventory entry for a cluster whose packages are made private again,
+> and `hat-system-operator:placeholder` is the one referenced GHCR image that still
+> answers 401 (it is `replicas: 0`, so nothing pulls it). The text below is kept as the
+> record of the 2026-08-22 measurement, not as the current state. **Not verified:** a
+> metal node pulling these images -- this is a registry-side measurement, not a cluster run.
+
 Every other row above is a target. This one names why the metal platform control
 plane has never started, and it is recorded here because the constitutional rail
 already decides how it would have to arrive.

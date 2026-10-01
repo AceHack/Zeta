@@ -91,6 +91,12 @@ spec:
         prometheus.io/path: /metrics
     spec:
       serviceAccountName: portal
+      # STATUS 2026-10-01: THE PACKAGE IS NOW PUBLIC and the reference below is inert.
+      # An anonymous manifest GET on this image returns HTTP 200 (see the status note
+      # in full-ai-cluster/INJECTION-POINTS.md), so a missing `ghcr-pull` Secret is a
+      # kubelet warning, not an ImagePullBackOff. The paragraph below is the
+      # 2026-08-21 record and describes the PRIVATE state.
+      #
       # The image below lives in a PRIVATE GHCR package -- one of the two this
       # Application runs. An anonymous manifest GET against it takes HTTP 401, a
       # credentialed one takes HTTP 200 (measured 2026-08-21).
