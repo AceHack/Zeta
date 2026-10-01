@@ -47,8 +47,16 @@ spec:
   # postgres-shared: until then this Cluster had NO backup of any kind, and its history is
   # the only copy temporal has. The backup survives a logical error or a lost pod/PVC; it
   # shares a node with the database, so it is not a defence against losing the node.
+  # `enabled: true` is written out although it is the CRD's default, and that is NOT cosmetic.
+  # CNPG's mutating webhook fills `plugins[].enabled`, and ArgoCD diffs a LIST atomically (a CRD
+  # has no strategic-merge keys): the desired element without `enabled` replaces the live one
+  # that has it, so the Cluster read OutOfSync FOREVER and selfHeal re-applied it in a loop
+  # (live run 36855350178: Application OutOfSync/Healthy for 1200s, autoHealAttemptsCount 9,
+  # Cluster otherwise healthy with a completed backup). Spelling the defaulted field makes the
+  # desired and live elements equal.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
+      enabled: true
       isWALArchiver: true
       parameters:
         barmanObjectName: temporal-postgres

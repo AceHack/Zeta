@@ -1,20 +1,23 @@
 # The shared CNPG Cluster. See Application.yaml beside this file for why it exists, what a
-# consumer dials, why it is ONE instance, and how to scale it to HA. This is the
+# consumer dials, the three-instance sizing and what it costs on one node. This is the
 # instantiation of k8s/examples/cnpg-postgres-ha.yaml; every deliberate departure from
 # the template is named below, and postgres-shared-cluster.test.ts pins the rest.
 #
 # Services the operator creates: postgres-shared-rw (primary), -r (any), -ro (replicas
-# only -- EMPTY at instances: 1). Secrets: postgres-shared-app (role `app`),
-# postgres-shared-ca, postgres-shared-server.
+# only -- EMPTY on the CI rung, which serves instances: 1). Secrets: postgres-shared-app
+# (role `app`), postgres-shared-ca, postgres-shared-server.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres-shared
   namespace: postgres-shared
 spec:
-  # DEPARTURE FROM THE TEMPLATE (3): one node today. See Application.yaml "SIZING".
-  # The ledger row `full-ai-cluster/postgres-shared/postgres` carries `pods: 1` to match.
-  instances: 1
+  # The METAL rung: one primary + two streaming replicas, the template's own value. The CI/dev
+  # rung serves 1 (rung-overrides.yaml `postgres-shared/single-instance-dev`, which also flips
+  # enablePDB and primaryUpdateMethod below). See Application.yaml "SIZING" for what three
+  # instances cost on a single node. The ledger row `full-ai-cluster/postgres-shared/postgres`
+  # carries `pods: 3` to match.
+  instances: 3
   # ESSENTIAL TIER: `system-cluster-critical`, a built-in class (no apply-order hazard). This is the
   # owner's general-purpose database, so under node pressure the scheduler preempts for it and the
   # kubelet declines to evict it before any optional workload. A departure from
@@ -36,14 +39,16 @@ spec:
       # CNPG's default is 100. Every pooled connection is a backend process; raise it
       # with the consumers' pools, not to a round number.
       max_connections: "100"
-  # DEPARTURES FROM THE TEMPLATE (switchover, PDB): both are what a ONE-instance
-  # cluster needs. A switchover has no replica to promote, and CNPG's PodDisruptionBudget
-  # on a lone primary (minAvailable 1) makes `kubectl drain` hang forever on the only
-  # node. With 3 instances the template's values return -- see "TO SCALE" in
-  # Application.yaml; the test fails if these disagree with `instances`.
+  # The template's values for a cluster that HAS replicas: a switchover promotes one before the
+  # old primary restarts, and the PodDisruptionBudget stops a drain taking the primary out from
+  # under its replicas. Both are WRONG for one instance (a switchover has no replica to promote;
+  # a lone primary's PDB makes `kubectl drain` hang forever), so the CI rung flips them WITH
+  # `instances` -- and the test fails if any of the three disagree. Honest cost on a one-node
+  # METAL install: the primary's PDB means `kubectl drain` of that only node waits; the node
+  # is rebooted, not drained, by the OS, so nothing in this tree hits that today.
   primaryUpdateStrategy: unsupervised
-  primaryUpdateMethod: restart
-  enablePDB: false
+  primaryUpdateMethod: switchover
+  enablePDB: true
   # SOFT anti-affinity: required would leave instances Pending on one node. Preferred
   # spreads them the moment a second node exists and still schedules on one.
   affinity:
@@ -72,7 +77,7 @@ spec:
   # RESERVATION, not a measurement (unmetered).
   resources:
     requests:
-      cpu: 250m
+      cpu: 200m
       memory: 512Mi
     limits:
       memory: 1Gi
@@ -80,8 +85,16 @@ spec:
   # `isWALArchiver: true` makes this Cluster archive every WAL segment; base backups are
   # scheduled in scheduledbackup.yaml. Without an archiver a Cluster has no point-in-time
   # recovery at all.
+  # `enabled: true` is written out although it is the CRD's default, and that is NOT cosmetic.
+  # CNPG's mutating webhook fills `plugins[].enabled`, and ArgoCD diffs a LIST atomically (a CRD
+  # has no strategic-merge keys): the desired element without `enabled` replaces the live one
+  # that has it, so the Cluster read OutOfSync FOREVER and selfHeal re-applied it in a loop
+  # (live run 36855350178: Application OutOfSync/Healthy for 1200s, autoHealAttemptsCount 9,
+  # Cluster otherwise healthy with a completed backup). Spelling the defaulted field makes the
+  # desired and live elements equal.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
+      enabled: true
       isWALArchiver: true
       parameters:
         barmanObjectName: postgres-shared

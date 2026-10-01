@@ -72,6 +72,9 @@ on:
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.test.ts"
+      - "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml"
       # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
       # nix sources file, its probe device name from the nix preflight module,
       # and its verdict from the node ledger, so a change to any of those moves
@@ -214,6 +217,9 @@ on:
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.ts"
+      - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.test.ts"
+      - "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml"
       # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
       # nix sources file, its probe device name from the nix preflight module,
       # and its verdict from the node ledger, so a change to any of those moves
@@ -638,6 +644,9 @@ jobs:
       # spurious emulation patch added to the CDI phase. All five go red.
       - name: Run kubevirt/cdi emulation proof unit tests
         run: bun test src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.test.ts
+
+      - name: Run kubevirt VM-boot proof unit tests
+        run: bun test src/Core.TypeScript/cluster/kubevirt-vm-live-test.test.ts
 
       - name: Build kubevirt/cdi emulation proof plan (offline)
         run: bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts --dry-run
@@ -2535,6 +2544,18 @@ jobs:
             --cluster-name zeta-ci-virt \
             --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
             --timeout-sec 900
+
+      # THE OTHER HALF OF "DO THE OPERATORS WORK": a VM actually runs. The step above proves
+      # the operators install and their CRs reconcile, and says it does not boot a VMI. This
+      # one runs on the cluster it leaves standing and proves (1) CDI imports a DataVolume end
+      # to end on `zeta-block-local`, (2) the repo's Windows VM template passes SERVER-side
+      # dry-run against KubeVirt's and CDI's admission webhooks, (3) a cirros containerDisk VM
+      # reaches Running under the software emulation the previous step enabled. Windows itself
+      # is not booted -- see the script's header for what stays unproven.
+      - name: Run VM boot + Windows template proof on the same kind cluster
+        run: |
+          set -o pipefail
+          bun src/Core.TypeScript/cluster/kubevirt-vm-live-test.ts --run --cluster-name zeta-ci-virt
 
       - name: Print virt diagnostics
         if: always()

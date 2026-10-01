@@ -78,3 +78,12 @@ spec:
     # Cluster/ScheduledBackup from cloudnativepg (-70, not health-gating); a consumer of a
     # non-gating provider must defer rather than SyncFail if a CRD is a beat late.
     syncOptions: [ CreateNamespace=true, ServerSideApply=true, SkipDryRunOnMissingResource=true ]
+    # UNBOUNDED retry, because this Application consumes CRDs it does not own. With no `retry`
+    # block ArgoCD gives up after 5 attempts and never re-attempts an automated sync for a
+    # revision whose sync already failed, so losing a race against the operator's webhook or CRD
+    # (or against an API server that is restarting under first-boot load) is PERMANENT -- the
+    # measured shape on `platform` (WP11 run 36221053730) and the reason it carries the same
+    # block. limit -1 keeps retrying with backoff capped at 5m.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }
