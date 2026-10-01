@@ -1,0 +1,25 @@
+# Daily base backup of postgres-shared through the Barman Cloud plugin. WAL is archived
+# continuously by the Cluster itself (cluster.yaml `plugins`), so this schedule bounds the
+# REPLAY a point-in-time recovery has to do, not the amount of data at risk.
+#
+# NOTE the cron format: CNPG uses SIX fields, seconds first -- not a Kubernetes CronJob's
+# five. "0 30 2 * * *" is 02:30:00 every day (cluster time, UTC).
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: postgres-shared-daily
+  namespace: postgres-shared
+spec:
+  schedule: "0 30 2 * * *"
+  cluster:
+    name: postgres-shared
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+  # Take the first backup when this object is created instead of waiting up to a day: a
+  # backup that has not happened yet is not one, and this is how the first boot proves the
+  # whole path (credential, bucket, plugin, sidecar) with a real `Backup` object.
+  immediate: true
+  # The Backup objects this creates are owned by the ScheduledBackup, so deleting the
+  # schedule does not leave orphaned Backup CRs (the data in the bucket is unaffected).
+  backupOwnerReference: self

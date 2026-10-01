@@ -38,6 +38,16 @@ spec:
       memory: 512Mi
     limits:
       memory: 1Gi
+  # WAL archiving to the in-cluster SeaweedFS through the Barman Cloud plugin
+  # (objectstore.yaml here; the plugin is applications/cnpg-barman-cloud). Added with
+  # postgres-shared: until then this Cluster had NO backup of any kind, and its history is
+  # the only copy temporal has. The backup survives a logical error or a lost pod/PVC; it
+  # shares a node with the database, so it is not a defence against losing the node.
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: temporal-postgres
   # NODE-LOCAL, deliberately, and this is CNPG's own recommendation rather than a
   # shortcut: CloudNativePG is a shared-nothing design that replicates at the
   # PostgreSQL level (streaming replicas, `instances: N`), and its storage guidance

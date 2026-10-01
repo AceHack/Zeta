@@ -1305,6 +1305,44 @@
       }
     },
     {
+      "id": "full-ai-cluster/postgres-shared/postgres",
+      "dir": "postgres-shared",
+      "path": "full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "IN-REPO MANIFEST WE OWN: a CloudNativePG `Cluster` CR, not a chart. It renders no pod template; the CNPG operator creates one `postgres` pod per `spec.instances` (1 -- a single-node install, see Application.yaml SIZING) sized by `spec.resources`, which rendered-resource-requests.ts reads from the CR so the instance is not a 0m/0Mi consumer. Tree value 250m / 512Mi, instantiated from k8s/examples/cnpg-postgres-ha.yaml; `metal` reproduces it exactly, so `--resource-profile metal --verify` stays clean. NOT PRICED HERE: the ~10m / 64Mi Barman Cloud sidecar the operator injects into the pod (objectstore.yaml `instanceSidecarConfiguration.resources`) -- it is not part of `spec.resources` and no row can address it.",
+      "consequence": "The shared general-purpose database. CPU is compressible, so the 100m dev rung throttles a busy query rather than failing it (the dev lane defers this Application today, so the figure buys nothing there yet). MEMORY IS THE SAME AT BOTH RUNGS: cutting the incompressible axis makes PostgreSQL the first eviction candidate under node pressure, and evicting the only instance of the only copy of the data is the one cut that is never worth the saved MiB. To scale to HA, `pods` here must become `instances` (3) in the same commit; postgres-shared-cluster.test.ts fails if the two disagree.",
+      "cpuMillis": {
+        "dev": 100,
+        "metal": 250
+      },
+      "memoryMib": {
+        "dev": 512,
+        "metal": 512
+      }
+    },
+    {
+      "id": "full-ai-cluster/cnpg-barman-cloud/plugin",
+      "dir": "cnpg-barman-cloud",
+      "path": "full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml",
+      "docIndex": 0,
+      "requestsField": "spec.source.helm.valuesObject.resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US, because upstream declares NONE. chart plugin-barman-cloud 0.8.1 ships `resources: {}` (values.yaml), and an unset request is BestEffort QoS, contributing 0m to every budget here. So the Application's own valuesObject carries 25m/64Mi explicitly and `metal` reproduces that literal. Rendered 2026-10-01 with `helm template`: one Deployment (replicas 1), one `barman-cloud` container.",
+      "consequence": "A thin gRPC controller that holds no state of its own. CPU is compressible, so the same 25m at both rungs costs nothing; memory is the same at both rungs because evicting it pauses every Cluster's backup RPCs, and a WAL archiver that cannot reach its plugin lets WAL accumulate on the data volume. Dev-excluded with its only consumers (postgres-shared, temporal/postgres).",
+      "cpuMillis": {
+        "dev": 25,
+        "metal": 25
+      },
+      "memoryMib": {
+        "dev": 64,
+        "metal": 64
+      }
+    },
+    {
       "id": "full-ai-cluster/temporal/schema",
       "dir": "temporal",
       "path": "full-ai-cluster/k8s/applications/temporal/Application.yaml",

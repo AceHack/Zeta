@@ -38,8 +38,11 @@
 # app-of-apps-discovery.ts, as for `game-hosting/gmod`), so metal applies it.
 #
 # ── ORDERING ─────────────────────────────────────────────────────────────────
-# wave 5: after cloudnativepg (-70, the CRDs + webhook this CR needs); before
-# temporal (10). The volume is `zeta-block-local` (see cluster.yaml), provisioned
+# wave 5: after cloudnativepg (-70, the CRDs + webhook this CR needs), after
+# cnpg-barman-cloud (-65, the ObjectStore CRD and the backup plugin cluster.yaml names)
+# and after seaweedfs (-5, the S3 gateway + the `zeta-backups` bucket); before
+# temporal (10). The backup credential `postgres-backup-s3` is seeded at first boot
+# (bootstrap/internal-secret-seeding.yaml), before ArgoCD exists. The volume is `zeta-block-local` (see cluster.yaml), provisioned
 # at bootstrap, so there is no storage Application to order against.
 # Declared as edges in `full-ai-cluster/k8s/sync-wave-dependency-graph.yaml` and
 # checked by derive-sync-waves.ts. The wave orders CREATION only; temporal's
@@ -61,7 +64,7 @@ spec:
     path: full-ai-cluster/k8s/applications/temporal/postgres
     directory:
       # The CRs, NOT this Application.yaml itself (no recursion).
-      include: '{cluster,database}.yaml'
+      include: '{cluster,database,objectstore,scheduledbackup}.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: temporal
@@ -71,4 +74,7 @@ spec:
       # durable-execution history lives on. Manual delete only.
       prune: false
       selfHeal: true
-    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+    # SkipDryRunOnMissingResource: ObjectStore comes from cnpg-barman-cloud (-65) and
+    # Cluster/ScheduledBackup from cloudnativepg (-70, not health-gating); a consumer of a
+    # non-gating provider must defer rather than SyncFail if a CRD is a beat late.
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true, SkipDryRunOnMissingResource=true ]

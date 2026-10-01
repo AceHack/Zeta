@@ -1,6 +1,6 @@
 {
-  "measuredOn": "2026-09-28",
-  "appsDiscovered": 58,
+  "measuredOn": "2026-10-01",
+  "appsDiscovered": 60,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
       "literal": {
@@ -12417,6 +12417,89 @@
       ],
       "dynamic": [],
       "charts": ["<root>=cloudnative-pg@0.29.0", "monitoring=cluster@0.0.5"]
+    },
+    "https://cloudnative-pg.github.io/charts|plugin-barman-cloud|0.8.1": {
+      "literal": {
+        "additionalArgs": {},
+        "additionalEnv": {},
+        "affinity": {},
+        "certificate": {
+          "createClientCertificate": {},
+          "createIssuer": {},
+          "createServerCertificate": {},
+          "duration": {},
+          "issuerName": {},
+          "renewBefore": {}
+        },
+        "commonAnnotations": {},
+        "containerSecurityContext": {},
+        "crds": {
+          "create": {}
+        },
+        "dnsPolicy": {},
+        "fullnameOverride": {},
+        "global": {},
+        "hostNetwork": {},
+        "image": {
+          "pullPolicy": {},
+          "registry": {},
+          "repository": {},
+          "tag": {}
+        },
+        "imagePullSecrets": {},
+        "logLevel": {},
+        "nameOverride": {},
+        "namespaceOverride": {},
+        "nodeSelector": {},
+        "podAnnotations": {},
+        "podLabels": {},
+        "podSecurityContext": {},
+        "priorityClassName": {},
+        "rbac": {
+          "cnpgGroup": {},
+          "create": {}
+        },
+        "replicaCount": {},
+        "resources": {},
+        "service": {
+          "ipFamilies": {},
+          "ipFamilyPolicy": {},
+          "name": {},
+          "port": {}
+        },
+        "serviceAccount": {
+          "create": {},
+          "name": {}
+        },
+        "sidecarImage": {
+          "registry": {},
+          "repository": {},
+          "tag": {}
+        },
+        "tolerations": {},
+        "topologySpreadConstraints": {},
+        "updateStrategy": {}
+      },
+      "open": [
+        "additionalArgs",
+        "additionalEnv",
+        "affinity",
+        "commonAnnotations",
+        "containerSecurityContext",
+        "global",
+        "imagePullSecrets",
+        "nodeSelector",
+        "podAnnotations",
+        "podLabels",
+        "podSecurityContext",
+        "resources",
+        "service.ipFamilies",
+        "tolerations",
+        "topologySpreadConstraints",
+        "updateStrategy"
+      ],
+      "dynamic": [],
+      "charts": ["<root>=plugin-barman-cloud@0.8.1"]
     },
     "https://dapr.github.io/helm-charts/|dapr|1.18.3": {
       "literal": {
@@ -37044,6 +37127,13 @@
       "chartKey": "https://cloudnative-pg.github.io/charts|cloudnative-pg|0.29.0"
     },
     {
+      "appId": "full-ai-cluster/cnpg-barman-cloud",
+      "chart": "plugin-barman-cloud",
+      "targetRevision": "0.8.1",
+      "repoURL": "https://cloudnative-pg.github.io/charts",
+      "chartKey": "https://cloudnative-pg.github.io/charts|plugin-barman-cloud|0.8.1"
+    },
+    {
       "appId": "full-ai-cluster/cockroachdb",
       "chart": "cockroachdb",
       "targetRevision": "22.0.3",
@@ -37244,6 +37334,16 @@
       "unavailable": {
         "reason": "no-chart-yaml",
         "detail": "full-ai-cluster/k8s/applications/platform is a git-path source with no Chart.yaml — nothing declares a schema"
+      }
+    },
+    {
+      "appId": "full-ai-cluster/postgres-shared",
+      "chart": "",
+      "targetRevision": "main",
+      "repoURL": "https://github.com/Lucent-Financial-Group/Zeta",
+      "unavailable": {
+        "reason": "no-chart-yaml",
+        "detail": "full-ai-cluster/k8s/applications/postgres-shared is a git-path source with no Chart.yaml — nothing declares a schema"
       }
     },
     {

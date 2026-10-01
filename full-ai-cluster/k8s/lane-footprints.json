@@ -50,6 +50,9 @@
     "full-ai-cluster/cloudnativepg": [
       "ghcr.io/cloudnative-pg/cloudnative-pg:1.30.0"
     ],
+    "full-ai-cluster/cnpg-barman-cloud": [
+      "ghcr.io/cloudnative-pg/plugin-barman-cloud:v0.15.1"
+    ],
     "full-ai-cluster/cockroachdb": [
       "busybox",
       "cockroachdb/cockroach:v26.3.1",
@@ -190,6 +193,7 @@
       "ghcr.io/lucent-financial-group/zeta-portal:latest",
       "postgres:16-alpine"
     ],
+    "full-ai-cluster/postgres-shared": [],
     "full-ai-cluster/qwen-coder": [],
     "full-ai-cluster/redis": [
       "docker.io/valkey/valkey:9.1.2"

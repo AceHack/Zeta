@@ -289,6 +289,12 @@ export const KILL_BUDGET_ALLOWLIST: readonly AllowlistEntry[] = [
   // gitlab-exporter: hardcoded `exec: [pgrep, -f, gitlab-exporter]` liveness in
   // charts/gitlab-exporter/templates/deployment.yaml -- no toYaml, no .Values
   // reference on initialDelaySeconds/periodSeconds/failureThreshold at all.
+  // cnpg-barman-cloud/barman-cloud (2026-10-01): plugin-barman-cloud 0.8.1's Deployment
+  // hardcodes `tcpSocket :8081`, initialDelaySeconds 10, periodSeconds 10 for BOTH probes and
+  // its values.yaml has no probe keys at all (read from `helm template` and the chart's
+  // values.yaml). A fast Go gRPC controller, not a JVM/DB/migration-on-start shape; no
+  // values coordinate exists, so the only route is an upstream chart change.
+  { app: "cnpg-barman-cloud", container: "barman-cloud", reason: WP18_NO_COORDINATE_REASON },
   { app: "gitlab", container: "gitlab-exporter", reason: WP18_NO_COORDINATE_REASON },
   // kas: charts/kas/templates/deployment.yaml hardcodes
   // `initialDelaySeconds: 15, periodSeconds: 20` with no .Values reference on

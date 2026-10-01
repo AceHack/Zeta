@@ -1,0 +1,18 @@
+# Daily base backup of temporal-postgres through the Barman Cloud plugin. WAL is archived
+# continuously by the Cluster (cluster.yaml `plugins`). Six-field cron, seconds first:
+# "0 45 2 * * *" is 02:45:00 UTC, offset from postgres-shared's 02:30 so the two base
+# backups do not write to the same 20Gi object-store volume at the same moment.
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: temporal-postgres-daily
+  namespace: temporal
+spec:
+  schedule: "0 45 2 * * *"
+  cluster:
+    name: temporal-postgres
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+  immediate: true
+  backupOwnerReference: self

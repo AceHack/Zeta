@@ -1,0 +1,55 @@
+# Where postgres-shared's WAL archive and base backups go: the in-cluster SeaweedFS S3
+# gateway (applications/seaweedfs), bucket `zeta-backups` (created by the chart's
+# `createBuckets` job at wave -5), prefix `postgres/`. The Barman layout under it is
+# `<destinationPath>/<cluster name>/{base,wals}`, so temporal-postgres can share the
+# bucket and prefix without colliding. NO external service is named anywhere here.
+#
+# CREDENTIAL: Secret `postgres-backup-s3` in THIS namespace, keys ACCESS_KEY_ID /
+# ACCESS_SECRET_KEY. It is NOT the seaweedfs admin identity. bootstrap/internal-secret-seeding.yaml
+# draws a SEPARATE secret at first boot and gives the gateway a second identity,
+# `pgBackup`, whose actions are scoped to the one bucket (`Read:zeta-backups` and its
+# Write/List siblings). A leaked Postgres pod therefore reaches the backup bucket and
+# nothing else on the object store -- loki's, mimir's and gitlab's buckets stay out of
+# reach. Same value written into every namespace that backs up (postgres-shared, temporal).
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: postgres-shared
+  namespace: postgres-shared
+spec:
+  # Recovery window: backups older than the window are deleted after the next base
+  # backup completes (barman `RECOVERY WINDOW OF 14 days`). Pattern is `^[1-9][0-9]*[dwm]$`
+  # in the CRD. 14 days of WAL on an idle-ish shared database is small; SeaweedFS's volume
+  # is a 20Gi node-local PVC shared with loki and mimir, so the window is the lever to turn
+  # DOWN, not up, if that fills.
+  retentionPolicy: 14d
+  configuration:
+    destinationPath: s3://zeta-backups/postgres
+    endpointURL: http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+    s3Credentials:
+      accessKeyId:
+        name: postgres-backup-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgres-backup-s3
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  instanceSidecarConfiguration:
+    # SigV4 needs a region; SeaweedFS accepts any value, so name the one its seeded
+    # connection config already uses (internal-secret-seeding.yaml: us-east-1).
+    env:
+      - name: AWS_DEFAULT_REGION
+        value: us-east-1
+    # The sidecar runs INSIDE every instance pod. Unset, it is BestEffort and priced at
+    # 0m; this is a reservation, not a measurement, and it is NOT a row in the resource
+    # ledger (the ledger prices the Cluster's own `spec.resources`; the sidecar is
+    # operator-injected) -- so it is small and stated here.
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi

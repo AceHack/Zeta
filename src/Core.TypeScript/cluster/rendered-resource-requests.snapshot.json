@@ -13,6 +13,7 @@
     "full-ai-cluster/cilium",
     "full-ai-cluster/cilium-lb-ipam",
     "full-ai-cluster/cloudnativepg",
+    "full-ai-cluster/cnpg-barman-cloud",
     "full-ai-cluster/cockroachdb",
     "full-ai-cluster/dapr",
     "full-ai-cluster/deepseek-coder",
@@ -39,6 +40,7 @@
     "full-ai-cluster/orleans",
     "full-ai-cluster/oz",
     "full-ai-cluster/platform",
+    "full-ai-cluster/postgres-shared",
     "full-ai-cluster/qwen-coder",
     "full-ai-cluster/redis",
     "full-ai-cluster/sealed-secrets",
@@ -316,6 +318,23 @@
           ],
           "overlaid": [
             "full-ai-cluster/cloudnativepg/manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/cnpg-barman-cloud",
+          "cpuMillis": 25,
+          "memoryMib": 64,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "Deployment/cnpg-barman-cloud-plugin-barman-cloud",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/cnpg-barman-cloud/plugin"
           ]
         },
         {
@@ -1151,6 +1170,23 @@
           ]
         },
         {
+          "appId": "full-ai-cluster/postgres-shared",
+          "cpuMillis": 100,
+          "memoryMib": 512,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "Cluster/postgres-shared",
+              "replicas": 1,
+              "cpuMillis": 100,
+              "memoryMib": 512
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/postgres-shared/postgres"
+          ]
+        },
+        {
           "appId": "full-ai-cluster/qwen-coder",
           "cpuMillis": 0,
           "memoryMib": 0,
@@ -1332,7 +1368,9 @@
               "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/temporal/postgres/postgres"
+          ]
         },
         {
           "appId": "full-ai-cluster/trust-manager",
@@ -1646,6 +1684,23 @@
           ],
           "overlaid": [
             "full-ai-cluster/cloudnativepg/manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/cnpg-barman-cloud",
+          "cpuMillis": 25,
+          "memoryMib": 64,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "Deployment/cnpg-barman-cloud-plugin-barman-cloud",
+              "replicas": 1,
+              "cpuMillis": 25,
+              "memoryMib": 64
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/cnpg-barman-cloud/plugin"
           ]
         },
         {
@@ -2481,6 +2536,23 @@
           ]
         },
         {
+          "appId": "full-ai-cluster/postgres-shared",
+          "cpuMillis": 250,
+          "memoryMib": 512,
+          "pods": 1,
+          "workloads": [
+            {
+              "workload": "Cluster/postgres-shared",
+              "replicas": 1,
+              "cpuMillis": 250,
+              "memoryMib": 512
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/postgres-shared/postgres"
+          ]
+        },
+        {
           "appId": "full-ai-cluster/qwen-coder",
           "cpuMillis": 0,
           "memoryMib": 0,
@@ -2662,7 +2734,9 @@
               "memoryMib": 512
             }
           ],
-          "overlaid": []
+          "overlaid": [
+            "full-ai-cluster/temporal/postgres/postgres"
+          ]
         },
         {
           "appId": "full-ai-cluster/trust-manager",

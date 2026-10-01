@@ -138,7 +138,7 @@ export const ROOT_FLOOR_SAFETY_FACTOR = 1.15;
  *   (73 images + 30 OS) x 1.15 = 118.45  ->  120 GiB
  *
  * NOT INCLUDED, AND DELIBERATELY SO: the local-path PVC ceilings that also land
- * on root — `LOCAL_PATH_ADVISORY_GIB` below, 230 GiB today. Reserving them
+ * on root — `LOCAL_PATH_ADVISORY_GIB` below, 250 GiB today. Reserving them
  * would starve the Longhorn pool for bytes nobody has written, because
  * `local-storage.nix` binds `zeta-block-local` `WaitForFirstConsumer` and the
  * local-path provisioner's own helper is `mkdir -m 0777 -p "$VOL_DIR"` — a
@@ -156,11 +156,12 @@ export const ROOT_FLOOR_GIB = 120;
  * MEASURED 2026-09-24 from `rendered-storage-claims.snapshot.json` over the
  * classes bound to `rancher.io/local-path` (`zeta-block-local` plus the cluster
  * default): gitlab 66, dapr 48, forgejo 20, loki 20, opensearch 20, seaweedfs
- * 20, openbao 15, temporal-postgres 10, mimir 6, spire 5 = 230 GiB (temporal-postgres
- * joined 2026-09-27: its CNPG PVC is node-local by design). Pinned by test to that snapshot,
+ * 20, postgres-shared 20, openbao 15, temporal-postgres 10, mimir 6, spire 5 = 250 GiB
+ * (temporal-postgres joined 2026-09-27 and postgres-shared 2026-10-01: both CNPG PVCs are
+ * node-local by design). Pinned by test to that snapshot,
  * so it cannot drift silently any more than the Longhorn demand can.
  */
-export const LOCAL_PATH_ADVISORY_GIB = 230;
+export const LOCAL_PATH_ADVISORY_GIB = 250;
 
 /** The ESP, GiB. `sgdisk -n "1:0:+1G"` in zeta-install.sh. */
 export const ESP_GIB = 1;

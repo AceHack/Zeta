@@ -685,6 +685,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         "platform",
         "temporal",
         "vllm",
+        // 2026-10-01: the shared Postgres and the Barman Cloud plugin it archives through,
+        // deferred with temporal (ghcr.io pulls, an unproven operator<->plugin mTLS, and a
+        // first-boot credential the dev bring-up does not mint). Reasons: DEV_EXCLUDED_REASONS.
+        "postgres-shared",
+        "cnpg-barman-cloud",
       ]),
     );
   });

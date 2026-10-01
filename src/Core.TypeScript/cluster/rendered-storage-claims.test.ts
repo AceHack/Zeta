@@ -637,7 +637,8 @@ describe("the live catalogue against the measured render", () => {
     // `zeta-local-path` -> `zeta-block-local` on 2026-09-23: renamed, not moved.
     // 220 -> 230 on 2026-09-27: temporal-postgres, a CNPG Cluster on node-local
     // storage by design; its operator-created PVC is now read from the CR.
-    expect(totals.get("zeta-block-local")).toBe(230);
+    // 230 -> 250 on 2026-10-01: postgres-shared (20Gi), the shared general-purpose CNPG Cluster.
+    expect(totals.get("zeta-block-local")).toBe(250);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

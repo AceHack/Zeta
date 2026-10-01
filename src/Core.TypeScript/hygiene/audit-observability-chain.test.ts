@@ -620,6 +620,9 @@ describe("MUTATION -- nothing watching Zeta at all", () => {
     // before 2026-08-20. 35 rule groups, all of them a chart default.
     const dir = tempTree();
     rmSync(appFile(dir, "platform", "monitoring.yaml"));
+    // postgres-shared's PodMonitor (2026-10-01) is the second authored monitoring object in
+    // the tree; "every" means it goes too, or the mutation would no longer be the empty state.
+    rmSync(appFile(dir, "postgres-shared", "podmonitor.yaml"));
     const r = runAudit(appsOf(dir), ROSTER, REPO_ROOT);
     expect(r.failures.join(" ")).toContain("no ServiceMonitor / PodMonitor / PrometheusRule is authored");
   });

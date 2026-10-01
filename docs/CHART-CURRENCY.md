@@ -4,7 +4,7 @@
 
 **As of:** 2026-10-01T05:11:53Z — the instant `published-chart-versions.json` was last refreshed. Every age below is measured against that instant, not against the moment you are reading this, so this file is byte-reproducible from committed data.
 
-**This is a report, never a gate.** Being behind is a standing condition, not a regression: 28 of 37 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
+**This is a report, never a gate.** Being behind is a standing condition, not a regression: 28 of 38 pins are behind upstream right now. A CI check on that would be red from birth and learned-to-ignore within a week. The blocking question — *does this pin resolve at all?* — is a different one and is answered on every PR by `src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts`.
 
 **Behind is not unmaintained.** A pure versions-behind metric reports the most dangerous dependency in this tree as the healthiest one, which is exactly what happened with `minio`: it is the only pin that is not behind, and only because upstream archived the repository. So the gap and upstream's publishing record are two separate columns, and a chart nobody has published in over a year reads `DORMANT`, not `CURRENT`.
 
@@ -12,16 +12,16 @@
 
 | | count |
 |---|---|
-| chart coordinates under `full-ai-cluster/k8s/applications` | 37 |
+| chart coordinates under `full-ai-cluster/k8s/applications` | 38 |
 | behind upstream | 28 |
 | …of those, crossing a **major** boundary | 4 |
 | …of those, a `0.x` minor (breaking by semver convention) | 4 |
-| at the newest version and upstream still active | 9 |
+| at the newest version and upstream still active | 10 |
 | **`DORMANT`** — at the newest version because upstream stopped publishing | 0 |
 | upstream silent for over a year (any gap) | 0 |
 | **`UNREACHABLE`** — the refresh could not reach the repository | 0 |
 | pin upstream never published | 0 |
-| publish dates unavailable (OCI registries carry none) | 4 |
+| publish dates unavailable (OCI registries carry none) | 5 |
 
 ## Every remote chart pin
 
@@ -57,6 +57,7 @@
 | `BEHIND` | `trust-manager` | `trust-manager` | `v0.24.0` | 2026-07-01 | `v0.25.0` | 2026-09-11 | 1 | minor (0.x) | active 19d |
 | `CURRENT` | `arc-controller` | `gha-runner-scale-set-controller` | `0.14.2` | ? | `0.14.2` | ? | 0 | -- | unknown |
 | `CURRENT` | `arc-runner-set` | `gha-runner-scale-set` | `0.14.2` | ? | `0.14.2` | ? | 0 | -- | unknown |
+| `CURRENT` | `cnpg-barman-cloud` | `plugin-barman-cloud` | `0.8.1` | ? | `0.8.1` | ? | 0 | -- | unknown |
 | `CURRENT` | `headlamp` | `headlamp` | `0.45.0` | 2026-08-20 | `0.45.0` | 2026-08-20 | 0 | -- | active 41d |
 | `CURRENT` | `mimir` | `mimir-distributed` | `6.2.0` | 2026-08-20 | `6.2.0` | 2026-08-20 | 0 | -- | active 41d |
 | `CURRENT` | `node-feature-discovery` | `node-feature-discovery` | `0.19.0` | 2026-07-10 | `0.19.0` | 2026-07-10 | 0 | -- | active 82d |
@@ -71,6 +72,7 @@
 - **`forgejo` / `forgejo`** (`full-ai-cluster\k8s\applications\forgejo\Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
 - **`arc-controller` / `gha-runner-scale-set-controller`** (`full-ai-cluster\k8s\applications\arc-controller\Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
 - **`arc-runner-set` / `gha-runner-scale-set`** (`full-ai-cluster\k8s\applications\arc-runner-set\Application.yaml`) — OCI registries expose tags, not publish timestamps: /v2/<repo>/tags/list carries no `created` field, and reading one would cost a manifest fetch per tag. Publish dates for this coordinate are UNAVAILABLE, which is not the same fact as `published recently`.
+- **`cnpg-barman-cloud` / `plugin-barman-cloud`** (`full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml`) — no publish dates collected for this coordinate (published-chart-dates.json has no entry)
 
 ## Reading the columns
 
@@ -84,7 +86,7 @@
 
 Every `spec.source` / `spec.sources[]` naming a remote chart under `full-ai-cluster/k8s/applications/**`, walked recursively. Deliberately out of scope, by name:
 
-- **git-path sources** — `agent-memory`, `cdi`, `cilium-lb-ipam`, `deepseek-coder`, `gmod`, `hat-system`, `headscale`, `kubevirt`, `orleans`, `platform`, `qwen-coder`, `temporal-postgres`, `vllm`. These source a directory out of this repository and carry no chart version to be behind.
+- **git-path sources** — `agent-memory`, `cdi`, `cilium-lb-ipam`, `deepseek-coder`, `gmod`, `hat-system`, `headscale`, `kubevirt`, `orleans`, `platform`, `postgres-shared`, `qwen-coder`, `temporal-postgres`, `vllm`. These source a directory out of this repository and carry no chart version to be behind.
 - **`full-ai-cluster/k8s/bootstrap/`** — the app-of-apps root and the bootstrap chart pins. The resolvability audit excludes them for the same reason and this report inherits its coordinate set unchanged, so the two always describe the same tree.
 
 ## How to regenerate, and what refreshes the data

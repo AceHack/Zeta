@@ -667,6 +667,36 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "needs lane room even more than it did, not only a credential.",
   ],
   [
+    "postgres-shared",
+    "The shared general-purpose CloudNativePG Cluster (2026-10-01) is ON BY DEFAULT on metal and deferred from " +
+      "this lane, with temporal's database, for three reasons that do not depend on its size. (1) Its PostgreSQL " +
+      "image and its operator-injected backup sidecar come from ghcr.io, and this lane mints no pull credential " +
+      "for them (the same caveat cloudnativepg/Application.yaml names for the operator image). (2) It archives WAL " +
+      "through the Barman Cloud plugin (`cnpg-barman-cloud`), whose operator<->plugin mTLS handshake and sidecar " +
+      "injection have never run on a hosted runner, and a Cluster whose named plugin is unreachable reports " +
+      "`Suspended` rather than failing loudly. (3) Its first reconcile needs the first-boot backup credential " +
+      "(`postgres-backup-s3`) that bootstrap/internal-secret-seeding.yaml mints and the dev bring-up does not: " +
+      "dev/CI draws its blob-store identity from dev-cluster/lib.ts, which has no second principal. " +
+      "LIFTS WHEN: a lane has a ghcr.io pull credential for the CNPG images, the plugin has been observed " +
+      "reaching Healthy on a runner, and dev-cluster/lib.ts mints `postgres-backup-s3` beside the blob store; then " +
+      "`postgres-shared/**` can leave `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
+      "[cite: path full-ai-cluster/k8s/applications/postgres-shared/Application.yaml] " +
+      "[cite: glob-defers postgres-shared]",
+  ],
+  [
+    "cnpg-barman-cloud",
+    "The CloudNativePG Barman Cloud plugin (2026-10-01) exists only to serve Clusters that name it, and both " +
+      "(`postgres-shared`, `temporal/postgres`) are themselves deferred from this lane, so applying it here would " +
+      "install a controller, a cert-manager Issuer and two Certificates for nothing to call. Its images are on " +
+      "ghcr.io, which this lane has no pull credential for. " +
+      "LIFTS WHEN: a Cluster that uses the plugin is applied in a lane (see `postgres-shared`), at which point " +
+      "`cnpg-barman-cloud/**` must leave `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` in the same change. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
+      "[cite: path full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml] " +
+      "[cite: glob-defers cnpg-barman-cloud]",
+  ],
+  [
     "temporal",
     "CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR (#13472 -> this). The reason written into #13472 said " +
       "temporal's chart HAS NO PERSISTENCE STORE CONFIGURED and does not render. That was true when it was " +

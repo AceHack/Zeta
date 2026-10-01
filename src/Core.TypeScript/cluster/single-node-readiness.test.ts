@@ -2169,8 +2169,9 @@ describe("the root floor is derived from committed measurements", () => {
   });
 
   test("the local-path advisory total matches the render snapshot", () => {
-    // 230 GiB of zeta-block-local + cluster-default claims land on ROOT (220 -> 230
-    // on 2026-09-27: temporal-postgres, node-local by design). Not
+    // 250 GiB of zeta-block-local + cluster-default claims land on ROOT (220 -> 230
+    // on 2026-09-27: temporal-postgres; 230 -> 250 on 2026-10-01: postgres-shared; both
+    // node-local by design). Not
     // reserved — reserving it would starve the pool for bytes nobody wrote —
     // but pinned, so the printed number cannot drift from the roster.
     const rendered = readRenderedTotals(REPO_ROOT);

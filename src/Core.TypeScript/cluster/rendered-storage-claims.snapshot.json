@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-09-27",
+  "measuredOn": "2026-10-01",
   "clusterDefaultStorageClass": "zeta-block-local",
   "rendered": [
     {
@@ -406,6 +406,19 @@
       "count": 1
     },
     {
+      "appId": "full-ai-cluster/postgres-shared",
+      "origin": "operatorStorageSpec",
+      "name": "pgdata/postgres-shared",
+      "workload": "Cluster/postgres-shared",
+      "storageClassName": "zeta-block-local",
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "size": "20Gi",
+      "gibibytes": 20,
+      "count": 1
+    },
+    {
       "appId": "full-ai-cluster/redis",
       "origin": "volumeClaimTemplate",
       "name": "valkey-data/redis-valkey",
@@ -498,5 +511,5 @@
     }
   ],
   "unrenderable": [],
-  "appsDiscovered": 50
+  "appsDiscovered": 52
 }

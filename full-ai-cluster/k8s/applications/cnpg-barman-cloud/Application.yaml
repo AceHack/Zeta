@@ -1,0 +1,87 @@
+# cnpg-barman-cloud — the CloudNativePG Barman Cloud PLUGIN: continuous WAL archiving
+# and base backups of a CNPG `Cluster` into an S3 object store (here, the in-cluster
+# SeaweedFS gateway). Without this, no Postgres in the tree has any backup.
+#
+# ── WHY THE PLUGIN AND NOT `spec.backup.barmanObjectStore` ───────────────────
+# Measured 2026-10-01 against the pins this tree already carries, because the
+# obvious choice is the wrong one:
+#   * The operator is chart 0.29.0 / CloudNativePG 1.30.0. Its CRD STILL has
+#     `spec.backup.barmanObjectStore`, so the in-core path would be accepted by
+#     the API server. CloudNativePG's own docs (v1.30.0 `backup.md`) mark it
+#     "deprecated from 1.26 in favor of the Barman Cloud Plugin" and say native
+#     backup is being "progressively phased out" of the operator.
+#   * The PostgreSQL image every Cluster here runs is
+#     `ghcr.io/cloudnative-pg/postgresql:17.11-minimal-trixie`. The image project's
+#     README (cloudnative-pg/postgres-containers) says `minimal` and `standard`
+#     images "are designed to work with backup plugins", and that only the
+#     DEPRECATED `system` images carry the Barman Cloud binaries. So on THIS image
+#     the in-core path would be accepted by the API server and then FAIL AT RUNTIME
+#     -- `barman-cloud-wal-archive` is not in the image -- and a PostgreSQL whose
+#     archiver is failing keeps every WAL segment on its data volume. That is the
+#     worst way for a backup to be broken: it looks configured, and it fills the disk.
+# The plugin runs the Barman tools in a SIDECAR it injects into each instance pod,
+# so the (smaller, supported) minimal image stays as it is.
+#
+# ── WHAT THIS INSTALLS ───────────────────────────────────────────────────────
+# The plugin chart 0.8.1 / appVersion v0.15.1 (published 2026-09-30; v0.15.x
+# requires CloudNativePG >= 1.26, which 1.30.0 satisfies): one controller Deployment,
+# the `ObjectStore` CRD (barmancloud.cnpg.io), RBAC, a Service the OPERATOR discovers
+# by its `cnpg.io/pluginName` label, and cert-manager `Issuer` + two `Certificate`s
+# for the mTLS link between the operator and the plugin. It must live in the
+# OPERATOR'S namespace (`cnpg-system`) -- the plugin's own install doc says so.
+#
+# ── ORDERING ────────────────────────────────────────────────────────────────
+# wave -65: after cloudnativepg and cert-manager (both -70), before every Cluster
+# that names the plugin (postgres-shared, temporal-postgres, wave 5). cert-manager is
+# a GATING Application, so its webhook is Ready before this syncs; cloudnativepg is
+# not, so the operator's own CRDs/webhook may still be coming up -- which is why the
+# Cluster-side Applications carry SkipDryRunOnMissingResource and retry.
+#
+# ── WHAT IS NOT VERIFIED ────────────────────────────────────────────────────
+# `helm template` renders this and the CRD field names were read from the rendered
+# CRD. Nothing here has been run against a live operator: whether the operator
+# discovers the Service, whether the sidecar pulls, and whether WAL actually reaches
+# SeaweedFS are all first-boot facts. The Application header of postgres-shared lists
+# what to look at.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # Height 2 in the declared graph (cloudnativepg + cert-manager -> cnpg-barman-cloud),
+    # checked by derive-sync-waves.ts against sync-wave-dependency-graph.yaml.
+    argocd.argoproj.io/sync-wave: "-65"
+  name: cnpg-barman-cloud
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    # The official chart from the CloudNativePG project's own GitHub Pages repo,
+    # the same repo as the operator chart.
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: plugin-barman-cloud
+    targetRevision: 0.8.1
+    helm:
+      releaseName: cnpg-barman-cloud
+      valuesObject:
+        # One controller; it holds no state of its own (the ObjectStore CRs and the
+        # object store are the state), so a restart only pauses backup RPCs.
+        replicaCount: 1
+        crds:
+          create: true
+        # Upstream ships `resources: {}` -> BestEffort QoS, evicted first and
+        # priced at 0m by every budget this repo computes. A RESERVATION, not a
+        # measurement (unmetered): the controller is a thin gRPC server.
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+  destination:
+    server: https://kubernetes.default.svc
+    # The OPERATOR'S namespace -- required by the plugin (see header).
+    namespace: cnpg-system
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }   # owns a CRD that Cluster backups depend on
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

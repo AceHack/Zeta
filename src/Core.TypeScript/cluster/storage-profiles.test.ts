@@ -1301,7 +1301,8 @@ describe("the checked-in resource ladder", () => {
     // "we want to try to test on dev for all of these". A new Application that went
     // straight into the dev-excluded set would be one more thing CI never applies.
     // 49 -> 50 on 2026-09-27: `temporal/postgres` (nested, dev-excluded with temporal).
-    expect(applicationDirs()).toHaveLength(50);
+    // 50 -> 52 on 2026-10-01: `postgres-shared` and `cnpg-barman-cloud`, both dev-excluded.
+    expect(applicationDirs()).toHaveLength(52);
     // 49/41 -> 49/40 on 2026-09-07: `game-hosting/gmod/**` joined the excludeGlob. The
     // catalogue is unchanged at 49 -- the Application still exists and is still
     // governed; the LANE is one smaller. That distinction is asserted just below.
@@ -1387,8 +1388,13 @@ describe("the checked-in resource ladder", () => {
     // instance, 250m/512Mi) joined; 13215m still under the 16000m node, 2785m spare.
     // 13215 -> 13265m / 27659 -> 27787Mi on 2026-09-30: the oz controller priced at
     // 50m/128Mi (it rendered `resources: {}`); 13265m still under the 16000m node, 2735m spare.
-    expect(all.cpuMillis).toBe(13370);
-    expect(all.memoryMib).toBe(29771);
+    // 13265 -> 13370m / 27787 -> 29771Mi on 2026-10-01: the observability stack priced
+    // (#17777; alloy, kube-prometheus-stack, loki, nats, tempo were BestEffort).
+    // 13370 -> 13645m / 29771 -> 30347Mi on 2026-10-01: postgres-shared (250m/512Mi, the shared
+    // CNPG instance) and the Barman Cloud plugin controller (25m/64Mi) joined; 13645m still
+    // under the 16000m node, 2355m spare.
+    expect(all.cpuMillis).toBe(13645);
+    expect(all.memoryMib).toBe(30347);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the

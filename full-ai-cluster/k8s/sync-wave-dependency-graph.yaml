@@ -561,8 +561,25 @@ spec:
           `url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push"`.
 
     # ── Layer 9: database consumers ──────────────────────────────────────────
+    - chart: cnpg-barman-cloud
+      dependsOn: [cloudnativepg, cert-manager]
+      citations:
+        cloudnativepg: >-
+          full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml is the
+          CNPG-I backup plugin for the operator Application `cloudnativepg` installs:
+          the plugin's Service is discovered BY THE OPERATOR through its
+          `cnpg.io/pluginName` label and must live in the operator's namespace
+          (`cnpg-system`, which the cloudnativepg Application creates). The plugin
+          requires CloudNativePG >= 1.26 (pinned 1.30.0).
+        cert-manager: >-
+          The plugin chart (0.8.1, `helm template`, measured 2026-10-01) renders a
+          cert-manager `Issuer` and two `Certificate`s (barman-cloud-client,
+          barman-cloud-server) for the mTLS link between operator and plugin, and the
+          plugin's own install doc lists cert-manager as a hard requirement. Applied
+          before cert-manager's CRDs and webhook exist, those objects are refused.
+
     - chart: temporal-postgres
-      dependsOn: [cloudnativepg]
+      dependsOn: [cloudnativepg, cnpg-barman-cloud, seaweedfs]
       citations:
         cloudnativepg: >-
           full-ai-cluster/k8s/applications/temporal/postgres/cluster.yaml and
@@ -570,10 +587,52 @@ spec:
           Their CRDs and the admission webhook that defaults/validates them ship
           with the cloudnativepg Application; applied first, the CRs are refused
           as an unknown kind.
+        cnpg-barman-cloud: >-
+          full-ai-cluster/k8s/applications/temporal/postgres/objectstore.yaml is a
+          `barmancloud.cnpg.io/v1` `ObjectStore` (a CRD only the plugin Application
+          ships), and cluster.yaml's `spec.plugins` names `barman-cloud.cloudnative-pg.io`:
+          a Cluster naming a plugin the operator cannot find is reported as
+          "Cluster cannot proceed to reconciliation due to an unknown plugin being
+          required" and stays Suspended.
+        seaweedfs: >-
+          objectstore.yaml's `endpointURL` is
+          `http://blob-store-seaweedfs-all-in-one.object-store.svc:8333` and its
+          destination is `s3://zeta-backups/postgres`; the SeaweedFS Application's
+          `createBuckets` job makes `zeta-backups` and its gateway serves the
+          endpoint. WAL archiving that starts before the bucket exists fails and
+          the archiver retries while WAL accumulates on the data volume.
       # NO longhorn edge: the volume is `zeta-block-local` (rancher.io/local-path,
       # a bootstrap StorageClass, not an Application), per CNPG's local-storage
       # guidance -- see cluster.yaml. An edge that does not exist is as wrong to
       # declare as a real one is to omit.
+
+    - chart: postgres-shared
+      dependsOn: [cloudnativepg, cnpg-barman-cloud, seaweedfs, kube-prometheus-stack]
+      citations:
+        cloudnativepg: >-
+          full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml and
+          scheduledbackup.yaml are `postgresql.cnpg.io/v1` `Cluster` and
+          `ScheduledBackup` CRs; their CRDs and admission webhook ship with the
+          cloudnativepg Application.
+        cnpg-barman-cloud: >-
+          objectstore.yaml is a `barmancloud.cnpg.io/v1` `ObjectStore` (the CRD only
+          the plugin Application ships), cluster.yaml's `spec.plugins` and
+          scheduledbackup.yaml's `pluginConfiguration` both name
+          `barman-cloud.cloudnative-pg.io`, which the operator can resolve only once
+          the plugin's Service exists.
+        seaweedfs: >-
+          objectstore.yaml's `endpointURL` is
+          `http://blob-store-seaweedfs-all-in-one.object-store.svc:8333` and its
+          destination `s3://zeta-backups/postgres`; the SeaweedFS Application's
+          `createBuckets` job makes the bucket. The credential Secret
+          `postgres-backup-s3` is seeded at first boot by
+          bootstrap/internal-secret-seeding.yaml, before ArgoCD, so it needs no edge.
+        kube-prometheus-stack: >-
+          podmonitor.yaml is a `monitoring.coreos.com/v1` `PodMonitor`; that CRD is
+          installed by kube-prometheus-stack (wave 0). Declared so the monitoring
+          object is ordered after its CRD rather than relying on
+          SkipDryRunOnMissingResource alone.
+      # NO longhorn edge: `zeta-block-local`, as temporal-postgres above.
 
     - chart: temporal
       dependsOn: [temporal-postgres]

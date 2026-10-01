@@ -93,11 +93,14 @@ describe("081M0N90CHX087G0R0034C7NPT — the out-of-subset constructs the graph 
     // lost its `cert-manager: >-` citation with the edge itself -- the ACME
     // issuers moved out of platform into the install-time platform-public-tls
     // Application. flow-seq unchanged: dependsOn was shortened in place.
-    expect(folded).toBe(45);
+    // 45 -> 53 folded on 2026-10-01: `cnpg-barman-cloud` (2 citations), `postgres-shared` (4) and
+    // two more citations on `temporal-postgres` (plugin + object store). flow-seq 30 -> 32: the
+    // two new nodes each carry one `dependsOn: [...]`; temporal-postgres's was extended in place.
+    expect(folded).toBe(53);
     // flow-seq 29 -> 30 on 2026-09-27: `temporal-postgres` added with
     // `dependsOn: [cloudnativepg]`; folded unchanged at 45 (its citation +1, the
     // retired `temporal -> cockroachdb` intent adjudication -1).
-    expect(flowSeq).toBe(30);
+    expect(flowSeq).toBe(32);
   });
 });
 
@@ -213,7 +216,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // appVersion is >= 1.30.1; when that lifts the edge runs temporal ->
     // opensearch, not the reverse).
     // 49 -> 50 on 2026-09-27: `temporal-postgres` (temporal's CNPG database).
-    expect(graph.spec.dependsOn.length).toBe(50);
+    // 50 -> 52 on 2026-10-01: `cnpg-barman-cloud` and `postgres-shared`.
+    expect(graph.spec.dependsOn.length).toBe(52);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -237,7 +241,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // 47 -> 48 on 2026-09-04: `keda` joined the tree (Aaron 2026-09-04).
     // 48 -> 49 on 2026-09-04: `opensearch` joined the tree, `dependsOn: []`.
     // 49 -> 50 on 2026-09-27: `temporal-postgres` joined.
-    expect(viaAce.nodes.length).toBe(50);
+    // 50 -> 52 on 2026-10-01: `cnpg-barman-cloud` and `postgres-shared` joined.
+    expect(viaAce.nodes.length).toBe(52);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);

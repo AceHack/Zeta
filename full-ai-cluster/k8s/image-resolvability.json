@@ -99,6 +99,21 @@
       "resolvedAt": "2026-09-22"
     },
     {
+      "reference": "ghcr.io/cloudnative-pg/plugin-barman-cloud:v0.15.1",
+      "status": "ok",
+      "httpStatus": 200,
+      "arches": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "requiredArchesMissing": [],
+      "reason": "",
+      "isDockerHub": false,
+      "isLatestOrUntagged": false,
+      "hasDigest": false,
+      "resolvedAt": "2026-10-01"
+    },
+    {
       "reference": "ghcr.io/dapr/injector:1.18.3",
       "status": "ok",
       "httpStatus": 200,

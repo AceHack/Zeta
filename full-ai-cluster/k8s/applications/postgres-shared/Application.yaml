@@ -1,0 +1,124 @@
+# postgres-shared — the general-purpose PostgreSQL for the owner's own workloads and for
+# any in-cluster app that wants a database and does not need one of its own.
+# A CloudNativePG `Cluster`, instantiated from `k8s/examples/cnpg-postgres-ha.yaml`,
+# ON BY DEFAULT on a fresh install, with continuous backup to the in-cluster SeaweedFS.
+#
+# ── WHAT A CONSUMER USES ─────────────────────────────────────────────────────
+#   namespace   postgres-shared
+#   Service     postgres-shared-rw.postgres-shared.svc:5432   the primary: use this
+#               postgres-shared-r .postgres-shared.svc:5432   any instance
+#               postgres-shared-ro.postgres-shared.svc:5432   REPLICAS ONLY -- with
+#                                                             `instances: 1` it has NO
+#                                                             endpoints; do not point
+#                                                             anything at it until the
+#                                                             Cluster has >= 2 instances
+#   Secret      postgres-shared-app   in THIS namespace, minted by the operator in the
+#               same act that creates the role. Keys: username, password, dbname, host,
+#               port, uri, jdbc-uri, pgpass. Database `app`, owner role `app`.
+#   Superuser   NOT exposed (`enableSuperuserAccess` is left at its default, false).
+# A workload in another namespace cannot mount a Secret across namespaces. Copy the
+# values it needs (kubectl get secret postgres-shared-app -n postgres-shared -o yaml,
+# re-created in the consumer's namespace) or, better, give that consumer ITS OWN role
+# and database with a CNPG `Database` CR (as temporal/postgres/database.yaml does) --
+# one credential per consumer is the property worth keeping. TLS is on with the
+# cluster's own CA (Secret postgres-shared-ca); clients that verify need `ca.crt`.
+#
+# ── WHY THIS EXISTS WHEN #17767 SAID "ONE CLUSTER PER APPLICATION" ───────────
+# That change measured the tree (2026-09-30) and shipped only the TEMPLATE, on the
+# argument that an always-on shared cluster is an appointed hub (manifesto section 1)
+# costing requests on every install. The maintainer's goal is the opposite default: a
+# rebuilt install whose first boot already has his infra Postgres running. Both stand.
+# The structural answer to the hub objection is that this Cluster is OPTIONAL TO EXIT:
+# nothing in the tree depends on it, temporal keeps its own `temporal-postgres`, and
+# every other consumer is free to run its own Cluster from the same template. A
+# convenience everyone may route around is an oracle that was chosen, not a hub that was
+# appointed (itron-hub-patent-boundary-p2p-is-the-upgrade: exit, not degree).
+#
+# ── SIZING: ONE INSTANCE TODAY, AND WHY NOT THREE ───────────────────────────
+# `instances: 1`, on purpose. This tree is a single-node install (longhorn's own
+# values say "keep this == node count; bump as workers join"). Three instances on one
+# node cost 3x the memory and three PVCs and protect against NOTHING that matters
+# there -- all three share one disk and one kernel. The template's own header says
+# so. What one instance DOES give: operator-managed restart and self-healing, a
+# rolling-update path, and -- the point of this change -- CONTINUOUS BACKUP with
+# point-in-time recovery. Requests/limits are governed rows in storage-profiles.json
+# (`full-ai-cluster/postgres-shared/postgres`, dev and metal rungs), not a number in
+# a manifest only.
+#
+# TO SCALE TO A HA CLUSTER once a THIRD node has joined (edit cluster.yaml, one commit):
+#   instances: 3                      pods in the ledger row must follow (pods: 3)
+#   enablePDB: true  (or delete it)   CNPG then guards the primary against drains
+#   primaryUpdateMethod: switchover   a replica exists to switch to
+#   storage-profiles.json             pods: 3 on the resourceClaims row
+# postgres-shared-cluster.test.ts fails if `instances`, `enablePDB` and
+# `primaryUpdateMethod` disagree with each other, so a half-done bump is red.
+# There is NO automatic "3 when the nodes exist" -- nothing in this tree derives a
+# replica count from the node count, and at first boot (the only moment ArgoCD
+# syncs) joining workers have not arrived yet, so a derived value would read 1 anyway.
+#
+# ── WHAT BACKUP DOES AND DOES NOT PROTECT ───────────────────────────────────
+# Base backup daily + WAL continuously, to bucket `zeta-backups` in the in-cluster
+# SeaweedFS (objectstore.yaml), 14-day recovery window. That is a REAL backup: a bad
+# DELETE replicates to replicas in milliseconds, and it does not reach the archive's
+# earlier base backups. It does NOT protect against losing the NODE: SeaweedFS's volume
+# is a node-local PVC on the same disk as this database. Off-node durability needs a
+# second node or an external store, and the maintainer ruled out external services here.
+# An honest "backed up" in this tree means "survives a logical error and a lost pod",
+# not "survives the machine".
+#
+# ── ORDERING ────────────────────────────────────────────────────────────────
+# wave 5, after: cloudnativepg (-70; the Cluster/ScheduledBackup CRDs + webhook),
+# cnpg-barman-cloud (-65; the ObjectStore CRD + the plugin the Cluster names), seaweedfs
+# (-5; the S3 gateway and the `zeta-backups` bucket its chart's createBuckets job
+# makes), kube-prometheus-stack (0; the PodMonitor CRD). The backup credential
+# (Secret postgres-backup-s3) is minted at first boot by bootstrap/internal-secret-seeding.yaml,
+# BEFORE ArgoCD exists, so it is in place for every wave. All four edges are declared,
+# with citations, in sync-wave-dependency-graph.yaml.
+#
+# ── HEALTH ──────────────────────────────────────────────────────────────────
+# ArgoCD (v3.x) ships a built-in health check for `postgresql.cnpg.io/Cluster`
+# (resource_customizations/postgresql.cnpg.io/Cluster/health.lua, present at v3.2.0):
+# phase "Cluster in healthy state" -> Healthy; "Setting up primary" and friends ->
+# Progressing; "Waiting for user action" -> Degraded. This tree's argocd-cm overrides
+# only the Application kind, so the built-in applies and nothing needs adding. Note
+# what Healthy does NOT cover: a failing WAL archiver leaves the phase healthy. Watch the
+# Cluster's `ContinuousArchiving` condition (and `kubectl cnpg status postgres-shared`).
+#
+# ── DEV LANE ────────────────────────────────────────────────────────────────
+# Deferred from the dev/CI lane with temporal (DEFAULT_ROOT_DEV_CATALOG.excludeGlob): it
+# needs ghcr.io pulls the lane has no token for, the plugin, and a cert-manager mTLS
+# handshake, none of which the 4-vCPU runner has room or credentials to prove. The
+# reason and its lift condition are in argocd-health-test.ts.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  name: postgres-shared
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/postgres-shared
+    directory:
+      # The CRs, NOT this Application.yaml itself (no recursion) and NOT README.md.
+      include: '{cluster,objectstore,scheduledbackup,podmonitor}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: postgres-shared
+  syncPolicy:
+    automated:
+      # NEVER prune: pruning the Cluster CR deletes the PVCs the data lives on.
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      # Cluster/ScheduledBackup (cloudnativepg), ObjectStore (cnpg-barman-cloud) and
+      # PodMonitor (kube-prometheus-stack) are all custom kinds from OTHER Applications;
+      # crd-provider-consumer-order.ts requires a consumer of a non-gating provider to
+      # defer rather than SyncFail when the CRD is a beat late.
+      - SkipDryRunOnMissingResource=true

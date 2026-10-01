@@ -1,0 +1,41 @@
+# Where temporal-postgres's WAL archive and base backups go. The SAME store as
+# postgres-shared's (see applications/postgres-shared/objectstore.yaml for the full
+# account: in-cluster SeaweedFS, bucket `zeta-backups`, a bucket-scoped `pgBackup`
+# identity rather than the admin key, 14-day window, NO external service). Barman writes
+# under `<destinationPath>/<cluster name>/`, so the two clusters share the bucket and the
+# `postgres/` prefix without colliding.
+#
+# temporal's durable-execution history lives ONLY in this database (temporal keeps no
+# local state), so it is the Postgres in the tree with the most to lose and, until this
+# file, the one with no backup of any kind.
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: temporal-postgres
+  namespace: temporal
+spec:
+  retentionPolicy: 14d
+  configuration:
+    destinationPath: s3://zeta-backups/postgres
+    endpointURL: http://blob-store-seaweedfs-all-in-one.object-store.svc:8333
+    s3Credentials:
+      accessKeyId:
+        name: postgres-backup-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgres-backup-s3
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  instanceSidecarConfiguration:
+    env:
+      - name: AWS_DEFAULT_REGION
+        value: us-east-1
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi

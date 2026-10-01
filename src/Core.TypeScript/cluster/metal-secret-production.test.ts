@@ -47,8 +47,12 @@ describe("metal-secret-production — every Secret the catalogue names exists on
     const ns = applicationNamespace("temporal");
     expect(ns).toBe("temporal");
     expect(collectOperatorGeneratedSecrets().has("temporal/temporal-postgres-app")).toBe(true);
+    // The ONLY Secret first-boot seeding may put in this namespace is the object-store
+    // credential the Cluster backs up with (2026-10-01): a different principal's value that
+    // no CNPG operator generates. The store PASSWORD stays operator-generated, never seeded.
     const seeded = collectMetalSeededSecrets();
-    expect([...seeded].filter((k) => k.startsWith("temporal/"))).toEqual([]);
+    expect([...seeded].filter((k) => k.startsWith("temporal/"))).toEqual(["temporal/postgres-backup-s3"]);
+    expect(seeded.has("temporal/temporal-postgres-app")).toBe(false);
   });
 });
 

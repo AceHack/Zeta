@@ -1,0 +1,90 @@
+# The shared CNPG Cluster. See Application.yaml beside this file for why it exists, what a
+# consumer dials, why it is ONE instance, and how to scale it to HA. This is the
+# instantiation of k8s/examples/cnpg-postgres-ha.yaml; every deliberate departure from
+# the template is named below, and postgres-shared-cluster.test.ts pins the rest.
+#
+# Services the operator creates: postgres-shared-rw (primary), -r (any), -ro (replicas
+# only -- EMPTY at instances: 1). Secrets: postgres-shared-app (role `app`),
+# postgres-shared-ca, postgres-shared-server.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-shared
+  namespace: postgres-shared
+spec:
+  # DEPARTURE FROM THE TEMPLATE (3): one node today. See Application.yaml "SIZING".
+  # The ledger row `full-ai-cluster/postgres-shared/postgres` carries `pods: 1` to match.
+  instances: 1
+  # The SAME image as temporal-postgres and the template: one PostgreSQL major for every
+  # CNPG consumer. `minimal` has no Barman binaries -- backup runs in the plugin's sidecar
+  # (cnpg-barman-cloud/Application.yaml says why that matters).
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.11-minimal-trixie
+  # No `enableSuperuserAccess` (defaults false) and no `bootstrap.initdb.secret`: the
+  # operator mints `postgres-shared-app` with the role, so the password has exactly one
+  # source and no account is ever left without one.
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+  postgresql:
+    parameters:
+      # CNPG's default is 100. Every pooled connection is a backend process; raise it
+      # with the consumers' pools, not to a round number.
+      max_connections: "100"
+  # DEPARTURES FROM THE TEMPLATE (switchover, PDB): both are what a ONE-instance
+  # cluster needs. A switchover has no replica to promote, and CNPG's PodDisruptionBudget
+  # on a lone primary (minAvailable 1) makes `kubectl drain` hang forever on the only
+  # node. With 3 instances the template's values return -- see "TO SCALE" in
+  # Application.yaml; the test fails if these disagree with `instances`.
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: restart
+  enablePDB: false
+  # SOFT anti-affinity: required would leave instances Pending on one node. Preferred
+  # spreads them the moment a second node exists and still schedules on one.
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: preferred
+    topologyKey: kubernetes.io/hostname
+  # Explicit hardening rather than the operator's silent defaults: a reader (and the
+  # test) can see the pod runs non-root, with no privilege escalation, no capabilities and
+  # a read-only root filesystem. These match the operator's defaults for CNPG 1.30; they
+  # are written down because `securityContext` OVERRIDES the defaults wholesale, so this
+  # block is also the line that would drop one if a future edit left a key out.
+  seccompProfile:
+    type: RuntimeDefault
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  # Requests are the GOVERNED value: storage-profiles.json row
+  # `full-ai-cluster/postgres-shared/postgres` (metal = this block; dev = the smaller rung),
+  # applied by `--resource-profile <rung> --apply`. Memory has a limit and CPU does not: a
+  # CFS quota throttles a database into missing its liveness probe. A request is a
+  # RESERVATION, not a measurement (unmetered).
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+  # WAL archiving to the object store (objectstore.yaml) through the Barman Cloud plugin.
+  # `isWALArchiver: true` makes this Cluster archive every WAL segment; base backups are
+  # scheduled in scheduledbackup.yaml. Without an archiver a Cluster has no point-in-time
+  # recovery at all.
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: postgres-shared
+  # NODE-LOCAL on purpose (CNPG's own guidance: it replicates at the PostgreSQL level, so a
+  # replicated block volume underneath replicates the same bytes twice). 20Gi: a shared
+  # general-purpose database with room for WAL between archive runs. Not governed by the
+  # Longhorn-pool storage ladder (a local-path class has no pool); rendered-storage-claims.ts
+  # reads this block as the PVC the operator creates and the local-path advisory counts it.
+  storage:
+    storageClass: zeta-block-local
+    size: 20Gi

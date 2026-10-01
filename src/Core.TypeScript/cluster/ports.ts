@@ -292,8 +292,14 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   // LIFTS WHEN: the lane has 2048Mi of headroom again — a larger runner, or the
   // metal cluster — at which point gmod returns UNCHANGED, because nothing about
   // it was modified to make it leave.
+  //
+  // `postgres-shared/**` and `cnpg-barman-cloud/**` (2026-10-01) defer WITH temporal, for
+  // the same reasons and with their own reasons in argocd-health-test.ts: the Cluster
+  // pulls from ghcr.io (no token in this lane), backs up through a plugin whose
+  // operator<->plugin mTLS handshake has never been exercised on a runner, and its
+  // requests would land on a lane that is already over its memory budget.
   excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**,game-hosting/gmod/**}",
+    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**,game-hosting/gmod/**,postgres-shared/**,cnpg-barman-cloud/**}",
 };
 
 /**

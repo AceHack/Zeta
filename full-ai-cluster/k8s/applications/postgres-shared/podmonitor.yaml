@@ -1,0 +1,28 @@
+# Prometheus scrape of postgres-shared's instance metrics (port `metrics`, 9187).
+#
+# A MANUAL PodMonitor, not `spec.monitoring.enablePodMonitor`: the CRD marks that field
+# "Deprecated: This feature will be removed in an upcoming release. If you need this
+# functionality, you can create a PodMonitor manually." (cloudnative-pg chart 0.29.0).
+#
+# Two things make this scrape actually land, and the second is the one that is easy to miss:
+#  * the CRD (monitoring.coreos.com) is provided by kube-prometheus-stack at wave 0, which
+#    precedes this Application (wave 5); the dependency is a declared, cited edge in
+#    sync-wave-dependency-graph.yaml. The annotation below is the belt to that braces.
+#  * kube-prometheus-stack here keeps `podMonitorSelectorNilUsesHelmValues` at its default
+#    (true), so Prometheus selects ONLY PodMonitors labelled `release: kube-prometheus-stack`.
+#    Without that label this object is accepted, listed, and never scraped.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: postgres-shared
+  namespace: postgres-shared
+  labels:
+    release: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: postgres-shared
+  podMetricsEndpoints:
+    - port: metrics
