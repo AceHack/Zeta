@@ -25,7 +25,11 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { FULL_INSTALL_FAILURE_MARKERS } from "../../ci/qemu-full-install-test.ts";
-import { INSTALLER_BAIL_SERIAL_MARKER, RETENTION_FAILURE_SERIAL_MARKERS } from "./serial-markers";
+import {
+  INSTALLER_BAIL_SERIAL_MARKER,
+  INSTALLER_DISCOVERY_HALT_SERIAL_MARKER,
+  RETENTION_FAILURE_SERIAL_MARKERS,
+} from "./serial-markers";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../../..");
 const INSTALLER = readFileSync(resolve(REPO_ROOT, "full-ai-cluster/usb-nixos-installer/zeta-install.sh"), "utf8");
@@ -59,6 +63,19 @@ describe("installer bail() line is a failure marker in both QEMU harnesses", () 
   });
 
   for (const [name, markers] of LISTS) {
+    test(`${name}: a discovery HALT (installer waiting for a keypress nobody will give) stops the run`, () => {
+      // The exact line, measured on run 36832486494 (scenario 4's baseline install).
+      const serial =
+        `${HEALTHY_PREFIX}[zeta-discovery] DISCOVERY DID NOT RUN: dwell-too-short\n` +
+        "[zeta-discovery] HALTED \u2014 not founding a cluster on a segment nobody observed.\n";
+      expect(firstMatch(serial, markers)).toBe(INSTALLER_DISCOVERY_HALT_SERIAL_MARKER);
+    });
+
+    test(`${name}: a discovery that PASSED does not trip the halt marker`, () => {
+      const serial = `${HEALTHY_PREFIX}[zeta-discovery] BOOTSTRAP \u2014 nothing answered, and the silence passed\n`;
+      expect(firstMatch(serial, markers)).toBeUndefined();
+    });
+
     test(`${name}: a real bail line stops the run`, () => {
       // Real bail reason, measured on run 36097366591 (scenario 3/4 serial).
       const serial = `${HEALTHY_PREFIX}${bailPrefix()}BOOT disk /dev/vda is 20 GiB, which cannot hold ESP ...\n`;

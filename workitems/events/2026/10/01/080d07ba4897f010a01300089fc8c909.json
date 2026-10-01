@@ -1,0 +1,14 @@
+{
+  "id": "080d07ba4897f010a01300089fc8c909",
+  "at": "2026-10-01T11:45:56.478Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3VMJ4QX087G0R0024PDMHT",
+    "type": "bug",
+    "title": "installer discovery probe returns 29999 ms of a 30000 ms dwell and halts the install for a keypress",
+    "slug": "installer-discovery-probe-returns-29999-ms-of-a-30000-ms-dwe",
+    "priority": "P2",
+    "filename": "081M3VMJ4QX087G0R0024PDMHT-installer-discovery-probe-returns-29999-ms-of-a-30000-ms-dwe.md"
+  }
+}
