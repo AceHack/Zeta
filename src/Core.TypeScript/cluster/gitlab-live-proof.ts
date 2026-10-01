@@ -791,6 +791,17 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
       report.record("a0-lane-up", "failed", `could not apply the cilium-lb-ipam-pool Application: ${lb.stderr.trim().slice(0, 300)}`);
       return;
     }
+    // ORDER AS A NODE HAS IT. On metal the lb-pool Application arrives with the k3s manifests at boot and is
+    // long since Synced -- its Job already waiting on `applications/gitlab` -- when the root Application
+    // creates `gitlab` at wave 30. Applying both at once made the pin's timing depend on how fast ArgoCD's
+    // repo-server cloned this (large) repository (run 36878157147: sync=Unknown for 9 minutes), which is the
+    // lane's noise, not the cluster's behaviour. So wait for the Job to exist, then create gitlab.
+    const waited = await pollUntil(Date.now() + 900_000, 10_000, () => {
+      const lbSync = kubectlJson<ArgoApp>(["get", "application.argoproj.io/cilium-lb-ipam-pool", "-n", "argocd"]);
+      const job = kubectlJson<JobItem>(["get", "job/gitlab-lan-address", "-n", "kube-system"]);
+      return { done: job !== null && lbSync?.status?.sync?.status === "Synced", detail: `cilium-lb-ipam-pool sync=${lbSync?.status?.sync?.status ?? "?"}; Job gitlab-lan-address ${job === null ? "absent" : "exists"}` };
+    });
+    log(`lb-pool Application before gitlab: ${waited.detail}${waited.done ? "" : " (NOT ready within 900s; applying gitlab anyway so the rest is still measured)"}`);
   }
 
   log(`applying the gitlab Application (${opts.pin === "job" ? "committed manifest, sentinel address" : "committed manifest + inline address pin"}) ...`);
@@ -852,6 +863,29 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
     return { done: pending.size === 0, detail: "" };
   });
   for (const [id] of pending) report.record(id, "failed", `not Ready within ${String(opts.readySec)}s: ${lastDetail.get(id) ?? "no observation"}`);
+
+  // ---- SETTLE: let the install-time pin's second sync finish before judging anything that talks to GitLab ----
+  // The Job patches the Application after its first sync has rendered the sentinel, so a correct install has TWO
+  // syncs: the first brings GitLab up, the second re-renders it with the real address and rolls every component
+  // once. Reading b/c/d/e mid-rollout would measure the rollout, not GitLab. Bounded, and it never blocks the
+  // run: a release that cannot settle is reported by (a+) at the end, and (a) is re-verified below.
+  {
+    const s = await pollUntil(Math.min(readyDeadline, Date.now() + 600_000), 15_000, () => {
+      const app = kubectlJson<ArgoApp>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
+      const sync = app?.status?.sync?.status ?? "?";
+      const health = app?.status?.health?.status ?? "?";
+      const phase = app?.status?.operationState?.phase ?? "?";
+      return { done: sync === "Synced" && health === "Healthy" && phase === "Succeeded", detail: `sync=${sync} health=${health} operation=${phase}` };
+    });
+    log(`settle: ${s.done ? "gitlab Application Synced+Healthy" : "NOT settled"} (${s.detail})`);
+    const items = kubectlJson<{ items: WorkloadItem[] }>(["get", "deploy,sts", "-n", GITLAB_NAMESPACE]);
+    for (const [id, label] of comps) {
+      if (report.statusOf(id) !== "passed" || items === null) continue;
+      const again = componentReadiness(items.items, label);
+      if (!again.ready) report.record(id, "failed", `was Ready earlier, NOT Ready after the Application settled: ${again.detail}`);
+    }
+    if (!s.done) dumpArgoState();
+  }
 
   // ---- (f1) Gateway --------------------------------------------------------------------------
   {
