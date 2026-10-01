@@ -1919,8 +1919,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // 8140 -> 8190 and 1990 -> 2040 on 2026-09-30: the oz (OpenZiti) controller was
       // PRICED at 50m/128Mi. It had rendered `resources: {}` -- BestEffort -- so the
       // lane totals had never included it. Same discipline again.
-      "[cite: lane-cpu metal 8295 over]",
-      "[cite: lane-cpu dev 2145 fits]",
+      "[cite: lane-cpu metal 9095 over]",
+      "[cite: lane-cpu dev 2425 fits]",
     ]) {
       expect(reason).toContain(cited);
     }
