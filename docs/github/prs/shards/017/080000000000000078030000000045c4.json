@@ -1,0 +1,12 @@
+{
+  "pr_number": 17860,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17860-fix-cluster-keep-one-node-out-of-diskpressure-bound-ci-storage-gate-hindsight-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T09:55:15.236Z",
+  "schema_version": "v1",
+  "commit_sha": "b9b8566c8b558dbb97f56d6791cb238000c63612",
+  "title": "fix(cluster): keep one node out of DiskPressure -- bound CI storage, gate hindsight, reap Failed pods",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T09:54:31Z",
+  "head_ref": "fix/node-disk-headroom"
+}
