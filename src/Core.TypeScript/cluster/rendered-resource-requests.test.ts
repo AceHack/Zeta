@@ -624,9 +624,7 @@ describe("eight mutations against the live validators", () => {
     // emptied look identical from here. With a row present the assertion has two halves a
     // single edit cannot satisfy at once -- the LIVE key must be carried, and a key whose
     // arithmetic has moved on must still be convicted STALE rather than quietly honoured.
-    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual([
-      "dev memory 13412>9216",
-    ]);
+    expect(liveCatalogue.acknowledgedLaneBudgetShortfall.map((a) => a.key)).toEqual(["dev memory 13412>9216"]);
     // Carried, so `dev` comes back clean. The acknowledgement is what suppresses it, and
     // the revived row below is what proves the suppression is not indiscriminate.
     expect(auditRunnerBudget(liveCatalogue, "dev")).toEqual([]);
@@ -858,13 +856,17 @@ describe("a rung reaches a raw in-repo manifest", () => {
 describe("unreachable git-path requests", () => {
   const catalogue = loadResourceCatalogue();
 
-  // FIVE remain, in TWO classes, and the classes are different refusals:
-  //   - three are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
+  // EIGHT remain, in THREE classes, and the classes are different refusals:
+  //   - two are `replicas: 0` and CANNOT be governed (`pods >= 1` in the schema)
+  //   - two are vendored byte-for-byte and are DELIBERATELY not governed
+  //   - three are the node-lan-hosts DaemonSet (discover, apply, forward), which has NO replica count to key a
+  //     rung on -- node infrastructure, not a rung-scaled workload, so no claim
+  //     can express it.
   //
-  // WAS SIX, and BOTH orleans entries left on 2026-09-06 by two different routes.
-  // `full-ai-cluster/orleans` left by being FIXED: its StatefulSet went
-  // `replicas: 0` -> `1` once the silo image it had always pinned was actually
-  // published, and it now carries a real resourceClaim
+  // WAS SIX (then FIVE), and BOTH orleans entries left on 2026-09-06 by two
+  // different routes. `full-ai-cluster/orleans` left by being FIXED: its
+  // StatefulSet went `replicas: 0` -> `1` once the silo image it had always
+  // pinned was actually published, and it now carries a real resourceClaim
   // (`full-ai-cluster/orleans/silo`). An entry leaving here because it became
   // governable is the outcome this class-closer exists to produce.
   //
@@ -876,13 +878,21 @@ describe("unreachable git-path requests", () => {
   // twice with different `path:` values -- so metal booted a 7-app cluster while
   // CI proved a 50-app one. One root now, one directory, and the second silo is
   // gone by the same deletion that removed the duplicate.
-  //   - two are vendored byte-for-byte and are DELIBERATELY not governed
-  // The set is asserted whole, so a fifth appearing fails here even if somebody
+  //
+  // The three cluster-hygiene entries ARRIVED on 2026-10-02 with the node-lan-hosts
+  // DaemonSet (so the kubelet can resolve the LAN registry); both are acknowledged
+  // in the baseline because a DaemonSet is one pod per node with no replica count,
+  // which is exactly the shape a per-rung resourceClaim cannot express.
+  //
+  // The set is asserted whole, so an eighth appearing fails here even if somebody
   // also remembers to baseline it.
-  test("exactly five remain, in two named classes, all acknowledged", () => {
+  test("exactly eight remain, in three named classes, all acknowledged", () => {
     const open = unreachableGitPathRequests(catalogue);
     expect(open.map((entry) => entry.appId).sort()).toEqual([
       "full-ai-cluster/cdi",
+      "full-ai-cluster/cluster-hygiene",
+      "full-ai-cluster/cluster-hygiene",
+      "full-ai-cluster/cluster-hygiene",
       "full-ai-cluster/hat-system",
       "full-ai-cluster/kubevirt",
       "full-ai-cluster/vllm",
@@ -898,7 +908,13 @@ describe("unreachable git-path requests", () => {
         .filter((entry) => entry.replicas > 0)
         .map((entry) => entry.appId)
         .sort(),
-    ).toEqual(["full-ai-cluster/cdi", "full-ai-cluster/kubevirt"]);
+    ).toEqual([
+      "full-ai-cluster/cdi",
+      "full-ai-cluster/cluster-hygiene",
+      "full-ai-cluster/cluster-hygiene",
+      "full-ai-cluster/cluster-hygiene",
+      "full-ai-cluster/kubevirt",
+    ]);
 
     const keys = new Set(loadBaseline().entries.map((entry) => entry.key));
     for (const finding of gitPathReachabilityFindings(catalogue)) {
@@ -906,7 +922,7 @@ describe("unreachable git-path requests", () => {
     }
   });
 
-  test("the zero-replica two carry 4100m of LATENT request; the vendored two cost 120m TODAY", () => {
+  test("the zero-replica two carry 4100m of LATENT request; the scheduled five cost 135m TODAY", () => {
     const open = unreachableGitPathRequests(catalogue);
     // LATENT: schedules nothing while `replicas: 0`. 4000 (vllm) + 100 (hat-system).
     //
@@ -925,10 +941,11 @@ describe("unreachable git-path requests", () => {
     expect(latent.reduce((sum, entry) => sum + entry.memoryMib, 0)).toBe(16512);
     expect(open.find((entry) => entry.appId === "full-ai-cluster/vllm")?.cpuMillis).toBe(4000);
 
-    // SCHEDULED: the vendored pair reserves this today, at every rung, and no
-    // rung may move it. 100m (cdi x1) + 10m x 2 replicas (kubevirt).
+    // SCHEDULED: the vendored pair plus the node-lan-hosts DaemonSet reserve this
+    // today, at every rung, and no rung may move it. 100m (cdi x1) + 10m x 2
+    // replicas (kubevirt) + 5m + 5m + 5m (node-lan-hosts discover + apply + forward, x1 per node).
     const scheduled = open.filter((entry) => entry.replicas > 0);
-    expect(scheduled.reduce((sum, entry) => sum + entry.cpuMillis * entry.replicas, 0)).toBe(120);
+    expect(scheduled.reduce((sum, entry) => sum + entry.cpuMillis * entry.replicas, 0)).toBe(135);
   });
 
   // THE ACKNOWLEDGEMENT EXPIRES ON ITS OWN. Scaling a zero-replica workload up

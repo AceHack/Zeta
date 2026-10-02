@@ -29,7 +29,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "20"
   name: cluster-hygiene
   namespace: argocd
-  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+  finalizers: [resources-finalizer.argocd.argoproj.io]
 spec:
   project: default
   source:
@@ -38,7 +38,7 @@ spec:
     path: full-ai-cluster/k8s/applications/cluster-hygiene
     directory:
       # Apply the manifests, NOT this Application.yaml itself (no recursion).
-      include: '{namespace,pod-janitor,hindsight-secret-gate}.yaml'
+      include: "{namespace,pod-janitor,hindsight-secret-gate,node-lan-hosts}.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: zeta-hygiene
@@ -51,4 +51,4 @@ spec:
       limit: -1
       backoff: { duration: 30s, factor: 2, maxDuration: 5m }
     automated: { prune: true, selfHeal: true }
-    syncOptions: [ CreateNamespace=true ]
+    syncOptions: [CreateNamespace=true]
