@@ -1,0 +1,12 @@
+{
+  "pr_number": 17846,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17846-fix-gitlab-the-application-no-longer-reads-outofsync-forever-stable-migrations-j.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T02:16:03.203Z",
+  "schema_version": "v1",
+  "commit_sha": "0768b308a459ea43a3c5bc3e779411e598bf179a",
+  "title": "fix(gitlab): the Application no longer reads OutOfSync forever (stable migrations Job name, Force+Replace, GC)",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T02:15:17Z",
+  "head_ref": "fix/gitlab-migrations-stable-job"
+}
