@@ -217,6 +217,47 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     }
   }, T);
 
+  test("(h) the migrations Job keeps ONE name across values changes, and is replaceable -- so prune:false leaves nothing behind", () => {
+    // MEASURED on the owner's node 20:53 after first boot: `gitlab OutOfSync/Healthy` with two Completed migrations
+    // pods (`-39fcdbd`, `-52e7f78`). The chart names the Job with a hash of EVERY value, the install-time pin re-renders
+    // the Application, `prune: false` keeps the old Job, and ArgoCD reports it "requires pruning" for ever.
+    const migrationsJobName = (r: { docs: unknown[] }): string[] =>
+      ofKind(r.docs, "Job").map(nameOf).filter((n) => n.startsWith("gitlab-migrations-") && n !== "gitlab-migrations-gc");
+    const base = renderGitlab();
+    const pinned = renderGitlab(installTimeValuesPatch("192.168.1.240", "192.168.1.250"));
+    const changed = renderGitlab({ gitlab: { webservice: { maxReplicas: 3 } } });
+    const names = [migrationsJobName(base), migrationsJobName(pinned), migrationsJobName(changed)];
+    expect(names[0]).toHaveLength(1);
+    expect(names[1]).toEqual(names[0]);
+    expect(names[2]).toEqual(names[0]);
+    // A fixed name needs a Job ArgoCD can recreate: pod templates are immutable, so without Force+Replace the next
+    // image or values change is refused with `field is immutable`.
+    const job = ofKind(base.docs, "Job").find((j) => nameOf(j) === names[0]![0]);
+    expect(annotationsOf(job)["argocd.argoproj.io/sync-options"]).toBe("Force=true,Replace=true");
+    // And the chart's sibling hook Jobs stop being renamed too.
+    const hookNames = (r: { docs: unknown[] }): string[] => ofKind(r.docs, "Job").map(nameOf).filter((n) => n.startsWith("gitlab-shared-secrets-")).sort();
+    expect(hookNames(pinned)).toEqual(hookNames(base));
+  }, T);
+
+  test("(h) Job gitlab-migrations-gc removes leftover migrations Jobs, never the current one, with no more RBAC than that", () => {
+    const { docs } = renderGitlab();
+    const current = ofKind(docs, "Job").map(nameOf).find((n) => n.startsWith("gitlab-migrations-") && n !== "gitlab-migrations-gc");
+    const gc = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-migrations-gc");
+    expect(gc).toBeDefined();
+    // PostSync: after everything is Healthy; a hook is not part of the Application's comparison, so it cannot itself read OutOfSync.
+    expect(annotationsOf(gc)["argocd.argoproj.io/hook"]).toBe("PostSync");
+    expect(annotationsOf(gc)["argocd.argoproj.io/hook-delete-policy"]).toContain("BeforeHookCreation");
+    const script = JSON.stringify(gc);
+    // The name it keeps IS the name the migrations chart renders -- both read global.job.nameSuffixOverride.
+    expect(script).toContain(`KEEP=\\"${current!}\\"`);
+    expect(script).toContain("-l app=migrations");
+    expect(script).toContain("grep -v");
+    // It cannot fail the sync over a cosmetic.
+    expect(script).toContain("exit 0");
+    const role = ofKind(docs, "Role").find((r) => nameOf(r) === "gitlab-migrations-gc");
+    expect(role?.["rules"]).toEqual([{ apiGroups: ["batch"], resources: ["jobs"], verbs: ["get", "list", "delete"] }]);
+  }, T);
+
   test("(g) no Deployment needs spare capacity to roll: maxSurge 0 (or Recreate), because the install-time pin rolls every component once", () => {
     // MEASURED LIVE, run 36881451548: 3160m of 4000m requested, sidekiq asks 900m, the Deployment-default surge pod
     // sat `Pending: Insufficient cpu` for 14 minutes, the rollout hit its progress deadline and the operation never

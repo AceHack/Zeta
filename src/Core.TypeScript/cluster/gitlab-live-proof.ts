@@ -96,7 +96,8 @@ export const CHECKS: readonly CheckSpec[] = [
   { id: "a3-gitaly-ready", name: "(a) gitaly Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a4-registry-ready", name: "(a) registry Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a5-shell-ready", name: "(a) gitlab-shell Ready", dependsOn: ["a0-lane-up"], blocking: true },
-  { id: "a6-argocd-application", name: "(a+) ArgoCD Application gitlab Synced and Healthy (judged last)", dependsOn: ["a0-lane-up"], blocking: false },
+  { id: "a6-argocd-application", name: "(a+) ArgoCD Application gitlab reaches Synced AND Healthy after the pin's re-render (judged last)", dependsOn: ["a0-lane-up"], blocking: true },
+  { id: "a7-resync-stays-synced", name: "(a+) a second sync that changes the migrations Job's spec still syncs (no immutable-field error), leaves no stale Job, and STAYS Synced+Healthy", dependsOn: ["a6-argocd-application"], blocking: true },
   { id: "b1-root-login", name: "(b) root admin login (OAuth password flow) and GET /user is_admin", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c1-token-job-complete", name: "(c) Job gitlab-runner-token completed", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c2-runner-secret-token", name: "(c) Secret gitlab-gitlab-runner-secret holds a glrt- token", dependsOn: ["c1-token-job-complete"], blocking: true },
@@ -738,6 +739,12 @@ function dumpArgoState(): void {
   }
 }
 
+/** sync / health / last operation phase of the `gitlab` Application, `?` when unreadable (unknown is never "Synced"). */
+function argoSnapshot(): { readonly sync: string; readonly health: string; readonly phase: string } {
+  const app = kubectlJson<ArgoApp>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
+  return { sync: app?.status?.sync?.status ?? "?", health: app?.status?.health?.status ?? "?", phase: app?.status?.operationState?.phase ?? "?" };
+}
+
 /** The three address leaves of the LIVE `gitlab` Application, read back -- what the pin actually wrote. */
 function liveAddressLeaves(): readonly (string | undefined)[] {
   const app = kubectlJson<unknown>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
@@ -881,10 +888,9 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
       // one that carried the pinned address.
       const syncedValues = getLeaf(app, ["status", "operationState", "syncResult", "source", "helm", "valuesObject"]);
       const onPinned = PINNED_LEAVES.every((leaf) => getLeaf(syncedValues, leaf) === address);
-      // SYNC STATUS IS NOT PART OF "SETTLED". After the pin the chart renames its migrations Job (its name carries a
-      // hash of the values), and `prune: false` leaves the first one behind -- "requires pruning" -- so a healthy,
-      // finished install reads OutOfSync forever (measured, run 36886512326: health=Healthy operation=Succeeded,
-      // one Job OutOfSync). What settles is: the operation finished and nothing is Progressing/Degraded.
+      // "Settled" here is the operation, not the sync status: Synced is judged by (a+) afterwards, with its own wait.
+      // (Before `global.job.nameSuffixOverride` a finished install read OutOfSync for ever -- run 36886512326:
+      // health=Healthy operation=Succeeded, one stale migrations Job -- so this check could never use Synced.)
       return { done: health === "Healthy" && phase === "Succeeded" && onPinned, detail: `sync=${sync} health=${health} operation=${phase} lastOperationSyncedPinnedAddress=${String(onPinned)}` };
     });
     log(`settle: ${s.done ? "gitlab Application Healthy, the operation that finished carried the pinned address" : "NOT settled"} (${s.detail})`);
@@ -1132,16 +1138,76 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
     }
   }
 
-  // ---- (a+) ArgoCD's own verdict, judged LAST (informational) ----------------------------------
-  // The runner Deployment (wave 10) and the token Job (wave 5) only exist after wave 0 is Healthy, so
-  // judging the Application any earlier would read a sync that is simply not finished.
+  // ---- (a+) the Application is Synced AND Healthy, judged LAST, BLOCKING -------------------------------
+  // The runner Deployment (wave 10) and the token Job (wave 5) only exist after wave 0 is Healthy, so judging
+  // the Application any earlier would read a sync that is simply not finished.
+  //
+  // This used to be INFORMATIONAL, and for a reason that was a defect rather than a fact of life: after the pin
+  // re-rendered the Application the chart renamed its migrations Job (the name carried a hash of every value),
+  // `prune: false` kept the old Job, and a healthy install read OutOfSync for ever -- measured on the owner's
+  // real node, and by this lane (`sync=OutOfSync health=Healthy`). `global.job.nameSuffixOverride` + Force/Replace
+  // + Job `gitlab-migrations-gc` fixed it; so it is a verdict now, not a footnote.
   {
+    const s = await pollUntil(Date.now() + 600_000, 15_000, () => {
+      const snap = argoSnapshot();
+      return { done: snap.sync === "Synced" && snap.health === "Healthy" && snap.phase === "Succeeded", detail: `sync=${snap.sync} health=${snap.health} operation=${snap.phase}` };
+    });
     dumpArgoState();
     const app = kubectlJson<ArgoApp>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
-    const sync = app?.status?.sync?.status ?? "unreadable";
-    const health = app?.status?.health?.status ?? "unreadable";
     const held = describeArgoApplication(app).filter((l) => l.startsWith("  resource ")).slice(0, 3).map((l) => l.trim()).join(" ; ");
-    report.record("a6-argocd-application", sync === "Synced" && health === "Healthy" ? "passed" : "failed", `sync=${sync} health=${health}${held === "" ? "" : ` | ${held}`}`);
+    const migrations = kubectlJson<{ items: { metadata: { name: string } }[] }>(["get", "jobs", "-n", GITLAB_NAMESPACE, "-l", "app=migrations"]);
+    const jobs = (migrations?.items ?? []).map((j) => j.metadata.name);
+    report.record("a6-argocd-application", s.done ? "passed" : "failed", `${s.detail}; migrations Jobs: [${jobs.join(", ")}]${held === "" || s.done ? "" : ` | ${held}`}`);
+  }
+
+  // ---- (a++) a SECOND sync that changes the migrations Job's spec still syncs, and leaves nothing behind -------------
+  // The pin re-render is one second sync. This is the other one the real cluster will meet: a chart/values change
+  // that alters the migrations Job's pod template -- immutable on a Job. With the Job's name now FIXED, that is
+  // refused (`field is immutable`) unless the Job is replaced, which is what `Force=true,Replace=true` is for. A
+  // stale Job planted in the shape the owner's node had (`app=migrations`, tracked, a hash-looking name) is what
+  // Job `gitlab-migrations-gc` must remove in the PostSync of that same sync.
+  if (report.blockedBy("a7-resync-stays-synced") === null) {
+    const probe = String(Date.now());
+    const trackingId = ((kubectlJson<{ metadata?: { annotations?: Record<string, string> } }>(["get", "job/gitlab-migrations-zeta", "-n", GITLAB_NAMESPACE])?.metadata?.annotations ?? {})["argocd.argoproj.io/tracking-id"] ?? "").replace("gitlab-migrations-zeta", "gitlab-migrations-deadbee");
+    const planted = kubectl(["create", "job", "gitlab-migrations-deadbee", "-n", GITLAB_NAMESPACE, "--image=docker.io/library/busybox:1.36", "--", "true"]);
+    if (planted.code === 0) {
+      kubectl(["label", "job/gitlab-migrations-deadbee", "-n", GITLAB_NAMESPACE, "app=migrations"]);
+      if (trackingId !== "") kubectl(["annotate", "job/gitlab-migrations-deadbee", "-n", GITLAB_NAMESPACE, `argocd.argoproj.io/tracking-id=${trackingId}`]);
+    }
+    log(`a7: planted a stale migrations Job (${planted.code === 0 ? "ok" : planted.stderr.trim().slice(0, 120)}); changing the migrations Job's pod template with probe ${probe}`);
+    const patched = kubectl([
+      "patch", "application.argoproj.io/gitlab", "-n", "argocd", "--type", "merge", "-p",
+      JSON.stringify({ spec: { source: { helm: { valuesObject: { gitlab: { migrations: { annotations: { "zeta-lane-probe": probe } } } } } } } }),
+    ]);
+    if (patched.code !== 0) {
+      report.record("a7-resync-stays-synced", "failed", `could not patch the Application: ${patched.stderr.trim().slice(0, 200)}`);
+    } else {
+      const r = await pollUntil(Date.now() + 900_000, 15_000, () => {
+        const app = kubectlJson<unknown>(["get", "application.argoproj.io/gitlab", "-n", "argocd"]);
+        const snap = argoSnapshot();
+        const carried = getLeaf(app, ["status", "operationState", "syncResult", "source", "helm", "valuesObject", "gitlab", "migrations", "annotations", "zeta-lane-probe"]) === probe;
+        const job = kubectlJson<{ metadata: { name: string }; spec?: { template?: { metadata?: { annotations?: Record<string, string> } } }; status?: { conditions?: { type: string; status: string }[] } }>(["get", "job/gitlab-migrations-zeta", "-n", GITLAB_NAMESPACE]);
+        const replaced = job?.spec?.template?.metadata?.annotations?.["zeta-lane-probe"] === probe;
+        const jobs = (kubectlJson<{ items: { metadata: { name: string } }[] }>(["get", "jobs", "-n", GITLAB_NAMESPACE, "-l", "app=migrations"])?.items ?? []).map((j) => j.metadata.name);
+        const only = jobs.length === 1 && jobs[0] === "gitlab-migrations-zeta";
+        const complete = job !== null && jobComplete(job);
+        const ok = snap.sync === "Synced" && snap.health === "Healthy" && snap.phase === "Succeeded" && carried && replaced && only && complete;
+        return { done: ok, detail: `sync=${snap.sync} health=${snap.health} operation=${snap.phase} operationCarriedProbe=${String(carried)} jobReplacedWithProbe=${String(replaced)} jobComplete=${String(complete)} migrationsJobs=[${jobs.join(", ")}]` };
+      });
+      if (!r.done) {
+        dumpArgoState();
+        report.record("a7-resync-stays-synced", "failed", r.detail);
+      } else {
+        // STAYS: a sync that is Synced for one poll and flaps afterwards is not Synced.
+        let flapped: string | null = null;
+        for (let i = 0; i < 8 && flapped === null; i++) {
+          await sleep(15_000);
+          const snap = argoSnapshot();
+          if (snap.sync !== "Synced" || snap.health !== "Healthy") flapped = `sync=${snap.sync} health=${snap.health} after ${String((i + 1) * 15)}s`;
+        }
+        report.record("a7-resync-stays-synced", flapped === null ? "passed" : "failed", flapped === null ? `${r.detail}; stayed Synced+Healthy for 120s` : `Synced, then left it: ${flapped}`);
+      }
+    }
   }
 }
 

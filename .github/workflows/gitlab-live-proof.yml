@@ -26,7 +26,10 @@
 #   * the exposure Gateway sat in wave 0 and, with the install-time pin landing after ArgoCD's first sync,
 #     held the token Job and the runner forever -- the runner could not exist (gitlab-exposure.test.ts f);
 #   * the pin re-renders the Application, so a FRESH install rolls every Deployment once, and the default
-#     maxSurge needs a spare pod's worth of CPU that a single node does not have (gitlab-exposure.test.ts g).
+#     maxSurge needs a spare pod's worth of CPU that a single node does not have (gitlab-exposure.test.ts g);
+#   * the chart named its migrations Job with a hash of every value, so the pin renamed it and `prune: false`
+#     kept the old one: a healthy install read OutOfSync forever (owner's node, and this lane's informational
+#     check). Fixed name + Force/Replace + a PostSync GC; checks a6/a7 are BLOCKING now (gitlab-exposure.test.ts h).
 
 name: gitlab-live-proof
 

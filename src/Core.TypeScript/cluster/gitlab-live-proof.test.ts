@@ -69,7 +69,7 @@ describe("the check roster", () => {
   });
 
   test("the owner's lettered checks (a)..(f) are all present and blocking", () => {
-    for (const letter of ["a1", "a2", "a3", "a4", "a5", "b1", "c1", "c2", "d1", "d2", "d3", "e1", "e2", "f1", "f2", "f3", "f4"]) {
+    for (const letter of ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "b1", "c1", "c2", "d1", "d2", "d3", "e1", "e2", "f1", "f2", "f3", "f4"]) {
       const spec = CHECKS.find((c) => c.id.startsWith(`${letter}-`));
       expect(spec, letter).toBeDefined();
       expect(spec?.blocking, letter).toBe(true);
@@ -126,14 +126,28 @@ describe("ProofReport -- did-not-run is a third answer, never a pass", () => {
     expect(() => new ProofReport().record("z9-typo", "passed", "x")).toThrow(/unknown check id/);
   });
 
-  test("the verdict passes only when every BLOCKING check passed; an informational failure does not decide it", () => {
+  test("the verdict passes only when every BLOCKING check passed; the Application's Synced+Healthy is one of them", () => {
     const r = new ProofReport();
     for (const c of CHECKS) r.record(c.id, "passed", "ok");
     expect(r.verdictPassed()).toBe(true);
-    r.record("a6-argocd-application", "failed", "Progressing");
-    expect(r.verdictPassed()).toBe(true);
+    // It was informational while a healthy install read OutOfSync for ever (the migrations Job was renamed per
+    // values hash and `prune: false` kept the old one). That was a defect, so it decides the verdict now.
+    r.record("a6-argocd-application", "failed", "OutOfSync");
+    expect(r.verdictPassed()).toBe(false);
+    r.record("a6-argocd-application", "passed", "ok");
+    r.record("a7-resync-stays-synced", "failed", "immutable field");
+    expect(r.verdictPassed()).toBe(false);
+    r.record("a7-resync-stays-synced", "passed", "ok");
     r.record("e1-pipeline-success", "failed", "pending forever");
     expect(r.verdictPassed()).toBe(false);
+  });
+
+  test("a7 cannot pass on top of an Application that never became Synced", () => {
+    const r = new ProofReport();
+    r.record("a0-lane-up", "passed", "ok");
+    r.record("a6-argocd-application", "failed", "OutOfSync");
+    r.record("a7-resync-stays-synced", "passed", "claims to have resynced");
+    expect(r.finalize().find((x) => x.id === "a7-resync-stays-synced")?.status).toBe("did-not-run");
   });
 
   test("markdown labels each status distinctly and escapes table separators", () => {

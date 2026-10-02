@@ -57,8 +57,10 @@ path-filtered PR.
 
 ## Still true / not proven
 
-- After the pin the chart renames its migrations Job and `prune: false` leaves the first one
-  behind, so a healthy install reads `OutOfSync` forever (reported by informational check a6).
+- ~~After the pin the chart renames its migrations Job and `prune: false` leaves the first one
+  behind, so a healthy install reads `OutOfSync` forever.~~ FIXED (owner measured it on the real
+  node: two Completed migrations pods): `global.job.nameSuffixOverride: zeta` + `Force=true,Replace=true`
+  on the Job + PostSync Job `gitlab-migrations-gc`; lane checks a6/a7 are blocking.
 - Not exercised: GitLab's own TLS/public-domain path (`platform-public-tls`), `docker push` to
   the registry, GitLab upgrade (8.7.0 -> 10.x), real metal (NixOS k3s, Longhorn, real L2 LAN).
   The host-reachability check proves the Cilium L2 announcement over the docker bridge, not a
