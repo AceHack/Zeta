@@ -63,7 +63,23 @@ spec:
       releaseName: blob-store-seaweedfs
       valuesObject:
         master: { enabled: false }
-        volume: { enabled: false }
+        # The all-in-one pod's `-volume.max` is read from volume.dataDirs[0].maxVolumes even though the
+        # separate volume Deployment is disabled. MEASURED 2026-10-02: left at the chart's `0` (auto) the
+        # single volume server computed Max 40 slots from `volumeSizeLimitMB: 1000`, and 40 were taken:
+        # SeaweedFS pre-grows 7 volumes per collection (bucket) and six collections exist
+        # (loki-chunks, mimir-tsdb, gitlab-registry, gitlab-artifacts, zeta-backups, ''), so the
+        # seventh -- `gitlab-uploads`, first needed when a GitLab upgrade created the Duo bot users and
+        # their avatars -- could never get a volume (`automatic volume grow failed: Not enough data
+        # nodes found!`) and every read/write of it returned S3 500 InternalError, which 500'd the
+        # logged-in GitLab dashboard. Slots are only reserved capacity (a volume file starts almost
+        # empty; the real total is ~2.5 GB on 35 GB free), so 100 leaves room for ~8 more collections. 100 is the
+        # value the GitLab upgrade agent already applied LIVE at 23:08Z (SeaweedFS restarted once for it);
+        # git matches live so merging this does NOT restart SeaweedFS a second time.
+        # Same `name`/`type`/`hostPathPrefix` as the chart default so nothing else in the render moves.
+        volume:
+          enabled: false
+          dataDirs:
+            - { name: data1, type: hostPath, hostPathPrefix: /ssd, maxVolumes: 100 }
         filer: { enabled: false }
         s3:
           enabled: false
