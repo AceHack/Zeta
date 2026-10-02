@@ -3516,3 +3516,21 @@ Softs: live-run prose not in the tree; loopback 127.0.0.1:18443 matches the bind
 Path to GO: revert the nine ledger rows to found/public, restore headscale sourceRepo and sourceEvidence, keep the socat removal and the haproxy not-ghcr row.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17871 leftover unique @ 4a5ab53d5db62f03bf6a0d9ab22cc563941db9e1 -- GRADE GO
+
+Tip 4a5ab53d5db62f03bf6a0d9ab22cc563941db9e1 is the live head. One parent 879c8ec8851755b4b2514dcc275ffa3e85880b1d. Not a merge. Tip-only +10/-1, 2 files: full-ai-cluster/k8s/applications/gitlab/Application.yaml and src/Core.TypeScript/cluster/upgrade-only-hook-first-sync.test.ts. Prior GO on e28194cb stands. Merge-ref 6f4fb667 not graded. Parent merge 879c8ec8 not graded.
+
+Hop pin unchanged: Application.yaml:16 targetRevision 8.11.8.
+
+redis.metrics.startupProbe at Application.yaml:1001-1007: enabled true, failureThreshold 30. Helm render of chart 8.11.8: periodSeconds 10, initialDelaySeconds 10, timeoutSeconds 5. Startup window 300s. Liveness kill budget 50s. Deleting the block re-renders startup null.
+
+upgrade-only-hook-first-sync.test.ts:162-164 pins https://docs.gitlab.com/ and #upgrade-paths. bun test 9 pass, 0 fail. Restoring /ee/update/ pin: 1 fail, 0 pass.
+
+Significant soft: no test asserts the probe. Deleting it left that test green.
+
+CI: tip 70 success, 20 skipped, 15 in progress, 1 neutral, zero completed failures. No check red at the tip and green on the parent. agencysignature (main tip) skipped on both. mergeable_state blocked. Squash auto-merge left armed.
+
+Hard fails: none.
+
+Sit leftover; Vera will not merge.
