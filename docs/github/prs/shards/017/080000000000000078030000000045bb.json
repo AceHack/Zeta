@@ -1,0 +1,12 @@
+{
+  "pr_number": 17851,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17851-fix-gitlab-stale-render-gate-an-operation-rendered-with-the-sentinel-must-not-wa.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T02:57:29.067Z",
+  "schema_version": "v1",
+  "commit_sha": "fa8b9510c38823063cbde339f3365122a709016d",
+  "title": "fix(gitlab): stale-render gate -- an operation rendered with the sentinel must not wait on the Gateway for ever",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T02:56:43Z",
+  "head_ref": "fix/gitlab-pin-fresh-gate"
+}
