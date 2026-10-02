@@ -1,0 +1,12 @@
+{
+  "pr_number": 17854,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17854-fix-gitlab-exposure-from-a-postsync-hook-reading-the-live-address-a-stale-operat.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T04:19:33.030Z",
+  "schema_version": "v1",
+  "commit_sha": "038f1fba5ed232be046ac4fd59b0d48b42ebe91b",
+  "title": "fix(gitlab): exposure from a PostSync hook reading the live address -- a stale operation can no longer wait on the Gateway",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T04:18:40Z",
+  "head_ref": "fix/gitlab-exposure-postsync"
+}
