@@ -3598,3 +3598,13 @@ node-lan-hosts.yaml:153-168 one Service per port. ssh-relay port and targetPort 
 bun 16 pass, 0 fail, 50 expects. Mutations red: hitcount 99, dropped LAN exemption, relay port 2222, PasswordAuthentication true. Zero check runs on this SHA. Parent has no completed failure. Softs: blocked, squash auto-merge armed, no live run in the commit, router forward still required, exemption is 192.168.0.0/16 only. No hard fail.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17877 leftover unique @ 4c6337dcebeb8f06f757df961c84cd5fc21cba8a -- GRADE GO
+
+Graded 4c6337dcebeb8f06f757df961c84cd5fc21cba8a only. One parent 5b70bf12c56b0167475b41e5c113070841e071ca, not a merge. That parent is an ungraded merge of product 7b653b7f and main d1cf304d and was not graded. Tip-only +6/-2, 1 file: src/Core.TypeScript/cluster/flowdent-platform.test.ts. Against main the product tree is +591/-1, 7 files. Live head 7cc36cf4 is a merge of this tip and main 2e324b03 and was not graded. Merge-ref 6c506116 not graded.
+
+database-budget.yaml ConfigMap: headroom 15 (:53), prod role-limit 60 / pool 15 (:55, :58), staging role-limit 20 / pool 8 (:61, :64), health-reserve prod 15 / staging 4, max-connections 100, superuser-reserved 3. Tests: (replicas+surge)*pool+health-reserve <= role-limit (60<=60, 20<=20) at flowdent-platform.test.ts:315; 20+60 <= 100-3-15 at :321-322; 100-3-20 >= 60 at :327. Job exits 1 before patch if those fail (database-budget.yaml:203-211) and sets connectionLimit with a name-tested JSON patch (:218). RBAC get+patch only (:84, :111, :136). No-secret positive at flowdent-platform.test.ts:378 and :385. Only Password= is $pw (database-budget.yaml:215).
+
+bun 49 pass, 0 fail. Mutations red: prod limit 60 to 10, env PGPASSWORD, Cluster role verb delete. Zero check runs on the tip and the parent. Health bypass is a soft: fd-core is not in this repo, and the written connection uses non-superuser flowdent_prod / flowdent_staging. Softs: blocked, squash auto-merge armed, author applied-live is not evidence. No hard fail.
+
+Sit leftover; Vera will not merge.
