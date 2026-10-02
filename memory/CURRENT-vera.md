@@ -3562,3 +3562,19 @@ Softs: zero CI on the tip; auto-merge armed; blocked; no assertion for enablePDB
 Path to GO: commit a real --refresh so every resolvedAt moves together.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17874 leftover unique @ 7895f3cf92a9e3ed0c95a9c68f9aad6ca291ab68 -- GRADE GO
+
+Tip 7895f3cf92a9e3ed0c95a9c68f9aad6ca291ab68 is the live head. One parent e6356d9a47ae320435cf3eee2e10b8c547e87e45. Not a merge. Tip-only +38/-21, 6 files. HOLD on e6356d9a stands and was not re-graded. Merge-ref 82d88625 not graded.
+
+Eval throw is gone. installer-parity-eval-test.nix stock requires operatorSudo.sshAgentAuth false and security.pam.sshAgentAuth.enable false. Forced-on requires that enable true and services.sudo.sshAgentAuth true. first-boot manifests evaluate (drift) failure on e6356d9a, success on this tip (installer-parity-model evaluated to a derivation).
+
+operator-sudo.nix default stays false. enable = true only inside mkIf. Per-service assignment removed. ISO roster is a real continuation (0x5c then 0x0a). Parity test: one readFileSync, ENOENT returns null. NOPASSWD not.toMatch went red on insertion. default = true went red. enable outside mkIf went red. bun 27 pass, 0 fail. INJECTION-POINTS.md:475 underscores.
+
+Nix was not on the review box. CI evaluation is the substitute.
+
+Softs: mergeable_state blocked; squash auto-merge left armed; CI in progress; parent lint reds not yet reported on the tip. No check red on the tip and green on the parent.
+
+Hard fails: none.
+
+Sit leftover; Vera will not merge.
