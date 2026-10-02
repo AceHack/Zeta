@@ -3484,3 +3484,19 @@ Softs. Live-run prose (five addresses answer :443; api.flowdent.net from 8 regio
 Path to GO: ship https-relay as a manifest, delete the create rule, and make every write verb require resourceNames [https-relay]. Do not land through merge a4665780.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17871 leftover unique @ e28194cbd4542723e83dbab7f5c83369da32abab -- GRADE GO
+
+Tip e28194cbd4542723e83dbab7f5c83369da32abab. Parent count 1. Parent 49f8a9e62090c9eace4cb81e582bfb7d7a066025. Not a merge. Tip-only +443/-47, 4 files: docs/ops/GITLAB-UPGRADE.md (+21/-1), full-ai-cluster/k8s/applications/gitlab/Application.yaml (+1/-1), src/Core.TypeScript/cluster/argocd-health-test.ts (+2/-2), src/Core.TypeScript/cluster/inert-valuesobject-keys.schema.json (+419/-43). Live head 879c8ec8851755b4b2514dcc275ffa3e85880b1d is a merge of e28194cb and 0f600e61 and was not graded. Squash auto-merge armed. Not disarmed.
+
+Chart pin Application.yaml:16 is targetRevision 8.11.8 (parent 8.8.7). Plan row GITLAB-UPGRADE.md:24 is hop 2, GitLab 17.11.7 / chart 8.11.8. helm template: appVersion v17.8.7 to v17.11.7; webservice, sidekiq, toolbox, workhorse, gitaly v17.11.7; shell v14.42.0; registry v4.19.2-gitlab; runner alpine-v17.9.1; redis 7.2.4-debian-12-r9. Parent tree is the from-version.
+
+Guard gitlab-upgrade-path-guard.ts:243-254, unchanged in this commit. Ran against base 49f8a9e6. Exit 0 PASSED. Mutations: target 9.0.0 FAILED (latest 8.11.x first); target 9.2.8 FAILED the same way; target 8.7.0 FAILED as a downgrade at line 251. In-cluster hook stays off (Application.yaml:217).
+
+Hop-1 measured log changed at GITLAB-UPGRADE.md:104-126. Reason-truth argocd-health-test.ts:556-557 cites gitlab 8.11.8. Inert-valuesobject-keys snapshot matches a live foldChart of chart 8.11.8 (3617 literal, 890 open, 4 dynamic). maxSurge 0 is in values and render. Replica floor is 1.
+
+CI: zero check runs on e28194cb. Parent 108 runs: 102 success, 4 skipped, 1 in progress (test TS hermetic), 1 cancelled (core-smoke). Nothing red on the tip and green on the parent.
+
+Hard fails: none. Softs: no CI on this SHA; 3-minute line is PR body / hop-1 log; webservice and sidekiq maxReplicas 2 (Application.yaml:843,847); stale redis 6.2.16 comment at Application.yaml:914-920 is not in the diff, render is 7.2.4; registry tag is v4.19.2-gitlab.
+
+Sit leftover; Vera will not merge.
