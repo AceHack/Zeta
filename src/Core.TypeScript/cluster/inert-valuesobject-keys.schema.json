@@ -6390,8 +6390,11 @@
         "postgresql=postgresql@11.9.13"
       ]
     },
-    "https://charts.gitlab.io/|gitlab|8.8.7": {
+    "https://charts.gitlab.io/|gitlab|8.11.8": {
       "literal": {
+        "autoflow": {
+          "temporal": {}
+        },
         "cert-manager": {
           "acmesolver": {
             "image": {
@@ -6764,6 +6767,7 @@
           "deploymentLabels": {},
           "deploymentLifecycle": {},
           "envVars": {},
+          "extraContainers": {},
           "extraEnv": {},
           "extraEnvFrom": {},
           "extraObjects": {},
@@ -6945,7 +6949,8 @@
                 "privateKey": {},
                 "secretName": {}
               }
-            }
+            },
+            "updateStrategy": {}
           },
           "image": {
             "pullPolicy": {}
@@ -7059,6 +7064,7 @@
           "install": {}
         },
         "image": {},
+        "imageTag": {},
         "ingress": {
           "enabled": {},
           "tls": {
@@ -7480,7 +7486,8 @@
           "serviceAccount": {},
           "servicePort": {},
           "serviceType": {},
-          "tolerations": {}
+          "tolerations": {},
+          "topologySpreadConstraints": {}
         },
         "nameOverride": {},
         "nginx-ingress": {
@@ -8034,6 +8041,52 @@
             "usePasswordFiles": {},
             "username": {}
           },
+          "backup": {
+            "cronjob": {
+              "annotations": {},
+              "command": {},
+              "concurrencyPolicy": {},
+              "containerSecurityContext": {
+                "allowPrivilegeEscalation": {},
+                "capabilities": {
+                  "drop": {}
+                },
+                "readOnlyRootFilesystem": {},
+                "runAsGroup": {},
+                "runAsNonRoot": {},
+                "runAsUser": {},
+                "seccompProfile": {
+                  "type": {}
+                }
+              },
+              "failedJobsHistoryLimit": {},
+              "labels": {},
+              "nodeSelector": {},
+              "podSecurityContext": {
+                "enabled": {},
+                "fsGroup": {}
+              },
+              "restartPolicy": {},
+              "schedule": {},
+              "startingDeadlineSeconds": {},
+              "storage": {
+                "accessModes": {},
+                "annotations": {},
+                "existingClaim": {},
+                "mountPath": {},
+                "resourcePolicy": {},
+                "size": {},
+                "storageClass": {},
+                "subPath": {},
+                "volumeClaimTemplates": {
+                  "selector": {}
+                }
+              },
+              "successfulJobsHistoryLimit": {},
+              "ttlSecondsAfterFinished": {}
+            },
+            "enabled": {}
+          },
           "cassandra": {
             "dbUser": {
               "existingSecret": {}
@@ -8061,6 +8114,7 @@
           "existingSecret": {},
           "extraDeploy": {},
           "extraMatchLabels": {},
+          "extraPodAffinityTerms": {},
           "fullnameOverride": {},
           "global": {
             "imagePullSecrets": {},
@@ -8136,9 +8190,17 @@
               "metrics": {}
             },
             "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
               "enabled": {},
+              "runAsGroup": {},
               "runAsNonRoot": {},
-              "runAsUser": {}
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "customLivenessProbe": {},
             "customMetrics": {},
@@ -8262,6 +8324,8 @@
             "to": {
               "the": {
                 "Value": {},
+                "Value1": {},
+                "Value2": {},
                 "existingSecret": {},
                 "image": {},
                 "image1": {},
@@ -8277,6 +8341,7 @@
           "persistence": {
             "size": {}
           },
+          "podLabels": {},
           "postgresql": {
             "enabled": {},
             "existingSecret": {},
@@ -8293,8 +8358,17 @@
             "command": {},
             "configuration": {},
             "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
               "enabled": {},
-              "runAsUser": {}
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "customLivenessProbe": {},
             "customReadinessProbe": {},
@@ -8350,6 +8424,11 @@
               "size": {},
               "storageClass": {},
               "subPath": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
             },
             "pgHbaConfiguration": {},
             "podAffinityPreset": {},
@@ -8423,8 +8502,17 @@
             "args": {},
             "command": {},
             "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
               "enabled": {},
-              "runAsUser": {}
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "customLivenessProbe": {},
             "customReadinessProbe": {},
@@ -8469,6 +8557,11 @@
               "size": {},
               "storageClass": {},
               "subPath": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
             },
             "podAffinityPreset": {},
             "podAnnotations": {},
@@ -9162,6 +9255,7 @@
             "existingSecretPasswordKey": {},
             "password": {},
             "sentinel": {},
+            "usePasswordFileFromSecret": {},
             "usePasswordFiles": {}
           },
           "cassandra": {
@@ -9178,6 +9272,7 @@
           "commonAnnotations": {},
           "commonConfiguration": {},
           "commonLabels": {},
+          "containerSecurityContext": {},
           "dbUser": {
             "existingSecret": {}
           },
@@ -9193,8 +9288,14 @@
           "existingSecret": {},
           "extraDeploy": {},
           "extraMatchLabels": {},
+          "extraPodAffinityTerms": {},
           "fullnameOverride": {},
           "global": {
+            "compatibility": {
+              "openshift": {
+                "adaptSecurityContext": {}
+              }
+            },
             "imagePullSecrets": {},
             "imageRegistry": {},
             "kubeVersion": {},
@@ -9206,6 +9307,7 @@
           },
           "image": {
             "debug": {},
+            "digest": {},
             "pullPolicy": {},
             "pullSecrets": {},
             "registry": {},
@@ -9217,6 +9319,18 @@
           },
           "install": {},
           "kubeVersion": {},
+          "kubectl": {
+            "command": {},
+            "image": {
+              "digest": {},
+              "pullPolicy": {},
+              "pullSecrets": {},
+              "registry": {},
+              "repository": {},
+              "tag": {}
+            },
+            "resources": {}
+          },
           "mariadb": {
             "architecture": {},
             "auth": {
@@ -9227,14 +9341,26 @@
           "master": {
             "affinity": {},
             "args": {},
+            "automountServiceAccountToken": {},
             "command": {},
             "configuration": {},
             "containerPorts": {
               "redis": {}
             },
             "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
               "enabled": {},
-              "runAsUser": {}
+              "readOnlyRootFilesystem": {},
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "count": {},
             "customLivenessProbe": {},
@@ -9243,6 +9369,7 @@
             "disableCommands": {},
             "dnsConfig": {},
             "dnsPolicy": {},
+            "enableServiceLinks": {},
             "extraEnvVars": {},
             "extraEnvVarsCM": {},
             "extraEnvVarsSecret": {},
@@ -9261,6 +9388,7 @@
               "successThreshold": {},
               "timeoutSeconds": {}
             },
+            "minReadySeconds": {},
             "nodeAffinityPreset": {
               "key": {},
               "type": {},
@@ -9273,13 +9401,20 @@
               "dataSource": {},
               "enabled": {},
               "existingClaim": {},
+              "labels": {},
               "medium": {},
               "path": {},
               "selector": {},
               "size": {},
               "sizeLimit": {},
               "storageClass": {},
-              "subPath": {}
+              "subPath": {},
+              "subPathExpr": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
             },
             "podAffinityPreset": {},
             "podAnnotations": {},
@@ -9287,7 +9422,10 @@
             "podLabels": {},
             "podSecurityContext": {
               "enabled": {},
-              "fsGroup": {}
+              "fsGroup": {},
+              "fsGroupChangePolicy": {},
+              "supplementalGroups": {},
+              "sysctls": {}
             },
             "preExecCmds": {},
             "priorityClassName": {},
@@ -9300,13 +9438,16 @@
               "timeoutSeconds": {}
             },
             "resources": {},
+            "resourcesPreset": {},
             "schedulerName": {},
             "service": {
               "annotations": {},
               "clusterIP": {},
+              "externalIPs": {},
               "externalTrafficPolicy": {},
               "extraPorts": {},
               "internalTrafficPolicy": {},
+              "loadBalancerClass": {},
               "loadBalancerIP": {},
               "loadBalancerSourceRanges": {},
               "nodePorts": {
@@ -9318,6 +9459,12 @@
               "sessionAffinity": {},
               "sessionAffinityConfig": {},
               "type": {}
+            },
+            "serviceAccount": {
+              "annotations": {},
+              "automountServiceAccountToken": {},
+              "create": {},
+              "name": {}
             },
             "shareProcessNamespace": {},
             "sidecars": {},
@@ -9336,21 +9483,47 @@
           },
           "metrics": {
             "command": {},
-            "containerSecurityContext": {
-              "enabled": {},
-              "runAsUser": {}
+            "containerPorts": {
+              "http": {}
             },
+            "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
+              "enabled": {},
+              "readOnlyRootFilesystem": {},
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
+            },
+            "customLivenessProbe": {},
+            "customReadinessProbe": {},
+            "customStartupProbe": {},
             "enabled": {},
             "extraArgs": {},
             "extraEnvVars": {},
             "extraVolumeMounts": {},
             "extraVolumes": {},
             "image": {
+              "digest": {},
               "pullPolicy": {},
               "pullSecrets": {},
               "registry": {},
               "repository": {},
               "tag": {}
+            },
+            "livenessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
             },
             "podAnnotations": {
               "prometheus": {
@@ -9359,32 +9532,77 @@
               }
             },
             "podLabels": {},
-            "prometheusRule": {
-              "additionalLabels": {},
-              "enabled": {},
-              "namespace": {},
-              "rules": {}
-            },
-            "redisTargetHost": {},
-            "resources": {},
-            "service": {
-              "annotations": {},
-              "externalTrafficPolicy": {},
-              "extraPorts": {},
-              "loadBalancerIP": {},
-              "loadBalancerSourceRanges": {},
-              "port": {},
-              "type": {}
-            },
-            "serviceMonitor": {
+            "podMonitor": {
+              "additionalEndpoints": {},
               "additionalLabels": {},
               "enabled": {},
               "honorLabels": {},
               "interval": {},
               "metricRelabelings": {},
               "namespace": {},
+              "podTargetLabels": {},
+              "port": {},
+              "relabelings": {},
               "relabellings": {},
-              "scrapeTimeout": {}
+              "sampleLimit": {},
+              "scrapeTimeout": {},
+              "targetLimit": {}
+            },
+            "prometheusRule": {
+              "additionalLabels": {},
+              "enabled": {},
+              "namespace": {},
+              "rules": {}
+            },
+            "readinessProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
+            },
+            "redisTargetHost": {},
+            "resources": {},
+            "resourcesPreset": {},
+            "service": {
+              "annotations": {},
+              "clusterIP": {},
+              "enabled": {},
+              "externalTrafficPolicy": {},
+              "extraPorts": {},
+              "loadBalancerClass": {},
+              "loadBalancerIP": {},
+              "loadBalancerSourceRanges": {},
+              "port": {},
+              "ports": {
+                "http": {}
+              },
+              "type": {}
+            },
+            "serviceMonitor": {
+              "additionalEndpoints": {},
+              "additionalLabels": {},
+              "enabled": {},
+              "honorLabels": {},
+              "interval": {},
+              "metricRelabelings": {},
+              "namespace": {},
+              "podTargetLabels": {},
+              "port": {},
+              "relabelings": {},
+              "relabellings": {},
+              "sampleLimit": {},
+              "scrapeTimeout": {},
+              "targetLimit": {}
+            },
+            "startupProbe": {
+              "enabled": {},
+              "failureThreshold": {},
+              "initialDelaySeconds": {},
+              "periodSeconds": {},
+              "successThreshold": {},
+              "timeoutSeconds": {}
             }
           },
           "mongodb": {
@@ -9394,6 +9612,7 @@
             },
             "enabled": {}
           },
+          "myValue": {},
           "mysql": {
             "architecture": {},
             "auth": {
@@ -9402,19 +9621,29 @@
             "enabled": {}
           },
           "nameOverride": {},
+          "nameResolutionThreshold": {},
+          "nameResolutionTimeout": {},
           "namespaceOverride": {},
           "networkPolicy": {
             "allowExternal": {},
+            "allowExternalEgress": {},
             "enabled": {},
             "extraEgress": {},
             "extraIngress": {},
             "ingressNSMatchLabels": {},
-            "ingressNSPodMatchLabels": {}
+            "ingressNSPodMatchLabels": {},
+            "metrics": {
+              "allowExternal": {},
+              "ingressNSMatchLabels": {},
+              "ingressNSPodMatchLabels": {}
+            }
           },
           "path": {
             "to": {
               "the": {
                 "Value": {},
+                "Value1": {},
+                "Value2": {},
                 "existingSecret": {},
                 "image": {},
                 "image1": {},
@@ -9432,6 +9661,7 @@
             "maxUnavailable": {},
             "minAvailable": {}
           },
+          "podLabels": {},
           "podSecurityPolicy": {
             "create": {},
             "enabled": {}
@@ -9453,6 +9683,7 @@
           "replica": {
             "affinity": {},
             "args": {},
+            "automountServiceAccountToken": {},
             "autoscaling": {
               "enabled": {},
               "maxReplicas": {},
@@ -9466,8 +9697,19 @@
               "redis": {}
             },
             "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
               "enabled": {},
-              "runAsUser": {}
+              "readOnlyRootFilesystem": {},
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "customLivenessProbe": {},
             "customReadinessProbe": {},
@@ -9475,6 +9717,7 @@
             "disableCommands": {},
             "dnsConfig": {},
             "dnsPolicy": {},
+            "enableServiceLinks": {},
             "externalMaster": {
               "enabled": {},
               "host": {},
@@ -9488,6 +9731,7 @@
             "extraVolumes": {},
             "hostAliases": {},
             "initContainers": {},
+            "kind": {},
             "lifecycleHooks": {},
             "livenessProbe": {
               "enabled": {},
@@ -9497,6 +9741,7 @@
               "successThreshold": {},
               "timeoutSeconds": {}
             },
+            "minReadySeconds": {},
             "nodeAffinityPreset": {
               "key": {},
               "type": {},
@@ -9509,13 +9754,20 @@
               "dataSource": {},
               "enabled": {},
               "existingClaim": {},
+              "labels": {},
               "medium": {},
               "path": {},
               "selector": {},
               "size": {},
               "sizeLimit": {},
               "storageClass": {},
-              "subPath": {}
+              "subPath": {},
+              "subPathExpr": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
             },
             "podAffinityPreset": {},
             "podAnnotations": {},
@@ -9524,7 +9776,10 @@
             "podManagementPolicy": {},
             "podSecurityContext": {
               "enabled": {},
-              "fsGroup": {}
+              "fsGroup": {},
+              "fsGroupChangePolicy": {},
+              "supplementalGroups": {},
+              "sysctls": {}
             },
             "preExecCmds": {},
             "priorityClassName": {},
@@ -9538,6 +9793,7 @@
             },
             "replicaCount": {},
             "resources": {},
+            "resourcesPreset": {},
             "schedulerName": {},
             "service": {
               "annotations": {},
@@ -9545,6 +9801,7 @@
               "externalTrafficPolicy": {},
               "extraPorts": {},
               "internalTrafficPolicy": {},
+              "loadBalancerClass": {},
               "loadBalancerIP": {},
               "loadBalancerSourceRanges": {},
               "nodePorts": {
@@ -9556,6 +9813,12 @@
               "sessionAffinity": {},
               "sessionAffinityConfig": {},
               "type": {}
+            },
+            "serviceAccount": {
+              "annotations": {},
+              "automountServiceAccountToken": {},
+              "create": {},
+              "name": {}
             },
             "shareProcessNamespace": {},
             "sidecars": {},
@@ -9577,6 +9840,7 @@
           },
           "secretAnnotations": {},
           "sentinel": {
+            "annotations": {},
             "args": {},
             "automateClusterRecovery": {},
             "command": {},
@@ -9585,13 +9849,25 @@
               "sentinel": {}
             },
             "containerSecurityContext": {
+              "allowPrivilegeEscalation": {},
+              "capabilities": {
+                "drop": {}
+              },
               "enabled": {},
-              "runAsUser": {}
+              "readOnlyRootFilesystem": {},
+              "runAsGroup": {},
+              "runAsNonRoot": {},
+              "runAsUser": {},
+              "seLinuxOptions": {},
+              "seccompProfile": {
+                "type": {}
+              }
             },
             "customLivenessProbe": {},
             "customReadinessProbe": {},
             "customStartupProbe": {},
             "downAfterMilliseconds": {},
+            "enableServiceLinks": {},
             "enabled": {},
             "externalMaster": {
               "enabled": {},
@@ -9607,6 +9883,7 @@
             "getMasterTimeout": {},
             "image": {
               "debug": {},
+              "digest": {},
               "pullPolicy": {},
               "pullSecrets": {},
               "registry": {},
@@ -9629,10 +9906,17 @@
               "annotations": {},
               "dataSource": {},
               "enabled": {},
+              "labels": {},
               "medium": {},
               "selector": {},
               "size": {},
+              "sizeLimit": {},
               "storageClass": {}
+            },
+            "persistentVolumeClaimRetentionPolicy": {
+              "enabled": {},
+              "whenDeleted": {},
+              "whenScaled": {}
             },
             "preExecCmds": {},
             "quorum": {},
@@ -9644,12 +9928,19 @@
               "successThreshold": {},
               "timeoutSeconds": {}
             },
+            "redisShutdownWaitFailover": {},
             "resources": {},
+            "resourcesPreset": {},
             "service": {
               "annotations": {},
               "clusterIP": {},
+              "createMaster": {},
               "externalTrafficPolicy": {},
               "extraPorts": {},
+              "headless": {
+                "annotations": {}
+              },
+              "loadBalancerClass": {},
               "loadBalancerIP": {},
               "loadBalancerSourceRanges": {},
               "nodePorts": {
@@ -9680,10 +9971,14 @@
             "create": {},
             "name": {}
           },
+          "serviceBindings": {
+            "enabled": {}
+          },
           "sysctl": {
             "command": {},
             "enabled": {},
             "image": {
+              "digest": {},
               "pullPolicy": {},
               "pullSecrets": {},
               "registry": {},
@@ -9691,7 +9986,8 @@
               "tag": {}
             },
             "mountHostSys": {},
-            "resources": {}
+            "resources": {},
+            "resourcesPreset": {}
           },
           "tls": {
             "authClients": {},
@@ -9710,17 +10006,20 @@
             "enabled": {},
             "suffix": {}
           },
+          "useHostnames": {},
           "volumePermissions": {
             "containerSecurityContext": {},
             "enabled": {},
             "image": {
+              "digest": {},
               "pullPolicy": {},
               "pullSecrets": {},
               "registry": {},
               "repository": {},
               "tag": {}
             },
-            "resources": {}
+            "resources": {},
+            "resourcesPreset": {}
           }
         },
         "redis-ha": {},
@@ -10041,6 +10340,32 @@
               },
               "writetimeout": {}
             },
+            "loadBalancing": {
+              "cluster": {},
+              "db": {},
+              "dialtimeout": {},
+              "enabled": {},
+              "host": {},
+              "password": {
+                "enabled": {},
+                "key": {},
+                "secret": {}
+              },
+              "pool": {
+                "idletimeout": {},
+                "maxlifetime": {},
+                "size": {}
+              },
+              "port": {},
+              "readtimeout": {},
+              "sentinels": {},
+              "tls": {
+                "enabled": {},
+                "insecure": {}
+              },
+              "username": {},
+              "writetimeout": {}
+            },
             "rateLimiting": {
               "cluster": {},
               "db": {},
@@ -10106,6 +10431,7 @@
           "tokenIssuer": {},
           "tokenService": {},
           "tolerations": {},
+          "topologySpreadConstraints": {},
           "updateStrategy": {},
           "validation": {
             "disabled": {},
@@ -10457,6 +10783,7 @@
         "gitlab-runner.deploymentAnnotations",
         "gitlab-runner.deploymentLabels",
         "gitlab-runner.deploymentLifecycle",
+        "gitlab-runner.extraContainers",
         "gitlab-runner.extraEnv",
         "gitlab-runner.extraEnvFrom",
         "gitlab-runner.extraObjects",
@@ -10479,7 +10806,6 @@
         "gitlab-runner.rbac.serviceAccountAnnotations",
         "gitlab-runner.readinessProbe",
         "gitlab-runner.resources",
-        "gitlab-runner.runnerRegistrationToken",
         "gitlab-runner.runners.cache",
         "gitlab-runner.runners.config",
         "gitlab-runner.runners.secret",
@@ -10509,6 +10835,7 @@
         "gitlab-zoekt.gateway.securityContext",
         "gitlab-zoekt.gateway.tls.certificate.annotations",
         "gitlab-zoekt.gateway.tls.certificate.dnsNames",
+        "gitlab-zoekt.gateway.updateStrategy",
         "gitlab-zoekt.imagePullSecrets",
         "gitlab-zoekt.indexer.environment",
         "gitlab-zoekt.indexer.internalApi.gitlabUrl",
@@ -10602,6 +10929,7 @@
         "minio.securityContext",
         "minio.serviceAccount",
         "minio.tolerations",
+        "minio.topologySpreadConstraints",
         "nginx-ingress.common.labels",
         "nginx-ingress.controller.addHeaders",
         "nginx-ingress.controller.admissionWebhooks.annotations",
@@ -10699,6 +11027,15 @@
         "postgresql.auth.secretKeys.adminPasswordKey",
         "postgresql.auth.secretKeys.replicationPasswordKey",
         "postgresql.auth.secretKeys.userPasswordKey",
+        "postgresql.backup.cronjob.annotations",
+        "postgresql.backup.cronjob.command",
+        "postgresql.backup.cronjob.containerSecurityContext.capabilities.drop",
+        "postgresql.backup.cronjob.labels",
+        "postgresql.backup.cronjob.nodeSelector",
+        "postgresql.backup.cronjob.storage.accessModes",
+        "postgresql.backup.cronjob.storage.annotations",
+        "postgresql.backup.cronjob.storage.existingClaim",
+        "postgresql.backup.cronjob.storage.volumeClaimTemplates.selector",
         "postgresql.clusterDomain",
         "postgresql.commonAnnotations",
         "postgresql.commonLabels",
@@ -10712,6 +11049,7 @@
         "postgresql.global.postgresql.auth.secretKeys.replicationPasswordKey",
         "postgresql.global.postgresql.auth.secretKeys.userPasswordKey",
         "postgresql.image.pullSecrets",
+        "postgresql.metrics.containerSecurityContext.capabilities.drop",
         "postgresql.metrics.customLivenessProbe",
         "postgresql.metrics.customMetrics",
         "postgresql.metrics.customReadinessProbe",
@@ -10738,6 +11076,7 @@
         "postgresql.primary.annotations",
         "postgresql.primary.args",
         "postgresql.primary.command",
+        "postgresql.primary.containerSecurityContext.capabilities.drop",
         "postgresql.primary.customLivenessProbe",
         "postgresql.primary.customReadinessProbe",
         "postgresql.primary.customStartupProbe",
@@ -10779,6 +11118,7 @@
         "postgresql.readReplicas.annotations",
         "postgresql.readReplicas.args",
         "postgresql.readReplicas.command",
+        "postgresql.readReplicas.containerSecurityContext.capabilities.drop",
         "postgresql.readReplicas.customLivenessProbe",
         "postgresql.readReplicas.customReadinessProbe",
         "postgresql.readReplicas.customStartupProbe",
@@ -11005,6 +11345,8 @@
         "prometheus.serviceAccounts.nodeExporter.annotations",
         "prometheus.serviceAccounts.pushgateway.annotations",
         "prometheus.serviceAccounts.server.annotations",
+        "redis.auth.existingSecret",
+        "redis.auth.existingSecretPasswordKey",
         "redis.clusterDomain",
         "redis.commonAnnotations",
         "redis.commonLabels",
@@ -11014,9 +11356,13 @@
         "redis.extraDeploy",
         "redis.global.imagePullSecrets",
         "redis.image.pullSecrets",
+        "redis.kubectl.command",
+        "redis.kubectl.image.pullSecrets",
+        "redis.kubectl.resources",
         "redis.master.affinity",
         "redis.master.args",
         "redis.master.command",
+        "redis.master.containerSecurityContext.capabilities.drop",
         "redis.master.customLivenessProbe",
         "redis.master.customReadinessProbe",
         "redis.master.customStartupProbe",
@@ -11035,43 +11381,64 @@
         "redis.master.persistence.annotations",
         "redis.master.persistence.dataSource",
         "redis.master.persistence.existingClaim",
+        "redis.master.persistence.labels",
         "redis.master.persistence.selector",
         "redis.master.podAnnotations",
         "redis.master.podLabels",
+        "redis.master.podSecurityContext.supplementalGroups",
+        "redis.master.podSecurityContext.sysctls",
         "redis.master.preExecCmds",
         "redis.master.resources",
         "redis.master.service.annotations",
+        "redis.master.service.externalIPs",
         "redis.master.service.extraPorts",
         "redis.master.service.loadBalancerSourceRanges",
         "redis.master.service.sessionAffinityConfig",
+        "redis.master.serviceAccount.annotations",
         "redis.master.sidecars",
         "redis.master.tolerations",
         "redis.master.topologySpreadConstraints",
         "redis.master.updateStrategy",
         "redis.metrics.command",
+        "redis.metrics.containerSecurityContext.capabilities.drop",
+        "redis.metrics.customLivenessProbe",
+        "redis.metrics.customReadinessProbe",
+        "redis.metrics.customStartupProbe",
         "redis.metrics.extraArgs",
         "redis.metrics.extraEnvVars",
         "redis.metrics.extraVolumeMounts",
         "redis.metrics.extraVolumes",
         "redis.metrics.image.pullSecrets",
         "redis.metrics.podLabels",
+        "redis.metrics.podMonitor.additionalEndpoints",
+        "redis.metrics.podMonitor.additionalLabels",
+        "redis.metrics.podMonitor.metricRelabelings",
+        "redis.metrics.podMonitor.podTargetLabels",
+        "redis.metrics.podMonitor.relabelings",
+        "redis.metrics.podMonitor.relabellings",
         "redis.metrics.prometheusRule.additionalLabels",
         "redis.metrics.prometheusRule.rules",
         "redis.metrics.resources",
         "redis.metrics.service.annotations",
         "redis.metrics.service.extraPorts",
         "redis.metrics.service.loadBalancerSourceRanges",
+        "redis.metrics.serviceMonitor.additionalEndpoints",
         "redis.metrics.serviceMonitor.additionalLabels",
         "redis.metrics.serviceMonitor.metricRelabelings",
+        "redis.metrics.serviceMonitor.podTargetLabels",
+        "redis.metrics.serviceMonitor.relabelings",
         "redis.metrics.serviceMonitor.relabellings",
         "redis.networkPolicy.extraEgress",
         "redis.networkPolicy.extraIngress",
         "redis.networkPolicy.ingressNSMatchLabels",
         "redis.networkPolicy.ingressNSPodMatchLabels",
+        "redis.networkPolicy.metrics.ingressNSMatchLabels",
+        "redis.networkPolicy.metrics.ingressNSPodMatchLabels",
         "redis.rbac.rules",
         "redis.replica.affinity",
         "redis.replica.args",
         "redis.replica.command",
+        "redis.replica.containerSecurityContext.capabilities.drop",
         "redis.replica.customLivenessProbe",
         "redis.replica.customReadinessProbe",
         "redis.replica.customStartupProbe",
@@ -11090,22 +11457,28 @@
         "redis.replica.persistence.annotations",
         "redis.replica.persistence.dataSource",
         "redis.replica.persistence.existingClaim",
+        "redis.replica.persistence.labels",
         "redis.replica.persistence.selector",
         "redis.replica.podAnnotations",
         "redis.replica.podLabels",
+        "redis.replica.podSecurityContext.supplementalGroups",
+        "redis.replica.podSecurityContext.sysctls",
         "redis.replica.preExecCmds",
         "redis.replica.resources",
         "redis.replica.service.annotations",
         "redis.replica.service.extraPorts",
         "redis.replica.service.loadBalancerSourceRanges",
         "redis.replica.service.sessionAffinityConfig",
+        "redis.replica.serviceAccount.annotations",
         "redis.replica.sidecars",
         "redis.replica.tolerations",
         "redis.replica.topologySpreadConstraints",
         "redis.replica.updateStrategy",
         "redis.secretAnnotations",
+        "redis.sentinel.annotations",
         "redis.sentinel.args",
         "redis.sentinel.command",
+        "redis.sentinel.containerSecurityContext.capabilities.drop",
         "redis.sentinel.customLivenessProbe",
         "redis.sentinel.customReadinessProbe",
         "redis.sentinel.customStartupProbe",
@@ -11117,11 +11490,13 @@
         "redis.sentinel.persistence.accessModes",
         "redis.sentinel.persistence.annotations",
         "redis.sentinel.persistence.dataSource",
+        "redis.sentinel.persistence.labels",
         "redis.sentinel.persistence.selector",
         "redis.sentinel.preExecCmds",
         "redis.sentinel.resources",
         "redis.sentinel.service.annotations",
         "redis.sentinel.service.extraPorts",
+        "redis.sentinel.service.headless.annotations",
         "redis.sentinel.service.loadBalancerSourceRanges",
         "redis.sentinel.service.sessionAffinityConfig",
         "redis.serviceAccount.annotations",
@@ -11177,6 +11552,7 @@
         "registry.tls.cipherSuites",
         "registry.tls.clientCAs",
         "registry.tolerations",
+        "registry.topologySpreadConstraints",
         "registry.validation.manifests.urls.allow",
         "registry.validation.manifests.urls.deny",
         "shared-secrets.annotations",
@@ -11237,34 +11613,34 @@
       ],
       "dynamic": ["gitlab.global.redis", "global.communityImages", "global.enterpriseImages", "traefik.ports"],
       "charts": [
-        "<root>=gitlab@8.8.7",
-        "cert-manager=cert-manager@v1.12.14",
-        "certmanager-issuer=certmanager-issuer@0.2.0",
-        "gitlab-runner=gitlab-runner@0.73.3",
-        "gitlab-zoekt=gitlab-zoekt@1.4.3",
-        "gitlab.geo-logcursor=geo-logcursor@8.8.7",
-        "gitlab.gitaly=gitaly@8.8.7",
-        "gitlab.gitlab-exporter=gitlab-exporter@8.8.7",
-        "gitlab.gitlab-pages=gitlab-pages@8.8.7",
-        "gitlab.gitlab-shell=gitlab-shell@8.8.7",
-        "gitlab.kas=kas@8.8.7",
-        "gitlab.mailroom=mailroom@8.8.7",
-        "gitlab.migrations=migrations@8.8.7",
-        "gitlab.praefect=praefect@8.8.7",
-        "gitlab.sidekiq=sidekiq@8.8.7",
-        "gitlab.spamcheck=spamcheck@8.8.7",
-        "gitlab.toolbox=toolbox@8.8.7",
-        "gitlab.webservice=webservice@8.8.7",
+        "<root>=gitlab@8.11.8",
+        "cert-manager=cert-manager@v1.12.16",
+        "certmanager-issuer=certmanager-issuer@0.2.1",
+        "gitlab-runner=gitlab-runner@0.74.1",
+        "gitlab-zoekt=gitlab-zoekt@1.8.1",
+        "gitlab.geo-logcursor=geo-logcursor@8.11.8",
+        "gitlab.gitaly=gitaly@8.11.8",
+        "gitlab.gitlab-exporter=gitlab-exporter@8.11.8",
+        "gitlab.gitlab-pages=gitlab-pages@8.11.8",
+        "gitlab.gitlab-shell=gitlab-shell@8.11.8",
+        "gitlab.kas=kas@8.11.8",
+        "gitlab.mailroom=mailroom@8.11.8",
+        "gitlab.migrations=migrations@8.11.8",
+        "gitlab.praefect=praefect@8.11.8",
+        "gitlab.sidekiq=sidekiq@8.11.8",
+        "gitlab.spamcheck=spamcheck@8.11.8",
+        "gitlab.toolbox=toolbox@8.11.8",
+        "gitlab.webservice=webservice@8.11.8",
         "gitlab=gitlab@0.1.0",
         "kubernetes-ingress=kubernetes-ingress@1.32.0",
         "minio=minio@0.4.3",
         "nginx-ingress=nginx-ingress@4.0.6",
-        "postgresql=common@2.2.5",
-        "postgresql=postgresql@12.5.2",
+        "postgresql=common@2.12.0",
+        "postgresql=postgresql@12.12.10",
         "prometheus.kube-state-metrics=kube-state-metrics@4.22.1",
         "prometheus=prometheus@15.18.0",
-        "redis=common@1.16.0",
-        "redis=redis@16.13.2",
+        "redis=common@2.19.0",
+        "redis=redis@18.19.4",
         "registry=registry@0.7.0",
         "traefik=traefik@10.19.4"
       ]
@@ -37199,9 +37575,9 @@
     {
       "appId": "full-ai-cluster/gitlab",
       "chart": "gitlab",
-      "targetRevision": "8.8.7",
+      "targetRevision": "8.11.8",
       "repoURL": "https://charts.gitlab.io/",
-      "chartKey": "https://charts.gitlab.io/|gitlab|8.8.7"
+      "chartKey": "https://charts.gitlab.io/|gitlab|8.11.8"
     },
     {
       "appId": "full-ai-cluster/hat-system",

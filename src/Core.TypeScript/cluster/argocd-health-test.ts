@@ -553,8 +553,8 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: no-unrenderable full-ai-cluster/gitlab] " +
       "[cite: renders full-ai-cluster/gitlab] " +
       "[cite: pvc-total full-ai-cluster/gitlab 66] " +
-      "[cite: chart-pin full-ai-cluster/gitlab gitlab 8.8.7] " +
-      "[cite: published gitlab 8.8.7] " +
+      "[cite: chart-pin full-ai-cluster/gitlab gitlab 8.11.8] " +
+      "[cite: published gitlab 8.11.8] " +
       "[cite: path infra/README.md:165] " +
       "[cite: glob-defers gitlab] " +
       "UPDATE 2026-09-23 -- THE CAPACITY HALF IS MEASURED NOW, AND IT IS MEMORY, NOT CPU. At chart defaults " +
