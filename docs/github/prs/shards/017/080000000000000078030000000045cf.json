@@ -1,0 +1,12 @@
+{
+  "pr_number": 17871,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17871-chore-gitlab-hop-2-of-8-17-8-7-17-11-7-chart-8-8-7-8-11-8.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T19:36:16.047Z",
+  "schema_version": "v1",
+  "commit_sha": "fadc323fc0ca533abd0d046e3ee93cbdd009ca1a",
+  "title": "chore(gitlab): hop 2 of 8 -- 17.8.7 -> 17.11.7 (chart 8.8.7 -> 8.11.8)",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T19:35:27Z",
+  "head_ref": "chore/gitlab-upgrade-h2-17.11"
+}
