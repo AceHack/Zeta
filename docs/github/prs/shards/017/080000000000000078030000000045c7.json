@@ -1,0 +1,12 @@
+{
+  "pr_number": 17863,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17863-fix-cluster-pin-secret-call-regex-fail-by-equality.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T11:14:47.597Z",
+  "schema_version": "v1",
+  "commit_sha": "3614607ef27ad431516203d119eeead908db94ef",
+  "title": "fix(cluster): pin secret-call regex fail by equality",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T11:13:56Z",
+  "head_ref": "cursor/cluster-hygiene-arity-r5-27c5"
+}
