@@ -29,7 +29,10 @@
 #     maxSurge needs a spare pod's worth of CPU that a single node does not have (gitlab-exposure.test.ts g);
 #   * the chart named its migrations Job with a hash of every value, so the pin renamed it and `prune: false`
 #     kept the old one: a healthy install read OutOfSync forever (owner's node, and this lane's informational
-#     check). Fixed name + Force/Replace + a PostSync GC; checks a6/a7 are BLOCKING now (gitlab-exposure.test.ts h).
+#     check). Fixed name + Force/Replace + a PostSync GC; checks a6/a7 are BLOCKING now (gitlab-exposure.test.ts h);
+#   * an operation rendered with the sentinel before the pin landed reaches the exposure wave with the sentinel
+#     and waits on the Gateway for ever (run 36951220893, after four passes on identical manifests): the
+#     stale-render gate Job fails such an operation so ArgoCD retries from current values (gitlab-exposure.test.ts i).
 
 name: gitlab-live-proof
 
