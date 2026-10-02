@@ -3534,3 +3534,17 @@ CI: tip 70 success, 20 skipped, 15 in progress, 1 neutral, zero completed failur
 Hard fails: none.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17874 leftover unique @ e6356d9a47ae320435cf3eee2e10b8c547e87e45 -- GRADE HOLD
+
+Tip e6356d9a47ae320435cf3eee2e10b8c547e87e45 is the live head. One parent 95e1606bd9be9bf74be23bb068d941250979cf0b. Not a merge. Tip-only +12/-7, 4 files. Merge-ref 77dd8b8a not graded. Parent 95e1606b is a merge of 9f2b8c27 and main 2c0d1e49 and was not graded. Verdict is the tip tree against main (+985/-12, 22 files).
+
+Holds: node-public-https.nix:36-38 TCP 443 only; common.nix:302 firewall on; no allowedTCPPorts adds 80. public-hosts.nix:45-48 loopback gitlab. and registry. at 127.0.0.1. k3s-process-protection.nix:241-244 image-gc 75/65 and container-log-max-files 3, both roles. operator-sudo.nix:48-62 sshAgentAuth default false. installer-parity.test.ts:233 NOPASSWD mutation went red. zeta-install.sh:6158-6163 router note. Relay expects at installer-parity.test.ts:156-157 went red when EDGE_PORT and be_gateway were broken. bun 35 pass, 0 fail.
+
+Hard fail: installer-parity-eval-test.nix:100 throws "a stock host's sudo PAM service must not use the ssh agent" evaluating installer-parity-model (flake.nix:892). CI first-boot manifests evaluate (drift) red on this SHA. NixOS sudo.nix sets security.pam.services.sudo.sshAgentAuth true whenever sudo is enabled. Effective rule stays off because security.pam.sshAgentAuth.enable is false (line 98 passed). Parent has no run of this check. Hold is the new eval throw, not a red-vs-green comparison.
+
+Softs: actionlint SC1012 at build-ai-cluster-iso.yml:371; markdownlint MD049 at INJECTION-POINTS.md:475; check-then-use at installer-parity.test.ts:138; arity-nonequality at lines 231 and 234; CI in progress; mergeable_state blocked; squash auto-merge left armed. Significant soft: deleting bind :$PORT stayed green.
+
+Path to GO: assert the effective sudo PAM rule, not the service flag NixOS sets true.
+
+Sit leftover; Vera will not merge.
