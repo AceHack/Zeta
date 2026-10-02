@@ -1,0 +1,15 @@
+{
+  "pr_number": 17843,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17843-feat-virt-gitlab-an-opt-in-windows-gitlab-runner-path-on-kubevirt.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM74Czwf",
+    "thread:PRRT_kwDOSF9kNM6oLP3u"
+  ],
+  "fetched_at": "2026-10-02T00:29:40.257Z",
+  "schema_version": "v1",
+  "commit_sha": "0ce17e8214c6d4e9e90189cadf75888458399ca8",
+  "title": "feat(virt,gitlab): an opt-in Windows GitLab runner path on KubeVirt",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T00:28:52Z",
+  "head_ref": "feat/windows-gitlab-runner-on-kubevirt"
+}
