@@ -3500,3 +3500,19 @@ CI: zero check runs on e28194cb. Parent 108 runs: 102 success, 4 skipped, 1 in p
 Hard fails: none. Softs: no CI on this SHA; 3-minute line is PR body / hop-1 log; webservice and sidekiq maxReplicas 2 (Application.yaml:843,847); stale redis 6.2.16 comment at Application.yaml:914-920 is not in the diff, render is 7.2.4; registry tag is v4.19.2-gitlab.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17872 leftover unique @ fb1b4ecfe2b3fc47982e82eadcac36fd4e2e221c -- GRADE HOLD
+
+Tip fb1b4ecfe2b3fc47982e82eadcac36fd4e2e221c. Parent count 1. Parent 0f600e6197775566f5aa38fe8efaa17d4e2ecdde. Not a merge. Tip-only +392/-56, 6 files: node-lan-hosts.yaml (+157/-15), image-source-provenance.json (+32/-32), node-lan-hosts-edge.test.ts (+184/-0), node-lan-hosts-relay.test.ts (+4/-1), node-lan-hosts.test.ts (+14/-7), rendered-resource-requests.baseline.json (+1/-1). Live head is this tip and was graded. Merge-ref 1024259221 was not graded. Squash auto-merge armed. Not disarmed.
+
+Hard fail: image-source-provenance.json marks nine still-pinned GHCR images packagePresence absent / sourceVisibility unknown at resolvedAt 2026-10-02, and the file comment at line 2 says each row is an anonymous-pull measurement. This commit does not change image-source-provenance.ts and has no refresh output. The nine: arma-reforger, actions-runner, steamcmd, headscale (also loses sourceRepo and sourceEvidence), zeta-bao-unseal, zeta-orleans-silo, zeta-platform-controller, zeta-portal, vectorize-io/hindsight. Tag HTTP codes stay 200. hat-system-operator was already absent on the parent.
+
+The cutover holds. haproxy:3.0-alpine at node-lan-hosts.yaml:235-236. SNI to be_api else TCP passthrough (:288-294). Hop 127.0.0.1:$TERM_PORT send-proxy-v2 (:300). del-header X-Forwarded-For then option forwardfor (:306-307). emptyDir Memory (:107-110). Failed read keeps the previous set (:162-184). Reload only after haproxy -c (:328-340). Role get only on flowdent-api-tls and flowdent-api-staging-tls in zeta-platform (:402-412). Tests 22 pass. Five mutations each 7 pass / 1 fail: XFF, failed-read clear, reload without -c, third secret name, abns@. CI: no tip check failed; nothing red on the tip and green on the parent. agencysignature (main tip) skipped on the tip, success on the parent.
+
+The unscoped services create from #17867 is still at node-lan-hosts.yaml:384-386. This tip did not add it. Not this hold.
+
+Softs: live-run prose not in the tree; loopback 127.0.0.1:18443 matches the bind; header :23-28 still describes socat; commit message says the socat ledger row was left, the diff removes it.
+
+Path to GO: revert the nine ledger rows to found/public, restore headscale sourceRepo and sourceEvidence, keep the socat removal and the haproxy not-ghcr row.
+
+Sit leftover; Vera will not merge.
