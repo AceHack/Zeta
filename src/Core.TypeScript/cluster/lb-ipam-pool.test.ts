@@ -211,12 +211,16 @@ describe("(e) GitLab's LAN address follows the resolved range (docs/ops/INSTALL-
     expect(body).not.toMatch(/\b(192\.168|10\.\d{1,3}|172\.(1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b/);
   });
 
-  test("the Gateway READS global.zeta.lanAddress (via the runner subchart's tpl) instead of restating an address", () => {
-    const gw = (gitlabApp().spec.source.helm.valuesObject["gitlab-runner"].extraObjects as Array<Record<string, any>>).find(
-      (o) => o["kind"] === "Gateway" && o["metadata"]["name"] === "gitlab-lan",
-    );
-    expect(gw).toBeDefined();
-    expect(gw!["spec"]["addresses"]).toEqual([{ type: "IPAddress", value: "{{ .Values.global.zeta.lanAddress }}" }]);
+  test("the release renders NO Gateway; the PostSync exposure hook reads the LIVE Application's lanAddress and templates the Gateway from it", () => {
+    const extra = gitlabApp().spec.source.helm.valuesObject["gitlab-runner"].extraObjects as Array<Record<string, any>>;
+    expect(extra.filter((o) => o["kind"] === "Gateway" || o["kind"] === "HTTPRoute")).toEqual([]);
+    const tpl = extra.find((o) => o["kind"] === "ConfigMap" && o["metadata"]["name"] === "gitlab-exposure");
+    expect(tpl).toBeDefined();
+    // The one token the hook substitutes; no address is restated in git.
+    expect(tpl!["data"]["exposure.yaml"]).toContain('value: "@LAN_ADDRESS@"');
+    const job = extra.find((o) => o["kind"] === "Job" && o["metadata"]["name"] === "gitlab-exposure");
+    expect(job!["metadata"]["annotations"]["argocd.argoproj.io/hook"]).toBe("PostSync");
+    expect(job!["spec"]["template"]["spec"]["containers"][0]["args"][0]).toContain("{.spec.source.helm.valuesObject.global.zeta.lanAddress}");
   });
 
   test("the patch sets EXACTLY those three leaves, all to the range's LAST address, and nothing else in valuesObject", () => {

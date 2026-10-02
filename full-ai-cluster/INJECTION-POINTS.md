@@ -524,13 +524,14 @@ the check repeats against the cloned tree's own copy.
 **GitLab follows the range** (inventory row 6). `applications/gitlab/Application.yaml` holds no real
 address: its three LAN-address leaves (`global.hosts.gitlab.name`, `global.hosts.registry.name`,
 `global.zeta.lanAddress`) carry the RFC 5737 documentation sentinel `192.0.2.250`, and the `gitlab-lan`
-Gateway READS `global.zeta.lanAddress` through the runner subchart's `tpl`. With a range resolved, Job
+Gateway is created by the PostSync hook Job `gitlab-exposure`, which READS `global.zeta.lanAddress` from the LIVE
+Application (the release does not render it: an operation started before the pin lands would wait on it for ever). With a range resolved, Job
 `gitlab-lan-address` merge-patches those three leaves to the range's LAST address (LB-IPAM allocates
 lowest-first, so the pin does not race automatic allocations); `zeta-root` ignores exactly those
 paths. It writes `valuesObject` leaves while `gitlab-public-hosts` writes `parameters`, so the two
 Jobs cannot clobber each other, and with a public domain also set its helm parameters outrank these
-hosts values. UNSET keeps the sentinel: `gitlab-lan` stays `<pending>`, loudly, on an address no
-network can route.
+hosts values. UNSET keeps the sentinel: the hook creates no `gitlab-lan` Gateway (GitLab stays reachable in-cluster), and the
+advertised host is an address no network can route.
 
 **Not verified here:** nothing in §11 has been booted (no nix, no QEMU); see
 `docs/ops/INSTALL-TIME-CONFIG.md` "Not verified".

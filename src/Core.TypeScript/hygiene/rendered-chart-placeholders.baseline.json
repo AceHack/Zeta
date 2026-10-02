@@ -99,14 +99,6 @@
     },
     {
       "app": "full-ai-cluster/gitlab",
-      "document": "Gateway/gitlab/gitlab-lan",
-      "path": ".spec.addresses[0].value",
-      "pattern": "RFC 5737 documentation address",
-      "owner": "installer + gitlab lane (docs/ops/INSTALL-TIME-CONFIG.md rows 6-7)",
-      "reason": "192.0.2.250 is GitLab's DELIBERATE 'no LoadBalancer range was resolved' sentinel (applications/gitlab/Application.yaml): an RFC 5737 documentation address no network can route. It propagates into every rendered config of the UNSET state; the installer-resolved range's last address replaces it (Job gitlab-lan-address)."
-    },
-    {
-      "app": "full-ai-cluster/gitlab",
       "document": "Job/gitlab/gitlab-shared-secrets-*-selfsign",
       "path": ".spec.template.spec.containers[0].command[2]",
       "pattern": "RFC 5737 documentation address",

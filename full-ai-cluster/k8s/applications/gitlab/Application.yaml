@@ -270,78 +270,199 @@ spec:
           # ArgoCD Application, sync and prune scope as the Services they route to.
           extraObjects:
             # --- LAN exposure (see global.hosts above) ------------------------------------
-            # SYNC-WAVE 20 ON ALL THREE EXPOSURE OBJECTS -- AFTER THE RUNNER (10) AND THE TOKEN JOB (5).
+            # EXPOSURE IS CREATED BY A POSTSYNC HOOK FROM THE LIVE ADDRESS -- IT IS NOT RENDERED BY THIS RELEASE.
             #
-            # MEASURED LIVE, run 36871713092 (the first lane run on the production pin path): the Gateway
-            # sat in the default wave 0 and ArgoCD's health gate holds EVERY later wave until it is Healthy.
-            # But the install-time Job `gitlab-lan-address` can only patch this Application AFTER it exists,
-            # and ArgoCD starts its first sync the moment it does, so that first sync renders the Gateway
-            # with the 192.0.2.250 sentinel -- an address in no pool, so Cilium never assigns it. The
-            # operation then sat on `waiting for healthy state of Gateway/gitlab-lan` for 30+ minutes:
-            # Application OutOfSync/Progressing, the patched values never applied (a running operation does
-            # not re-apply objects it has already applied), `Job gitlab-runner-token` and the runner
-            # Deployment NEVER CREATED. GitLab itself was up and reachable in-cluster; its CI runner could
-            # not exist. The same hold applies on an install with NO resolved LB range, where the sentinel
-            # is never replaced.
+            # The Gateway and its two HTTPRoutes used to be rendered here, reading `global.zeta.lanAddress`. That
+            # cannot work, and it was measured to fail three ways on the production pin path:
+            #   * run 36871713092: in wave 0 the Gateway (sentinel address, assignable by no pool) held every later
+            #     wave, so the token Job and the runner were NEVER CREATED;
+            #   * moved to wave 20 (#17835), the runner chain came up -- but run 36951220893 showed the operation
+            #     reaching wave 20 with the sentinel anyway and waiting on `Gateway/gitlab-lan` for 27 minutes;
+            #   * a retry does not help (run 36955944272, a stale-render gate that failed the operation eight
+            #     times in a row): ArgoCD re-renders a running operation from the source it captured when it
+            #     STARTED, and the install-time Job can only patch this Application AFTER it exists -- after the
+            #     first sync has begun. An operation that began with the sentinel finishes with the sentinel.
+            # So nothing rendered from this Application's values can be trusted to carry the pin, and anything the
+            # operation WAITS on that depends on the pin deadlocks it. Exposure is the only thing that is both.
             #
-            # Exposure is the one part of this release that depends on something outside it (a pin that
-            # lands after the first sync starts, a pool that may not exist), and nothing else in the release
-            # depends on exposure -- the runner and the token Job reach GitLab through the in-cluster
-            # Service. So it syncs LAST, so the runner does not wait on it. (Wave 20 alone does NOT make the
-            # Gateway carry the pin -- an operation is rendered once and a stale one reaches wave 20 with the
-            # sentinel; that is what Job `gitlab-pin-fresh` below is for.) Falsifier: gitlab-exposure.test.ts (f).
-            - apiVersion: gateway.networking.k8s.io/v1
-              kind: Gateway
+            # So the operation neither renders nor waits on it. A PostSync hook Job (below) reads the address
+            # from the LIVE Application -- always current, even inside a stale operation -- and applies the Gateway
+            # and routes from the template in ConfigMap `gitlab-exposure`; a hook completes when ITS Job does, not
+            # when the Gateway is Programmed. With no resolved LB range (the address is still the sentinel) it
+            # creates nothing: no Gateway is the honest state, and GitLab stays reachable in-cluster. The
+            # operation completes, the pin makes the Application OutOfSync, and ArgoCD's next operation rolls
+            # GitLab onto the real hosts; the hook runs again and re-applies the same objects (idempotent).
+            # Falsifier: gitlab-exposure.test.ts (a)(c)(f) -- they RUN the hook script against a stub kubectl.
+            #
+            # The objects are therefore not tracked by ArgoCD (no tracking annotation, nothing to prune, nothing to
+            # read OutOfSync). A node that already carries them from the previous release has them tracked by this
+            # Application; the hook removes the tracking annotation so they stop reading "requires pruning".
+            - apiVersion: v1
+              kind: ConfigMap
               metadata:
-                name: gitlab-lan
+                name: gitlab-exposure
+                namespace: gitlab
+              data:
+                # `@LAN_ADDRESS@` is the one token; the hook substitutes the live address. Cilium LB-IPAM honours
+                # spec.addresses (IPAddress type only); the address IS the resolved range's last address.
+                exposure.yaml: |
+                  apiVersion: gateway.networking.k8s.io/v1
+                  kind: Gateway
+                  metadata:
+                    name: gitlab-lan
+                    namespace: gitlab
+                  spec:
+                    gatewayClassName: cilium
+                    addresses:
+                      - { type: IPAddress, value: "@LAN_ADDRESS@" }
+                    listeners:
+                      - name: http
+                        protocol: HTTP
+                        port: 80
+                        allowedRoutes:
+                          namespaces: { from: Same }
+                  ---
+                  apiVersion: gateway.networking.k8s.io/v1
+                  kind: HTTPRoute
+                  metadata:
+                    name: gitlab-web
+                    namespace: gitlab
+                  spec:
+                    parentRefs:
+                      - { name: gitlab-lan }
+                    rules:
+                      - matches:
+                          - path: { type: PathPrefix, value: / }
+                        backendRefs:
+                          - { name: gitlab-webservice-default, port: 8181 }
+                  ---
+                  apiVersion: gateway.networking.k8s.io/v1
+                  kind: HTTPRoute
+                  metadata:
+                    name: gitlab-registry
+                    namespace: gitlab
+                  spec:
+                    parentRefs:
+                      - { name: gitlab-lan }
+                    rules:
+                      # Longest prefix wins, so the registry API is carved out of the web route.
+                      - matches:
+                          - path: { type: PathPrefix, value: /v2/ }
+                        backendRefs:
+                          - { name: gitlab-registry, port: 5000 }
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-exposure
+                namespace: gitlab
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-exposure
+                namespace: gitlab
+              rules:
+                - apiGroups: [gateway.networking.k8s.io]
+                  resources: [gateways, httproutes]
+                  verbs: [get, list, create, patch, update]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-exposure
+                namespace: gitlab
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-exposure
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-exposure
+                  namespace: gitlab
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-exposure-read-application
+                namespace: argocd
+              rules:
+                - apiGroups: [argoproj.io]
+                  resources: [applications]
+                  resourceNames: [gitlab]
+                  verbs: [get]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-exposure-read-application
+                namespace: argocd
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-exposure-read-application
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-exposure
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-exposure
                 namespace: gitlab
                 annotations:
-                  argocd.argoproj.io/sync-wave: "20"
+                  argocd.argoproj.io/hook: PostSync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
               spec:
-                gatewayClassName: cilium
-                # Cilium LB-IPAM honours spec.addresses (IPAddress type only). Read from
-                # global.zeta.lanAddress (rendered through `tpl`), which the install-time Job sets
-                # together with global.hosts.gitlab.name / registry.name, and which lies inside the
-                # resolved LB range by construction (it IS that range's last address).
-                addresses:
-                  - { type: IPAddress, value: "{{ .Values.global.zeta.lanAddress }}" }
-                listeners:
-                  - name: http
-                    protocol: HTTP
-                    port: 80
-                    allowedRoutes:
-                      namespaces: { from: Same }
-            - apiVersion: gateway.networking.k8s.io/v1
-              kind: HTTPRoute
-              metadata:
-                name: gitlab-web
-                namespace: gitlab
-                annotations:
-                  argocd.argoproj.io/sync-wave: "20"
-              spec:
-                parentRefs:
-                  - { name: gitlab-lan }
-                rules:
-                  - matches:
-                      - path: { type: PathPrefix, value: / }
-                    backendRefs:
-                      - { name: gitlab-webservice-default, port: 8181 }
-            - apiVersion: gateway.networking.k8s.io/v1
-              kind: HTTPRoute
-              metadata:
-                name: gitlab-registry
-                namespace: gitlab
-                annotations:
-                  argocd.argoproj.io/sync-wave: "20"
-              spec:
-                parentRefs:
-                  - { name: gitlab-lan }
-                rules:
-                  # Longest prefix wins, so the registry API is carved out of the web route.
-                  - matches:
-                      - path: { type: PathPrefix, value: /v2/ }
-                    backendRefs:
-                      - { name: gitlab-registry, port: 5000 }
+                backoffLimit: 3
+                activeDeadlineSeconds: 300
+                template:
+                  spec:
+                    serviceAccountName: gitlab-exposure
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                      - name: exposure
+                        configMap: { name: gitlab-exposure }
+                    containers:
+                      - name: expose
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                          - { name: exposure, mountPath: /exposure, readOnly: true }
+                        resources:
+                          requests: { cpu: 10m, memory: 32Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            # An unreadable Application FAILS the hook (and so the operation, which ArgoCD retries):
+                            # exposure that silently did not happen is the failure this exists to remove.
+                            if ! ADDR=$(kubectl -n argocd get applications.argoproj.io gitlab -o jsonpath='{.spec.source.helm.valuesObject.global.zeta.lanAddress}' 2>/tmp/err); then
+                              echo "cannot read Application gitlab: $(head -c 200 /tmp/err)"
+                              exit 1
+                            fi
+                            # Empty, or anywhere in RFC 5737 TEST-NET-1 (the install-time sentinel lives there): no range was resolved.
+                            case "$ADDR" in
+                              ""|192.0.2.*)
+                                echo "no LoadBalancer range resolved (address '$ADDR' is the sentinel): creating no Gateway; GitLab stays reachable in-cluster"
+                                exit 0
+                                ;;
+                            esac
+                            TEMPLATE=$(cat /exposure/exposure.yaml)
+                            printf '%s\n' "${TEMPLATE//@LAN_ADDRESS@/$ADDR}" | kubectl apply -f - || exit 1
+                            # Objects the previous release rendered are tracked by this Application; untrack them so they
+                            # do not read "requires pruning". A no-op on a fresh install.
+                            for r in gateways.gateway.networking.k8s.io/gitlab-lan httproutes.gateway.networking.k8s.io/gitlab-web httproutes.gateway.networking.k8s.io/gitlab-registry; do
+                              kubectl -n gitlab annotate "$r" argocd.argoproj.io/tracking-id- >/dev/null 2>&1 || true
+                            done
+                            echo "exposure applied at $ADDR"
             # --- leftover migrations Jobs ---------------------------------------------------
             # PostSync, after everything is Healthy: delete every migrations Job except the current one. The
             # Jobs from before `global.job.nameSuffixOverride` carry a hash in their name and nothing in the
@@ -423,101 +544,6 @@ spec:
                             # shellcheck disable=SC2086
                             kubectl -n gitlab delete $stale --wait=false || echo "could not delete a leftover migrations Job; harmless, the Application just reads OutOfSync"
                             exit 0
-            # --- stale-render gate ----------------------------------------------------------
-            # Sync hook, wave 15: AFTER the runner (10), BEFORE the exposure objects (20). It fails the operation when
-            # the Application's CURRENT address differs from the one THIS operation rendered, so ArgoCD retries it
-            # (`retry:` below) from the current values.
-            #
-            # WHY. The install-time Job can only patch this Application after it exists, and ArgoCD starts syncing
-            # the instant it does -- so an operation is routinely rendered with the 192.0.2.250 sentinel and the
-            # pin lands underneath it. A running operation does not re-render what it has not yet applied reliably:
-            # MEASURED, run 36951220893 (identical manifests, same timings as four earlier passes): the operation
-            # reached wave 20, created the Gateway with the SENTINEL, Cilium could not assign it, and the operation
-            # waited on `Gateway/gitlab-lan` for 27 minutes with the pin long landed -- the Application
-            # Progressing for ever, GitLab unreachable on the LAN. Whether an earlier run escaped depended on a
-            # retry triggered by something unrelated (an HPA with no metrics yet). A gate makes the retry happen
-            # on purpose and only when the render really is stale. Equal addresses (including both sentinel -- an
-            # install with no LB range) pass: nothing is stale, and exposure honestly stays pending.
-            # Falsifier: gitlab-exposure.test.ts (i), which RUNS this script against a stub kubectl.
-            - apiVersion: v1
-              kind: ServiceAccount
-              metadata:
-                name: gitlab-pin-fresh
-                namespace: gitlab
-            - apiVersion: rbac.authorization.k8s.io/v1
-              kind: Role
-              metadata:
-                name: gitlab-pin-fresh
-                namespace: argocd
-              rules:
-                - apiGroups: [argoproj.io]
-                  resources: [applications]
-                  resourceNames: [gitlab]
-                  verbs: [get]
-            - apiVersion: rbac.authorization.k8s.io/v1
-              kind: RoleBinding
-              metadata:
-                name: gitlab-pin-fresh
-                namespace: argocd
-              roleRef:
-                apiGroup: rbac.authorization.k8s.io
-                kind: Role
-                name: gitlab-pin-fresh
-              subjects:
-                - kind: ServiceAccount
-                  name: gitlab-pin-fresh
-                  namespace: gitlab
-            - apiVersion: batch/v1
-              kind: Job
-              metadata:
-                name: gitlab-pin-fresh
-                namespace: gitlab
-                annotations:
-                  argocd.argoproj.io/hook: Sync
-                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
-                  argocd.argoproj.io/sync-wave: "15"
-              spec:
-                backoffLimit: 0
-                activeDeadlineSeconds: 120
-                template:
-                  spec:
-                    serviceAccountName: gitlab-pin-fresh
-                    restartPolicy: Never
-                    securityContext:
-                      runAsNonRoot: true
-                      runAsUser: 65534
-                      seccompProfile: { type: RuntimeDefault }
-                    volumes:
-                      - name: tmp
-                        emptyDir: { medium: Memory }
-                    containers:
-                      - name: gate
-                        image: '{{ include "gitlab.kubectl.image" . }}'
-                        securityContext:
-                          allowPrivilegeEscalation: false
-                          readOnlyRootFilesystem: true
-                          capabilities: { drop: [ALL] }
-                        env:
-                          - { name: HOME, value: /tmp }
-                        volumeMounts:
-                          - { name: tmp, mountPath: /tmp }
-                        resources:
-                          requests: { cpu: 10m, memory: 32Mi }
-                        command: ["/bin/bash", "-c"]
-                        args:
-                          - |
-                            set -uo pipefail
-                            RENDERED="{{ .Values.global.zeta.lanAddress }}"
-                            if ! LIVE=$(kubectl -n argocd get applications.argoproj.io gitlab -o jsonpath='{.spec.source.helm.valuesObject.global.zeta.lanAddress}' 2>/tmp/err); then
-                              echo "cannot read Application gitlab ($(head -c 200 /tmp/err)); NOT gating -- an unreadable value is not a stale one"
-                              exit 0
-                            fi
-                            if [ "$LIVE" = "$RENDERED" ]; then
-                              echo "this sync was rendered with the Application's current address ($RENDERED)"
-                              exit 0
-                            fi
-                            echo "STALE SYNC: rendered with $RENDERED but the Application now carries $LIVE; failing so ArgoCD retries from the current values"
-                            exit 1
             # --- runner authentication token ----------------------------------------------
             # Creates (or finds) ONE instance runner `zeta-cluster` through GitLab's own service
             # object in the toolbox pod -- no admin personal access token is ever minted, so none

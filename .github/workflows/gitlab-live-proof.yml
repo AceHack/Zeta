@@ -30,9 +30,11 @@
 #   * the chart named its migrations Job with a hash of every value, so the pin renamed it and `prune: false`
 #     kept the old one: a healthy install read OutOfSync forever (owner's node, and this lane's informational
 #     check). Fixed name + Force/Replace + a PostSync GC; checks a6/a7 are BLOCKING now (gitlab-exposure.test.ts h);
-#   * an operation rendered with the sentinel before the pin landed reaches the exposure wave with the sentinel
-#     and waits on the Gateway for ever (run 36951220893, after four passes on identical manifests): the
-#     stale-render gate Job fails such an operation so ArgoCD retries from current values (gitlab-exposure.test.ts i).
+#   * an operation rendered with the sentinel before the pin landed waits on the Gateway for ever (run 36951220893,
+#     after four passes on identical manifests); moving the Gateway later, and a gate Job failing the
+#     operation so it retries (run 36955944272), do NOT help: ArgoCD re-renders a running operation from the
+#     source it STARTED with. So the Gateway/routes are no longer rendered by the release at all: a PostSync
+#     hook Job reads the LIVE Application's address and applies them (gitlab-exposure.test.ts f).
 
 name: gitlab-live-proof
 
@@ -194,6 +196,7 @@ jobs:
         if: always()
         run: |
           kubectl -n gitlab get pods,svc,jobs,pvc,gateway,httproute -o wide || true
+          kubectl -n gitlab logs job/gitlab-exposure --all-containers=true --tail=30 || true
           kubectl -n gitlab get events --sort-by=.lastTimestamp | tail -n 120 || true
           kubectl get nodes -o wide || true
           kubectl describe nodes | sed -n '/Allocated resources/,/Events/p' || true

@@ -42,12 +42,16 @@ path-filtered PR.
 | 36871713092 | pin Job completed and patched all three leaves -- and the Application sat on `waiting for healthy state of Gateway/gitlab-lan` for 30+ min; **runner never created** |
 | 36878157147 | exposure objects in wave 20: runner chain passes on the production path |
 | 36881451548 | second sync stalled: sidekiq surge pod `Pending: Insufficient cpu` (3160m of 4000m requested) |
+| 36951220893 | stable migrations Job name: an operation rendered with the sentinel before the pin landed reached wave 20 and waited 27 min on `Gateway/gitlab-lan` -- earlier passes had been rescued by an unrelated retry |
+| 36955944272 | a gate Job failing the operation so ArgoCD retries FAILED on all eight retries: a retry re-renders from the source the operation STARTED with, not the patched Application |
 | 36886512326 | maxSurge 0: **every blocking check passed on the production pin path**; peak 7.0 GiB memory used (9.0 GiB available), 13 GiB disk, load 5.1 |
 
 ## Defects found and fixed (each with an offline falsifier that fails without the fix)
 
 1. Exposure Gateway/HTTPRoutes in sync-wave 0 held the token Job and the runner forever
-   (the pin lands after ArgoCD's first sync) -> wave 20. `gitlab-exposure.test.ts` (f).
+   (the pin lands after ArgoCD's first sync). Wave 20 and a stale-render gate were both measured NOT to fix it (stale operations keep the
+   sentinel they started with); the release no longer renders exposure at all -- PostSync hook Job `gitlab-exposure` reads the LIVE
+   Application's address and applies Gateway/HTTPRoutes. `gitlab-exposure.test.ts` (a)(c)(f), the hook EXECUTED against a stub kubectl.
 2. Default rolling-update surge needs a spare pod of CPU a single node lacks, and a fresh
    install rolls every Deployment once (the pin re-render) -> `maxSurge 0` on every Deployment.
    `gitlab-exposure.test.ts` (g).

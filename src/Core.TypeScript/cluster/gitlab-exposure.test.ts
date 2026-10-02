@@ -120,31 +120,75 @@ if (!HELM) console.warn("gitlab-exposure.test: helm not on PATH -- the gitlab re
 
 const BASH = onPath("bash");
 
-/** Run a rendered hook script under bash with a stub `kubectl` whose `get` prints `live` (or fails when `live` is null). */
-function runGate(script: string, live: string | null): { exitCode: number; out: string } {
-  const dir = mkdtempSync(join(tmpdir(), "pin-gate-"));
+type Rendered = { text: string; docs: unknown[] };
+
+/** The template the PostSync hook applies: ConfigMap gitlab-exposure, key exposure.yaml. */
+function exposureTemplate(r: Rendered): string {
+  const cm = ofKind(r.docs, "ConfigMap").find((c) => nameOf(c) === "gitlab-exposure");
+  return String(((cm?.["data"] ?? {}) as Record<string, unknown>)["exposure.yaml"] ?? "");
+}
+
+function exposureJob(r: Rendered): Record<string, any> | undefined {
+  return ofKind(r.docs, "Job").find((j) => nameOf(j) === "gitlab-exposure") as Record<string, any> | undefined;
+}
+
+/**
+ * EXECUTE the rendered PostSync hook under bash against a stub kubectl: "get" prints live (or fails when live is
+ * null), "apply" records stdin, "annotate" is recorded in the call log. The script is the one the cluster runs; only
+ * the mounted template path is redirected to a temp file holding the ConfigMap's real content.
+ */
+function runExposure(r: Rendered, live: string | null): { exitCode: number; out: string; applied: unknown[]; annotated: string[] } {
+  const job = exposureJob(r);
+  if (job === undefined) throw new Error("no Job gitlab-exposure in the render");
+  const dir = mkdtempSync(join(tmpdir(), "exposure-hook-"));
   try {
+    const toPosix = (p: string) => p.replaceAll("\\", "/").replace(/^([A-Za-z]):/, (_m, d: string) => "/" + d.toLowerCase());
+    const win = process.platform === "win32";
+    const px = (p: string) => (win ? toPosix(p) : p);
     const bin = join(dir, "bin");
     mkdirSync(bin, { recursive: true });
-    const stub = `#!/usr/bin/env bash\nif [ -z "\${STUB_LIVE+x}" ]; then echo "stub: kubectl unreachable" >&2; exit 1; fi\nprintf '%s' "$STUB_LIVE"\n`;
+    const stub = [
+      "#!/usr/bin/env bash",
+      'echo "$*" >> "$STUB_DIR/calls.log"',
+      'case " $* " in',
+      '  *" get "*) if [ -z "${STUB_LIVE+x}" ]; then echo "stub: kubectl unreachable" >&2; exit 1; fi; printf "%s" "$STUB_LIVE" ;;',
+      '  *" apply "*) cat >> "$STUB_DIR/applied.yaml" ;;',
+      "esac",
+      "",
+    ].join("\n");
     writeFileSync(join(bin, "kubectl"), stub, "utf8");
     chmodSync(join(bin, "kubectl"), 0o755);
+    writeFileSync(join(dir, "exposure.yaml"), exposureTemplate(r), "utf8");
+    const script = String(job.spec.template.spec.containers[0].args[0]).replaceAll("/exposure/exposure.yaml", px(join(dir, "exposure.yaml")));
     writeFileSync(join(dir, "script.sh"), script, "utf8");
-    const toPosix = (p: string) => p.replaceAll("\\", "/").replace(/^([A-Za-z]):/, (_m, d: string) => `/${d.toLowerCase()}`);
-    const win = process.platform === "win32";
     const env: Record<string, string | undefined> = { ...process.env };
     const inherited = process.env["PATH"] ?? process.env["Path"] ?? "";
     for (const k of Object.keys(env)) if (k.toLowerCase() === "path") delete env[k];
     delete env["STUB_LIVE"];
-    const result = Bun.spawnSync(["bash", win ? toPosix(join(dir, "script.sh")) : join(dir, "script.sh")], {
+    const result = Bun.spawnSync(["bash", px(join(dir, "script.sh"))], {
       stdout: "pipe",
       stderr: "pipe",
-      env: { ...env, PATH: `${win ? toPosix(bin) : bin}${win ? ":" : delimiter}${inherited}`, HOME: dir, ...(live === null ? {} : { STUB_LIVE: live }) },
+      env: { ...env, PATH: px(bin) + (win ? ":" : delimiter) + inherited, HOME: px(dir), STUB_DIR: px(dir), ...(live === null ? {} : { STUB_LIVE: live }) },
     });
-    return { exitCode: result.exitCode ?? -1, out: result.stdout.toString() + result.stderr.toString() };
+    const read = (f: string): string => {
+      try { return readFileSync(join(dir, f), "utf8"); } catch { return ""; }
+    };
+    return {
+      exitCode: result.exitCode ?? -1,
+      out: result.stdout.toString() + result.stderr.toString(),
+      applied: parseAllDocuments(read("applied.yaml")).map((d) => d.toJS() as unknown).filter((d) => d !== null),
+      annotated: read("calls.log").split("\n").filter((l) => l.includes(" annotate ")),
+    };
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+}
+
+/** The address the install-time Job leaves in the LIVE Application: global.zeta.lanAddress after merging the patch. */
+function liveAddress(patch?: Record<string, unknown>): string {
+  const source = readAppSource(readFileSync(GITLAB_APP, "utf8"));
+  const merged = (patch === undefined ? source.valuesObject : mergePatch(source.valuesObject ?? {}, patch)) as Record<string, any>;
+  return String(merged?.global?.zeta?.lanAddress ?? "");
 }
 
 const cachedRenders = new Map<string, { text: string; docs: unknown[] }>();
@@ -181,10 +225,14 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(ofKind(renderGitlab().docs, "Ingress").map(nameOf)).toEqual([]);
   }, T);
 
-  test("(a) web and registry are HTTPRoutes on a Cilium Gateway declared in the same render", () => {
-    const { docs } = renderGitlab();
-    const gateways = new Map(ofKind(docs, "Gateway").map((g) => [nameOf(g), g]));
-    const edges = routeEdges(docs);
+  test("(a) web and registry are HTTPRoutes on a Cilium Gateway the exposure hook applies, and nothing is rendered by the release itself", () => {
+    const r = renderGitlab();
+    // The release renders NO Gateway/HTTPRoute (see Application.yaml: a stale operation waits on them for ever).
+    expect([...ofKind(r.docs, "Gateway"), ...ofKind(r.docs, "HTTPRoute")].map(nameOf)).toEqual([]);
+    const run = runExposure(r, "192.168.1.250");
+    expect(run.exitCode).toBe(0);
+    const gateways = new Map(ofKind(run.applied, "Gateway").map((g) => [nameOf(g), g]));
+    const edges = routeEdges(run.applied);
     const web = edges.filter((e) => e.service === "gitlab-webservice-default" && e.port === 8181);
     const registry = edges.filter((e) => e.service === "gitlab-registry" && e.port === 5000);
     expect(web.length).toBeGreaterThan(0);
@@ -228,22 +276,50 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(rules.map((r) => r["resourceNames"])).toEqual([["gitlab-gitlab-runner-secret"]]);
   }, T);
 
-  test("(f) the exposure objects sync AFTER the runner and the token Job -- a Gateway with no address must not hold the runner", () => {
-    // MEASURED LIVE, run 36871713092: the Gateway sat in wave 0, the install-time pin landed after ArgoCD's first
-    // sync had already rendered it with the 192.0.2.250 sentinel, Cilium could not assign that, and the operation
-    // waited on `Gateway/gitlab-lan` for 30+ minutes -- so `Job gitlab-runner-token` and the runner Deployment were
-    // never created. The same hold applies on an install with NO LB range. Nothing but exposure depends on exposure.
-    const { docs } = renderGitlab();
-    const runner = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-runner");
-    const mint = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-runner-token");
-    expect(runner).toBeDefined();
-    expect(mint).toBeDefined();
-    const exposure = [...ofKind(docs, "Gateway"), ...ofKind(docs, "HTTPRoute")];
-    expect(exposure.map(nameOf).sort()).toEqual(["gitlab-lan", "gitlab-registry", "gitlab-web"]);
-    for (const o of exposure) {
-      expect(syncWave(o)).toBeGreaterThan(syncWave(runner));
-      expect(syncWave(o)).toBeGreaterThan(syncWave(mint));
+  test("(f) exposure is a PostSync hook -- the operation neither renders nor waits on a Gateway, so a stale-address operation can finish", () => {
+    // MEASURED LIVE: run 36871713092 (Gateway in wave 0 held the runner for 30+ minutes), run 36951220893 (Gateway in wave
+    // 20 still held the operation 27 minutes: it was rendered with the sentinel before the pin landed), run 36955944272
+    // (a gate failing the operation on every retry: retries reuse the source the operation STARTED with). Nothing the
+    // operation waits on may depend on the pin; a PostSync hook completes when its own Job does.
+    const r = renderGitlab();
+    const job = exposureJob(r);
+    expect(job).toBeDefined();
+    expect(annotationsOf(job)["argocd.argoproj.io/hook"]).toBe("PostSync");
+    expect(annotationsOf(job)["argocd.argoproj.io/hook-delete-policy"]).toContain("BeforeHookCreation");
+    expect(ofKind(r.docs, "Job").map(nameOf)).not.toContain("gitlab-pin-fresh");
+    // It reads the Application and creates Gateway/HTTPRoute -- and has exactly that RBAC, nothing wider.
+    const roles = new Map(ofKind(r.docs, "Role").map((x) => [String((x["metadata"] as Record<string, unknown>)["namespace"]) + "/" + nameOf(x), x]));
+    expect(roles.get("gitlab/gitlab-exposure")?.["rules"]).toEqual([
+      { apiGroups: ["gateway.networking.k8s.io"], resources: ["gateways", "httproutes"], verbs: ["get", "list", "create", "patch", "update"] },
+    ]);
+    expect(roles.get("argocd/gitlab-exposure-read-application")?.["rules"]).toEqual([
+      { apiGroups: ["argoproj.io"], resources: ["applications"], resourceNames: ["gitlab"], verbs: ["get"] },
+    ]);
+  }, T);
+
+  test.skipIf(!BASH)("(f) the exposure hook, EXECUTED: sentinel/empty creates nothing, a real address creates the Gateway at it, unreadable FAILS, legacy tracking is dropped", () => {
+    const r = renderGitlab();
+    // No resolved LB range: no Gateway, and the hook still succeeds so the operation completes.
+    for (const live of ["192.0.2.250", ""]) {
+      const none = runExposure(r, live);
+      expect(none.exitCode).toBe(0);
+      expect(none.applied).toEqual([]);
     }
+    // The pin has landed in the LIVE Application though the operation rendered the sentinel: the Gateway is created at
+    // the LIVE address -- the hook does not trust what the operation rendered.
+    const real = runExposure(r, "192.168.1.250");
+    expect(real.exitCode).toBe(0);
+    const gw = ofKind(real.applied, "Gateway");
+    expect(gw.map(nameOf)).toEqual(["gitlab-lan"]);
+    expect((gw[0]!["spec"] as Record<string, any>)["addresses"]).toEqual([{ type: "IPAddress", value: "192.168.1.250" }]);
+    expect(ofKind(real.applied, "HTTPRoute").map(nameOf).sort()).toEqual(["gitlab-registry", "gitlab-web"]);
+    // Objects the previous release rendered are tracked by this Application; the hook untracks all three.
+    expect(real.annotated).toHaveLength(3);
+    expect(real.annotated.every((l) => l.includes("tracking-id-"))).toBe(true);
+    // An unreadable Application is UNKNOWN: the hook fails (ArgoCD retries it) rather than silently exposing nothing.
+    const unknown = runExposure(r, null);
+    expect(unknown.exitCode).toBe(1);
+    expect(unknown.applied).toEqual([]);
   }, T);
 
   test("(h) the migrations Job keeps ONE name across values changes, and is replaceable -- so prune:false leaves nothing behind", () => {
@@ -287,47 +363,6 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(role?.["rules"]).toEqual([{ apiGroups: ["batch"], resources: ["jobs"], verbs: ["get", "list", "delete"] }]);
   }, T);
 
-  test("(i) a stale-render gate sits between the runner and the exposure wave, with exactly the RBAC to read this one Application", () => {
-    // MEASURED LIVE, run 36951220893: the operation was rendered with the sentinel before the pin landed, reached
-    // wave 20, created the Gateway with the sentinel and waited on it for 27 minutes with the pin long landed. The
-    // gate fails such an operation so ArgoCD retries it from the current values.
-    const { docs } = renderGitlab();
-    const gate = ofKind(docs, "Job").find((j) => nameOf(j) === "gitlab-pin-fresh");
-    const runner = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-runner");
-    expect(gate).toBeDefined();
-    expect(annotationsOf(gate)["argocd.argoproj.io/hook"]).toBe("Sync");
-    expect(syncWave(gate)).toBeGreaterThan(syncWave(runner));
-    for (const o of [...ofKind(docs, "Gateway"), ...ofKind(docs, "HTTPRoute")]) expect(syncWave(o)).toBeGreaterThan(syncWave(gate));
-    const role = ofKind(docs, "Role").find((r) => nameOf(r) === "gitlab-pin-fresh");
-    expect(role?.["rules"]).toEqual([{ apiGroups: ["argoproj.io"], resources: ["applications"], resourceNames: ["gitlab"], verbs: ["get"] }]);
-    expect(((role?.["metadata"] ?? {}) as Record<string, unknown>)["namespace"]).toBe("argocd");
-    // The Application must retry a failed operation, or a failed gate is a dead end rather than a re-render.
-    const app = parseYaml(readFileSync(GITLAB_APP, "utf8")) as Record<string, any>;
-    const limit = app.spec?.syncPolicy?.retry?.limit as number | undefined;
-    expect(limit === -1 || (limit !== undefined && limit >= 3)).toBe(true); // -1 is ArgoCD's "unbounded"
-  }, T);
-
-  test.skipIf(!BASH)("(i) the gate script, EXECUTED: stale fails, current passes, both-sentinel passes, unreadable does not gate", () => {
-    const scriptOf = (r: { docs: unknown[] }): string => {
-      const gate = ofKind(r.docs, "Job").find((j) => nameOf(j) === "gitlab-pin-fresh") as Record<string, any>;
-      return String(gate.spec.template.spec.containers[0].args[0]);
-    };
-    const sentinel = renderGitlab();
-    const pinned = renderGitlab(installTimeValuesPatch("192.168.1.240", "192.168.1.250"));
-    // An operation rendered with the sentinel while the Application already carries the pin: STALE.
-    const stale = runGate(scriptOf(sentinel), "192.168.1.250");
-    expect(stale.exitCode).toBe(1);
-    expect(stale.out).toContain("STALE SYNC");
-    // The retry, rendered from the pinned values: passes.
-    expect(runGate(scriptOf(pinned), "192.168.1.250").exitCode).toBe(0);
-    // An install with no resolved LB range: sentinel on both sides -- nothing is stale, the run is not held hostage.
-    expect(runGate(scriptOf(sentinel), "192.0.2.250").exitCode).toBe(0);
-    // A read that fails is UNKNOWN, not "stale": it must not turn into an endless retry loop.
-    const unknown = runGate(scriptOf(sentinel), null);
-    expect(unknown.exitCode).toBe(0);
-    expect(unknown.out).toContain("NOT gating");
-  }, T);
-
   test("(g) no Deployment needs spare capacity to roll: maxSurge 0 (or Recreate), because the install-time pin rolls every component once", () => {
     // MEASURED LIVE, run 36881451548: 3160m of 4000m requested, sidekiq asks 900m, the Deployment-default surge pod
     // sat `Pending: Insufficient cpu` for 14 minutes, the rollout hit its progress deadline and the operation never
@@ -351,44 +386,51 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(hits).toEqual([]);
   }, T);
 
-  /** The LAN Gateway's address, and what GitLab advertises as its own host. */
-  function lanFacts(rendered: { docs: unknown[] }): { pinned: string; urls: ReturnType<typeof advertisedUrls>; listenerHostnames: unknown[] } {
-    const lan = ofKind(rendered.docs, "Gateway").find((g) => nameOf(g) === "gitlab-lan");
-    expect(lan).toBeDefined();
-    const spec = lan!["spec"] as Record<string, unknown>;
+  /**
+   * The LAN Gateway's address as the PostSync hook creates it from the LIVE Application's address, and what GitLab
+   * advertises as its own host. pinned is null when the hook creates no Gateway.
+   */
+  function lanFacts(patch?: Record<string, unknown>): { pinned: string | null; urls: ReturnType<typeof advertisedUrls>; listenerHostnames: unknown[] } {
+    const rendered = renderGitlab(patch);
+    const run = runExposure(rendered, liveAddress(patch));
+    expect(run.exitCode).toBe(0);
+    const urls = advertisedUrls(rendered.docs);
+    const lan = ofKind(run.applied, "Gateway").find((g) => nameOf(g) === "gitlab-lan");
+    if (lan === undefined) return { pinned: null, urls, listenerHostnames: [] };
+    const spec = lan["spec"] as Record<string, unknown>;
     const addresses = (spec["addresses"] ?? []) as Array<Record<string, unknown>>;
     expect(addresses.map((a) => a["type"])).toEqual(["IPAddress"]);
     return {
       pinned: String(addresses[0]!["value"]),
-      urls: advertisedUrls(rendered.docs),
+      urls,
       listenerHostnames: ((spec["listeners"] ?? []) as Array<Record<string, unknown>>).map((l) => l["hostname"]),
     };
   }
 
-  test("(c) UNSET (no resolved LB range): the Gateway and the advertised host are the RFC 5737 sentinel -- never a real LAN's address", () => {
-    const f = lanFacts(renderGitlab());
-    expect(f.pinned).toBe("192.0.2.250");
-    expect(f.urls).toEqual({ gitlabHost: f.pinned, https: false, registryHost: f.pinned });
+  test("(c) UNSET (no resolved LB range): no Gateway is created and the advertised host is the RFC 5737 sentinel -- never a real LAN's address", () => {
+    const f = lanFacts();
+    expect(f.pinned).toBeNull();
+    expect(f.urls).toEqual({ gitlabHost: "192.0.2.250", https: false, registryHost: "192.0.2.250" });
     // THE DEFECT this replaces: the literal was 192.168.1.250, applied on every LAN.
     expect(renderGitlab().text).not.toMatch(/192\.168\.\d+\.\d+/);
   }, T);
 
   test("(c) SET: the advertised host IS the LAN Gateway's address IS the LAST address of the resolved range, inside it", () => {
-    const f = lanFacts(renderGitlab(installTimeValuesPatch("192.168.1.240", "192.168.1.250")));
+    const f = lanFacts(installTimeValuesPatch("192.168.1.240", "192.168.1.250"));
     expect(f.pinned).toBe("192.168.1.250");
-    expect(f.urls).toEqual({ gitlabHost: f.pinned, https: false, registryHost: f.pinned });
+    expect(f.urls).toEqual({ gitlabHost: f.pinned!, https: false, registryHost: f.pinned! });
     const pool = { spec: { blocks: [{ start: "192.168.1.240", stop: "192.168.1.250" }] } };
-    expect(inPool(f.pinned, poolRanges(pool))).toBe(true);
+    expect(inPool(f.pinned!, poolRanges(pool))).toBe(true);
     // Every listener is hostname-less: the address alone must be enough to reach it.
     expect(f.listenerHostnames.every((h) => h === undefined)).toBe(true);
   }, T);
 
   test("(c) SET on ANOTHER LAN: all three follow the range -- this fails against a literal pin", () => {
     for (const [start, stop] of [["10.20.30.200", "10.20.30.210"], ["172.16.9.100", "172.16.9.120"], ["192.168.50.200", "192.168.50.230"]] as const) {
-      const f = lanFacts(renderGitlab(installTimeValuesPatch(start, stop)));
+      const f = lanFacts(installTimeValuesPatch(start, stop));
       expect(f.pinned).toBe(stop);
       expect(f.urls).toEqual({ gitlabHost: stop, https: false, registryHost: stop });
-      expect(inPool(f.pinned, poolRanges({ spec: { blocks: [{ start, stop }] } }))).toBe(true);
+      expect(inPool(f.pinned!, poolRanges({ spec: { blocks: [{ start, stop }] } }))).toBe(true);
     }
   }, T);
 
