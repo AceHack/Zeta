@@ -46,4 +46,8 @@ export const ZFLASH_ALLOWED_FLAGS: ReadonlySet<string> = new Set([
   // (`default` | `mint`), validated by the same `planConsolePasswordPolicy` the
   // file-backed image path runs.
   "--console-password",
+  // docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile (`auto` | a profile of
+  // k8s/storage-profiles.json), validated by the same `planStorageProfile` the file-backed
+  // image path runs.
+  "--storage-profile",
 ]);

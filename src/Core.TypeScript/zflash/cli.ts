@@ -128,6 +128,7 @@ import {
   renderConsolePasswordPolicyConfLine,
   type ConsolePasswordPolicy,
 } from "../installer/console-password-policy.ts";
+import { planStorageProfile, renderStorageProfileConfLine } from "../installer/storage-profile-selection.ts";
 import {
   planFirstbootConfFileContent,
   validateJoinTokenMaterial,
@@ -857,6 +858,7 @@ async function injectPubkeyToUsb(
   publicEndpoint: PublicEndpoint | null = null,
   lbPool: LbPoolSpec | null = null,
   consolePasswordPolicy: ConsolePasswordPolicy | null = null,
+  storageProfile: string | null = null,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
   if (testMode) {
@@ -982,7 +984,9 @@ async function injectPubkeyToUsb(
   const publicEndpointLines =
     (publicEndpoint === null ? "" : renderPublicEndpointConfLines(publicEndpoint)) +
     (lbPool === null ? "" : renderLbPoolConfLine(lbPool)) +
-    (consolePasswordPolicy === null ? "" : renderConsolePasswordPolicyConfLine(consolePasswordPolicy));
+    (consolePasswordPolicy === null ? "" : renderConsolePasswordPolicyConfLine(consolePasswordPolicy)) +
+    // docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile rides the SAME conf.
+    (storageProfile === null ? "" : renderStorageProfileConfLine(storageProfile));
   if (firstbootRole === undefined && publicEndpointLines.length > 0) {
     const confOnlyTarget = join(mountPoint, "zeta-firstboot.conf");
     try {
@@ -1000,6 +1004,7 @@ async function injectPubkeyToUsb(
         (publicEndpoint === null ? "" : ` (portal.${publicEndpoint.publicDomain})`) +
         (lbPool === null ? "" : ` (lb-pool ${lbPool.kind === "auto" ? "auto" : `${lbPool.start ?? ""}-${lbPool.stop ?? ""}`})`) +
         (consolePasswordPolicy === null ? "" : ` (console-password ${consolePasswordPolicy})`) +
+        (storageProfile === null ? "" : ` (storage-profile ${storageProfile})`) +
         "\n",
     );
   }
@@ -1134,6 +1139,7 @@ function bakeEspPayloadForLinux(
   hostOverride: string | null,
   testMode: boolean,
   consolePasswordPolicy: ConsolePasswordPolicy | null = null,
+  storageProfile: string | null = null,
 ): string {
   const tools = {
     qemuImg: whichTool("qemu-img"),
@@ -1176,6 +1182,7 @@ function bakeEspPayloadForLinux(
     ...(hostOverride === null ? {} : { hostname: hostOverride }),
     ...(testMode ? { testMode: true } : {}),
     ...(consolePasswordPolicy === null ? {} : { consolePasswordPolicy }),
+    ...(storageProfile === null ? {} : { storageProfile }),
   });
   if (!result.ok) {
     // Includes the 081KZHJPJCF read-back failure: mcopy exited 0 but the file is not on
@@ -1226,6 +1233,7 @@ async function main() {
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
   let consolePasswordFlag: string | undefined;
+  let storageProfileFlag: string | undefined;
   let agentMode = false;
   let testMode = false;
   const bakeCredArgs: string[] = [];
@@ -1292,7 +1300,13 @@ async function main() {
       testMode = true;
       continue;
     }
-    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool" || a === "--console-password") {
+    if (
+      a === "--acme-email" ||
+      a === "--public-domain" ||
+      a === "--lb-pool" ||
+      a === "--console-password" ||
+      a === "--storage-profile"
+    ) {
       const next = argv[i + 1];
       if (next === undefined || next.startsWith("-")) {
         bail(2, `${a} requires an argument`);
@@ -1300,6 +1314,7 @@ async function main() {
       if (a === "--acme-email") acmeEmailFlag = next;
       else if (a === "--lb-pool") lbPoolFlag = next;
       else if (a === "--console-password") consolePasswordFlag = next;
+      else if (a === "--storage-profile") storageProfileFlag = next;
       else publicDomainFlag = next;
       i += 1;
       continue;
@@ -1461,6 +1476,16 @@ async function main() {
   if (consolePassword.value !== null && noInject) {
     bail(2, "--console-password requires ESP injection; remove --no-inject");
   }
+  // docs/ops/INSTALL-TIME-CONFIG.md row 29 -- the storage profile. A name that is not a rung is wrong
+  // on every machine and is refused here; whether the pool holds it is decided by the installer,
+  // which refuses before the wipe.
+  const storageProfile = planStorageProfile(storageProfileFlag);
+  if (!storageProfile.ok) {
+    bail(2, `storage profile refused: ${storageProfile.error}`);
+  }
+  if (storageProfile.value !== null && noInject) {
+    bail(2, "--storage-profile requires ESP injection; remove --no-inject");
+  }
 
   const credBake: CredBakeOptions = {
     bakeCredArgs,
@@ -1534,6 +1559,11 @@ async function main() {
         "                            default (also what omitting this means) = the PUBLIC zeta-change-me, with a loud\n" +
         "                            banner and a login reminder until changed; mint = a random one-time password\n" +
         "                            shown once. A typed password always wins. SSH password login stays disabled.\n" +
+        "  --storage-profile <auto|name>\n" +
+        "                            storage profile (minimal, standard, measured, large; k8s/storage-profiles.json).\n" +
+        "                            'auto' (default) lets the installer measure the Longhorn pool and pick the LARGEST\n" +
+        "                            profile that fits; a name forces that one (refused before the wipe if it cannot fit).\n" +
+        "                            It never shrinks a profile an existing install already runs.\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -1793,6 +1823,11 @@ async function main() {
     // password behaviour they chose. Refuse before any device work.
     bail(2, "--console-password needs the ESP payload, but injection was skipped (no pubkey found); fix the key or drop the flag");
   }
+  if (storageProfile.value !== null && !willInject) {
+    // Same refusal, same reason as --console-password above: a silently dropped profile would leave the
+    // operator believing the node would install at the profile they chose.
+    bail(2, "--storage-profile needs the ESP payload, but injection was skipped (no pubkey found); fix the key or drop the flag");
+  }
   if (isLinux) {
     if (expectDevice !== null || expectSizeRaw !== null || expectModel !== null) {
       bail(
@@ -1812,7 +1847,7 @@ async function main() {
       bakeCredCount: 0,
     };
     if (linuxBakeIsRequired(bakeRequest)) {
-      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode, consolePassword.value);
+      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode, consolePassword.value, storageProfile.value);
     }
     const argv = flashUsbLinuxArgv(flashUsb, effectiveIso, { short: true });
     if (!argv.ok) bail(2, argv.error);
@@ -1959,7 +1994,7 @@ async function main() {
     }
   } else if (willInject) {
     try {
-      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, consolePassword.value);
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, consolePassword.value, storageProfile.value);
     } finally {
       // `force: true` already means "no error if absent", so the `existsSync`
       // guard it replaces bought nothing and was itself a check-then-use race

@@ -66,6 +66,13 @@
     # Services of type LoadBalancer stay <pending> (the installer said so). The repo
     # carries NO default range -- the old 192.168.1.240-250 was right for one subnet.
     ./injected-lb-pool.nix
+    # docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile as INSTALL-TIME configuration.
+    # With /etc/zeta/storage-profile present (one rung of k8s/storage-profiles.json, written by
+    # zeta-install.sh when the pool it measured cannot hold the committed rung, or when the
+    # operator asked for one), a k3s server gets the `zeta-storage-profile` ArgoCD Application,
+    # whose Jobs resize the PVCs that rung governs. Absent -> adds nothing: the committed rung
+    # applies. It never shrinks (/var/lib/zeta/storage-profile-high-water ratchets).
+    ./injected-storage-profile.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes

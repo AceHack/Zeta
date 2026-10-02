@@ -1,0 +1,9 @@
+# Kustomize base for the install-time `zeta-storage-profile` Application. It carries NO profile: the
+# choice arrives as that Application's inline patch (argocd-application.yaml.in). GENERATED siblings
+# (configmap.yaml, rbac.yaml, jobs.yaml, ladder.json) come from storage-profile-install.ts.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - configmap.yaml
+  - rbac.yaml
+  - jobs.yaml

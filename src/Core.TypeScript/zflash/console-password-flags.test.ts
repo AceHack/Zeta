@@ -161,7 +161,7 @@ describe("device zflash (macOS / Linux): the same flag, the same validator", () 
 
   test("the value reaches the ESP on macOS (injector) and on Linux (the mcopy bake), and a dropped policy is refused", () => {
     expect(cli).toContain("renderConsolePasswordPolicyConfLine(consolePasswordPolicy)");
-    expect(cli).toContain("bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode, consolePassword.value)");
+    expect(cli).toContain("bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode, consolePassword.value, storageProfile.value)");
     expect(cli).toContain("...(consolePasswordPolicy === null ? {} : { consolePasswordPolicy })");
     expect(cli).toContain("--console-password needs the ESP payload, but injection was skipped");
     expect(cli).toContain("--console-password requires ESP injection; remove --no-inject");

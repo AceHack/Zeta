@@ -1,0 +1,9 @@
+{
+  "committed": "measured",
+  "profiles": [
+    "minimal",
+    "standard",
+    "measured",
+    "large"
+  ]
+}

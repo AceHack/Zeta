@@ -255,10 +255,19 @@ describe("the shell constants agree with the TypeScript oracle", () => {
     expect(runShell('echo "$ZETA_LONGHORN_SCHEDULABLE_GIB"')).toBe(String(COMMITTED_LONGHORN_SCHEDULABLE_GIB));
   });
 
-  it("the installer convicts on SCHEDULABLE and prints DECLARED beside it", () => {
-    // Convicting on one number while showing only the other is how a figure
-    // stops meaning what its reader thinks it means.
-    expect(SRC).toContain('zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_SCHEDULABLE_GIB"');
+  it("the installer judges the pool against the CHOSEN profile's demand and prints the committed numbers beside it", () => {
+    // CHANGED by docs/ops/INSTALL-TIME-CONFIG.md row 29, and this is the honest edit rather than a
+    // loosening. This assertion used to pin `zeta_longhorn_capacity_verdict "$schedulable"
+    // "$ZETA_LONGHORN_SCHEDULABLE_GIB"`: the pool was judged against ONE number, the committed
+    // roster's, which is exactly how a perfectly ordinary 1 TB single-disk box (607 GiB schedulable
+    // against 943 declared) was refused although the catalogue prices the same claims at smaller rungs.
+    // The verdict function is unchanged and still the only thing that convicts; what it is handed
+    // is now the demand of the profile the pool can hold (zeta_storage_profile_decide), and it
+    // refuses only when even the SMALLEST profile does not fit.
+    // Convicting on one number while showing only the other is how a figure stops meaning what its
+    // reader thinks it means, so the committed numbers are still printed on every install.
+    expect(SRC).toContain('verdict="$(zeta_longhorn_capacity_verdict "$(zeta_clamp_gib "$1")" "$demand" "${4:-}")"');
+    expect(SRC).not.toContain('zeta_longhorn_capacity_verdict "$schedulable" "$ZETA_LONGHORN_SCHEDULABLE_GIB"');
     expect(SRC).toContain("committed roster DECLARES");
     expect(SRC).toContain("SCHEDULABLE on registered nodes");
   });

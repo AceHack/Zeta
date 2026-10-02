@@ -231,7 +231,14 @@ describe("(d) GitLab follows the install-time public domain", () => {
     };
     // The public-TLS parameters, plus the three valuesObject leaves the LoadBalancer-range Job
     // writes (cluster/lb-ipam-pool.test.ts (e) pins that half and that the two are disjoint).
-    expect(root.spec.ignoreDifferences).toEqual([
+    // Scoped to the two Applications THIS install-time input owns. The root also ignores the leaves the
+    // storage-profile Jobs write on other Applications (docs/ops/INSTALL-TIME-CONFIG.md row 29), and
+    // cluster/storage-profile-install.test.ts pins that half and that the two sets never overlap. This
+    // assertion used to be an `toEqual` on the whole list, which silently meant "no other input may ever
+    // own an ignore"; the narrower statement is the one it was written to make.
+    const owned = new Set(["gitlab", "forgejo"]);
+    const ignored: unknown[] = (root.spec.ignoreDifferences as Array<{ name: string }>).filter((entry) => owned.has(entry.name));
+    expect(ignored).toEqual([
       {
         group: "argoproj.io",
         kind: "Application",

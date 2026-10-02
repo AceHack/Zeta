@@ -16,6 +16,7 @@ import {
   ROOT_FLOOR_GIB,
   ROOT_FLOOR_SAFETY_FACTOR,
 } from "../installer/longhorn-capacity-preflight.ts";
+import { decideStorageProfile, STORAGE_PROFILE_LADDER } from "../installer/storage-profile-selection.ts";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -1990,32 +1991,65 @@ describe("findLonghornGeometry", () => {
     ...NO_COMPUTE,
   };
 
-  test("CONVICTS the registered two-disk shape — 694 GiB against the committed roster", () => {
+  // A node whose partitioned pool cannot hold even the SMALLEST storage profile: one 130 GiB disk is
+  // 130 - 1 ESP - 120 root floor = a 9 GiB tail, 6 GiB schedulable.
+  const tiny: MeasuredNode = {
+    path: "maintainers/x/cluster-nodes/t/node.yaml",
+    hostname: "tiny",
+    devices: ["/dev/a 130G"],
+    totalGib: 130,
+    ...NO_COMPUTE,
+  };
+  const SMALLEST_RUNG_GIB = STORAGE_PROFILE_LADDER[0]?.demandGib ?? 0;
+
+  test("does NOT convict the registered two-disk shape any more — 694 GiB cannot hold the committed 943, but the installer installs `standard` (571)", () => {
+    // CHANGED by docs/ops/INSTALL-TIME-CONFIG.md row 29, and this is the honest edit rather than a
+    // loosening. This test used to say CONVICTS, and the ledger carried two acknowledgements recording it as
+    // debt 'between a smaller storage rung, more disk, and a larger tail'. The installer now makes the
+    // smaller-rung call itself, so on this hardware the PVCs do not pend: the cluster runs a smaller rung.
+    // What still convicts is a pool where NO rung fits (below).
     const findings = findLonghornGeometry(LEDGER, [twoDisk], REPO_ROOT);
+    expect(findings.filter((finding) => finding.message.includes("would give Longhorn"))).toHaveLength(0);
+    // ... and it is the SAME arithmetic that used to convict: 694 GiB is under the committed demand.
+    expect(694).toBeLessThan(COMMITTED_LONGHORN_DEMAND_GIB);
+    expect(decideStorageProfile(694, "", "", "").profile).toBe("standard");
+  });
+
+  test("CONVICTS a node whose pool fits NO storage profile — the installer would refuse it before the wipe", () => {
+    const findings = findLonghornGeometry(LEDGER, [tiny], REPO_ROOT);
     const shortfall = findings.filter((finding) => finding.message.includes("would give Longhorn"));
     expect(shortfall).toHaveLength(1);
     expect(shortfall[0]?.severity).toBe("blocker");
-    expect(shortfall[0]?.message).toContain("694 GiB schedulable");
-    expect(shortfall[0]?.message).toContain(`${String(COMMITTED_LONGHORN_DEMAND_GIB)} GiB of driver.longhorn.io`);
+    expect(shortfall[0]?.message).toContain("6 GiB schedulable");
+    expect(shortfall[0]?.message).toContain("even the SMALLEST storage profile");
+    expect(shortfall[0]?.message).toContain(`${String(SMALLEST_RUNG_GIB)} GiB`);
+    expect(shortfall[0]?.message).toContain("REFUSES this node before the wipe");
   });
 
   test("the finding names the second-disk remedy, which is the cheapest one", () => {
-    const findings = findLonghornGeometry(LEDGER, [twoDisk], REPO_ROOT);
+    const findings = findLonghornGeometry(LEDGER, [tiny], REPO_ROOT);
     expect(findings[0]?.detail.some((line) => line.includes("second internal disk"))).toBe(true);
   });
 
   test("an acknowledgement keyed on BOTH numbers suppresses it", () => {
-    const key = longhornGeometryShortfallKey(694, COMMITTED_LONGHORN_DEMAND_GIB, "two-disk");
+    const key = longhornGeometryShortfallKey(6, SMALLEST_RUNG_GIB, "tiny");
     const ledger: Ledger = { ...LEDGER, acknowledgedLonghornGeometryShortfall: [key] };
-    expect(findLonghornGeometry(ledger, [twoDisk], REPO_ROOT)).toHaveLength(0);
+    expect(findLonghornGeometry(ledger, [tiny], REPO_ROOT)).toHaveLength(0);
   });
 
   test("an acknowledgement taken against DIFFERENT arithmetic does not suppress it", () => {
     // The whole reason both numbers are in the key. A roster that grows past
     // what somebody knowingly accepted must re-redden, not inherit clearance.
-    const stale = longhornGeometryShortfallKey(694, 800, "two-disk");
+    const stale = longhornGeometryShortfallKey(6, SMALLEST_RUNG_GIB - 1, "tiny");
     const ledger: Ledger = { ...LEDGER, acknowledgedLonghornGeometryShortfall: [stale] };
-    expect(findLonghornGeometry(ledger, [twoDisk], REPO_ROOT)).toHaveLength(1);
+    expect(findLonghornGeometry(ledger, [tiny], REPO_ROOT)).toHaveLength(1);
+  });
+
+  test("the retired acknowledgements are gone from the checked-in ledger — nothing inherits clearance taken against the old rule", () => {
+    const checkedIn = JSON.parse(readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/single-node-budget.json"), "utf8")) as {
+      acknowledgedLonghornGeometryShortfall: string[];
+    };
+    expect(checkedIn.acknowledgedLonghornGeometryShortfall).toEqual([]);
   });
 
   test("stays silent on a node whose partitioned pool genuinely covers the roster", () => {

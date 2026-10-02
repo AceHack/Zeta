@@ -12,6 +12,7 @@ import { join, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
 import { yamlDocs, PUBLIC_TLS_TEMPLATE } from "../cluster/public-tls.ts";
 import { LB_POOL_TEMPLATE } from "../cluster/lb-ipam-pool.ts";
+import { STORAGE_PROFILE_TEMPLATE } from "../cluster/storage-profile-install.ts";
 import {
   appliedCorpus,
   auditPlaceholders,
@@ -92,6 +93,7 @@ describe("the real tree", () => {
     expect(origins.some((o) => o.includes("bootstrap/root-application.yaml"))).toBe(true);
     expect(origins.some((o) => o.startsWith("(rendered) k8s/public-tls"))).toBe(true);
     expect(origins.some((o) => o.startsWith("(rendered) k8s/lb-ipam"))).toBe(true);
+    expect(origins.some((o) => o.startsWith("(rendered) k8s/storage-profile"))).toBe(true);
   });
 
   test("no applied manifest carries a placeholder that is not baselined with an owner", () => {
@@ -116,8 +118,8 @@ describe("the real tree", () => {
 describe("the install-time templates are scanned RENDERED, and render clean", () => {
   const rendered = appliedCorpus(REPO_ROOT).filter((c) => c.origin.startsWith("(rendered)"));
 
-  test("both templates are in the corpus", () => {
-    expect(rendered).toHaveLength(2);
+  test("all three templates are in the corpus (public TLS, LoadBalancer range, storage profile)", () => {
+    expect(rendered).toHaveLength(3);
   });
 
   test("rendered with real-shaped values they carry NO finding at all - not even a baselined one", () => {
@@ -130,7 +132,7 @@ describe("the install-time templates are scanned RENDERED, and render clean", ()
   });
 
   test("a template whose token was never substituted is caught as UNRENDERED", () => {
-    for (const t of [PUBLIC_TLS_TEMPLATE, LB_POOL_TEMPLATE]) {
+    for (const t of [PUBLIC_TLS_TEMPLATE, LB_POOL_TEMPLATE, STORAGE_PROFILE_TEMPLATE]) {
       const raw = readFileSync(join(REPO_ROOT, t), "utf8");
       expect(scanDocs(yamlDocs(raw), t).map((f) => f.pattern)).toContain("unrendered install-time token");
     }

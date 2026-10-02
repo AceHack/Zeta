@@ -76,6 +76,7 @@ import {
   type ProfileCatalogue,
   type ResourceCatalogue,
 } from "./storage-profiles.ts";
+import { decideStorageProfile, STORAGE_PROFILE_LADDER } from "../installer/storage-profile-selection.ts";
 import { clusterDefaultStorageClass } from "./cluster-default-storage-class.ts";
 import {
   METAL_STORAGE_BINDINGS_SOURCE,
@@ -1615,18 +1616,28 @@ export function findLonghornGeometry(
     if (geometry === null) continue;
     const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
     if (schedulable >= demand.totalGib) continue;
-    const key = longhornGeometryShortfallKey(schedulable, demand.totalGib, node.hostname);
+    // docs/ops/INSTALL-TIME-CONFIG.md row 29. A pool that cannot hold the COMMITTED profile is no longer a
+    // shortfall by itself: zeta-install.sh CHOOSES the largest storage profile that fits and refuses only when
+    // even the smallest does not, so on such a node the PVCs do not pend -- the cluster runs a smaller rung.
+    // This check used to convict that shape (694 GiB against 943) and its two acknowledgements recorded it as
+    // debt "between a smaller storage rung, more disk, and a larger tail". The installer now makes the
+    // smaller-rung call at install time, so only the case with NO rung left is a blocker.
+    const decision = decideStorageProfile(schedulable, "", "", "");
+    if (decision.verdict === "ok") continue;
+    const smallestRung = STORAGE_PROFILE_LADDER[0];
+    const smallestDemandGib = smallestRung?.demandGib ?? demand.totalGib;
+    const key = longhornGeometryShortfallKey(schedulable, smallestDemandGib, node.hostname);
     if (ledger.acknowledgedLonghornGeometryShortfall.includes(key)) continue;
     findings.push({
       check: "longhorn-geometry",
       severity: "blocker",
       message:
-        `zeta-install.sh would give Longhorn ${schedulable.toFixed(0)} GiB schedulable on ${node.hostname}, but ` +
-        `the roster declares ${demand.totalGib.toFixed(0)} GiB of driver.longhorn.io PVCs — short by ` +
-        `${(demand.totalGib - schedulable).toFixed(0)} GiB. The pool is the longhorn1 TAIL off the boot disk ` +
+        `zeta-install.sh would give Longhorn ${schedulable.toFixed(0)} GiB schedulable on ${node.hostname}, and ` +
+        `even the SMALLEST storage profile (${smallestRung?.name ?? "?"}, ${smallestDemandGib.toFixed(0)} GiB of ` +
+        `driver.longhorn.io PVCs) does not fit — short by ${(smallestDemandGib - schedulable).toFixed(0)} GiB, so ` +
+        `the installer REFUSES this node before the wipe. The pool is the longhorn1 TAIL off the boot disk ` +
         `(${geometry.tailGib} GiB) plus every NON-boot disk whole, NOT the sum of the block devices: the ESP and ` +
-        `the root floor take the remainder and the root filesystem is never a Longhorn data path. Those PVCs ` +
-        `pend forever.`,
+        `the root floor take the remainder and the root filesystem is never a Longhorn data path.`,
       detail: [
         `measured evidence: ${node.path}`,
         ...node.devices.map((device) => `  ${device}`).sort((a, b) => stringCompare(a, b)),
@@ -2932,11 +2943,20 @@ function printLonghornGeometrySection(
     }
     const schedulable = Math.floor(geometry.rawGib * fraction) * ledger.nodeCount;
     const over = demand.totalGib - schedulable;
+    // What the installer DOES with this pool (docs/ops/INSTALL-TIME-CONFIG.md row 29): it chooses the largest
+    // storage profile that fits instead of refusing against the committed one.
+    const decision = decideStorageProfile(schedulable, "", "", "");
+    const installs =
+      decision.verdict === "ok"
+        ? `installer chooses profile '${decision.selection.ok ? decision.selection.profile : "?"}'` +
+          ` (${String(decision.demandGib)} GiB declared)`
+        : `installer REFUSES (even '${STORAGE_PROFILE_LADDER[0]?.name ?? "?"}' needs ${String(STORAGE_PROFILE_LADDER[0]?.demandGib)} GiB)`;
     console.log(
       `  ${node.hostname.padEnd(18)} ${geometry.tailGib} GiB tail + [${geometry.dataDiskGib.join(", ")}] whole ` +
         `= ${geometry.rawGib} GiB raw x ${(fraction * 100).toFixed(0)}% x ${ledger.nodeCount} node(s) ` +
         `= ${schedulable} GiB  ` +
-        (over > 0 ? `SHORT by ${over} GiB` : `fits, ${-over} GiB spare`),
+        (over > 0 ? `SHORT of the committed profile by ${over} GiB` : `holds the committed profile, ${-over} GiB spare`) +
+        `; ${installs}`,
     );
   }
   console.log(

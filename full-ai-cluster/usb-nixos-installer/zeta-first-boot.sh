@@ -1112,6 +1112,13 @@ export ZETA_PUBLIC_DOMAIN="${ZETA_PUBLIC_DOMAIN:-}"
 # Empty is the normal value: zeta-install then offers a prompt behind one keypress and,
 # failing that, leaves the pool UNSET -- loudly, never a placeholder.
 export ZETA_LB_POOL="${ZETA_LB_POOL:-}"
+# docs/ops/INSTALL-TIME-CONFIG.md row 29: the storage profile zflash --storage-profile baked into
+# the ESP conf (`auto` or one rung of k8s/storage-profiles.json). Same pass-through: sourced vars need
+# an explicit export. Empty is the normal value and means `auto`: zeta-install measures the Longhorn
+# pool it will provision and picks the LARGEST profile that fits, refusing only when even the smallest
+# does not. A named profile is the owner forcing a bigger (or smaller) one; a name that is not a rung
+# refuses the install before the wipe. It never shrinks a profile an existing install already runs.
+export ZETA_STORAGE_PROFILE="${ZETA_STORAGE_PROFILE:-}"
 # docs/ops/INSTALL-TIME-CONFIG.md row 19: what the `zeta` console password is when none is typed
 # at the installer prompt -- `default` (the PUBLIC zeta-change-me, loudly) or `mint` (a random
 # one-time password). zflash --console-password writes it to the ESP conf. Same pass-through:

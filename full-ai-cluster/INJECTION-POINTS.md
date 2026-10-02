@@ -535,6 +535,37 @@ network can route.
 **Not verified here:** nothing in §11 has been booted (no nix, no QEMU); see
 `docs/ops/INSTALL-TIME-CONFIG.md` "Not verified".
 
+### 12. Storage profile (docs/ops/INSTALL-TIME-CONFIG.md row 29)
+
+The Longhorn PVC sizes used to be whatever the committed tree said — the `measured` rung of
+`k8s/storage-profiles.json`, 943 GiB declared. A box whose pool could not hold it was **refused at
+install** (a hard stop on an ordinary single-1-TB-disk machine: 607 GiB schedulable against 943). The
+installer now measures the pool it provisions and installs the **largest profile that fits**, through
+the **same mechanism as §10/§11** — and over the **same ladder**, not a fourth one.
+
+| Property                | Value                                                                                                                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | (1) flash time → ESP conf (optional), or (2) automatic: Step 2.8, after the pool is measured and **before** the wipe                                                  |
+| **Content class**       | Public identifier (a rung name from the catalogue)                                                                                                                     |
+| **Operator-driven via** | `zflash --storage-profile auto\|minimal\|standard\|measured\|large` (device, Windows and file-backed), or `ZETA_STORAGE_PROFILE=<name>` in the environment; default `auto` |
+| **ESP carrier**         | `ZETA_STORAGE_PROFILE='…'` appended to `/zeta-firstboot.conf` (exported by `zeta-first-boot.sh`)                                                                       |
+| **Backed by file**      | `/mnt/etc/zeta/storage-profile` = one rung name (written **only** for a rung that differs from the committed one; symlinked to `/etc/zeta/` for `--impure` eval)         |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/injected-storage-profile.nix` (k3s servers only)                                                                                         |
+| **Reaches the cluster** | the k3s auto-deploy roster, as the ArgoCD Application `zeta-storage-profile` (kustomize base `k8s/storage-profile/` carries **no** profile; inline patch) whose per-Application Jobs merge-patch the git-owned Applications' size leaves; `zeta-root` ignores exactly those leaves |
+| **Validation**          | `src/Core.TypeScript/installer/storage-profile-selection.ts`; shell twin `ZETA-STORAGE-PROFILE` block in `zeta-install.sh` (parity-tested); the ladder is **generated** from the catalogue |
+
+**Selection** (`zeta_storage_profile_decide`): `auto` picks the largest rung whose demand ≤ the pool's
+schedulable GiB; it **refuses only when even `minimal` does not fit**, listing the three existing
+remedies. A named profile is forced (and refused before the wipe if the pool cannot hold it); a name
+that is not a rung is refused, never read as `auto`. On the owner's numbers (607 GiB schedulable, 943
+declared) it installs `standard` (571 GiB) and says what that changes: `ollama/models` and
+`vllm/hf-cache` 200Gi→48Gi. **Never shrinks:** an install that recognises a prior one never goes below
+the profile that install ran, and the node-side module ratchets
+(`/var/lib/zeta/storage-profile-high-water`).
+
+**Not verified here:** nothing in §12 has been booted; see `docs/ops/INSTALL-TIME-CONFIG.md` row 29 and
+"Not verified".
+
 ## Operator-driven `zflash` flag inventory (current)
 
 Allowlist from `zflash.ts`:
@@ -560,6 +591,11 @@ Allowlist from `zflash.ts`:
 --lb-pool <v>        LoadBalancer range (§11): `auto` (.240-.250 of the node's /24) or
                      <first-ip>-<last-ip> → ZETA_LB_POOL. Omitted: the installer asks;
                      nobody there → UNSET, loudly. Checked against the LAN at install.
+--storage-profile <v>
+                     storage profile (§12): `auto` (default — the installer picks the largest
+                     profile that fits the Longhorn pool it measures) or one of minimal, standard,
+                     measured, large → ZETA_STORAGE_PROFILE. Refused only when even `minimal` does
+                     not fit. Never shrinks a profile an existing install already runs.
 --console-password <v>
                      console password when none is typed at the installer (§3):
                      `default` (the PUBLIC zeta-change-me, loud banner; also what omitting

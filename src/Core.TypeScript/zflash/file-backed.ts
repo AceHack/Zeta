@@ -22,6 +22,7 @@ import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool, type LbPoolSpec } from "../installer/lan-config.ts";
 import { planConsolePasswordPolicy, type ConsolePasswordPolicy } from "../installer/console-password-policy.ts";
+import { planStorageProfile } from "../installer/storage-profile-selection.ts";
 import type {
   FileBackedEspWrite,
   FileBackedZflashImageExecution,
@@ -68,6 +69,8 @@ export interface FileBackedZflashCliOptions {
   readonly lbPool?: LbPoolSpec;
   /** docs/ops/INSTALL-TIME-CONFIG.md row 19: `--console-password default|mint`, validated. See lib.ts. */
   readonly consolePasswordPolicy?: ConsolePasswordPolicy;
+  /** docs/ops/INSTALL-TIME-CONFIG.md row 29: `--storage-profile auto|<profile>`, validated. See lib.ts. */
+  readonly storageProfile?: string;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -150,7 +153,11 @@ const USAGE =
   "  --console-password <default|mint>  what the zeta CONSOLE password is when none is typed at the installer prompt, onto\n" +
   "                               /zeta-firstboot.conf. default (also what omitting this means) = the PUBLIC zeta-change-me, with a loud\n" +
   "                               banner and a login reminder until it is changed; mint = a random one-time password shown once.\n" +
-  "                               A typed password always wins. Anyone with console access is root via sudo under 'default'.\n";
+  "                               A typed password always wins. Anyone with console access is root via sudo under 'default'.\n" +
+  "  --storage-profile <auto|name>  storage profile (k8s/storage-profiles.json: minimal, standard, measured, large) onto /zeta-firstboot.conf.\n" +
+  "                               'auto' (the default) measures the Longhorn pool the install provisions and picks the LARGEST profile\n" +
+  "                               that fits, refusing only when even 'minimal' does not. A name forces that profile (refused before the\n" +
+  "                               wipe if the pool cannot hold it). It never shrinks a profile an existing install already runs.\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -254,6 +261,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
   let consolePasswordFlag: string | undefined;
+  let storageProfileFlag: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -296,7 +304,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--acme-email" ||
       arg === "--public-domain" ||
       arg === "--lb-pool" ||
-      arg === "--console-password"
+      arg === "--console-password" ||
+      arg === "--storage-profile"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -325,6 +334,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--public-domain") publicDomainFlag = value;
       else if (arg === "--lb-pool") lbPoolFlag = value;
       else if (arg === "--console-password") consolePasswordFlag = value;
+      else if (arg === "--storage-profile") storageProfileFlag = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -356,6 +366,9 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
 
   const consolePassword = planConsolePasswordPolicy(consolePasswordFlag);
   if (!consolePassword.ok) return { kind: "error", error: consolePassword.error };
+
+  const storageProfile = planStorageProfile(storageProfileFlag);
+  if (!storageProfile.ok) return { kind: "error", error: storageProfile.error };
 
   const namedArgv: string[] = [];
   if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
@@ -409,6 +422,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(publicEndpoint.value === null ? {} : { publicEndpoint: publicEndpoint.value }),
       ...(lbPool.value === null ? {} : { lbPool: lbPool.value }),
       ...(consolePassword.value === null ? {} : { consolePasswordPolicy: consolePassword.value }),
+      ...(storageProfile.value === null ? {} : { storageProfile: storageProfile.value }),
     },
   };
 }
@@ -606,6 +620,7 @@ export function runFileBackedZflashCli(
     ...(options.publicEndpoint === undefined ? {} : { publicEndpoint: options.publicEndpoint }),
     ...(options.lbPool === undefined ? {} : { lbPool: options.lbPool }),
     ...(options.consolePasswordPolicy === undefined ? {} : { consolePasswordPolicy: options.consolePasswordPolicy }),
+    ...(options.storageProfile === undefined ? {} : { storageProfile: options.storageProfile }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

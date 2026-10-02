@@ -667,6 +667,12 @@ export function indexAppManifests(
       }
       const group = apiGroupOf(doc.apiVersion);
       if (group === "" || BUILTIN_API_GROUPS.has(group)) continue;
+      // A `kustomization.yaml` in a KUSTOMIZE-sourced Application's directory is build INPUT: kustomize
+      // consumes it and ArgoCD never applies it, so it is not a consumer of any CRD. (vllm became such a
+      // source so the install-time storage profile can patch its PVC -- docs/ops/INSTALL-TIME-CONFIG.md
+      // row 29. The directory is read raw here, so the patches themselves are not rendered; the only one
+      // that can exist resizes a PersistentVolumeClaim, a built-in kind.)
+      if (group === "kustomize.config.k8s.io" && doc.kind === "Kustomization") continue;
       consumed.push({
         app: app.name,
         group,

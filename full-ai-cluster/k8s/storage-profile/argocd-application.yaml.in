@@ -1,0 +1,78 @@
+# full-ai-cluster/k8s/storage-profile/argocd-application.yaml.in
+#
+# A TEMPLATE, not a manifest: nothing applies this file as-is (the `.in` suffix keeps it out of
+# every *.yaml scan and out of kustomize). docs/ops/INSTALL-TIME-CONFIG.md row 29.
+#
+# nixos/modules/injected-storage-profile.nix reads /etc/zeta/storage-profile (one profile name from
+# k8s/storage-profiles.json, written by zeta-install.sh when the pool it measured cannot hold the
+# committed profile, or when the operator asked for a specific one), substitutes the one token below
+# with `builtins.replaceStrings` (NOTE: this prose must never spell the token -- the module refuses
+# to render a document that still contains the token prefix, and it cannot tell a comment from a
+# manifest), and hands the result to the k3s auto-deploy roster -- the same door
+# `root-application.yaml`, `platform-public-tls` and `cilium-lb-ipam-pool` use. When the file is absent
+# the module adds nothing, this Application never exists, and the cluster runs the committed profile.
+#
+# The profile reaches the cluster ONLY as this JSON6902 patch to one ConfigMap key; the kustomize base
+# (configmap.yaml, rbac.yaml, jobs.yaml -- GENERATED from storage-profiles.json) carries no profile.
+# Each Job in that base then merge-patches one git-owned Application's size leaves, the way
+# `gitlab-lan-address` does. The profile is validated at install time against the ladder in
+# storage-profile/ladder.json, so it is a bare name and safe inside the quoted JSON string below.
+# src/Core.TypeScript/cluster/storage-profile-install.ts mirrors this substitution for the tests.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zeta-storage-profile
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/storage-profile
+    kustomize:
+      patches:
+        - target: { version: v1, kind: ConfigMap, name: zeta-storage-profile }
+          patch: '[{"op":"add","path":"/data/profile","value":"@ZETA_STORAGE_PROFILE@"}]'
+        # The profile is also part of every Job's NAME. A Job is immutable and a completed Job is never
+        # re-run, so without this a later change of profile (growing it) would re-run nothing; with it a
+        # change is a new Job, ArgoCD prunes the old one, and the new one patches against the new profile.
+        # GENERATED -- one entry per Job in jobs.yaml (storage-profile-install.ts --write).
+        # ZETA-STORAGE-PROFILE-JOBS-BEGIN
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-cockroachdb }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-cockroachdb-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-hindsight }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-hindsight-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-kube-prometheus-stack }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-kube-prometheus-stack-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-mimir }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-mimir-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-nats }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-nats-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-ollama }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-ollama-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-openziti-controller }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-openziti-controller-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-redis }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-redis-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-tempo }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-tempo-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-vllm }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-vllm-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-weaviate }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-weaviate-@ZETA_STORAGE_PROFILE@"}]'
+        # ZETA-STORAGE-PROFILE-JOBS-END
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+    # Unbounded, for the same reason as `cilium-lb-ipam-pool`: the Jobs it applies wait for
+    # Applications that `zeta-root` creates at its own sync waves, and a lost race must not be permanent.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

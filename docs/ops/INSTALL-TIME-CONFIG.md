@@ -90,6 +90,7 @@ not in its baseline fails; a baseline entry that no longer matches fails too (st
 | 26 | **Dynamic DNS hosts / registrar secret** | `applications/ddns/cronjob.yaml` `DDNS_HOSTS: "@ *"`; secret `namecheap-ddns` (operator-supplied) | updates the wrong records, or fails without the secret | none | **OPEN** (operator step) |
 | 27 | **`gmod-sftp` Service type** | `applications/game-hosting/gmod/service.yaml`: unconditionally `LoadBalancer` | one of the LoadBalancer pool's addresses spent on a port that answers nothing (SFTP is opt-in: no keys ConfigMap => nothing listens) | `ClusterIP` by default; the opt-in is `kubectl -n game-hosting patch svc gmod-sftp -p '{"spec":{"type":"LoadBalancer"}}'`, and the Application ignores that field's drift (`ignoreDifferences` + `RespectIgnoreDifferences`) | **DONE (this PR stack)** |
 | 28 | **Forgejo public URL** (`DOMAIN` / `ROOT_URL` / `SSH_DOMAIN`) | the chart default, never set in this tree: renders `git.example.com` (measured, chart 17.1.5) | an RFC 2606 name in every clone URL and redirect; nothing exposes Forgejo off-cluster | UNSET: the in-cluster Service names. SET: `git.<domain>` - its own listener + certificate + route on the public Gateway and Job `forgejo-public-hosts` merge-patching the Application's helm parameters (the GitLab shape, a separate Job scoped to Application/forgejo) | **DONE (this PR stack)** |
+| 29 | **Storage profile** (the size of every Longhorn PVC: `minimal` / `standard` / `measured` / `large`) | the committed tree is written at ONE rung (`activeStorageProfile`, `measured`, 943 GiB declared); the installer refused any pool smaller than that | a perfectly ordinary single-1-TB-disk box (810 GiB tail → **607 GiB** schedulable) was **REFUSED**: `short by 336 GiB`, with every remedy a manual flag or a destructive wipe. node-5b2dfa, measured | **automatic, at install time**: the installer measures the pool it provisions and installs the **largest** profile whose declared demand fits (`standard`, 571 GiB, for 607), refusing only when even `minimal` (204 GiB) does not. Override: `zflash --storage-profile auto\|<name>` → `ZETA_STORAGE_PROFILE` (or the env var in a shell). Written as `/etc/zeta/storage-profile` **only for a rung that differs from the committed one** → `injected-storage-profile.nix` → `zeta-storage-profile` Application (`k8s/storage-profile/`) → one Job per Application merge-patches the size leaves; `zeta-root` ignores exactly those. **NEVER shrinks** | **DONE (this PR)** - see "The storage profile (row 29)" |
 
 ## Why the pod/service CIDR is detected, not injected (row 4)
 
@@ -136,6 +137,117 @@ sudo k3s kubectl get ciliumloadbalancerippool zeta-lb-pool
 
 The range must be **free addresses on the node's LAN and outside the router's DHCP range**. The
 ping probe is evidence, not proof: a host that does not answer ICMP is invisible to it.
+
+## The storage profile (row 29)
+
+**The defect, measured.** node-5b2dfa — one 1 TB boot NVMe plus one 1 TB NVMe carrying old Longhorn
+data — was refused before anything was wiped:
+
+```text
+longhorn1 tail on /dev/nvme0n1   810 GiB   (LONGHORN1_TAIL=810G)     raw pool 810 GiB x 75% -> 607 GiB
+committed roster DECLARES        943 GiB   ERROR: ... short by 336 GiB.
+```
+
+The refusal compared the pool against ONE number — the `measured` rung's total — as if the ladder did
+not exist. It does: `full-ai-cluster/k8s/storage-profiles.json` prices the same claims at four install
+rungs, and the installer now **chooses** one instead of refusing. This is the **existing** storage-profile
+ladder (the repo has three — resource rungs, storage profiles, the runner disk envelope — and no fourth);
+`ci` stays the hosted runner's and is not offered to a node.
+
+| rung | declared on a fresh install | what it trades |
+| --- | --- | --- |
+| `minimal` | 204 GiB | cockroachdb and nats drop to 1 pod (**no Raft quorum**), redis to 2, retention halves |
+| `standard` | 571 GiB | `ollama` and `vllm` PVCs 200Gi → 48Gi; **nothing that provisions at bring-up changes** |
+| `measured` | 943 GiB | the committed tree — selecting it writes nothing |
+| `large` | 1561 GiB | the sizes `storage-profiles.json` prices above `measured` |
+
+The numbers are what each rung **actually requests** (`installDemandGib`), not its catalogue total: a
+claim an install-time choice cannot resize keeps its committed size and is charged at it (below
+`measured` that is +12 GiB, which is why `minimal` is 204 and not 192), and the one claim nothing applies
+cannot consume bytes today. All of it is **generated** from the catalogue —
+`bun src/Core.TypeScript/cluster/storage-profile-install.ts --write` regenerates the installer's shell
+table, its TypeScript twin, the kit and the root's ignore set, and `storage-profile-install.test.ts` fails
+when any of them is not byte-for-byte what the catalogue derives.
+
+**What the installer does**, in order (Step 2.8, before the wipe, with the arithmetic on screen):
+
+1. Measures the pool it provisions (the `longhorn1` tail + every non-boot disk whole, × 75%).
+2. `auto` (the default; `ZETA_STORAGE_PROFILE` unset or `auto`): picks the **largest** rung that fits, prints
+   the whole ladder with what fits, names the choice and **what it changes** against the committed rung
+   and **which claims it cannot change** (`agent-memory`, `game-hosting-gmod`, `headscale`, `portal` are
+   git-path Applications on a `directory` source, which has no patch surface).
+3. **Refuses only when even `minimal` does not fit**, with the three remedies it always listed: add a
+   second internal disk, raise `LONGHORN1_TAIL` (sized from the smallest rung), or
+   `ZETA_ALLOW_LONGHORN_UNDERSIZED=1` — under which an `auto` choice that fits nothing proceeds on the
+   committed tree, exactly as before (the QEMU lanes that run under the override are unchanged).
+4. Writes `/etc/zeta/storage-profile` only when the choice differs from the committed rung.
+
+**Forcing a profile.** `zflash --storage-profile <auto|minimal|standard|measured|large>` (device, Windows
+and file-backed paths; `--dry-run` shows the `ZETA_STORAGE_PROFILE='…'` line it would put on the ESP), or
+`ZETA_STORAGE_PROFILE=<name>` in the environment. A name is forced as asked and refused before the wipe if
+the pool cannot hold it (the refusal names what `auto` would have chosen); a name that is not a rung is
+refused, never quietly read as `auto`.
+
+**Reaching the cluster.** The same path as rows 1–3: `injected-storage-profile.nix` reads the file at
+evaluation time and adds the `zeta-storage-profile` ArgoCD Application to the k3s roster. Its kustomize
+base (`k8s/storage-profile/`, GENERATED) carries no profile; one inline patch writes the rung name into a
+ConfigMap, and one Job per Application the profile moves (`kubectl wait --for=create`, then a JSON merge
+patch of that rung's size / pod-count / retention leaves — the `gitlab-lan-address` shape) patches the
+git-owned Application. The root ignores exactly those leaves (generated region of
+`bootstrap/root-application.yaml`). `vllm` became a **kustomize** source (a `directory` source has no patch
+surface) to be reachable; it applies the same manifest it did.
+
+**THE COST, STATED.** Those leaves are installation-owned: a later commit that edits one of them in source
+control does not reach a cluster that already synced the Application, because the root keeps the live
+value. The way to resize is the install-time profile.
+
+### Growing later without a reinstall — and the part that is NOT automatic
+
+```text
+# 1. add capacity: mount the new disk and add it to the node in Longhorn (UI, or `kubectl -n longhorn-system
+#    edit nodes.longhorn.io <node>`). NOT automatic: the `default-disks-config` annotation only applies at a
+#    node's FIRST registration (nixos/modules/longhorn-disks.nix), so a disk added later is Longhorn's own
+#    operation, not a rebuild.
+# 2. raise the profile:
+echo standard | sudo tee /etc/zeta/storage-profile       # or measured / large
+sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>
+sudo k3s kubectl -n kube-system get jobs | grep zeta-storage-profile
+```
+
+The profile's name is part of every Job's **name**, so a change is a *new* Job (ArgoCD prunes the old one)
+rather than a completed Job nobody re-runs. **Longhorn can expand a volume** (`allowVolumeExpansion: true`
+on both Longhorn classes), **and Kubernetes cannot shrink one.** So:
+
+- **Profile selection never shrinks.** The installer never goes below the profile a recognised prior install
+  ran (it recovers `/etc/zeta/storage-profile` and the high-water mark from the old root), an explicit
+  request below it is refused as a shrink, and the Nix module takes the **higher** of the file and
+  `/var/lib/zeta/storage-profile-high-water`, which every activation updates. `ZETA_STORAGE_PROFILE_FLOOR=none`
+  is the named act of someone who is destroying those volumes on purpose; deleting the high-water file is its
+  node-side twin. A re-run on a live cluster therefore cannot select smaller than what is applied.
+- **Growth through the Application is NOT always a plain GitOps converge.** A Deployment-style PVC grows when
+  the chart value changes. A **StatefulSet's `volumeClaimTemplates` are immutable**: ArgoCD's sync of a larger
+  size is refused by the API server (`updates to statefulset spec ... are forbidden`, the same error
+  `adoption-immutable-fields.ts` documents for spire). For those claims (cockroachdb, redis, nats, mimir,
+  weaviate, tempo, hindsight, openziti, prometheus/alertmanager/grafana) the profile change moves the
+  *declaration*, and the live volumes need the standard expansion steps: `kubectl patch pvc <name> -p
+  '{"spec":{"resources":{"requests":{"storage":"<new>"}}}}'` for each, then `kubectl delete statefulset <name>
+  --cascade=orphan` so ArgoCD re-creates it with the new template. Nothing here automates that, and nothing
+  here has done it on a live cluster.
+
+### Not verified (row 29 specifically)
+
+- **Nothing has been booted** — no nix and no QEMU locally. The Nix module is pinned on its text; the shell is
+  executed (the real `assert_longhorn_pool_holds_the_roster` runs under bash against the owner's numbers) but
+  `blockdev` is stubbed.
+- **That ArgoCD's kustomize applies the inline patches as `storageProfileObjects` mirrors them**, including
+  the patch that renames a Job to carry the profile.
+- **The race.** The Jobs patch an Application *after* `zeta-root` creates it, and ArgoCD starts reconciling a
+  new Application at once. The Job's init container is already waiting and patches within a second, and a
+  new Application must first be rendered by the repo-server — but if a first sync created a StatefulSet at the
+  committed size before the patch landed, the API server refuses the shrink and that Application sticks
+  OutOfSync. For `standard` every claim that provisions at bring-up already equals the committed size, so the
+  race can only matter for `minimal`.
+- That the first real install on a pool like node-5b2dfa's places what `standard` declares.
 
 ## Not verified (stated, not implied)
 

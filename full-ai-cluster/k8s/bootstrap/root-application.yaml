@@ -74,6 +74,93 @@ spec:
       namespace: argocd
       jsonPointers:
         - /spec/source/helm/parameters
+    # THE INSTALL-TIME STORAGE PROFILE (docs/ops/INSTALL-TIME-CONFIG.md row 29). When
+    # /etc/zeta/storage-profile names a rung other than the committed one, the
+    # `zeta-storage-profile` Application's per-Application Jobs merge-patch that rung's SIZE
+    # (and, for the rungs that change them, pod-count and retention) leaves into the Applications
+    # below, and root must neither report that as drift nor selfHeal it back to the committed rung.
+    # GENERATED -- `bun src/Core.TypeScript/cluster/storage-profile-install.ts --write` rewrites
+    # exactly this region from k8s/storage-profiles.json, and storage-profile-install.test.ts
+    # fails when it is not byte-for-byte what the generator emits. THE COST, STATED: these leaves
+    # are installation-owned. A later commit that edits one of them in source control does not
+    # reach a cluster that already synced these Applications; the way to resize is the
+    # install-time profile (grow it, never shrink: Kubernetes refuses to shrink a PVC).
+    # ZETA-STORAGE-PROFILE-IGNORE-BEGIN
+    - group: argoproj.io
+      kind: Application
+      name: cockroachdb
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/statefulset/replicas
+        - /spec/source/helm/valuesObject/storage/persistentVolume/size
+    - group: argoproj.io
+      kind: Application
+      name: hindsight
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/postgresql/persistence/size
+    - group: argoproj.io
+      kind: Application
+      name: kube-prometheus-stack
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/alertmanager/alertmanagerSpec/storage/volumeClaimTemplate/spec/resources/requests/storage
+        - /spec/source/helm/valuesObject/grafana/persistence/size
+        - /spec/source/helm/valuesObject/prometheus/prometheusSpec/retentionSize
+        - /spec/source/helm/valuesObject/prometheus/prometheusSpec/storageSpec/volumeClaimTemplate/spec/resources/requests/storage
+    - group: argoproj.io
+      kind: Application
+      name: mimir
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/compactor/persistentVolume/size
+        - /spec/source/helm/valuesObject/ingester/persistentVolume/size
+        - /spec/source/helm/valuesObject/store_gateway/persistentVolume/size
+    - group: argoproj.io
+      kind: Application
+      name: nats
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/config/cluster/replicas
+        - /spec/source/helm/valuesObject/config/jetstream/fileStore/pvc/size
+    - group: argoproj.io
+      kind: Application
+      name: ollama
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/persistentVolume/size
+    - group: argoproj.io
+      kind: Application
+      name: openziti-controller
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/persistence/size
+    - group: argoproj.io
+      kind: Application
+      name: redis
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/replica/persistence/size
+        - /spec/source/helm/valuesObject/replica/replicas
+    - group: argoproj.io
+      kind: Application
+      name: tempo
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/persistence/size
+    - group: argoproj.io
+      kind: Application
+      name: vllm
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/kustomize/patches
+    - group: argoproj.io
+      kind: Application
+      name: weaviate
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/storage/size
+    # ZETA-STORAGE-PROFILE-IGNORE-END
   syncPolicy:
     # Unbounded retry (limit -1, backoff capped at 5m). ArgoCD's automated-sync default is 5 attempts
     # (~2.5 min) and it never re-attempts a revision whose sync already failed, so a control-plane blip

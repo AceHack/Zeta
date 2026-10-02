@@ -26,8 +26,16 @@ spec:
     repoURL: https://github.com/Lucent-Financial-Group/Zeta
     targetRevision: main
     path: full-ai-cluster/k8s/applications/vllm
-    directory:
-      include: '{namespace,deployment,service}.yaml'
+    # A KUSTOMIZE source, not a `directory` one, so the install-time storage profile
+    # (docs/ops/INSTALL-TIME-CONFIG.md row 29, k8s/storage-profile/) can resize the
+    # `vllm-cache` claim: a directory source has no patch surface, a kustomize source's
+    # `patches` is exactly one. `kustomization.yaml` lists the same manifests the old
+    # include glob did (the glob also named namespace.yaml and service.yaml, which have
+    # never existed: the Namespace and the Service are documents of deployment.yaml).
+    # The committed tree carries NO patch, so with no install-time profile this renders
+    # byte-for-byte what the directory source did. The `patches` array is written by the
+    # `zeta-storage-profile-vllm` Job and is ignored by the root (root-application.yaml).
+    kustomize: {}
   destination:
     server: https://kubernetes.default.svc
     namespace: vllm

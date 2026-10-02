@@ -37,6 +37,7 @@ import { parseAllDocuments } from "yaml";
 import { discoverGitDirectorySources, sourceReconciles } from "../cluster/app-of-apps-discovery.ts";
 import { publicTlsObjects, renderPublicTlsApplicationText, yamlDocs } from "../cluster/public-tls.ts";
 import { lbPoolObjects, renderLbPoolApplicationText } from "../cluster/lb-ipam-pool.ts";
+import { renderStorageProfileApplicationText, storageProfileObjects } from "../cluster/storage-profile-install.ts";
 
 export interface PlaceholderPattern {
   readonly name: string;
@@ -191,6 +192,16 @@ export function appliedCorpus(repoRoot: string): ReadonlyArray<{ readonly origin
       ...yamlDocs(renderLbPoolApplicationText(FIXTURE_LB_POOL.start, FIXTURE_LB_POOL.stop, repoRoot)),
       ...lbPoolObjects(FIXTURE_LB_POOL.start, FIXTURE_LB_POOL.stop, repoRoot),
     ],
+  });
+  // docs/ops/INSTALL-TIME-CONFIG.md row 29. Rendered at EVERY ladder rung, not one: the rung is the only
+  // thing the token carries, and a rung whose name ever contained a placeholder-shaped string should not be
+  // able to hide behind the one the fixture happened to pick.
+  corpus.push({
+    origin: "(rendered) k8s/storage-profile/argocd-application.yaml.in + kustomize base + patches",
+    docs: ["minimal", "standard", "measured", "large"].flatMap((profile) => [
+      ...yamlDocs(renderStorageProfileApplicationText(profile, repoRoot)),
+      ...storageProfileObjects(profile, repoRoot),
+    ]),
   });
   return corpus;
 }
