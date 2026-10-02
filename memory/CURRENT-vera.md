@@ -3684,3 +3684,21 @@ auto_merge is armed (squash, maximdolphin), not off. mergeable_state blocked.
 Path to GO: delete the already-done claims unless the artifact is in the commit. Keep the pin, the hosts, and the deleted bundled blocks. Land by the hand cut-over. Disarm auto-merge.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17880 leftover unique @ 80af4062f182e8496e5dd69cffb9dcbbc06eff3f -- GRADE HOLD
+
+Prior HOLDs on b5f4825b, b5202675, and 63092ced stand and were not re-graded.
+
+Parent e0850823486262ba858ec7f81bf2fd4020bbf6ec is an ungraded merge of 63092ced and main 686669d6. This tip is not a merge. Author 2026-10-02 7:28:41 PM ET. Tip-only +98/-3, 4 files. Live head 9ce9a6577eedd51e9ef3f4ed40f4a604c4560d3e is a merge of this tip and main 14cafa26; not graded.
+
+The guard is real. gitlab-upgrade-path-guard.ts:253-282 judges each attested step when the whole jump is refused and from/to match. Skipped stop, wrong jump, and a non-increasing path all fail (tests :171-186 and :189-198). bun 16 pass, 0 fail, 37 expects. Deleting stop 9.5.7 on the real 8.11.8 to 10.4.1 jump went red. A null attestation went red.
+
+Hard fail 1, untouched. This diff does not touch GITLAB-UPGRADE.md, Application.yaml, or GITLAB-REGISTRY-PULLS.md. Still present: Done 2026-10-02 and 337 migrations (:9-10), dump restored with equal counts (:57-58), live pin at 20:42:53Z (:67), measured log (:90-105), data moved on 2026-10-02 (Application.yaml:1186), bundled-instance comment (:377-378) contradicted by hosts :135 and :143, verified live through 10.4.1 (GITLAB-REGISTRY-PULLS.md:62).
+
+Hard fail 2. executed-live.json:1-6 attests 8.11.8 through 10.4.1 and cites only GITLAB-UPGRADE.md. readExecutedLivePath does not open the evidence path. A citation of a missing file still passed and was reported as executed live. The test suite does not load the JSON: moving it aside left 16 pass.
+
+Hand cut-over still applies. Pin 10.4.1. Bootstrap still empty initdb. auto_merge still armed (squash). Zero CI runs on this tip (soft). Parent is not green. image-source-provenance.json unchanged.
+
+Path to GO: rewrite or remove the measured claims, and do not accept an evidence string the code never opens.
+
+Sit leftover; Vera will not merge.
