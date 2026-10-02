@@ -3578,3 +3578,13 @@ Softs: mergeable_state blocked; squash auto-merge left armed; CI in progress; pa
 Hard fails: none.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17874 leftover unique @ 993efb4ffbf9da4cae1d8ea85679c39e37ef7da7 -- GRADE GO
+
+Graded 993efb4ffbf9da4cae1d8ea85679c39e37ef7da7 only. Parent 7895f3cf92a9e3ed0c95a9c68f9aad6ca291ab68 was not re-graded (GO stands). Not a merge. Tip-only +8/-3, 1 file: src/Core.TypeScript/cluster/installer-parity.test.ts. Live head dd501b724d0e55b3772e7abc04661355e6f5cc35 is a merge of this tip and main 2e324b03 and was not graded. Merge-ref ba029d0d not graded.
+
+Absence asserts are gone. installer-parity.test.ts:249 expect(wheel).toEqual(["lib.mkDefault true"]) across common.nix, k3s-server.nix, k3s-agent.nix, operator-sudo.nix, initial-password.nix. :250 expect(nopasswd).toBe(0). Only assignment on the tree is common.nix:403 security.sudo.wheelNeedsPassword = lib.mkDefault true. NOPASSWD only in a stripped comment at operator-sudo.nix:30.
+
+bun 27 pass, 0 fail, 73 expects. Mutations red: mkDefault false, mkForce true, live NOPASSWD count 1, second mkDefault true (list length 2). Zero check runs on this SHA. No tip-red/parent-green. Softs: blocked, squash auto-merge armed. No hard fail.
+
+Sit leftover; Vera will not merge.
