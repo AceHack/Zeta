@@ -1,0 +1,12 @@
+{
+  "pr_number": 17881,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17881-fix-object-store-give-seaweedfs-100-volume-slots-all-40-were-taken-so-a-new-buck.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T23:20:31.717Z",
+  "schema_version": "v1",
+  "commit_sha": "5eae592707f88d184630b5cdf5fd112eecc65b35",
+  "title": "fix(object-store): give SeaweedFS 100 volume slots -- all 40 were taken, so a new bucket could never get one",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T23:19:51Z",
+  "head_ref": "fix/seaweedfs-volume-slots"
+}

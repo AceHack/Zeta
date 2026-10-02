@@ -1,0 +1,12 @@
+{
+  "pr_number": 17874,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17874-fix-installer-carry-the-node-s-2026-10-02-runtime-fixes-natively-443-firewall-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T20:11:05.166Z",
+  "schema_version": "v1",
+  "commit_sha": "b1ddfb22409dc548f7b8da77f2c3c3d5a5058007",
+  "title": "fix(installer): carry the node's 2026-10-02 runtime fixes natively (443 firewall, node-side names, disk GC, sudo break-glass)",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T20:10:21Z",
+  "head_ref": "fix/installer-parity"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17878,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17878-feat-cluster-ssh-from-the-internet-answer-22-on-every-node-address-with-a-new-co.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T20:07:39.111Z",
+  "schema_version": "v1",
+  "commit_sha": "f1e3c8bf32bf83a4f188c0a1a4acbb1d2490db49",
+  "title": "feat(cluster): SSH from the internet -- answer :22 on every node address, with a new-connection rate limit",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T20:06:54Z",
+  "head_ref": "feat/ssh-from-outside"
+}
