@@ -3608,3 +3608,23 @@ database-budget.yaml ConfigMap: headroom 15 (:53), prod role-limit 60 / pool 15 
 bun 49 pass, 0 fail. Mutations red: prod limit 60 to 10, env PGPASSWORD, Cluster role verb delete. Zero check runs on the tip and the parent. Health bypass is a soft: fd-core is not in this repo, and the written connection uses non-superuser flowdent_prod / flowdent_staging. Softs: blocked, squash auto-merge armed, author applied-live is not evidence. No hard fail.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17880 leftover unique @ b5f4825b6241411f46de7f7caad6df0578208936 -- GRADE HOLD
+
+Parent f1e3c8bf32bf83a4f188c0a1a4acbb1d2490db49, not a merge. Tip is not a merge. Author 2026-10-02 4:07:45 PM ET. Tip-only +69/-106, 5 files. Live head is this tip. Merge-ref 61e38978c0aaaf4f79b2602f9157c28af32399c2 not graded. Not a duplicate of M1 #17875.
+
+Cut-over is real. Application.yaml:126-140 global.psql.host gitlab-rails-db-rw.gitlab.svc, secret gitlab-rails-db-app; global.redis.host gitlab-valkey.gitlab.svc. :1081-1084 postgresql.install false and redis.install false. Helm render drops gitlab-postgresql and gitlab-redis-master; both flags true brings them back. prune false at :1088-1089, unchanged. Images not in this commit: postgresql 17.11-minimal-trixie :387, valkey 7.2.14-alpine3.24 :467. Bootstrap still initdb.
+
+essential-priority.test.ts 24 pass, 0 fail, 41 expects. Renaming Cluster gitlab-rails-db and StatefulSet gitlab-valkey went red at :145 and :179. metal-secret-production.ts:90 and existing-secret-is-minted.baseline.json:52 key gitlab|gitlab-rails-db-app. Those suites 40 pass, 0 fail, 79 expects. Dropping either entry, or pointing the password secret elsewhere, went red.
+
+Hard fail 1. lint (markdownlint) failure on the tip (check 111009449022) and success on the parent (check 111008999637). MD012 at docs/ops/GITLAB-UPGRADE.md:145, two blank lines.
+
+Hard fail 2. Application.yaml:1077 says the data moved by quiesce / pg_dump / restore on 2026-10-02. GITLAB-UPGRADE.md:128-144 claims hop-2 measurements (19:3x UTC, version 17.11.7, 9 projects all pass, migration counts) the commit does not contain. The commit message says the move is still future. Lines 367-368 still say GitLab points at the bundled instances. image-source-provenance.json is not in this diff.
+
+Hold-for-land, not itself the hard fail: merging outside the hand cut-over points GitLab at an empty database. auto_merge is null. mergeable_state blocked.
+
+Softs: checks in progress; agencysignature skipped on the tip and success on the parent; host revert and install true stay green; prune true is not pinned; live main 686669d6 not graded.
+
+Path to GO: one blank line at GITLAB-UPGRADE.md:145, and stop claiming a dump or a hop-2 measurement this commit does not contain.
+
+Sit leftover; Vera will not merge.
