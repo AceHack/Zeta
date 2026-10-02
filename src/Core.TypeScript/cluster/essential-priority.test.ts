@@ -79,10 +79,12 @@ const ESSENTIAL_APPS: readonly EssentialApp[] = [
   { dir: "cloudnativepg", coordinates: ["priorityClassName"], workloads: "all" },
   { dir: "cnpg-barman-cloud", coordinates: ["priorityClassName"], workloads: "all" },
   {
-    // GitLab's STATE is essential; its web, sidekiq and registry tiers are not.
+    // GitLab's STATE is essential; its web, sidekiq and registry tiers are not. Its PostgreSQL and Redis are no longer
+    // the chart's subcharts (they left with the 17.7 -> 19.4 upgrade): the Valkey StatefulSet is an extraObject that renders
+    // with the class, and the CNPG Cluster is checked in section C below.
     dir: "gitlab",
-    coordinates: ["gitlab.gitaly.priorityClassName", "postgresql.primary.priorityClassName", "redis.master.priorityClassName"],
-    workloads: ["gitlab-gitaly", "gitlab-postgresql", "gitlab-redis-master"],
+    coordinates: ["gitlab.gitaly.priorityClassName"],
+    workloads: ["gitlab-gitaly", "gitlab-valkey"],
   },
 ];
 
@@ -136,6 +138,14 @@ describe("A. the essential tier's values coordinates", () => {
 });
 
 describe("C. the Postgres Clusters carry the class on the custom resource", () => {
+  test("gitlab-rails-db: spec.priorityClassName is the essential class (a Cluster declared in the gitlab release's extraObjects)", () => {
+    const extra = dig(applicationValues("gitlab"), ["gitlab-runner", "extraObjects"]);
+    expect(Array.isArray(extra)).toBe(true);
+    const found = (extra as Json[]).find((d) => d?.["kind"] === "Cluster" && dig(d, ["metadata", "name"]) === "gitlab-rails-db");
+    expect(found).toBeDefined();
+    expect(dig(found, ["spec", "priorityClassName"])).toBe(ESSENTIAL);
+  });
+
   for (const cluster of POSTGRES_CLUSTERS) {
     test(`${cluster.name}: spec.priorityClassName is ${ESSENTIAL}`, () => {
       const docs = parseAllDocuments(readFileSync(join(APPS, cluster.file), "utf8")).map((d) => d.toJS() as Json | null);

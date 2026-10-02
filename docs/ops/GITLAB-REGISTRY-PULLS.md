@@ -59,7 +59,7 @@ affected; this protects browser downloads by a person outside the cluster.
 ## Proof and its limits
 
 - `src/Core.TypeScript/cluster/gitlab-exposure.test.ts` test `(i)` renders the pinned chart
-  (8.7.0) with `helm template` and asserts the registry ConfigMap's `config.yml.tpl` carries
+  (at whatever chart version is pinned; first written at 8.7.0, verified live through 10.4.1) with `helm template` and asserts the registry ConfigMap's `config.yml.tpl` carries
   `storage.redirect.disable: true`, that the Application pins `proxy_download: true`, and that no
   rendered `proxy_download` is anything but `true`. Both tests fail on the previous Application.
 - Not proven by the render: that a client outside the cluster can now pull. That needs the live

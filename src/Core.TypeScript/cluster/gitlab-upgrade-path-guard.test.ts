@@ -34,6 +34,7 @@ import {
   evaluateUpgrade,
   GITLAB_APPLICATION_PATH,
   pinsDiffer,
+  readExecutedLivePath,
   readGitlabPin,
   renderUpgradeCheck,
   runRuncheckOffline,
@@ -165,6 +166,37 @@ describe.skipIf(!HELM)("gitlab upgrade path -- the chart's own runcheck decides"
       expect(runRuncheckOffline(newSide.runcheck, newSide.env, oldSide.chartInfo).exitCode).toBe(0);
     },
     { timeout: 180_000 },
+  );
+
+  test(
+    "(e) a jump that skips a stop is refused even with an attestation that LEAVES THE STOP OUT; naming the stop makes every step pass",
+    () => {
+      // 8.7.0 -> 8.11.0 skips 17.8 (case a). An attestation with an empty `via` cannot launder it ...
+      const bad = readExecutedLivePath(JSON.stringify({ from: "8.7.0", to: "8.11.0", via: [], evidence: "test" }));
+      const refused = evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: bad });
+      expect(refused.state).toBe("failed");
+      expect(refused.detail).toContain("It is required to upgrade to the latest 8.8.x version first");
+      // ... naming the stop the cluster really passed through makes each step the chart's own check accepts.
+      const good = readExecutedLivePath(JSON.stringify({ from: "8.7.0", to: "8.11.0", via: ["8.8.7"], evidence: "test" }));
+      const ok = evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: good });
+      expect({ state: ok.state, detail: ok.detail }).toMatchObject({ state: "passed" });
+      expect(ok.detail).toContain("8.7.0 -> 8.8.7: accepted");
+      expect(ok.detail).toContain("8.8.7 -> 8.11.0: accepted");
+    },
+    { timeout: 240_000 },
+  );
+
+  test(
+    "(f) an attestation for a DIFFERENT jump, or a path that does not increase, never passes",
+    () => {
+      const other = readExecutedLivePath(JSON.stringify({ from: "8.8.0", to: "8.11.0", via: [], evidence: "test" }));
+      expect(evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: other }).state).toBe("failed");
+      const backwards = readExecutedLivePath(JSON.stringify({ from: "8.7.0", to: "8.11.0", via: ["8.8.7", "8.8.0"], evidence: "test" }));
+      const v = evaluateUpgrade(APP_TEXT, withRevision("8.11.0"), { executedLive: backwards });
+      expect(v.state).toBe("failed");
+      expect(v.detail).toContain("not strictly increasing");
+    },
+    { timeout: 240_000 },
   );
 
   test(

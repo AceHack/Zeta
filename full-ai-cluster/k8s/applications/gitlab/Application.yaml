@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://charts.gitlab.io/
     chart: gitlab
-    targetRevision: 8.11.8
+    targetRevision: 10.4.1
     helm:
       releaseName: gitlab
       valuesObject:
@@ -100,6 +100,14 @@ spec:
           # always-on pods. Re-enable together with a route for it.
           kas:
             enabled: false
+          # CHART 10 MAKES GATEWAY API + A BUNDLED ENVOY GATEWAY THE DEFAULT EXPOSURE (NGINX Ingress is off by default). This
+          # cluster exposes GitLab through its own Cilium Gateway `gitlab-lan`, created by the PostSync hook below, so the
+          # chart renders no Gateway, installs no Envoy, and asks cert-manager for nothing. `enabled: false` is what
+          # keeps `gateway-helm` (Envoy Gateway and its CRDs) out of the render.
+          gatewayApi:
+            enabled: false
+            installEnvoy: false
+            configureCertmanager: false
           ingress:
             # NO INGRESS. Nothing serves class `gitlab-nginx`, and an Ingress with no controller
             # never gets an address -- ArgoCD's health check then holds the whole sync at
@@ -120,6 +128,24 @@ spec:
             # accounts for 76 GiB) while this one produced nothing at all.
             configureCertmanager: false
             tls: { enabled: false }   # turn on after cert-manager
+          # EXTERNAL DATASTORES -- the CNPG Cluster and Valkey declared in `gitlab-runner.extraObjects` below.
+          # `gitlab-rails-db-app` is the Secret the CNPG operator mints with the `gitlab` role (key `password`);
+          # `gitlab-redis-secret` is the chart's own Redis password (its default key is `secret`).
+          psql:
+            host: gitlab-rails-db-rw.gitlab.svc
+            port: 5432
+            database: gitlabhq_production
+            username: gitlab
+            password:
+              secret: gitlab-rails-db-app
+              key: password
+          redis:
+            host: gitlab-valkey.gitlab.svc
+            port: 6379
+            auth:
+              enabled: true
+              secret: gitlab-redis-secret
+              key: secret
           initialRootPassword:
             secret: gitlab-initial-root-password
             key: password
@@ -182,7 +208,9 @@ spec:
                 secret: zeta-blob-store
                 key: connection
         # Disable bundled components — cluster has its own.
-        certmanager:    { install: false }
+        # `installCertmanager` REPLACES `certmanager.install` from chart 9.3 (the old key makes the chart's own upgrade check
+        # fail, and the schema rejects it from 9.5). Same meaning: this cluster has its own cert-manager.
+        installCertmanager: false
         nginx-ingress:  { enabled: false }
         prometheus:     { install: false }
         # THE CHART'S UPGRADE CHECK IS OFF -- UNDER ARGOCD IT DEADLOCKS EVERY FRESH INSTALL.
@@ -760,6 +788,101 @@ spec:
                             # shellcheck disable=SC2086
                             kubectl -n gitlab delete $stale --wait=false || echo "could not delete a leftover migrations Job; harmless, the Application just reads OutOfSync"
                             exit 0
+            # --- backup object-storage config (chart 10 refuses to render without one) ------------------
+            # Chart 10.0 removed the bundled MinIO, and with it the default s3cmd config `backup-utility` used (it pointed at
+            # that MinIO host: MEASURED on 17.7, the toolbox could not reach any bucket, so there was no working backup path).
+            # The release now renders `gitlab.toolbox.backups.objectStorage.config.secret: gitlab-backup-s3cmd`. This Job
+            # DERIVES that Secret from the one the object store already shares with this namespace (`zeta-blob-store`,
+            # key `connection`), so there is no second credential to mint, seed or commit. Sync hook, wave -1: ahead of the
+            # toolbox (wave 0), which mounts the Secret. It FAILS the sync when it cannot (a toolbox without its Secret sits in
+            # ContainerCreating), unlike the optional token Job below. Idempotent: `kubectl apply` of the same content.
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-3"
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-3"
+              rules:
+                - apiGroups: [""]
+                  resources: [secrets]
+                  resourceNames: [zeta-blob-store, gitlab-backup-s3cmd]
+                  verbs: [get, patch, update]
+                # `create` cannot be restricted by name; the Job only ever creates the one Secret above.
+                - apiGroups: [""]
+                  resources: [secrets]
+                  verbs: [create]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-3"
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-backup-s3cmd
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-backup-s3cmd
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-backup-s3cmd
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/hook: Sync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+                  argocd.argoproj.io/sync-wave: "-1"
+              spec:
+                backoffLimit: 2
+                activeDeadlineSeconds: 300
+                template:
+                  spec:
+                    serviceAccountName: gitlab-backup-s3cmd
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                    containers:
+                      - name: derive
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                        resources:
+                          requests: { cpu: 10m, memory: 32Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            # s3cmd config for GitLab's backup-utility, derived from the Secret the object store already shares with this
+                            # namespace (`zeta-blob-store`, key `connection`). One credential, one source: nothing is minted or stored in git.
+                            CONN=$(kubectl -n gitlab get secret zeta-blob-store -o jsonpath='{.data.connection}' | base64 -d) || { echo "cannot read zeta-blob-store/connection"; exit 1; }
+                            field() { printf '%s\n' "$CONN" | sed -n "s/^$1: *//p" | head -n 1 | tr -d "\"'"; }
+                            ACCESS=$(field aws_access_key_id); KEY=$(field aws_secret_access_key); HOST=$(field host)
+                            if [ -z "$ACCESS" ] || [ -z "$KEY" ] || [ -z "$HOST" ]; then echo "zeta-blob-store/connection lacks aws_access_key_id, aws_secret_access_key or host"; exit 1; fi
+                            CFG=$(printf '[default]\naccess_key = %s\nsecret_key = %s\nhost_base = %s\nhost_bucket = %s\nuse_https = False\nsignature_v2 = False\nenable_multipart = False\n' "$ACCESS" "$KEY" "$HOST" "$HOST")
+                            kubectl -n gitlab create secret generic gitlab-backup-s3cmd --from-literal=config="$CFG" --dry-run=client -o yaml | kubectl apply -f - >/dev/null || { echo "could not apply gitlab-backup-s3cmd"; exit 1; }
+                            echo "gitlab-backup-s3cmd applied (host $HOST)"
             # --- runner authentication token ----------------------------------------------
             # Creates (or finds) ONE instance runner `zeta-cluster` through GitLab's own service
             # object in the toolbox pod -- no admin personal access token is ever minted, so none
@@ -979,6 +1102,14 @@ spec:
         # stall whenever headroom < one pod. maxSurge 0 stops the old pod first, which needs no headroom at all.
         # Falsifier: gitlab-exposure.test.ts (g).
         gitlab:
+          # BACKUPS GO TO SEAWEEDFS. Chart 10 refuses to render without a backup object-storage Secret; Job `gitlab-backup-s3cmd`
+          # (extraObjects) derives it from `zeta-blob-store`.
+          toolbox:
+            backups:
+              objectStorage:
+                config:
+                  secret: gitlab-backup-s3cmd
+                  key: config
           migrations:
             # See `global.job.nameSuffixOverride` above: a fixed Job name needs a Job that can be replaced.
             annotations:
@@ -1049,113 +1180,10 @@ spec:
             strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
             livenessProbe:
               failureThreshold: 20
-        # THE FOUR BUNDLED BITNAMI IMAGES, RE-POINTED AT `bitnamilegacy`.
-        #
-        # This Application was the largest entry in the partitioner's CANNOT BE
-        # PRICED quarantine: 16 of its 20 rendered images measure fine, and four
-        # -- all from the bundled `postgresql` and `redis` subcharts -- returned
-        # HTTP 404. Bitnami withdrew its free versioned tags from Docker Hub, and
-        # this is the same withdrawal `forgejo/Application.yaml` already records
-        # (chart 13.0.1 rendering `bitnami/postgresql:17.5.0-debian-12-r18`,
-        # likewise a 404). MEASURED 2026-08-23 rather than assumed:
-        # `docker.io/bitnami/postgresql` and `docker.io/bitnami/redis` still
-        # answer `tags/list`, and every entry is `latest`, `latest-metadata`, or
-        # a cosign `sha256-...`/`.sig`/`.att` artifact -- no versioned tags left.
-        #
-        # Each of the four resolves under `bitnamilegacy` at the SAME tag, so
-        # nothing here is a version change -- only the repository path moves:
-        #
-        #   bitnamilegacy/postgresql:14.8.0                     91,714,366 B
-        #   bitnamilegacy/postgres-exporter:0.12.0-debian-11-r86 41,797,683 B
-        #   bitnamilegacy/redis:6.2.16-debian-12-r1             48,916,895 B
-        #   bitnamilegacy/redis-exporter:1.46.0-debian-11-r8    36,654,360 B
-        #
-        # These four are what a GitLab bring-up would have ImagePullBackOff'd on,
-        # so this is a live fix that happens to also make the app measurable.
-        #
-        # HONEST LIMIT, the same one recorded in redis/Application.yaml:
-        # `bitnamilegacy` is an ARCHIVE. It gets no updates and Bitnami reserves
-        # the right to remove it. Moving GitLab onto an external PostgreSQL/Redis
-        # (`global.psql.host` / `global.redis.host`, the production-documented
-        # path anyway) is the durable answer and is a maintainer decision, not
-        # one to make inside a measurement fix.
-        postgresql:
-          image:
-            repository: bitnamilegacy/postgresql
-          # STARTUP PROBES -- THIS IS A BITNAMI CHART; BOTH CONTAINERS EXPOSE THE
-          # COORDINATE DIRECTLY. MEASURED (helm pull postgresql --repo
-          # https://charts.bitnami.com/bitnami -- the same subchart gitlab vendors):
-          # `templates/primary/statefulset.yaml` renders `startupProbe` from
-          # `.Values.primary.startupProbe.enabled` / `.Values.metrics.startupProbe.enabled`
-          # (both default false), alongside `customLivenessProbe`/`livenessProbe.enabled`
-          # for the always-on liveness (postgresql container: 80s kill budget; metrics
-          # container: 55s).
-          #
-          # WHY: not individually vetted at WP15's 2026-09-22 catalog audit; postgresql
-          # is a known slow starter (WP18 category b) -- GitLab's embedded Postgres runs
-          # first-boot init/WAL replay before it can answer `pg_isready`.
-          #
-          # Kubelet holds `livenessProbe` off entirely until `startupProbe` first
-          # succeeds. Chart default startupProbe shape (initialDelaySeconds 30,
-          # periodSeconds 10, failureThreshold 15 -> 30+14*10=170s) is widened further
-          # to failureThreshold 30 -> 30+29*10=320s; the chart's own liveness (80s /
-          # 55s) resumes once startup succeeds.
-          primary:
-            priorityClassName: system-cluster-critical   # essential tier (gitaly's note, above): GitLab's database
-            startupProbe:
-              enabled: true
-              failureThreshold: 30
-          metrics:
-            image:
-              repository: bitnamilegacy/postgres-exporter
-            # The exporter rendered `resources: {}`. The pod is Burstable anyway (the postgres
-            # container requests 250m/256Mi), but the exporter's own share was unreserved, so
-            # the scheduler's arithmetic and the budget both undercounted this pod.
-            resources:
-              requests: { cpu: 10m, memory: 16Mi }
-            startupProbe:
-              enabled: true
-              failureThreshold: 30
-        redis:
-          image:
-            repository: bitnamilegacy/redis
-          # STARTUP PROBE -- SAME BITNAMI SHAPE AS postgresql ABOVE. MEASURED
-          # (charts/redis/templates/master/application.yaml): `master.startupProbe.enabled`
-          # (default false) exists alongside the always-on `master.livenessProbe`
-          # (chart default -> 40s kill budget). Not individually vetted at WP15's
-          # 2026-09-22 catalog audit; redis is bundled with GitLab's own slow-starter
-          # profile (WP18 category b) -- Sentinel/AOF replay on first boot.
-          #
-          # Kubelet holds `livenessProbe` off until `startupProbe` first succeeds. The
-          # chart's own default `initialDelaySeconds: 20` is left as-is (not zeroed);
-          # periodSeconds 10, failureThreshold 30 -> startup kill budget 20+29*10=310s;
-          # the chart's own 40s liveness resumes once startup succeeds.
-          master:
-            priorityClassName: system-cluster-critical   # essential tier (gitaly's note, above): queues, sessions, cache
-            # REDIS RENDERED BESTEFFORT: both containers (redis, exporter) shipped `resources: {}`,
-            # so the pod requested nothing and was the first thing the kubelet evicts under node
-            # pressure. GitLab keeps its Sidekiq queues, sessions and cache here -- an evicted
-            # Redis is every background job and every logged-in session gone at once, on the one
-            # node that is also running every CI job. Requests only; `maxmemory` is the
-            # chart's own bound, not a pod limit.
-            resources:
-              requests: { cpu: 100m, memory: 128Mi }
-            startupProbe:
-              enabled: true
-              periodSeconds: 10
-              failureThreshold: 30
-          metrics:
-            resources:
-              requests: { cpu: 10m, memory: 16Mi }
-            image:
-              repository: bitnamilegacy/redis-exporter
-            # CHART 8.11 ADDED A LIVENESS PROBE TO THIS EXPORTER (kill budget 50 s, no startupProbe): the same
-            # slow-start exposure the other containers above are widened for. Measured by liveness-kill-budget.ts on
-            # the 17.8 -> 17.11 hop. The bundled Redis leaves with the datastore cut-over, so this is the short-lived
-            # half of the fix; it goes with the block.
-            startupProbe:
-              enabled: true
-              failureThreshold: 30
+        # THE BUNDLED POSTGRESQL, REDIS AND MINIO ARE GONE FROM THE CHART (10.0), and so are their values: GitLab runs on the
+        # dedicated CNPG Cluster (PostgreSQL 17) and Valkey (7.2) declared in `gitlab-runner.extraObjects`, reached through
+        # `global.psql` / `global.redis` above. Before 10.0 these two keys were `install: false` plus four re-pointed
+        # `bitnamilegacy` images (Bitnami's frozen archive); the data moved by quiesce / pg_dump / restore on 2026-10-02.
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab

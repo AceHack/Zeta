@@ -229,7 +229,7 @@ export function runRuncheckOffline(
 export function evaluateUpgrade(
   baseText: string | null,
   headText: string | null,
-  options: { render?: Renderer } = {},
+  options: { render?: Renderer; executedLive?: ExecutedLivePath | null } = {},
 ): Verdict {
   const base = readGitlabPin(baseText);
   const head = readGitlabPin(headText);
@@ -252,7 +252,59 @@ export function evaluateUpgrade(
   }
   const run = runRuncheckOffline(next.runcheck, next.env, old.chartInfo);
   if (run.exitCode === 0) return { state: "passed", detail: `${from} -> ${to}: the new chart's own upgrade check accepts it` };
-  return { state: "failed", detail: `${from} -> ${to}: the new chart's own upgrade check refused it (exit ${run.exitCode}):\n${run.stdout.trim()}` };
+  const refusal: Verdict = { state: "failed", detail: `${from} -> ${to}: the new chart's own upgrade check refused it (exit ${run.exitCode}):\n${run.stdout.trim()}` };
+
+  // Refused as ONE jump. If the PR attests that the cluster went through intermediate stops, judge every step instead.
+  const live = options.executedLive ?? null;
+  if (live === null || live.from !== base.version || live.to !== head.version) return refusal;
+  const versions = [live.from, ...live.via, live.to];
+  const steps: string[] = [];
+  for (let i = 1; i < versions.length; i++) {
+    if (compareVersions(versions[i]!, versions[i - 1]!) <= 0) {
+      return { state: "failed", detail: `${live.evidence}: attested path ${versions.join(" -> ")} is not strictly increasing at ${versions[i]}` };
+    }
+    const prevPin: GitlabPin = { ...head, version: versions[i - 1]!, gitlabVersion: null };
+    const thisPin: GitlabPin = { ...head, version: versions[i]!, gitlabVersion: null };
+    const prevRender = i === 1 ? old : render(prevPin);
+    const thisRender = i === versions.length - 1 ? next : render(thisPin);
+    const step = runRuncheckOffline(thisRender.runcheck, thisRender.env, prevRender.chartInfo);
+    steps.push(`${versions[i - 1]} -> ${versions[i]}: ${step.exitCode === 0 ? "accepted" : "REFUSED"}`);
+    if (step.exitCode !== 0) {
+      return {
+        state: "failed",
+        detail: `attested path ${versions.join(" -> ")} (${live.evidence}) is refused by the chart's own check at ${versions[i - 1]} -> ${versions[i]}:\n${step.stdout.trim()}`,
+      };
+    }
+  }
+  return {
+    state: "passed",
+    detail: `${from} -> ${to} was executed live as ${versions.join(" -> ")} (${live.evidence}); the chart's own upgrade check accepts every step:\n${steps.join("\n")}`,
+  };
+}
+
+/**
+ * The 17.7 -> 19.4 upgrade was run stop by stop on the live Application (docs/ops/GITLAB-UPGRADE.md) and the ONE PR that followed
+ * moves git across all of it. Judged as a single jump the chart's own check must refuse that -- right for a PR that SKIPS stops,
+ * wrong for one that RECORDS them. So a PR may carry an attestation naming the chart versions the cluster passed through; the
+ * guard then runs the chart's own `runcheck` for EVERY consecutive step. An attestation cannot make a skipped stop pass: leave a
+ * stop out of `via` and that step is refused by the same script.
+ */
+export const EXECUTED_LIVE_PATH_FILE = "src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.executed-live.json";
+
+export interface ExecutedLivePath {
+  readonly from: string;
+  readonly to: string;
+  readonly via: readonly string[];
+  readonly evidence: string;
+}
+
+export function readExecutedLivePath(text: string | null): ExecutedLivePath | null {
+  if (text === null) return null;
+  const raw = JSON.parse(text) as Partial<ExecutedLivePath>;
+  if (typeof raw.from !== "string" || typeof raw.to !== "string" || !Array.isArray(raw.via) || typeof raw.evidence !== "string") {
+    throw new Error(`${EXECUTED_LIVE_PATH_FILE}: needs string from/to/evidence and an array via`);
+  }
+  return { from: raw.from, to: raw.to, via: raw.via.map(String), evidence: raw.evidence };
 }
 
 // ---------------------------------------------------------------------------
@@ -287,7 +339,7 @@ export function main(argv: string[] = process.argv.slice(2)): number {
   const headText = git(["show", `HEAD:${path}`]);
   let verdict: Verdict;
   try {
-    verdict = evaluateUpgrade(baseText, headText);
+    verdict = evaluateUpgrade(baseText, headText, { executedLive: readExecutedLivePath(git(["show", `HEAD:${EXECUTED_LIVE_PATH_FILE}`])) });
   } catch (error) {
     console.error(`gitlab-upgrade-path-guard: DID NOT RUN -- ${error instanceof Error ? error.message : String(error)}`);
     return 2;

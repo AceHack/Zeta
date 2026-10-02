@@ -34,6 +34,11 @@ A consumer in another namespace needs a copy of its own Secret. Candidates, none
 
 ## Per consumer
 
+> **GitLab, 2026-10-02:** no longer on the bundled subchart. It moved (with the 17.7 -> 19.4 upgrade, `docs/ops/GITLAB-UPGRADE.md`) to a
+> DEDICATED CloudNativePG Cluster `gitlab-rails-db` (PostgreSQL 17.11) and a dedicated Valkey 7.2 declared in the gitlab release's own
+> `extraObjects` -- option 3 below ("one Cluster per application"), not a tenancy on `postgres-shared`, so a GitLab migration cannot contend
+> with the flowdent databases. It is NOT WAL-archived yet; the GitLab backup is its backup. The GitLab row below is the older analysis.
+
 | consumer | today | on `postgres-shared` | blocker or cost |
 | --- | --- | --- | --- |
 | **GitLab** | bundled `bitnamilegacy/postgresql:14.8.0` subchart (no backup, no HA) | `global.psql.{host,port,database,username,password.secret}` with `postgresql.install: false`; a `Database` CR for `gitlabhq_production` with `pg_trgm`, `btree_gist`, `plpgsql`, `amcheck`; the 17.x major GitLab 19 needs is the image already in use | the credential copy above; `max_connections: "100"` is below GitLab's guidance, so it would be raised; GitLab gains point-in-time recovery it does not have at all today. Largest single win of the three |
