@@ -19,6 +19,28 @@ spec:
       valuesObject:
         global:
           edition: ce
+          # A FIXED JOB-NAME SUFFIX -- THE MIGRATIONS JOB WAS RENAMED ON EVERY VALUES CHANGE, AND `prune: false`
+          # LEFT EVERY OLD ONE BEHIND, SO A HEALTHY GITLAB READ `OutOfSync` FOREVER.
+          #
+          # MEASURED on the owner's real node 20:53 after first boot: `gitlab OutOfSync/Healthy`, and two
+          # Completed migrations pods (`gitlab-migrations-39fcdbd`, 11m old, and `-52e7f78`, 4m old).
+          # Mechanism (charts/gitlab/templates/_helpers.tpl `gitlab.jobNameSuffix`): the suffix is a hash of the
+          # chart version, app version and EVERY value, so the install-time address pin -- which re-renders this
+          # Application -- renames the Job; ArgoCD creates the new one, and the old one, being a live resource
+          # with no desired twin and `prune: false`, is reported "requires pruning" forever. The same hash is the
+          # reason the lane (gitlab-live-proof) measured `OutOfSync` after a clean, finished install.
+          #
+          # `global.job.nameSuffixOverride` is the chart's own, documented answer for Argo CD: the name stops
+          # depending on the values. That alone trades one problem for another -- a Job's pod template is
+          # IMMUTABLE, so the next values/image change (an upgrade, or the pin itself) would be refused with a
+          # `field is immutable` error on a Job that now has the same name. So the Job is ALSO annotated
+          # `Force=true,Replace=true` (`gitlab.migrations.annotations` below): when it differs, ArgoCD deletes and
+          # recreates it, which is exactly the chart's intent for the hash -- "run again whenever GitLab changes".
+          # The same suffix names the `gitlab-shared-secrets` hook Jobs (hook-succeeded + before-hook-creation),
+          # which only ever stabilises them. Leftovers from the hashed days are removed by Job
+          # `gitlab-migrations-gc` (extraObjects, PostSync). Falsifier: gitlab-exposure.test.ts (h).
+          job:
+            nameSuffixOverride: zeta
           # EXTERNAL URL -- WHAT A LAN CLIENT CAN ACTUALLY REACH, WITH NO DNS.
           #
           # This was `domain: gitlab.zeta.local` with the chart's default `https: true`, so GitLab
@@ -320,6 +342,87 @@ spec:
                       - path: { type: PathPrefix, value: /v2/ }
                     backendRefs:
                       - { name: gitlab-registry, port: 5000 }
+            # --- leftover migrations Jobs ---------------------------------------------------
+            # PostSync, after everything is Healthy: delete every migrations Job except the current one. The
+            # Jobs from before `global.job.nameSuffixOverride` carry a hash in their name and nothing in the
+            # desired state, so with `prune: false` they are "requires pruning" for ever (the owner's node had
+            # two). Deleting by label, never by age, and never the current name -- which is rendered from the
+            # SAME value the migrations chart names its Job from (falsifier: gitlab-exposure.test.ts (h)).
+            # NON-BLOCKING like the token Job: a failed PostSync hook would fail the sync over a cosmetic.
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-migrations-gc
+                namespace: gitlab
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-migrations-gc
+                namespace: gitlab
+              rules:
+                - apiGroups: [batch]
+                  resources: [jobs]
+                  verbs: [get, list, delete]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-migrations-gc
+                namespace: gitlab
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-migrations-gc
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-migrations-gc
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-migrations-gc
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/hook: PostSync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+              spec:
+                backoffLimit: 1
+                activeDeadlineSeconds: 300
+                template:
+                  spec:
+                    serviceAccountName: gitlab-migrations-gc
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                    containers:
+                      - name: gc
+                        # The chart's own kubectl image, as the token Job uses it.
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                        resources:
+                          requests: { cpu: 10m, memory: 32Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            KEEP="gitlab-migrations-{{ .Values.global.job.nameSuffixOverride }}"
+                            stale=$(kubectl -n gitlab get jobs -l app=migrations -o name 2>/dev/null | grep -v "^job.batch/$KEEP$" || true)
+                            if [ -z "$stale" ]; then echo "no leftover migrations Job (keeping $KEEP)"; exit 0; fi
+                            echo "removing leftover migrations Job(s) (keeping $KEEP):"; echo "$stale"
+                            # shellcheck disable=SC2086
+                            kubectl -n gitlab delete $stale --wait=false || echo "could not delete a leftover migrations Job; harmless, the Application just reads OutOfSync"
+                            exit 0
             # --- runner authentication token ----------------------------------------------
             # Creates (or finds) ONE instance runner `zeta-cluster` through GitLab's own service
             # object in the toolbox pod -- no admin personal access token is ever minted, so none
@@ -539,6 +642,10 @@ spec:
         # stall whenever headroom < one pod. maxSurge 0 stops the old pod first, which needs no headroom at all.
         # Falsifier: gitlab-exposure.test.ts (g).
         gitlab:
+          migrations:
+            # See `global.job.nameSuffixOverride` above: a fixed Job name needs a Job that can be replaced.
+            annotations:
+              argocd.argoproj.io/sync-options: "Force=true,Replace=true"
           gitaly:
             # ESSENTIAL TIER: `system-cluster-critical`. This StatefulSet holds the only copy of
             # every repository GitLab hosts, so under node pressure the scheduler preempts for it and the kubelet declines to
