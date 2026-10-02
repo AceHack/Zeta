@@ -1,0 +1,14 @@
+{
+  "id": "080d07d969757010a0130008192918ce",
+  "at": "2026-10-02T05:53:57.422Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3XJTBMZ087G0R0026R420W",
+    "type": "task",
+    "title": "Opt-in Cloudflare DNS-01 ACME solver for public TLS (no inbound :80 needed)",
+    "slug": "opt-in-cloudflare-dns-01-acme-solver-for-public-tls-no-inbou",
+    "priority": "P2",
+    "filename": "081M3XJTBMZ087G0R0026R420W-opt-in-cloudflare-dns-01-acme-solver-for-public-tls-no-inbou.md"
+  }
+}

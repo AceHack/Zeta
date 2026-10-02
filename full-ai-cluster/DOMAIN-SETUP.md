@@ -102,6 +102,9 @@ forwarding its UDP ports. The Gateway/cert work above is **only** for the web po
 
 ## Follow-ups (not needed for the above to work)
 
+- **No inbound :80? Use DNS-01.** Opt-in Cloudflare DNS-01 issues certificates with no
+  port-forward at all: `docs/ops/CLOUDFLARE-DNS01-CERTS.md` (HTTP-01 stays the default).
+
 - **Wildcard cert** (`*.yourdomain.com`, one cert for every tenant subdomain) needs
   ACME **DNS-01**, which is painful on Namecheap → that's the one case where moving
   *DNS hosting* to Cloudflare (free; keep registration at Namecheap) is worth it.

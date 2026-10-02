@@ -476,6 +476,13 @@ ignores exactly that field). Same shape as GitLab above, a separate Job scoped t
 3. Watch `sudo k3s kubectl -n zeta-platform get certificate portal-tls` go Ready. HTTP-01
    reaches back on :80, so the certificate cannot issue before 1 and 2 hold.
 
+**Opt-in DNS-01 (no inbound :80)** — an operator-created Secret, never an injection point: both issuers also
+carry a Cloudflare DNS-01 solver chosen only by the label `zeta.io/acme-solver: dns01` on the Gateway.
+Secret `cloudflare-api-token` (ns `cert-manager`, key `api-token`) is EXTERNAL — the operator creates it on the
+node, nothing mints it, and its absence is not a defect unless the label is set (same posture as
+`hindsight-llm-api-key` below). `docs/ops/CLOUDFLARE-DNS01-CERTS.md`; the `--acme-solver` install-time flag is a
+documented follow-up.
+
 **Adding or changing it after install:** write both files under `/etc/zeta/` on the control
 plane and `sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#<host>`.
 

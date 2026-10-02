@@ -17,12 +17,16 @@
 # wave) with anything that has to come up regardless. No object below carries a
 # sync-wave annotation, so issuer health cannot gate the Gateway either.
 #
-# HTTP-01 through the public Gateway's :80 listener: no DNS API, no Cloudflare —
+# HTTP-01 through the public Gateway's :80 listener is the DEFAULT: no DNS API, no Cloudflare —
 # only that `portal.<domain>` resolves to the forwarded public IP and 80/443 are
 # forwarded to this Gateway's LoadBalancer address (INJECTION-POINTS.md §10).
 # GitLab is published here too, as `gitlab.<domain>` and `registry.<domain>`: each
 # needs its own DNS record to the same address, and each has its own listener and
 # certificate, so a missing record costs only that name.
+#
+# OPT-IN DNS-01 (Cloudflare) for installs whose :80 cannot be reached from the internet: both issuers
+# carry a second solver chosen only by the label `zeta.io/acme-solver: dns01` (set on the Gateway —
+# the gateway-shim copies it to its Certificates). docs/ops/CLOUDFLARE-DNS01-CERTS.md.
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -36,6 +40,23 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-staging-account-key
     solvers:
+      # OPT-IN DNS-01 via Cloudflare — chosen by SELECTOR, never by default. cert-manager
+      # picks the solver whose selector matches the CERTIFICATE's labels (the most specific
+      # match wins; a solver with no selector matches everything, so it is the fallback).
+      # A Certificate that does not carry `zeta.io/acme-solver: dns01` therefore still takes
+      # the http01 solver below, byte-for-byte as before. Needs Secret `cloudflare-api-token`
+      # (ns cert-manager, key api-token) that the OPERATOR creates on the node and which is
+      # NEVER committed: docs/ops/CLOUDFLARE-DNS01-CERTS.md.
+      - selector:
+          matchLabels:
+            zeta.io/acme-solver: dns01
+        dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
+      # DEFAULT — HTTP-01 through the public Gateway. No selector, on purpose: this is the
+      # solver every Certificate without the dns01 label gets.
       - http01:
           gatewayHTTPRoute:
             parentRefs:
@@ -54,6 +75,23 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:
+      # OPT-IN DNS-01 via Cloudflare — chosen by SELECTOR, never by default. cert-manager
+      # picks the solver whose selector matches the CERTIFICATE's labels (the most specific
+      # match wins; a solver with no selector matches everything, so it is the fallback).
+      # A Certificate that does not carry `zeta.io/acme-solver: dns01` therefore still takes
+      # the http01 solver below, byte-for-byte as before. Needs Secret `cloudflare-api-token`
+      # (ns cert-manager, key api-token) that the OPERATOR creates on the node and which is
+      # NEVER committed: docs/ops/CLOUDFLARE-DNS01-CERTS.md.
+      - selector:
+          matchLabels:
+            zeta.io/acme-solver: dns01
+        dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
+      # DEFAULT — HTTP-01 through the public Gateway. No selector, on purpose: this is the
+      # solver every Certificate without the dns01 label gets.
       - http01:
           gatewayHTTPRoute:
             parentRefs:
