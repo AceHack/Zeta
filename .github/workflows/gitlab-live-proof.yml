@@ -67,6 +67,8 @@ on:
       # kind LB-IPAM alias the lane's address comes from.
       - "full-ai-cluster/k8s/applications/gitlab/**"
       - "full-ai-cluster/k8s/applications/seaweedfs/**"
+      # ... and the operator that reconciles the PostgreSQL 17 Cluster the Application declares.
+      - "full-ai-cluster/k8s/applications/cloudnativepg/**"
       - "full-ai-cluster/k8s/lb-ipam/**"
       - "full-ai-cluster/dev-cluster/manifests/cilium-lb-ipam.kind.yaml"
       # The bring-up it reuses.

@@ -412,6 +412,18 @@
       "resolvedAt": "2026-10-02"
     },
     {
+      "repository": "registry-1.docker.io/valkey/valkey",
+      "tags": {
+        "7.2.14-alpine3.24": 200
+      },
+      "artifact": "public",
+      "sourceRepo": "valkey-io/valkey",
+      "sourceEvidence": "oci-label",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-10-02"
+    },
+    {
       "repository": "registry-1.docker.io/vllm/vllm-openai",
       "tags": {
         "latest": 200

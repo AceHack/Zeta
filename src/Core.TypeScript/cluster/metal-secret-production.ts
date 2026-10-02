@@ -83,6 +83,10 @@ export const METAL_NOT_SEEDED: ReadonlyMap<string, string> = new Map([
     "OPTIONAL: mounted `optional: true`; written by the gated init ceremony, never by a first-boot Job.",
   ],
   [
+    "gitlab|gitlab-redis-secret",
+    "CHART-MINTED: the gitlab chart's shared-secrets Job (a Helm pre-install/pre-upgrade hook, run by every ArgoCD sync) generates it; the dedicated Valkey in gitlab/Application.yaml reads the same password the chart's `global.redis.auth` does.",
+  ],
+  [
     "kubevirt|kubevirt-operator-certs",
     "OPERATOR-GENERATED: virt-operator creates its own webhook cert Secret at startup.",
   ],

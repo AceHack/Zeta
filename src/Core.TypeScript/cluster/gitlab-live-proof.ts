@@ -60,8 +60,11 @@ export const RUNNER_SECRET = "gitlab-gitlab-runner-secret";
 export const RUNNER_TOKEN_JOB = "gitlab-runner-token";
 export const ROOT_PASSWORD_SECRET = "gitlab-initial-root-password";
 export const RUNNER_DESCRIPTION = "zeta-cluster";
-/** The roster the lane's ROOT catalogue applies: GitLab's object store only. The Application itself is applied directly. */
-export const LANE_ROOT_DIRS: readonly string[] = ["seaweedfs"];
+/**
+ * The roster the lane's ROOT catalogue applies: GitLab's object store, and the CloudNativePG operator that reconciles the
+ * `gitlab-rails-db` Cluster the Application itself declares (its PostgreSQL 17). The Application is applied directly.
+ */
+export const LANE_ROOT_DIRS: readonly string[] = ["seaweedfs", "cloudnativepg"];
 
 // ---------------------------------------------------------------- results ---
 
@@ -773,7 +776,7 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
 
   if (!opts.existing) {
     const laneTree = buildLaneTreeForProfile("dev", opts.gitRef);
-    log("bringing up kind + shipped Cilium + ArgoCD + the dev-rung tree (root catalogue = seaweedfs only) ...");
+    log("bringing up kind + shipped Cilium + ArgoCD + the dev-rung tree (root catalogue = seaweedfs + cloudnativepg) ...");
     bootstrapKindClusterInProcess({
       configPath: defaultKindCiliumConfigPath(),
       clusterName: opts.clusterName,

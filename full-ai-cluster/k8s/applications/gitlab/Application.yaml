@@ -334,6 +334,157 @@ spec:
                       ephemeral-storage: 256Mi
                     default:
                       ephemeral-storage: 6Gi
+            # --- DATASTORES: PostgreSQL 17 (CloudNativePG) and Valkey 7.2 -- OWNED BY THIS RELEASE -----------
+            # WHY THEY EXIST, and why they are HERE and not in a new Application. GitLab 18.0 dropped
+            # PostgreSQL 14/15 (chart 9.0), 19.0 dropped PostgreSQL 16 and Redis 6 and the chart REMOVED its bundled
+            # PostgreSQL, Redis and MinIO "with no replacement" (chart 10.0). This instance ran bundled PostgreSQL 14.8
+            # and Redis 6.2.16 (archived `bitnamilegacy` images), so both had to leave BEFORE the 18.2 stop of the
+            # 17.7 -> 19.4 path (docs/ops/GITLAB-UPGRADE.md). One move to PostgreSQL 17 satisfies 18.x and 19.x at once.
+            #
+            # DEDICATED, NOT THE SHARED ONES: a `Cluster` in `gitlab` rather than a database in `postgres-shared`, so
+            # a GitLab migration can never contend with flowdent_prod / flowdent_staging; a Valkey of its own rather
+            # than the shared `redis`, because Sidekiq queues and sessions live there and an eviction policy chosen
+            # for another tenant would silently drop jobs. Both are created in wave -2, ahead of every chart object.
+            #
+            # CREATING THEM CHANGES NOTHING FOR GITLAB: `global.psql` and `global.redis` still point at the bundled
+            # instances until the cut-over change. The data moves between the two (quiesce, dump, restore).
+            #
+            # `minimal` has Debian's contrib modules (temporal's btree_gin lives there), so `pg_trgm`, `btree_gist`
+            # and `amcheck` (GitLab 18.4+, chart 9.4 note) are created at initdb, as the superuser, which a
+            # non-superuser restore could not do for the untrusted one. No `plugins:` list on purpose: it is the
+            # atomic-list field ArgoCD reads OutOfSync forever (postgres-shared/cluster.yaml), and the WAL archive
+            # it would add needs a per-namespace S3 credential this release does not have -- NOT BACKED UP BY WAL
+            # ARCHIVING; GitLab's own backup (docs/ops/GITLAB-UPGRADE.md) is the backup until that exists.
+            - apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: gitlab-rails-db
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-2"
+              spec:
+                instances: 1
+                # Essential tier (gitaly's note below): the database of the only copy of every project's metadata.
+                priorityClassName: system-cluster-critical
+                imageName: ghcr.io/cloudnative-pg/postgresql:17.11-minimal-trixie
+                # One instance: a PodDisruptionBudget on a lone primary hangs `kubectl drain` for ever.
+                enablePDB: false
+                bootstrap:
+                  initdb:
+                    database: gitlabhq_production
+                    owner: gitlab
+                    encoding: UTF8
+                    # `en_US.UTF-8` (the bundled instance's collation) does not exist in the `minimal` image
+                    # (MEASURED: initdb "invalid locale name"). `C.UTF-8` is glibc's built-in code-point order,
+                    # needs no locale package, and is the collation this repo prescribes everywhere else (rule
+                    # culture-invariant-by-default). A restore rebuilds every index under it.
+                    localeCollate: C.UTF-8
+                    localeCType: C.UTF-8
+                    postInitApplicationSQL:
+                      - CREATE EXTENSION IF NOT EXISTS pg_trgm
+                      - CREATE EXTENSION IF NOT EXISTS btree_gist
+                      - CREATE EXTENSION IF NOT EXISTS amcheck
+                postgresql:
+                  parameters:
+                    # Webservice (puma) + Sidekiq + the migrations Job each hold a pool; the bundled default of 100
+                    # was already close. 200 is the figure GitLab's own external-database page starts from.
+                    max_connections: "200"
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 512Mi
+                  limits:
+                    memory: 1Gi
+                # NODE-LOCAL, like every CNPG consumer here (postgres-shared/cluster.yaml): CNPG replicates at the
+                # PostgreSQL level, so a replicated block volume would replicate the same bytes twice. The database
+                # was 109 MB when this was written; local-path claims are not preallocated.
+                storage:
+                  storageClass: zeta-block-local
+                  size: 10Gi
+            # Valkey 7.2 is GitLab's documented minimum AND recommended line (docs.gitlab.com/install/requirements,
+            # "Redis or Valkey"); the shared `redis` Application runs 9.1, which GitLab does not name. It reuses the
+            # password the chart already minted (`gitlab-redis-secret`, key `secret`, the chart's own default for `global.redis.auth.key`), so `global.redis.auth`
+            # needs no new Secret. `volatile-lru`: cache keys carry a TTL and may be evicted under pressure; queue and
+            # lock keys carry none and never are (`allkeys-lru` would drop Sidekiq jobs, `noeviction` would turn a full
+            # cache into write errors). AOF on: a restart must not lose the queue.
+            - apiVersion: v1
+              kind: Service
+              metadata:
+                name: gitlab-valkey
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-2"
+              spec:
+                selector:
+                  app.kubernetes.io/name: gitlab-valkey
+                ports:
+                  - { name: valkey, port: 6379, targetPort: valkey }
+            - apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: gitlab-valkey
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-2"
+              spec:
+                replicas: 1
+                serviceName: gitlab-valkey
+                selector:
+                  matchLabels:
+                    app.kubernetes.io/name: gitlab-valkey
+                template:
+                  metadata:
+                    labels:
+                      app.kubernetes.io/name: gitlab-valkey
+                  spec:
+                    priorityClassName: system-cluster-critical
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 999
+                      runAsGroup: 1000
+                      fsGroup: 1000
+                      seccompProfile: { type: RuntimeDefault }
+                    containers:
+                      - name: valkey
+                        image: docker.io/valkey/valkey:7.2.14-alpine3.24
+                        command: ["/bin/sh", "-c"]
+                        args:
+                          - exec valkey-server --requirepass "$REDIS_PASSWORD" --appendonly yes --dir /data --maxmemory 512mb --maxmemory-policy volatile-lru
+                        env:
+                          - name: REDIS_PASSWORD
+                            valueFrom:
+                              secretKeyRef: { name: gitlab-redis-secret, key: secret }
+                        ports:
+                          - { name: valkey, containerPort: 6379 }
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        readinessProbe:
+                          exec:
+                            command: ["/bin/sh", "-c", "REDISCLI_AUTH=\"$REDIS_PASSWORD\" valkey-cli ping | grep -q PONG"]
+                          periodSeconds: 10
+                          timeoutSeconds: 3
+                        livenessProbe:
+                          exec:
+                            command: ["/bin/sh", "-c", "REDISCLI_AUTH=\"$REDIS_PASSWORD\" valkey-cli ping | grep -q PONG"]
+                          periodSeconds: 10
+                          timeoutSeconds: 3
+                          failureThreshold: 20
+                        resources:
+                          requests: { cpu: 50m, memory: 128Mi }
+                          limits: { memory: 640Mi }
+                        volumeMounts:
+                          - { name: data, mountPath: /data }
+                volumeClaimTemplates:
+                  - metadata:
+                      name: data
+                    spec:
+                      accessModes: [ReadWriteOnce]
+                      storageClassName: zeta-block-local
+                      resources:
+                        requests:
+                          storage: 2Gi
             # --- LAN exposure (see global.hosts above) ------------------------------------
             # EXPOSURE IS CREATED BY A POSTSYNC HOOK FROM THE LIVE ADDRESS -- IT IS NOT RENDERED BY THIS RELEASE.
             #

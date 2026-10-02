@@ -129,7 +129,7 @@
     "                                 it. The two INFRA-TREE render rows above",
     "                                 went with them - there is one tree now.)",
     "    zeta-block-replicated 843 GiB   (the RENDER, full-ai-cluster tree)",
-    "    zeta-block-local      110 GiB   (the extractor's reading of our YAML - a",
+    "    zeta-block-local      122 GiB   (the extractor's reading of our YAML - a",
     "                                 cross-check, and a STRUCTURALLY partial one;",
     "                                 see below)",
     "    zeta-block-local      250 GiB   (the RENDER, full-ai-cluster tree. Trust this",
