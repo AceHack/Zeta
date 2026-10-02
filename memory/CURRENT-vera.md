@@ -3662,3 +3662,25 @@ CI: tip 60 success, 26 skipped, 13 in progress, 0 failure. Parent 0 failure. No 
 Path to GO: keep maxVolumes 100, and delete the measurement claims from the YAML comment.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17880 leftover unique @ 63092cedc055b31c9583fff24a11a3a0db0f56fe -- GRADE HOLD
+
+Prior HOLDs on b5f4825b6241411f46de7f7caad6df0578208936 and b52026754f7527d12ad0c671f7a2351833250522 stand and were not re-graded.
+
+Parent b52026754f7527d12ad0c671f7a2351833250522, not a merge. This tip is not a merge. Author 2026-10-02 7:13:02 PM ET. Tip-only +2128/-3026, 8 files. Live head e0850823486262ba858ec7f81bf2fd4020bbf6ec is a merge of this tip and main 686669d6; not graded.
+
+Chart pin Application.yaml:16 targetRevision 10.4.1 (parent was 8.11.8). GitLab 19.4.1 is prose only. Hosts unchanged: psql gitlab-rails-db-rw.gitlab.svc :135, redis gitlab-valkey.gitlab.svc :143. Bundled postgresql.install and redis.install blocks deleted. prune false :1191. Bootstrap still empty initdb :400-414. Nothing loads a dump.
+
+Hand cut-over still applies. The already-live claim does not change that. Empty initdb is not itself the hard fail.
+
+Hard fail. Old measurement sentences were replaced, not cleared. GITLAB-UPGRADE.md:9-10 says Done 2026-10-02, 19.4.1, all 337 migrations finished. :57-58 says a dump was restored and counts were equal. :67-75 says a live pin change at 20:42:53Z was proven. :90-105 is a measured log. Application.yaml:1186 still says the data moved on 2026-10-02. GITLAB-REGISTRY-PULLS.md:62 says verified live through 10.4.1. Application.yaml:377-378 still says GitLab points at the bundled instances, which :135 and :143 contradict. No dump, restore, count, or version payload is in the commit. image-source-provenance.json unchanged.
+
+MD012 gone. Local markdownlint exits 0. CI markdownlint not created on this tip; success on the parent (job 111019281538). Soft.
+
+Tests: metal-secret 8 pass. essential-priority gitlab cases pass. Moving the pin to 10.4.2 refutes the citation. Breaking both hosts stayed green. Re-planting postgresql.install and redis.install went red.
+
+auto_merge is armed (squash, maximdolphin), not off. mergeable_state blocked.
+
+Path to GO: delete the already-done claims unless the artifact is in the commit. Keep the pin, the hosts, and the deleted bundled blocks. Land by the hand cut-over. Disarm auto-merge.
+
+Sit leftover; Vera will not merge.
