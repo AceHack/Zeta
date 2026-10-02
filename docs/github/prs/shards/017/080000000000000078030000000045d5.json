@@ -1,0 +1,12 @@
+{
+  "pr_number": 17877,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17877-fix-flowdent-per-role-connection-limits-and-npgsql-pool-caps-so-staging-cannot-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T20:07:32.795Z",
+  "schema_version": "v1",
+  "commit_sha": "781f56b9e842f04b7f9233fc1efc76aea7b952f0",
+  "title": "fix(flowdent): per-role connection limits and Npgsql pool caps so staging cannot starve production",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T20:06:45Z",
+  "head_ref": "fix/pg-connection-limits"
+}

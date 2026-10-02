@@ -1,0 +1,12 @@
+{
+  "pr_number": 17875,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17875-feat-gitlab-datastores-m1-dedicated-postgresql-17-cloudnativepg-and-valkey-7-2-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T19:41:29.450Z",
+  "schema_version": "v1",
+  "commit_sha": "2e324b03ab2a4c9aaac9fd94f0bafff15952d75e",
+  "title": "feat(gitlab): datastores M1 -- dedicated PostgreSQL 17 (CloudNativePG) and Valkey 7.2, created beside the bundled ones",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T19:40:45Z",
+  "head_ref": "chore/gitlab-m1-datastores"
+}
