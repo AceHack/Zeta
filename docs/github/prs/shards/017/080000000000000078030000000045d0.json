@@ -1,0 +1,12 @@
+{
+  "pr_number": 17872,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17872-feat-cluster-terminate-tls-for-the-api-hostnames-at-the-node-edge-so-each-client.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T19:08:56.716Z",
+  "schema_version": "v1",
+  "commit_sha": "2c0d1e494fd76bdac955b8868f6ad8ba57e69961",
+  "title": "feat(cluster): terminate TLS for the API hostnames at the node edge so each client keeps its own rate-limit bucket",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T19:08:09Z",
+  "head_ref": "fix/node-edge-client-ip"
+}
