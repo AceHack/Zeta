@@ -120,6 +120,16 @@ describe("R5 -- absence assertions under a taint / 2-safety claim are RECOGNISED
     const src = ts("expect(OPENSEARCH_ADMIN_PASSWORD_REGEX.test(plainHex)).toBe(false);");
     expect(sitesOf("t.test.ts", src)).toHaveLength(0);
   });
+
+  test("not.toMatch on a SUBJECT that names SECRET is the cluster-hygiene live shape (081M3Y2E1Y8087G0R00351Y063)", () => {
+    const src = ts("expect(secretCalls[0]).not.toMatch(/jsonpath|yaml|json|go-template|base64/);");
+    expect(sitesOf("t.test.ts", src)).toHaveLength(1);
+  });
+
+  test("boolean equality on RegExp.test is not absence, even when the SUBJECT names SECRET", () => {
+    const src = ts("expect(/jsonpath|yaml|json|go-template|base64/u.test(secretCalls[0])).toBe(false);");
+    expect(sitesOf("t.test.ts", src)).toHaveLength(0);
+  });
 });
 
 describe("R5 ratchets in BOTH directions", () => {

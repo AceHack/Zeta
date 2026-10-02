@@ -1,0 +1,14 @@
+{
+  "id": "080d07e1383e5010a01300085142ae59",
+  "at": "2026-10-02T10:26:51.466Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3Y2E1Y8087G0R00351Y063",
+    "type": "bug",
+    "title": "Strengthen cluster-hygiene secret-call R5 absence assertion",
+    "slug": "strengthen-cluster-hygiene-secret-call-r5-absence-assertion",
+    "priority": "P1",
+    "filename": "081M3Y2E1Y8087G0R00351Y063-strengthen-cluster-hygiene-secret-call-r5-absence-assertion.md"
+  }
+}
