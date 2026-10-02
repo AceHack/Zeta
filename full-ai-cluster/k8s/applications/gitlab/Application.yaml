@@ -287,9 +287,9 @@ spec:
             # Exposure is the one part of this release that depends on something outside it (a pin that
             # lands after the first sync starts, a pool that may not exist), and nothing else in the release
             # depends on exposure -- the runner and the token Job reach GitLab through the in-cluster
-            # Service. So it syncs LAST. A wave that has not been reached yet is built from the Application's
-            # CURRENT values, so by the time wave 20 is applied the pin has long landed and the Gateway is
-            # created with the real address. Falsifier: gitlab-exposure.test.ts (f).
+            # Service. So it syncs LAST, so the runner does not wait on it. (Wave 20 alone does NOT make the
+            # Gateway carry the pin -- an operation is rendered once and a stale one reaches wave 20 with the
+            # sentinel; that is what Job `gitlab-pin-fresh` below is for.) Falsifier: gitlab-exposure.test.ts (f).
             - apiVersion: gateway.networking.k8s.io/v1
               kind: Gateway
               metadata:
@@ -423,6 +423,101 @@ spec:
                             # shellcheck disable=SC2086
                             kubectl -n gitlab delete $stale --wait=false || echo "could not delete a leftover migrations Job; harmless, the Application just reads OutOfSync"
                             exit 0
+            # --- stale-render gate ----------------------------------------------------------
+            # Sync hook, wave 15: AFTER the runner (10), BEFORE the exposure objects (20). It fails the operation when
+            # the Application's CURRENT address differs from the one THIS operation rendered, so ArgoCD retries it
+            # (`retry:` below) from the current values.
+            #
+            # WHY. The install-time Job can only patch this Application after it exists, and ArgoCD starts syncing
+            # the instant it does -- so an operation is routinely rendered with the 192.0.2.250 sentinel and the
+            # pin lands underneath it. A running operation does not re-render what it has not yet applied reliably:
+            # MEASURED, run 36951220893 (identical manifests, same timings as four earlier passes): the operation
+            # reached wave 20, created the Gateway with the SENTINEL, Cilium could not assign it, and the operation
+            # waited on `Gateway/gitlab-lan` for 27 minutes with the pin long landed -- the Application
+            # Progressing for ever, GitLab unreachable on the LAN. Whether an earlier run escaped depended on a
+            # retry triggered by something unrelated (an HPA with no metrics yet). A gate makes the retry happen
+            # on purpose and only when the render really is stale. Equal addresses (including both sentinel -- an
+            # install with no LB range) pass: nothing is stale, and exposure honestly stays pending.
+            # Falsifier: gitlab-exposure.test.ts (i), which RUNS this script against a stub kubectl.
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-pin-fresh
+                namespace: gitlab
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-pin-fresh
+                namespace: argocd
+              rules:
+                - apiGroups: [argoproj.io]
+                  resources: [applications]
+                  resourceNames: [gitlab]
+                  verbs: [get]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-pin-fresh
+                namespace: argocd
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-pin-fresh
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-pin-fresh
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-pin-fresh
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/hook: Sync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+                  argocd.argoproj.io/sync-wave: "15"
+              spec:
+                backoffLimit: 0
+                activeDeadlineSeconds: 120
+                template:
+                  spec:
+                    serviceAccountName: gitlab-pin-fresh
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                    containers:
+                      - name: gate
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                        resources:
+                          requests: { cpu: 10m, memory: 32Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            RENDERED="{{ .Values.global.zeta.lanAddress }}"
+                            if ! LIVE=$(kubectl -n argocd get applications.argoproj.io gitlab -o jsonpath='{.spec.source.helm.valuesObject.global.zeta.lanAddress}' 2>/tmp/err); then
+                              echo "cannot read Application gitlab ($(head -c 200 /tmp/err)); NOT gating -- an unreadable value is not a stale one"
+                              exit 0
+                            fi
+                            if [ "$LIVE" = "$RENDERED" ]; then
+                              echo "this sync was rendered with the Application's current address ($RENDERED)"
+                              exit 0
+                            fi
+                            echo "STALE SYNC: rendered with $RENDERED but the Application now carries $LIVE; failing so ArgoCD retries from the current values"
+                            exit 1
             # --- runner authentication token ----------------------------------------------
             # Creates (or finds) ONE instance runner `zeta-cluster` through GitLab's own service
             # object in the toolbox pod -- no admin personal access token is ever minted, so none
