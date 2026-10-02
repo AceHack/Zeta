@@ -152,6 +152,31 @@ on:
         description: "Run only the WP11 installed-disk first-boot k3s verify (also skips the pre-ISO-build NixOS test steps on a dispatch; PR/push runs are unaffected). Pass with `gh workflow run ... -F only_wp11=true` — -F, not -f, because -f sends a string"
         type: boolean
         default: false
+      # Publish the ISO as soon as the post-build floor has passed, instead of
+      # after the last dispatch-only QEMU scenario.
+      #
+      # MEASURED (run 36907804039): `Build installer ISO` finished 19:03, the
+      # post-build audit followed, and then ~2h50m of dispatch-only scenarios
+      # (keyfile restore/wifi/install-time/picker, scenario 3, scenario 4, WP11)
+      # ran before `Locate ISO` / `Sign ISO` / the three artifact uploads at
+      # 21:54. The owner waited ~3.3 h for an ISO that existed after ~30 min.
+      #
+      # With this true, the locate / cosign sign / ISO + sha256 + cosign-bundle
+      # uploads run IMMEDIATELY AFTER `Audit installer ISO content (cascade #4)`
+      # and the end-of-job copies are skipped (exactly one copy of each runs; same
+      # artifact names, same signing identity). The scenarios still run afterwards
+      # and still decide the job's conclusion -- the published ISO is NOT thereby
+      # blessed; the step summary says so. Default false: PR, push, schedule and a
+      # plain dispatch publish at the end of the job exactly as before.
+      #
+      #   gh workflow run build-ai-cluster-iso.yml --ref <branch> -F publish_iso_early=true
+      #
+      # -F, not -f (-f sends a string). See docs/ops/WP11-SCOPED-DISPATCH.md.
+      # Pinned by src/Core.TypeScript/ci/build-ai-cluster-iso-publish-early.test.ts.
+      publish_iso_early:
+        description: "Publish (sign + upload) the ISO right after the post-build audit, BEFORE the slow dispatch-only QEMU scenarios; the run conclusion is then the verdict on that ISO. Pass with `gh workflow run ... -F publish_iso_early=true` — -F, not -f"
+        type: boolean
+        default: false
   # WP11 — the installed-disk first-boot k3s verify step below (gated to
   # workflow_dispatch + schedule; see that step's own comment for why it is
   # not on the PR path) needs a way to run unattended. Daily, off the hour,
@@ -807,6 +832,157 @@ jobs:
           # workflow run hangs).
           bun src/Core.TypeScript/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
+      # ── publish_iso_early (workflow_dispatch opt-in; default false) ──────────────
+      # The ISO exists and has passed the build-time floor (name, bootstrap archive,
+      # provenance pin, ISO-content audit) HERE. Without this block it waits for every
+      # dispatch-only QEMU scenario below -- MEASURED 3.3 h for a ~30 min artifact
+      # (run 36907804039). When `publish_iso_early` is true the locate / cosign / upload
+      # copies run now and the end-of-job copies are skipped; when false (and on every
+      # PR / push / schedule event, where `inputs` is empty) this whole block is
+      # skipped and the end-of-job copies run exactly as they always did.
+      #
+      # Same artifact names, same cosign identity (this workflow file + ref), same
+      # `run:` bodies as the end-of-job copies -- build-ai-cluster-iso-publish-early.test.ts
+      # fails if the two copies drift. Exactly ONE copy runs: the end-of-job steps are
+      # guarded on `steps.iso_early.outcome == 'skipped'`, so a FAILED early publish does
+      # not fall through to a second upload (artifact-name collision on a half-published
+      # run); it fails the job loudly via the closing gate step instead.
+      #
+      # `continue-on-error` on these steps is deliberate and NOT a way to pass: it keeps
+      # the dispatch-only scenarios below running (they still decide the job's
+      # conclusion) when a Fulcio/Rekor/upload hiccup breaks the publish, and the
+      # `Early ISO publish must have succeeded` step at the end of the job re-fails the
+      # run. A swallowed publish failure would be the vacuity class.
+      - name: Locate ISO + capture metadata (early publish)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early }}
+        id: iso_early
+        continue-on-error: true
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso; the nixos-minimal-* fallback was removed with 081KSGS9H0008QG0R00033DT02's fix -- image.baseName now drives the name)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path_rel="${iso_candidates[0]}"
+          iso_path_abs="$(pwd)/${iso_path_rel}"
+          iso_name=$(basename "$iso_path_abs")
+          iso_size=$(stat -c%s "$iso_path_abs" | numfmt --to=iec --suffix=B)
+          iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
+          iso_sha256_path="${RUNNER_TEMP}/${iso_name}.sha256"
+          printf '%s  %s\n' "$iso_sha256" "$iso_name" > "$iso_sha256_path"
+          {
+            echo "path=$iso_path_abs"
+            echo "name=$iso_name"
+            echo "size=$iso_size"
+            echo "sha256=$iso_sha256"
+            echo "sha256_path=$iso_sha256_path"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI-cluster installer ISO built"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| File   | \`$iso_name\` |"
+            echo "| Size   | $iso_size |"
+            echo "| SHA256 | \`$iso_sha256\` |"
+            echo ""
+            echo "Download from the **Artifacts** section of this workflow run."
+            echo "Then \`dd if=<iso> of=/dev/<USB> bs=4M status=progress conv=fsync\`"
+            echo "to flash the stick. (ISO is ~1.5–2 GiB.)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install cosign (early publish)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.iso_early.outcome == 'success' }}
+        id: cosign_early
+        continue-on-error: true
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign ISO with cosign (early publish; keyless OIDC + Fulcio + Rekor)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.cosign_early.outcome == 'success' }}
+        id: sign_early
+        continue-on-error: true
+        env:
+          ISO_PATH: ${{ steps.iso_early.outputs.path }}
+          ISO_NAME: ${{ steps.iso_early.outputs.name }}
+        run: |
+          set -euo pipefail
+          COSIGN_BUNDLE="${RUNNER_TEMP}/${ISO_NAME}.bundle"
+          cosign sign-blob --yes \
+            --bundle "${COSIGN_BUNDLE}" \
+            "${ISO_PATH}"
+          test -s "${COSIGN_BUNDLE}" || { echo "::error::Empty cosign bundle"; exit 1; }
+          echo "bundle-path=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## ISO signed via sigstore (cosign keyless OIDC)"
+            echo ""
+            echo "| Artifact | Path |"
+            echo "|---|---|"
+            echo "| Bundle | \`${ISO_NAME}.bundle\` |"
+            echo ""
+            echo "Verification command after downloading the ISO artifact and cosign bundle artifact:"
+            echo ""
+            echo "\`\`\`bash"
+            echo "cosign verify-blob \\"
+            echo "  --bundle '${ISO_NAME}.bundle' \\"
+            echo "  --certificate-identity 'https://github.com/${GITHUB_WORKFLOW_REF}' \\"
+            echo "  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \\"
+            echo "  '${ISO_NAME}'"
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload ISO as workflow artifact (early publish)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.iso_early.outcome == 'success' }}
+        id: upload_iso_early
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.iso_early.outputs.name }}
+          path: ${{ steps.iso_early.outputs.path }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0 # ISO is already compressed; re-zipping wastes time
+
+      - name: Upload the ISO digest manifest as a workflow artifact (early publish)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.iso_early.outcome == 'success' }}
+        id: upload_sha_early
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.iso_early.outputs.name }}.sha256
+          path: ${{ steps.iso_early.outputs.sha256_path }}
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload cosign bundle as workflow artifact (early publish)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.sign_early.outcome == 'success' }}
+        id: upload_bundle_early
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.iso_early.outputs.name }}.cosign
+          path: ${{ steps.sign_early.outputs.bundle-path }}
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Early publish notice (ISO published BEFORE the dispatch-only scenarios)
+        if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.upload_iso_early.outcome == 'success' && steps.upload_sha_early.outcome == 'success' && steps.upload_bundle_early.outcome == 'success' }}
+        run: |
+          {
+            echo "## ISO published BEFORE the dispatch-only scenarios ran"
+            echo ""
+            echo "ISO published BEFORE the dispatch-only scenarios ran: treat the run conclusion as the verdict on this ISO"
+            echo ""
+            echo "\`publish_iso_early=true\`. The ISO, its sha256 manifest and its cosign bundle were uploaded right after the post-build audit. The QEMU scenarios that follow (keyfile, wifi ESP, scenarios 3 and 4, WP11) still run and still decide this job's conclusion; a red run means the artifact above has NOT passed them."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       # QEMU boot smoke-test (USB cleanup PR 3 — 2026-05-26):
       # Boots the built ISO in QEMU/KVM with serial console capture +
       # asserts the installer's expected login prompt appears within
@@ -1211,7 +1387,12 @@ jobs:
       # structural: no build, no ISO to locate, nothing to report. The job is
       # already red from whatever stopped the build.
       - name: Locate ISO + capture metadata
-        if: ${{ !cancelled() && steps.iso_build.outcome == 'success' }}
+        # `&& steps.iso_early.outcome == 'skipped'`: when publish_iso_early ran the
+        # early copy of this block (after the post-build audit), this copy must not
+        # run again -- exactly one copy per run. `iso_early` is `skipped` on every
+        # default run (the input is false/absent) and when the floor failed before
+        # the early copy could start, so those keep publishing here, unchanged.
+        if: ${{ !cancelled() && steps.iso_build.outcome == 'success' && steps.iso_early.outcome == 'skipped' }}
         id: iso
         working-directory: full-ai-cluster
         run: |
@@ -1309,7 +1490,7 @@ jobs:
       # of THIS workflow (no github.event.* interpolation). Same discipline
       # as the QEMU boot-test step above.
       - name: Install cosign
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }} # run only after a built ISO was located
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' && steps.iso_early.outcome == 'skipped' }} # run only after a built ISO was located (and not already published early)
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         # Pin verified via gh API 2026-05-27:
         #   gh api repos/sigstore/cosign-installer/releases/latest
@@ -1317,7 +1498,7 @@ jobs:
         # Per .claude/rules/dep-pin-search-first-authority.md
 
       - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }} # run only after a built ISO was located
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' && steps.iso_early.outcome == 'skipped' }} # run only after a built ISO was located (and not already published early)
         id: sign
         env:
           # Pass ISO path via env (not direct ${{ }} interpolation in run:)
@@ -1356,7 +1537,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload ISO as workflow artifact
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }} # run only after a built ISO was located
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' && steps.iso_early.outcome == 'skipped' }} # run only after a built ISO was located (and not already published early)
         # Available for download from the workflow run page for ~90 days.
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -1367,7 +1548,7 @@ jobs:
           compression-level: 0 # ISO is already compressed; re-zipping wastes time
 
       - name: Upload the ISO digest manifest as a workflow artifact
-        if: ${{ !cancelled() && steps.iso.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.iso.outcome == 'success' && steps.iso_early.outcome == 'skipped' }}
         # The keystone for the local flash path: `zflash` verifies the ISO against
         # this file BEFORE it touches a device, and refuses (exit 2) without it.
         # Uploaded separately from the ISO so an operator can fetch the manifest
@@ -1382,7 +1563,7 @@ jobs:
           retention-days: 90
 
       - name: Upload cosign bundle as workflow artifact
-        if: ${{ !cancelled() && steps.sign.outcome == 'success' }} # run only after signing produced a bundle
+        if: ${{ !cancelled() && steps.sign.outcome == 'success' && steps.iso_early.outcome == 'skipped' }} # run only after signing produced a bundle (and not already published early)
         # 081KSKBP80008QG0R000Y2B7HC.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
         # just the ISO do not pay the small extra cost; verifiers can grab it.
@@ -1392,6 +1573,17 @@ jobs:
           path: ${{ steps.sign.outputs.bundle-path }}
           if-no-files-found: error
           retention-days: 90
+
+      # The early-publish steps carry `continue-on-error` so a publish hiccup does not
+      # skip the dispatch-only scenarios. This step is what keeps that from becoming a
+      # swallowed failure: if the early copy STARTED and any part of it failed, the job
+      # is red here. (No end-of-job copy ran in that case -- see the guards above -- so
+      # nothing was double-published and nothing is silently missing.)
+      - name: Early ISO publish must have succeeded (publish_iso_early)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && (steps.iso_early.outcome == 'failure' || steps.cosign_early.outcome == 'failure' || steps.sign_early.outcome == 'failure' || steps.upload_iso_early.outcome == 'failure' || steps.upload_sha_early.outcome == 'failure' || steps.upload_bundle_early.outcome == 'failure') }}
+        run: |
+          echo "::error title=Early ISO publish failed::publish_iso_early was set and the early locate/sign/upload block failed; the end-of-job copy was skipped on purpose to avoid a double upload. Re-dispatch, or read the early publish steps above." >&2
+          exit 1
 
   # ── 081KTSZN10008QG0R00349SM6P slice 1 (2026-06-11): the aarch64 ISO builds AND BOOTS in CI ──
   # Native aarch64 end-to-end on the ubuntu-24.04-arm runner: build the

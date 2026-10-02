@@ -32,7 +32,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 ```
 
-`github.ref` is `refs/heads/main` for a **dispatch on main** *and* for **every
+`github.ref` is `refs/heads/main` for a **dispatch on main** _and_ for **every
 push to main**, so they share one group. `cancel-in-progress` is `false` for
 both, which correctly protects a RUNNING run — but GitHub keeps only the
 **newest PENDING run per group** and cancels older queued ones. So a dispatch
@@ -89,7 +89,7 @@ A scoped dispatch must show `skipped` for:
   plane, dirty-disk fail-closed, cluster-online) and the longhorn-volume-binds
   step,
 - `UEFI keyfile restore decrypt`, `wifi ESP acceptance`, `UEFI keyfile
-  install-time write`, `UEFI keyfile picker bind`, scenarios 3 and 4, and each
+install-time write`, `UEFI keyfile picker bind`, scenarios 3 and 4, and each
   of their upload-serial-log siblings.
 
 It still runs the ISO build, the boot discriminator, scenario 1, scenario 2 and
@@ -103,8 +103,53 @@ half **missing**, while its own upload-serial-log sibling three lines below had
 it. Measured on run 36044770870, dispatched with `only_wp11`: every other
 dispatch-only step reported `skipped`, that one ran for 15m 48s, and then its
 log upload skipped — so a scoped probe paid a quarter of an hour for a lane it
-had not asked for *and* the failure it produced could not be read afterwards.
+had not asked for _and_ the failure it produced could not be read afterwards.
 Run 36014672753 did the same thing four hours earlier.
 
 Both halves are fixed. The step list is still the thing to check, because the
 next input that silently does not take will look identical to this one.
+
+## Getting the ISO without waiting for the scenarios: `publish_iso_early`
+
+Measured, run 36907804039: `Build installer ISO` finished at 19:03 and the ISO
+was published at 21:54, because `Locate ISO` / `Sign ISO` / the artifact uploads
+sit at the END of the job, behind ~2h50m of dispatch-only QEMU scenarios. The
+owner waited ~3.3 h for an artifact that existed after ~30 min.
+
+```bash
+gh workflow run build-ai-cluster-iso.yml --ref <branch> -F publish_iso_early=true
+```
+
+**`-F`, not `-f`**, for the same reason as `only_wp11` (boolean input; `-f`
+sends a string). Default is `false`: every PR, push, schedule and plain dispatch
+publishes at the end of the job exactly as before.
+
+What it does when `true`:
+
+- Locate ISO, cosign sign (keyless, same workflow-file identity), and the three
+  uploads (the ISO, `<iso>.sha256`, `<iso>.cosign`) run **immediately after
+  `Audit installer ISO content`** — i.e. after the build-time floor (ISO name,
+  bootstrap archive, provenance pin, ISO-content audit) and **before** the first
+  QEMU scenario. Same artifact names as the end-of-job copies.
+- The end-of-job copies are skipped (exactly one copy runs, so no
+  artifact-name collision).
+- The scenarios still run afterwards and still decide the job's conclusion. The
+  run's step summary carries: _ISO published BEFORE the dispatch-only scenarios
+  ran: treat the run conclusion as the verdict on this ISO._ A published
+  artifact on a **red** run has not passed the scenarios.
+- If the early publish itself fails, the scenarios still run (the early steps
+  are `continue-on-error`), no second copy is attempted, and the job is failed
+  at its end by `Early ISO publish must have succeeded`.
+- If the floor fails before the early copy can start, nothing is published
+  early and the end-of-job copy runs as it always did.
+
+It composes with `only_wp11` (`-F only_wp11=true -F publish_iso_early=true`).
+
+Confirm it took the same way as above — read the step conclusions over REST
+and require the six `(early publish)` steps to say `success` and the six
+end-of-job `Locate ISO…` / `Install cosign` / `Sign ISO…` / `Upload…` steps to
+say `skipped`. The artifact should appear within minutes of the build, not
+hours: list `repos/Lucent-Financial-Group/Zeta/actions/runs/<run>/artifacts`.
+
+Pinned by `src/Core.TypeScript/ci/build-ai-cluster-iso-publish-early.test.ts`,
+which simulates the job's real `if:` expressions per event/input/failure.
