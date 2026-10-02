@@ -41,6 +41,11 @@ outlives a Job; the databases live on the existing 20 Gi `postgres-shared` volum
   deployments, services, configmaps, jobs, PDBs, HTTPRoutes, pod reads, and Secrets only by name
   (`create` cannot be name-restricted in Kubernetes; the pull Secret alone is writable).
 
+A second, idempotent PostSync-hook Job (`flowdent-db-tune`, `database-budget.yaml`) then appends the Npgsql
+pool options to each `flowdent-db` connection string and adds a `connectionLimit` to each managed role, so
+staging cannot exhaust the connections production needs: see
+[`POSTGRES-CONNECTION-BUDGET.md`](POSTGRES-CONNECTION-BUDGET.md).
+
 **Honest limits.**
 
 - `spec.managed.roles` is a list the merge patch **replaces**. Nothing else declares one today;

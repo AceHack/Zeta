@@ -14,6 +14,9 @@
  *    the app Secret carries an Npgsql connection string, and no password is ever a literal.
  * D. the shared Cluster is untouched: `postgres-shared/cluster.yaml` declares no `managed` block,
  *    so the Job's merge patch cannot clobber a role somebody else declared.
+ * F. the connection budget (docs/ops/POSTGRES-CONNECTION-BUDGET.md): per-role CONNECTION LIMITs and Npgsql pool
+ *    sizes are declared in one ConfigMap, satisfy (replicas + surge) x pool <= role limit and sum(limits) <=
+ *    usable slots, and the Job that applies them is an idempotent PostSync hook with least-privilege RBAC.
  * E. public TLS: SET adds api.<domain> / api-staging.<domain> as listeners 5 and 6, each with its
  *    OWN certificate; the base carries no hostname; UNSET applies nothing.
  */
@@ -30,7 +33,7 @@ const SET = { acmeEmail: "ops@zeta-cluster-fixture.net", publicDomain: "zeta-clu
 
 const read = (f: string) => readFileSync(join(DIR, f), "utf8");
 const docs = (f: string) => yamlDocs(read(f));
-const all = () => ["namespaces.yaml", "priorityclasses.yaml", "deployer.yaml", "database.yaml"].flatMap(docs);
+const all = () => ["namespaces.yaml", "priorityclasses.yaml", "deployer.yaml", "database.yaml", "database-budget.yaml"].flatMap(docs);
 const meta = (o: K8sObject) => (o["metadata"] ?? {}) as Record<string, any>;
 const name = (o: K8sObject) => String(meta(o)["name"] ?? "");
 const ns = (o: K8sObject) => String(meta(o)["namespace"] ?? "");
@@ -288,6 +291,118 @@ describe("D. the shared Cluster is untouched", () => {
   test("enableSuperuserAccess is still not turned on (an owner role needs no superuser)", () => {
     const cluster = yamlDocs(readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml"), "utf8"))[0]!;
     expect((cluster["spec"] as Record<string, unknown>)["enableSuperuserAccess"]).toBeUndefined();
+  });
+});
+
+describe("F. the connection budget", () => {
+  const budget = () => (kinds(docs("database-budget.yaml"), "ConfigMap").find((c) => name(c) === "flowdent-db-budget")!["data"] as Record<string, string>);
+  const n = (k: string) => Number(budget()[k]);
+  const tune = () => kinds(docs("database-budget.yaml"), "Job").find((j) => name(j) === "flowdent-db-tune")!;
+  const tunePod = () => (tune()["spec"] as any).template.spec;
+  const steps = () => [...tunePod().initContainers, ...tunePod().containers];
+  const composeScript = () => tunePod().initContainers[0].args[0] as string;
+  const clusterYaml = () => yamlDocs(readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml"), "utf8"))[0]!;
+
+  test("the budget declares every number the Job reads, as non-negative integers, and nothing else", () => {
+    const keys = ["max-connections", "superuser-reserved", "headroom"];
+    for (const e of ["staging", "prod"]) for (const k of ["role-limit", "max-replicas", "max-surge", "pool", "health-reserve"]) keys.push(`${e}.${k}`);
+    for (const k of keys) expect(Number.isInteger(n(k)) && n(k) >= 0).toBe(true);
+    expect(Object.keys(budget()).sort()).toEqual([...keys].sort());
+  });
+
+  test("per environment: (max-replicas + max-surge) x pool + health-reserve <= role-limit -- pooled work and its unpooled /health companions cannot exceed the role", () => {
+    for (const e of ["staging", "prod"]) {
+      expect((n(`${e}.max-replicas`) + n(`${e}.max-surge`)) * n(`${e}.pool`) + n(`${e}.health-reserve`)).toBeLessThanOrEqual(n(`${e}.role-limit`));
+    }
+  });
+
+  test("the two role limits fit in max_connections minus the superuser reserve minus headroom -- the roles cannot exhaust the server", () => {
+    const usable = n("max-connections") - n("superuser-reserved") - n("headroom");
+    expect(n("staging.role-limit") + n("prod.role-limit")).toBeLessThanOrEqual(usable);
+    expect(n("headroom")).toBeGreaterThanOrEqual(15);
+  });
+
+  test("staging alone can never take the slots prod is promised", () => {
+    expect(n("prod.role-limit")).toBeGreaterThan(n("staging.role-limit"));
+    expect(n("max-connections") - n("superuser-reserved") - n("staging.role-limit")).toBeGreaterThanOrEqual(n("prod.role-limit"));
+  });
+
+  test("the budget max-connections is the Cluster max_connections (changing one without the other fails here)", () => {
+    const params = (clusterYaml()["spec"] as any).postgresql.parameters as Record<string, string>;
+    expect(Number(params["max_connections"])).toBe(n("max-connections"));
+  });
+
+  test("the pool options are all in the connection string the Job composes, and the shared prefix matches the provisioner", () => {
+    for (const opt of ["Maximum Pool Size=$pool", "Timeout=15", "Command Timeout=30", "Connection Idle Lifetime=60", "Application Name=fd-core-$env"]) {
+      expect(composeScript()).toContain(opt);
+    }
+    const provision = (kinds(docs("database.yaml"), "Job").find((j) => name(j) === "flowdent-db-provision")!["spec"] as any).template.spec.initContainers[0].args[0] as string;
+    for (const part of ["Host=postgres-shared-rw.postgres-shared.svc;Port=5432", "SSL Mode=Require;Trust Server Certificate=true"]) {
+      expect(provision).toContain(part);
+      expect(composeScript()).toContain(part);
+    }
+  });
+
+  test("the Job refuses to apply a budget that violates either inequality (the same two checks, in the container)", () => {
+    expect(composeScript()).toContain("(rep + surge) * pool + reserve");
+    expect(composeScript()).toContain('-gt "$limit"');
+    expect(composeScript()).toContain('-gt "$usable"');
+  });
+
+  test("it is an idempotent PostSync hook, recreated on each sync", () => {
+    const a = meta(tune())["annotations"] as Record<string, string>;
+    expect(a["argocd.argoproj.io/hook"]).toBe("PostSync");
+    expect(a["argocd.argoproj.io/hook-delete-policy"]).toBe("BeforeHookCreation");
+  });
+
+  test("every write is a `patch` of ONE named object: secrets by merge patch, the Cluster by a test-guarded JSON patch", () => {
+    const patches = steps().filter((c: any) => c.image.includes("rancher/kubectl"));
+    expect(patches.map((c: any) => c.args[0])).toEqual(["patch", "patch", "patch"]);
+    expect(patches.map((c: any) => c.args[2])).toEqual(["flowdent-db", "flowdent-db", "postgres-shared"]);
+    for (const c of patches) expect((c.args as string[]).some((a) => a.startsWith("--patch-file="))).toBe(true);
+    expect(composeScript()).toContain('{"op":"test","path":"/spec/managed/roles/0/name","value":"flowdent_staging"}');
+    expect(composeScript()).toContain('{"op":"test","path":"/spec/managed/roles/1/name","value":"flowdent_prod"}');
+    expect(composeScript()).toContain('"path":"/spec/managed/roles/0/connectionLimit"');
+    expect(composeScript()).toContain('"path":"/spec/managed/roles/1/connectionLimit"');
+  });
+
+  test("the role limits land LAST, after both connection strings carry the pool caps", () => {
+    expect(tunePod().containers.map((c: any) => c.name)).toEqual(["limit-roles"]);
+    expect(tunePod().initContainers.map((c: any) => c.name)).toEqual(["compose", "pool-staging", "pool-prod"]);
+  });
+
+  test("the password is read from the role Secret volume into a memory-backed file, never an argv token, env var or literal", () => {
+    expect(tunePod().volumes.find((v: any) => v.name === "work").emptyDir.medium).toBe("Memory");
+    for (const c of steps()) {
+      // the only env a container carries is the kubectl cache location: no secret can ride in one
+      expect((c.env ?? []).map((e: any) => e.name as string).filter((e: string) => e !== "HOME" && e !== "KUBECACHEDIR")).toEqual([]);
+      expect((c.args as string[]).filter((a) => /^--from-literal/.test(a))).toEqual([]);
+    }
+    expect(composeScript()).toContain('pw=$(cat "/roles/$env/password")');
+    // every `Password=` in the manifest is the shell variable, never a value
+    const assigned = [...read("database-budget.yaml").matchAll(/Password=([^;\s"]*)/g)].map((m) => m[1]);
+    expect(assigned.length).toBeGreaterThan(0);
+    expect(assigned.every((v) => v === "$pw")).toBe(true);
+  });
+
+  test("the only shell is `compose`; every container is unprivileged and uses an image the bootstrap seeding already pins", () => {
+    expect(steps().filter((c: any) => (c.command ?? []).includes("/bin/sh")).map((c: any) => c.name)).toEqual(["compose"]);
+    for (const c of steps()) {
+      expect(c.securityContext.allowPrivilegeEscalation).toBe(false);
+      expect(c.securityContext.readOnlyRootFilesystem).toBe(true);
+      expect(c.securityContext.capabilities.drop).toEqual(["ALL"]);
+    }
+    const seeding = readFileSync(join(REPO_ROOT, "full-ai-cluster/k8s/bootstrap/internal-secret-seeding.yaml"), "utf8");
+    for (const i of new Set(steps().map((c: any) => c.image as string))) expect(seeding).toContain(i);
+  });
+
+  test("RBAC: get/patch the ONE Cluster in postgres-shared; `get`+`patch` on the ONE Secret `flowdent-db` in each app namespace, nothing else", () => {
+    const roles = kinds(docs("database-budget.yaml"), "Role").filter((r) => name(r) === "flowdent-db-tune");
+    const by = (x: string) => roles.find((r) => ns(r) === x)!["rules"];
+    expect(by("postgres-shared")).toEqual([{ apiGroups: ["postgresql.cnpg.io"], resources: ["clusters"], resourceNames: ["postgres-shared"], verbs: ["get", "patch"] }]);
+    for (const x of ["flowdent-staging", "flowdent-prod"]) {
+      expect(by(x)).toEqual([{ apiGroups: [""], resources: ["secrets"], resourceNames: ["flowdent-db"], verbs: ["get", "patch"] }]);
+    }
   });
 });
 

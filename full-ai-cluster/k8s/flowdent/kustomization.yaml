@@ -6,3 +6,4 @@ resources:
   - priorityclasses.yaml
   - deployer.yaml
   - database.yaml
+  - database-budget.yaml

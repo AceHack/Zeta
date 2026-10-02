@@ -1,0 +1,267 @@
+# The CONNECTION BUDGET of the shared CNPG Cluster `postgres-shared`: what each flowdent role may hold,
+# what each fd-core pod may hold, and the one Job that makes both true.
+# Why these numbers, the formula, and how to prove it: docs/ops/POSTGRES-CONNECTION-BUDGET.md.
+#
+# ── THE INVARIANT ─────────────────────────────────────────────────────────────
+#   (max-replicas + max-surge) x pool + health-reserve  <=  role-limit          (per environment)
+#   role-limit(staging) + role-limit(prod)  <=  max_connections - superuser_reserved - headroom
+# The first line makes pooled work plus its unpooled companions unable to exceed the role; the second
+# makes the two roles unable to exhaust the server. Neither is a hope: cluster/flowdent-platform.test.ts
+# fails when either is false in this file, and the Job below refuses to apply a budget that violates them.
+#
+# WHY `health-reserve` EXISTS (measured 2026-10-02): fd-core `/health` (AddDbContextCheck ->
+# Database.CanConnectAsync) opens a NEW physical connection on every call and does NOT draw from the
+# Npgsql pool: 30 sequential /health calls raised pg_stat_database.sessions by 30, 30 calls to a pooled
+# endpoint raised it by 1. So `Maximum Pool Size` does not bound them; each in-flight /health (kubelet
+# probes, external monitors, a load test) holds one backend. The role limit is what bounds them, and the
+# reserve is the room left for them so they cannot crowd out the pool. The real fix is in fd-core (run the
+# check through a pooled connection); until it lands the reserve is load-bearing.
+#
+# ── WHAT THE JOB DOES, AND WHY IT IS A HOOK ───────────────────────────────────
+# database.yaml `flowdent-db-provision` Job mints each password ONCE and cannot be edited (a Job pod
+# template is immutable, and re-running it would fail on the Secrets it already created). So the
+# budget lives in a SECOND Job that is idempotent by construction and is therefore safe to be an
+# ArgoCD PostSync hook, recreated (BeforeHookCreation) whenever a sync runs:
+#   1. composes each app connection string from the role own Secret in this namespace
+#      (flowdent-<env>-db, the password single source) and appends the pool options below;
+#   2. `kubectl patch`es that string into `flowdent-db` in the app namespace (merge patch of one key);
+#   3. adds `connectionLimit` to the two managed roles with a JSON patch that `test`s each role name
+#      first, so it can neither touch another role nor land on the wrong index.
+# CNPG reconciles `managed.roles` to the Cluster spec, so a bare `ALTER ROLE` would be reverted; the
+# limit must be in the spec, and this is the only place that puts it there.
+#
+# A pod picks the new string up at its NEXT START (it is a secretKeyRef env var, read once). Changing a
+# number here changes the Secret and the role limit at once; roll the Deployment one pod at a time after
+# (docs/ops/POSTGRES-CONNECTION-BUDGET.md "Changing a number").
+#
+# The password is only ever in a file on a memory-backed volume and in a shell variable of one container;
+# it is never an argv token, an env var, a log line or a field of the Pod spec (same posture as
+# database.yaml). Pool options carry no secret.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flowdent-db-budget
+  namespace: postgres-shared
+data:
+  # The server. Must equal postgres-shared/cluster.yaml `max_connections` (a test pins it).
+  max-connections: "100"
+  # PostgreSQL default; slots only a SUPERUSER may take (the CNPG instance manager lives here).
+  superuser-reserved: "3"
+  # Never allocated to a role: the `app` role, the metrics exporter, an operator with psql, a replica
+  # being re-cloned. 15 of 97.
+  headroom: "15"
+  # prod: 2 replicas, rolling update with maxSurge 1 -> up to 3 pods; 3 x 15 + 15 = 60.
+  prod.role-limit: "60"
+  prod.max-replicas: "2"
+  prod.max-surge: "1"
+  prod.pool: "15"
+  prod.health-reserve: "15"
+  # staging: 1 replica + surge 1 -> 2 pods; 2 x 8 + 4 = 20.
+  staging.role-limit: "20"
+  staging.max-replicas: "1"
+  staging.max-surge: "1"
+  staging.pool: "8"
+  staging.health-reserve: "4"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flowdent-db-tune
+  namespace: postgres-shared
+---
+# In `postgres-shared`: get/patch ONLY the one Cluster. (Reading the role Secrets needs no RBAC: the Pod
+# mounts them as volumes.)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-db-tune
+  namespace: postgres-shared
+rules:
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources: ["clusters"]
+    resourceNames: ["postgres-shared"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-db-tune
+  namespace: postgres-shared
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-db-tune
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-db-tune
+    namespace: postgres-shared
+---
+# In each app namespace: `get` + `patch` on the ONE Secret `flowdent-db` and nothing else (no list, create,
+# update). `kubectl patch` reads the object it patches, measured: patch alone is Forbidden.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-db-tune
+  namespace: flowdent-staging
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-db"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-db-tune
+  namespace: flowdent-staging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-db-tune
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-db-tune
+    namespace: postgres-shared
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-db-tune
+  namespace: flowdent-prod
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-db"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-db-tune
+  namespace: flowdent-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-db-tune
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-db-tune
+    namespace: postgres-shared
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: flowdent-db-tune
+  namespace: postgres-shared
+  annotations:
+    # PostSync: after flowdent-db-provision (wave 1) has completed, so the role Secrets and the managed
+    # roles it reads and patches exist. BeforeHookCreation: the previous completed Job is deleted and a
+    # fresh one runs, which is what lets a changed number take effect despite the immutable pod template.
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      serviceAccountName: flowdent-db-tune
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: work
+          emptyDir: { medium: Memory }
+        - name: budget
+          configMap: { name: flowdent-db-budget }
+        - name: role-staging
+          secret: { secretName: flowdent-staging-db }
+        - name: role-prod
+          secret: { secretName: flowdent-prod-db }
+      initContainers:
+        # The only container with a shell. Validates the budget, then writes the three patch files.
+        - name: compose
+          image: busybox:1.36@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              umask 077
+              b=/budget
+              total=0
+              for env in staging prod; do
+                limit=$(cat "$b/$env.role-limit"); pool=$(cat "$b/$env.pool")
+                rep=$(cat "$b/$env.max-replicas"); surge=$(cat "$b/$env.max-surge"); reserve=$(cat "$b/$env.health-reserve")
+                if [ $(( (rep + surge) * pool + reserve )) -gt "$limit" ]; then
+                  echo "REFUSED: $env ($rep replicas + $surge surge) x pool $pool + health reserve $reserve exceeds role limit $limit" >&2; exit 1
+                fi
+                total=$(( total + limit ))
+              done
+              usable=$(( $(cat "$b/max-connections") - $(cat "$b/superuser-reserved") - $(cat "$b/headroom") ))
+              if [ "$total" -gt "$usable" ]; then
+                echo "REFUSED: role limits sum to $total, more than the $usable slots left after the superuser reserve and headroom" >&2; exit 1
+              fi
+              for env in staging prod; do
+                user=$(cat "/roles/$env/username"); pw=$(cat "/roles/$env/password")
+                pool=$(cat "$b/$env.pool")
+                conn="Host=postgres-shared-rw.postgres-shared.svc;Port=5432;Database=$user;Username=$user;Password=$pw;SSL Mode=Require;Trust Server Certificate=true;Application Name=fd-core-$env;Maximum Pool Size=$pool;Timeout=15;Command Timeout=30;Connection Idle Lifetime=60"
+                printf '{"data":{"ConnectionStrings__DefaultConnection":"%s"}}' "$(printf '%s' "$conn" | base64 | tr -d '\n')" > "/work/$env-secret-patch.json"
+              done
+              printf '[{"op":"test","path":"/spec/managed/roles/0/name","value":"flowdent_staging"},{"op":"add","path":"/spec/managed/roles/0/connectionLimit","value":%s},{"op":"test","path":"/spec/managed/roles/1/name","value":"flowdent_prod"},{"op":"add","path":"/spec/managed/roles/1/connectionLimit","value":%s}]' "$(cat "$b/staging.role-limit")" "$(cat "$b/prod.role-limit")" > /work/roles-patch.json
+          volumeMounts:
+            - { name: work, mountPath: /work }
+            - { name: budget, mountPath: /budget, readOnly: true }
+            - { name: role-staging, mountPath: /roles/staging, readOnly: true }
+            - { name: role-prod, mountPath: /roles/prod, readOnly: true }
+        - name: pool-staging
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: work, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "secret", "flowdent-db", "-n", "flowdent-staging", "--type=merge", "--patch-file=/work/staging-secret-patch.json"]
+        - name: pool-prod
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: work, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "secret", "flowdent-db", "-n", "flowdent-prod", "--type=merge", "--patch-file=/work/prod-secret-patch.json"]
+      containers:
+        # Last: the role limits land only after both connection strings carry the pool caps.
+        - name: limit-roles
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: work, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "clusters.postgresql.cnpg.io", "postgres-shared", "-n", "postgres-shared", "--type=json", "--patch-file=/work/roles-patch.json"]

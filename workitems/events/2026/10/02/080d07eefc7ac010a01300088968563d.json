@@ -1,0 +1,14 @@
+{
+  "id": "080d07eefc7ac010a01300088968563d",
+  "at": "2026-10-02T18:28:02.008Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3YXZ3TK087G0R002XSV4AW",
+    "type": "bug",
+    "title": "Shared postgres: per-role connection limits and Npgsql pool sizing so staging cannot starve production (53300)",
+    "slug": "shared-postgres-per-role-connection-limits-and-npgsql-pool-s",
+    "priority": "P2",
+    "filename": "081M3YXZ3TK087G0R002XSV4AW-shared-postgres-per-role-connection-limits-and-npgsql-pool-s.md"
+  }
+}
