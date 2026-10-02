@@ -1,0 +1,14 @@
+{
+  "id": "080d07e785cbb010a0130008b49882c1",
+  "at": "2026-10-02T14:07:09.686Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3YF1EBM087G0R003BKNE29",
+    "type": "bug",
+    "title": "GitLab registry redirects blob GETs to the in-cluster S3 name, so pulls fail outside the cluster",
+    "slug": "gitlab-registry-redirects-blob-gets-to-the-in-cluster-s3-nam",
+    "priority": "P2",
+    "filename": "081M3YF1EBM087G0R003BKNE29-gitlab-registry-redirects-blob-gets-to-the-in-cluster-s3-nam.md"
+  }
+}

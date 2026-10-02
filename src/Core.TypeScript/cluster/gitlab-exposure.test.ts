@@ -444,4 +444,27 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(dups).toContain("StatefulSet/gitlab-gitaly gitaly: TZ");
     expect(options).not.toContain("ServerSideApply=true");
   }, T);
+
+  test("(i) the registry streams blobs itself -- its rendered config disables the storage redirect", () => {
+    // MEASURED LIVE: every pull from outside the cluster failed (kubelet ErrImagePull DeadlineExceeded; Docker
+    // `unexpected status from GET request to http://blob-store-seaweedfs-all-in-one.object-store.svc:8333/gitlab-...`).
+    // The registry's default is a 307 to a presigned URL on the S3 endpoint, an in-cluster name no outside client resolves.
+    const cm = ofKind(renderGitlab().docs, "ConfigMap").find((c) => nameOf(c) === "gitlab-registry");
+    expect(cm).toBeDefined();
+    const tpl = (cm!["data"] as Record<string, string>)["config.yml.tpl"];
+    expect(tpl).toBeDefined();
+    const storage = (parseYaml(tpl!) as { storage?: { redirect?: { disable?: unknown } } }).storage;
+    expect(storage?.redirect?.disable).toBe(true);
+  }, T);
+
+  test("(i) every GitLab object-store download is proxied by Workhorse, never a presigned redirect to the in-cluster S3 name", () => {
+    // The Application pins it (the chart default is already true, so only the pin protects a chart bump) ...
+    const values = readAppSource(readFileSync(GITLAB_APP, "utf8")).valuesObject as Record<string, any>;
+    expect(values.global?.appConfig?.object_store?.proxy_download).toBe(true);
+    // ... and the render carries it for the consolidated block plus artifacts / lfs / uploads / packages, never `false`.
+    const { text } = renderGitlab();
+    const flags = [...text.matchAll(/^\s*proxy_download:\s*(\S+)\s*$/gm)].map((m) => m[1]);
+    expect(flags.length).toBeGreaterThanOrEqual(5);
+    expect(flags.filter((f) => f !== "true")).toEqual([]);
+  }, T);
 });

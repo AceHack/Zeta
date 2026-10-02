@@ -168,6 +168,13 @@ spec:
           appConfig:
             object_store:
               enabled: true
+              # PROXY EVERY DOWNLOAD THROUGH WORKHORSE, NEVER A PRESIGNED REDIRECT. Same failure
+              # class as `registry.storage.redirect` below: a presigned URL names the in-cluster
+              # SeaweedFS endpoint, which a browser outside the cluster cannot resolve (artifacts,
+              # LFS, uploads, packages downloaded by the owner). The chart's default is already
+              # `true` (values.yaml) for the consolidated block and every typed store; it is
+              # pinned here so a chart bump cannot silently flip it. Pinned by gitlab-exposure.test.ts.
+              proxy_download: true
               connection:
                 # `key` defaults to "connection" (charts/gitlab/templates/_objectStorage.tpl
                 # `gitlab.appConfig.objectStorage.mountSecrets`) -- named anyway so the
@@ -864,6 +871,21 @@ spec:
           storage:
             secret: zeta-blob-store
             key: config
+            # THE REGISTRY STREAMS BLOBS ITSELF -- IT DOES NOT 307 CLIENTS TO THE S3 ENDPOINT.
+            #
+            # MEASURED on the live node: pulls from registry.flowdent.net fail for every client
+            # outside the cluster (kubelet/containerd: ErrImagePull DeadlineExceeded; Docker:
+            # `unexpected status from GET request to http://blob-store-seaweedfs-all-in-one.
+            # object-store.svc:8333/gitlab-...`). The distribution registry's DEFAULT for an S3
+            # driver is to answer a blob GET with a 307 to a presigned URL on `regionendpoint` --
+            # here an in-cluster DNS name no client outside the cluster (the node itself included)
+            # can resolve. `disable: true` makes the registry pod read the object and stream it,
+            # so the client only ever talks to registry.<domain>. Cost: registry CPU/bandwidth
+            # (fine on one node). Renders `storage.redirect.disable: true` (charts/registry
+            # templates/configmap.yaml, `with .Values.storage.redirect`); pinned by
+            # gitlab-exposure.test.ts. Detail: docs/ops/GITLAB-REGISTRY-PULLS.md.
+            redirect:
+              disable: true
           # LIVENESS KILL BUDGET -- WIDENED, NOT A startupProbe: MEASURED
           # (charts/registry/templates/deployment.yaml) that this container renders
           # `deployment.livenessProbe.failureThreshold` (chart default 3, kill budget
