@@ -3646,3 +3646,19 @@ Soft: Application.yaml:367-368 still says GitLab points at the bundled instances
 Path to GO: keep the blank-line deletion, and stop claiming a dump or a hop-2 measurement this tree does not contain.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17881 leftover unique @ 39f8d46e8b43eb7a0964e745300a3b2e5ac7b349 -- GRADE HOLD
+
+Parent 686669d61c50f26b4076d48edd6a94eb8c354c2a, not a merge. Tip is not a merge. Author 2026-10-02 7:14:45 PM ET. Tip-only +17/-1, 1 file: full-ai-cluster/k8s/applications/seaweedfs/Application.yaml. Live head is this tip. Merge-ref d937216a31bb71ff7a773c1e0c68508e1281de0f not graded.
+
+The values change is real. Application.yaml:80 volume.enabled stays false. :82 dataDirs[0].maxVolumes is 100. Parent did not set it; chart default is 0. Chart 4.45.0 all-in-one template writes -volume.max from that field even while the volume StatefulSet is disabled. helm template diffs only -volume.max=0 to -volume.max=100. Not a no-op.
+
+Hard fail. Application.yaml:67-77 and the commit message claim a dashboard 500, S3 InternalError, Max 40 slots all used, 7 volumes times six collections, disk figures, and a live apply at 23:08Z. None of that is in the commit. The same file lists ten createBuckets at :109-127, not six.
+
+Tests that read this Application do not read maxVolumes and stayed green (health 1/7, mimir 28/47, cnpg pin 1/6, postgres-shared 50/171). Mutations to 40, to 0, and volume.enabled true stayed green.
+
+CI: tip 60 success, 26 skipped, 13 in progress, 0 failure. Parent 0 failure. No red-on-tip green-on-parent. Squash auto-merge armed, mergeable_state blocked.
+
+Path to GO: keep maxVolumes 100, and delete the measurement claims from the YAML comment.
+
+Sit leftover; Vera will not merge.
