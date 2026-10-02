@@ -47,8 +47,12 @@ function yamlFilesUnder(root: string): string[] {
       // they are not part of the catalogue a metal install syncs, and a template that mounts the Secret
       // its sibling template creates (or one an operator renders by hand, like the Windows runner's
       // `windows-runner-unattend`) is neither a metal reference with no producer nor a producer.
+      // `flowdent/` is the same kind of thing: an OPT-IN tenancy an operator applies by hand
+      // (k8s/flowdent/Application.yaml), outside `applications/`, so a metal install never syncs it.
+      // Its ServiceAccount-token Secrets are produced only after that opt-in and are the deployer
+      // credentials of one application, not a producer of the catalogue's referenced Secrets.
       if (entry.isDirectory()) {
-        if (entry.name !== "examples") walk(p);
+        if (entry.name !== "examples" && entry.name !== "flowdent") walk(p);
       }
       else if (p.endsWith(".yaml") || p.endsWith(".yml")) out.push(p);
     }

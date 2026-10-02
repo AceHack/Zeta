@@ -55,6 +55,11 @@ spec:
         # Job `forgejo-public-hosts` merge-patches onto the forgejo Application.
         - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
           patch: '[{"op":"add","path":"/spec/listeners/4/hostname","value":"git.@ZETA_PUBLIC_DOMAIN@"}]'
+        # The flowdent API (docs/ops/FLOWDENT-ON-CLUSTER.md): api.<domain> and api-staging.<domain>,
+        # listeners 5 and 6. Only the LISTENERS and their certificates are owned here; the routes
+        # that attach to them ship with the app.
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/5/hostname","value":"api.@ZETA_PUBLIC_DOMAIN@"},{"op":"add","path":"/spec/listeners/6/hostname","value":"api-staging.@ZETA_PUBLIC_DOMAIN@"}]'
         - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: forgejo-public }
           patch: '[{"op":"add","path":"/spec/hostnames","value":["git.@ZETA_PUBLIC_DOMAIN@"]}]'
         - target: { version: v1, kind: ConfigMap, name: forgejo-public-hosts }

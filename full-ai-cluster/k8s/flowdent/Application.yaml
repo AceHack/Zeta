@@ -1,0 +1,57 @@
+# full-ai-cluster/k8s/flowdent/Application.yaml -- OPT-IN tenancy for the flowdent `fd-core` API.
+#
+# THIS DIRECTORY IS OUTSIDE k8s/applications/ ON PURPOSE (same posture as k8s/public-tls/): the
+# app-of-apps root recurses only `applications/`, so nothing here exists on an install that did not
+# ask for it, and every ledger that enumerates the default catalog (single-node-budget, lane
+# footprints, sync waves, resource requests) is untouched -- this tenancy adds no pod and no PVC
+# that outlives a Job. To opt in, ONCE, from any machine with cluster-admin:
+#
+#     kubectl apply -f full-ai-cluster/k8s/flowdent/Application.yaml
+#
+# and to opt out, delete that Application (prune is OFF, so the namespaces, the databases and their
+# data stay until a human deletes them: see docs/ops/FLOWDENT-ON-CLUSTER.md "Removing it").
+#
+# WHAT IT OWNS (and nothing else):
+#   - Namespaces `flowdent-staging` and `flowdent-prod`, each with a ResourceQuota ceiling;
+#   - in each, a least-privilege `flowdent-deployer` ServiceAccount (Role + RoleBinding + a token
+#     Secret) that GitLab CI deploys with -- it can touch only that namespace;
+#   - two databases, `flowdent_staging` and `flowdent_prod`, on the shared CNPG Cluster
+#     `postgres-shared`, each with its OWN login role (one credential per consumer), and a
+#     create-only Job that mints the passwords in-cluster and exposes them as Secret
+#     `flowdent-db` in each app namespace.
+#
+# WHAT IT DELIBERATELY DOES NOT DO: create a DNS record, issue a certificate, or deploy the app.
+# api.<domain> / api-staging.<domain> are Gateway listeners owned by `platform-public-tls`
+# (k8s/public-tls/, rendered from argocd-application.yaml.in); the app's own manifests live in the
+# fd-core repository and are applied by its GitLab pipeline.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: flowdent-platform
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/flowdent
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: postgres-shared
+  syncPolicy:
+    automated:
+      # NEVER prune: deleting a Database CR or a namespace is how data is lost. Removal is a
+      # human act (docs/ops/FLOWDENT-ON-CLUSTER.md).
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      # Database (cloudnativepg) is a custom kind from ANOTHER Application; a CRD that is a beat
+      # late must defer, not SyncFail (crd-provider-consumer-order.ts).
+      - SkipDryRunOnMissingResource=true
+    # Unbounded, for the same reason as postgres-shared and platform-public-tls: this Application
+    # consumes CRDs and a Cluster it does not own, and a lost race must not be permanent.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }

@@ -1,0 +1,34 @@
+# Priority for the flowdent API pods, chosen for NODE-PRESSURE behaviour, not for scheduling power.
+#
+# Measured 2026-10-02 07:53Z: the single node hit DiskPressure, tainted itself NoSchedule and the
+# kubelet evicted ~150 pods. Under node-pressure eviction the kubelet ranks candidate pods by (1) whether
+# usage exceeds the pod's REQUEST of the starved resource, (2) priority, (3) how far over. The pods
+# here declare ephemeral-storage requests (fd-core k8s/base) so (1) spares a healthy one; these classes
+# are the tie-break (2): above the default 0 that crash-looping workloads run at, and production above
+# staging, so staging is shed first.
+#
+# `preemptionPolicy: Never` is the safety half: a pod of these classes may rank higher when pods are
+# EVICTED but never evicts a running platform pod to be SCHEDULED. A flowdent rollout can wait; it must
+# not push GitLab or the database off the node. Values stay far below the system classes
+# (system-cluster-critical = 2000000000), which `postgres-shared` and the platform keep.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: flowdent-prod
+  labels:
+    app.kubernetes.io/part-of: flowdent
+value: 10000
+globalDefault: false
+preemptionPolicy: Never
+description: "flowdent production API pods: outrank default-priority pods under node pressure; never preempt."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: flowdent-staging
+  labels:
+    app.kubernetes.io/part-of: flowdent
+value: 1000
+globalDefault: false
+preemptionPolicy: Never
+description: "flowdent staging API pods: above default, below production; never preempt."

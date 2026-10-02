@@ -1,0 +1,63 @@
+# The two application namespaces. `baseline` is ENFORCED (the .NET aspnet image runs non-root, but
+# a hostile manifest still cannot ask for host namespaces or privilege) and `restricted` is only
+# WARNED on: the app's manifests are written to pass it, and a warning is how drift shows up
+# without taking the service down.
+#
+# The ResourceQuota is a CEILING on what GitLab CI can ask for, not a reservation and not a
+# measurement (unmetered): it stops a bad rollout from starving the platform that shares this
+# node. It is NOT a row in the resource ledgers, because nothing here is scheduled until the
+# fd-core pipeline deploys it.
+#
+# EPHEMERAL STORAGE is in the quota because this node has ONE disk: on 2026-10-02 07:53Z it tainted
+# itself DiskPressure and the kubelet evicted ~150 pods. A quota on `requests.ephemeral-storage`
+# makes every pod here DECLARE a request (a pod without one is refused), and a pod within its
+# request is not the one the kubelet picks first. The ceilings cap what a runaway rollout can write.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flowdent-staging
+  labels:
+    app.kubernetes.io/part-of: flowdent
+    zeta.io/flowdent-environment: staging
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flowdent-prod
+  labels:
+    app.kubernetes.io/part-of: flowdent
+    zeta.io/flowdent-environment: prod
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: flowdent
+  namespace: flowdent-staging
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 2Gi
+    limits.memory: 4Gi
+    requests.ephemeral-storage: 512Mi
+    limits.ephemeral-storage: 2Gi
+    pods: "20"
+    persistentvolumeclaims: "0"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: flowdent
+  namespace: flowdent-prod
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.memory: 8Gi
+    requests.ephemeral-storage: 1Gi
+    limits.ephemeral-storage: 4Gi
+    pods: "30"
+    persistentvolumeclaims: "0"

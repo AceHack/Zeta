@@ -1,0 +1,281 @@
+# flowdent's two databases on the shared CNPG Cluster `postgres-shared`, each with its OWN login
+# role, and the credentials those roles use.
+#
+# ── WHY A JOB, AND WHY HERE ──────────────────────────────────────────────────
+# docs/ops/POSTGRES-SHARED-AS-THE-DATABASE-FOR-OTHER-APPS.md states the constraint: a CNPG
+# managed role, the Cluster it names, and the `passwordSecret` it reads must ALL live in
+# `postgres-shared`, so a pod in another namespace cannot mount that credential. Of that
+# document's three candidates this is #2 made single-sourced: ONE Job mints each password ONCE
+# and writes BOTH copies in the same act -- the role's Secret in `postgres-shared` and the app's
+# Secret `flowdent-db` in the app namespace -- so there is no second place a password is chosen
+# and the copies cannot diverge at birth.
+#
+# ── MECHANISM (the shape bootstrap/internal-secret-seeding.yaml already established) ─────────
+# `docker.io/rancher/kubectl` is shell-less, so the one container with a shell (`draw-entropy`,
+# busybox, same pin as the bootstrap seeding) reads /dev/urandom into an in-memory tmpfs and
+# writes the password and the Npgsql connection string to FILES; every kubectl container then
+# passes `--from-file=` so no secret is ever an argv token, an env var, a log line, or a field of
+# the Pod spec. `kubectl create` FAILS on an existing Secret rather than overwriting it: that is
+# "mint only if absent, never rotate", and the Job is deliberately NOT a hook and carries no
+# `ttlSecondsAfterFinished`, so it runs once and is then a completed record that ArgoCD finds
+# Synced. RECOVERY if it ever stops half-way (a Secret exists, the Job is Failed): delete the four
+# Secrets it names and the Job, and ArgoCD recreates the Job (docs/ops/FLOWDENT-ON-CLUSTER.md).
+#
+# `kubectl patch ... --type=merge` on `spec.managed.roles` REPLACES that list. Today nothing else
+# in the tree declares a managed role on `postgres-shared`; if that ever changes, this Job must
+# become an append (JSON patch) -- cluster/flowdent-platform.test.ts fails if cluster.yaml gains
+# `managed` so that the collision is found by a test, not by a lost role.
+#
+# ── THE CONNECTION STRING ─────────────────────────────────────────────────────
+# `SSL Mode=Require;Trust Server Certificate=true`: the server's TLS is on and the link is
+# in-cluster, but the cluster's CA (Secret postgres-shared-ca) is not mounted into the app, so
+# the certificate is not VERIFIED. That is an honest interim, recorded as such in the runbook;
+# `VerifyFull` needs `ca.crt` copied into the app namespace and `Root Certificate=` set.
+# ── ROLE PRIVILEGE ────────────────────────────────────────────────────────────
+# A plain LOGIN role: no CREATEDB, no CREATEROLE, no superuser, and `enableSuperuserAccess` on the
+# Cluster stays false. The OWNER of its database can run EF Core migrations; it can touch nothing
+# else on the Cluster.
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: flowdent-staging
+  namespace: postgres-shared
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  cluster:
+    name: postgres-shared
+  name: flowdent_staging
+  owner: flowdent_staging
+  # A retained database survives deletion of this CR: application data is not something a
+  # manifest edit should be able to drop.
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: flowdent-prod
+  namespace: postgres-shared
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  cluster:
+    name: postgres-shared
+  name: flowdent_prod
+  owner: flowdent_prod
+  databaseReclaimPolicy: retain
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flowdent-db-provision
+  namespace: postgres-shared
+---
+# In `postgres-shared`: create the two role Secrets, and patch ONLY the Cluster this tenancy lives on.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-db-provision
+  namespace: postgres-shared
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources: ["clusters"]
+    resourceNames: ["postgres-shared"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-db-provision
+  namespace: postgres-shared
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-db-provision
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-db-provision
+    namespace: postgres-shared
+---
+# In each app namespace: `create` on secrets and NOTHING else (no get, no list, no update).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-db-provision
+  namespace: flowdent-staging
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-db-provision
+  namespace: flowdent-staging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-db-provision
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-db-provision
+    namespace: postgres-shared
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-db-provision
+  namespace: flowdent-prod
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-db-provision
+  namespace: flowdent-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-db-provision
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-db-provision
+    namespace: postgres-shared
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: flowdent-db-provision
+  namespace: postgres-shared
+  annotations:
+    # After the namespaces and RBAC (wave 0) it writes into.
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: flowdent-db-provision
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: entropy
+          emptyDir: { medium: Memory }
+      initContainers:
+        - name: draw-entropy
+          image: busybox:1.36@sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              umask 077
+              for env in staging prod; do
+                pw=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
+                printf '%s' "flowdent_$env" > "/work/$env-username"
+                printf '%s' "flowdent_$env" > "/work/$env-database"
+                printf '%s' "$pw" > "/work/$env-password"
+                printf '%s' "Host=postgres-shared-rw.postgres-shared.svc;Port=5432;Database=flowdent_$env;Username=flowdent_$env;Password=$pw;SSL Mode=Require;Trust Server Certificate=true" > "/work/$env-connection"
+              done
+              printf '%s' "postgres-shared-rw.postgres-shared.svc" > /work/host
+              printf '%s' "5432" > /work/port
+          volumeMounts:
+            - { name: entropy, mountPath: /work }
+        # The role Secrets, in `postgres-shared` (basic-auth is the type CNPG requires of a
+        # managed role's passwordSecret).
+        - name: role-secret-staging
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: entropy, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["create", "secret", "generic", "flowdent-staging-db", "-n", "postgres-shared", "--type=kubernetes.io/basic-auth", "--from-file=username=/work/staging-username", "--from-file=password=/work/staging-password"]
+        - name: role-secret-prod
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: entropy, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["create", "secret", "generic", "flowdent-prod-db", "-n", "postgres-shared", "--type=kubernetes.io/basic-auth", "--from-file=username=/work/prod-username", "--from-file=password=/work/prod-password"]
+        # The app's copy, in each app namespace. `ConnectionStrings__DefaultConnection` is the
+        # ASP.NET Core configuration key, so `envFrom` alone wires it.
+        - name: app-secret-staging
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: entropy, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["create", "secret", "generic", "flowdent-db", "-n", "flowdent-staging", "--from-file=ConnectionStrings__DefaultConnection=/work/staging-connection", "--from-file=host=/work/host", "--from-file=port=/work/port", "--from-file=database=/work/staging-database", "--from-file=username=/work/staging-username", "--from-file=password=/work/staging-password"]
+        - name: app-secret-prod
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: entropy, mountPath: /work, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["create", "secret", "generic", "flowdent-db", "-n", "flowdent-prod", "--from-file=ConnectionStrings__DefaultConnection=/work/prod-connection", "--from-file=host=/work/host", "--from-file=port=/work/port", "--from-file=database=/work/prod-database", "--from-file=username=/work/prod-username", "--from-file=password=/work/prod-password"]
+      containers:
+        # Last, so a role never points at a Secret that was not written: declare both roles.
+        - name: register-roles
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - { name: KUBECACHEDIR, value: /tmp/kubecache/.kube/cache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+          command: ["/bin/kubectl"]
+          args:
+            - patch
+            - clusters.postgresql.cnpg.io
+            - postgres-shared
+            - -n
+            - postgres-shared
+            - --type=merge
+            - -p
+            - '{"spec":{"managed":{"roles":[{"name":"flowdent_staging","ensure":"present","login":true,"comment":"flowdent fd-core, staging (k8s/flowdent)","passwordSecret":{"name":"flowdent-staging-db"}},{"name":"flowdent_prod","ensure":"present","login":true,"comment":"flowdent fd-core, production (k8s/flowdent)","passwordSecret":{"name":"flowdent-prod-db"}}]}}}'

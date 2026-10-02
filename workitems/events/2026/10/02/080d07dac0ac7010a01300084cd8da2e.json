@@ -1,0 +1,14 @@
+{
+  "id": "080d07dac0ac7010a01300084cd8da2e",
+  "at": "2026-10-02T06:40:49.038Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3XNG5C6087G0R00223X96E",
+    "type": "task",
+    "title": "Run the flowdent fd-core API on the cluster: opt-in tenancy (namespaces, Postgres databases/roles, deployer RBAC) and api.<domain> listeners",
+    "slug": "run-the-flowdent-fd-core-api-on-the-cluster-opt-in-tenancy-n",
+    "priority": "P2",
+    "filename": "081M3XNG5C6087G0R00223X96E-run-the-flowdent-fd-core-api-on-the-cluster-opt-in-tenancy-n.md"
+  }
+}

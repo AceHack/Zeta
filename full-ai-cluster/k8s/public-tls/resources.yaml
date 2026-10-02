@@ -167,6 +167,29 @@ spec:
           - { kind: Secret, name: forgejo-tls }
       allowedRoutes:
         namespaces: { from: All }
+    # :443 for the flowdent API, index 5 -> api.<domain> and index 6 -> api-staging.<domain>. Same
+    # rule as every listener above: its OWN certificate, so a missing DNS record for one name can
+    # hold nothing else hostage. The HTTPRoutes that attach to them live in the fd-core repository,
+    # in namespaces `flowdent-prod` / `flowdent-staging` (k8s/flowdent/, an opt-in Application);
+    # until those exist each listener simply serves nothing. docs/ops/FLOWDENT-ON-CLUSTER.md.
+    - name: https-flowdent-api
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: flowdent-api-tls }
+      allowedRoutes:
+        namespaces: { from: All }
+    - name: https-flowdent-api-staging
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: flowdent-api-staging-tls }
+      allowedRoutes:
+        namespaces: { from: All }
 ---
 # The public portal route. `hostnames` is added by the Application's patch.
 apiVersion: gateway.networking.k8s.io/v1

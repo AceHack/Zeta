@@ -1,0 +1,168 @@
+# The least-privilege deployer GitLab CI uses, one per application namespace.
+#
+# Each ServiceAccount is bound by a NAMESPACED Role, never a ClusterRole: the token deploys into
+# its own namespace and can read or write nothing in the other, in `postgres-shared`, or anywhere
+# cluster-scoped. That is the whole point of having two of them -- a leaked staging token cannot
+# reach production.
+#
+# THE TOKEN is a long-lived `kubernetes.io/service-account-token` Secret (the control plane fills
+# in `data.token` and `ca.crt`); GitLab CI jobs run IN this cluster, so they reach the API at
+# https://kubernetes.default.svc. To hand it to the pipeline, once per environment, as a masked
+# + protected CI/CD variable (docs/ops/FLOWDENT-ON-CLUSTER.md, step 4):
+#
+#   kubectl -n flowdent-staging get secret flowdent-deployer-token -o jsonpath='{.data.token}' | base64 -d
+#
+# What the verbs are for -- nothing is granted "just in case":
+#   deployments/replicasets/pods(+log)/events  apply + `rollout status` + `rollout undo` + diagnostics
+#   services/configmaps/serviceaccounts/PDBs   the app's own objects
+#   httproutes                                 attach the app to zeta-public-gateway
+#   jobs (+delete)                             the pre-deploy migration Job, recreated each release
+#   secrets: get on the THREE names the pipeline reads (the app's two Secrets and the pull Secret);
+#            update/patch on the pull Secret alone; `create` has no resourceNames form in
+#            Kubernetes, so it is namespace-wide -- it cannot read or change a Secret that exists.
+# Pinned by cluster/flowdent-platform.test.ts (no wildcard verb or resource, no ClusterRole).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flowdent-deployer
+  namespace: flowdent-staging
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-deployer
+  namespace: flowdent-staging
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["services", "configmaps", "serviceaccounts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["pods", "events"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["httproutes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-api-secrets", "flowdent-db", "flowdent-registry"]
+    verbs: ["get"]
+  # The image-pull credential is the one Secret the pipeline WRITES (scripts/deploy.sh re-applies
+  # it from masked variables), so it alone gets update/patch.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-registry"]
+    verbs: ["update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-deployer
+  namespace: flowdent-staging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-deployer
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-deployer
+    namespace: flowdent-staging
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: flowdent-deployer-token
+  namespace: flowdent-staging
+  annotations:
+    kubernetes.io/service-account.name: flowdent-deployer
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flowdent-deployer
+  namespace: flowdent-prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: flowdent-deployer
+  namespace: flowdent-prod
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["services", "configmaps", "serviceaccounts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["pods", "events"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["httproutes"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-api-secrets", "flowdent-db", "flowdent-registry"]
+    verbs: ["get"]
+  # The image-pull credential is the one Secret the pipeline WRITES (scripts/deploy.sh re-applies
+  # it from masked variables), so it alone gets update/patch.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-registry"]
+    verbs: ["update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flowdent-deployer
+  namespace: flowdent-prod
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: flowdent-deployer
+subjects:
+  - kind: ServiceAccount
+    name: flowdent-deployer
+    namespace: flowdent-prod
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: flowdent-deployer-token
+  namespace: flowdent-prod
+  annotations:
+    kubernetes.io/service-account.name: flowdent-deployer
+type: kubernetes.io/service-account-token
