@@ -438,10 +438,15 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     const dups = duplicateEnvNames(renderGitlab().docs);
     const app = parseYaml(readFileSync(GITLAB_APP, "utf8")) as Record<string, any>;
     const options: string[] = app.spec?.syncPolicy?.syncOptions ?? [];
-    // The chart's gitaly container emits TZ twice (charts/gitlab/charts/gitaly/templates/
-    // _statefulset_spec.yaml includes gitlab.timeZone.env at both ends of `env`). SSA refuses
-    // that object outright, so gitaly was never created on a live node.
-    expect(dups).toContain("StatefulSet/gitlab-gitaly gitaly: TZ");
+    // Chart 8.7.0's gitaly container emitted TZ twice (charts/gitlab/charts/gitaly/templates/
+    // _statefulset_spec.yaml included gitlab.timeZone.env at both ends of `env`). SSA refuses
+    // that object outright, so gitaly was never created on a live node. Chart 8.8.7 no longer
+    // renders the duplicate (MEASURED 2026-10-02 on the 17.7 -> 19.4 upgrade path), which is why
+    // this no longer pins the defect itself: a chart bump that fixes the render must not turn it
+    // red. The analyzer's own proof that it finds a repeated key is the synthetic test in section A.
+    // SSA stays OFF regardless of the duplicate (Application.yaml's second reason: the SSA
+    // volumeClaimTemplates drift, argo-cd#11143), so the second assertion is unconditional.
+    if (dups.length > 0) expect(options).not.toContain("ServerSideApply=true");
     expect(options).not.toContain("ServerSideApply=true");
   }, T);
 

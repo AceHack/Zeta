@@ -1,0 +1,14 @@
+{
+  "id": "080d07ed634db810a0130008daa81514",
+  "at": "2026-10-02T17:32:10.039Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3YTRTDE087G0R001GHTZC9",
+    "type": "task",
+    "title": "gitlab 17.7.0 to 19.4.1: execute the required-stop upgrade path hop by hop, bundled postgres/redis to external",
+    "slug": "gitlab-17-7-0-to-19-4-1-execute-the-required-stop-upgrade-pa",
+    "priority": "P2",
+    "filename": "081M3YTRTDE087G0R001GHTZC9-gitlab-17-7-0-to-19-4-1-execute-the-required-stop-upgrade-pa.md"
+  }
+}

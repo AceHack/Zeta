@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-10-01",
+  "measuredOn": "2026-10-02",
   "appsDiscovered": 61,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
@@ -6390,7 +6390,7 @@
         "postgresql=postgresql@11.9.13"
       ]
     },
-    "https://charts.gitlab.io/|gitlab|8.7.0": {
+    "https://charts.gitlab.io/|gitlab|8.8.7": {
       "literal": {
         "cert-manager": {
           "acmesolver": {
@@ -6733,6 +6733,7 @@
           },
           "resources": {},
           "server": {},
+          "ttlSecondsAfterFinished": {},
           "useNewIngressForCerts": {}
         },
         "cluster": {},
@@ -6856,6 +6857,8 @@
             "clusterIP": {},
             "enabled": {},
             "externalIPs": {},
+            "externalTrafficPolicy": {},
+            "internalTrafficPolicy": {},
             "labels": {},
             "loadBalancerIP": {},
             "loadBalancerSourceRanges": {},
@@ -6874,6 +6877,7 @@
             "annotations": {},
             "enabled": {},
             "externalPort": {},
+            "externalTrafficPolicy": {},
             "ingress": {
               "annotations": {},
               "className": {},
@@ -6881,6 +6885,7 @@
               "tls": {}
             },
             "internalPort": {},
+            "internalTrafficPolicy": {},
             "loadBalancerSourceRanges": {},
             "nodePort": {},
             "publicIP": {},
@@ -11232,24 +11237,24 @@
       ],
       "dynamic": ["gitlab.global.redis", "global.communityImages", "global.enterpriseImages", "traefik.ports"],
       "charts": [
-        "<root>=gitlab@8.7.0",
+        "<root>=gitlab@8.8.7",
         "cert-manager=cert-manager@v1.12.14",
-        "certmanager-issuer=certmanager-issuer@0.1.0",
-        "gitlab-runner=gitlab-runner@0.71.0",
+        "certmanager-issuer=certmanager-issuer@0.2.0",
+        "gitlab-runner=gitlab-runner@0.73.3",
         "gitlab-zoekt=gitlab-zoekt@1.4.3",
-        "gitlab.geo-logcursor=geo-logcursor@8.7.0",
-        "gitlab.gitaly=gitaly@8.7.0",
-        "gitlab.gitlab-exporter=gitlab-exporter@8.7.0",
-        "gitlab.gitlab-pages=gitlab-pages@8.7.0",
-        "gitlab.gitlab-shell=gitlab-shell@8.7.0",
-        "gitlab.kas=kas@8.7.0",
-        "gitlab.mailroom=mailroom@8.7.0",
-        "gitlab.migrations=migrations@8.7.0",
-        "gitlab.praefect=praefect@8.7.0",
-        "gitlab.sidekiq=sidekiq@8.7.0",
-        "gitlab.spamcheck=spamcheck@8.7.0",
-        "gitlab.toolbox=toolbox@8.7.0",
-        "gitlab.webservice=webservice@8.7.0",
+        "gitlab.geo-logcursor=geo-logcursor@8.8.7",
+        "gitlab.gitaly=gitaly@8.8.7",
+        "gitlab.gitlab-exporter=gitlab-exporter@8.8.7",
+        "gitlab.gitlab-pages=gitlab-pages@8.8.7",
+        "gitlab.gitlab-shell=gitlab-shell@8.8.7",
+        "gitlab.kas=kas@8.8.7",
+        "gitlab.mailroom=mailroom@8.8.7",
+        "gitlab.migrations=migrations@8.8.7",
+        "gitlab.praefect=praefect@8.8.7",
+        "gitlab.sidekiq=sidekiq@8.8.7",
+        "gitlab.spamcheck=spamcheck@8.8.7",
+        "gitlab.toolbox=toolbox@8.8.7",
+        "gitlab.webservice=webservice@8.8.7",
         "gitlab=gitlab@0.1.0",
         "kubernetes-ingress=kubernetes-ingress@1.32.0",
         "minio=minio@0.4.3",
@@ -37194,9 +37199,9 @@
     {
       "appId": "full-ai-cluster/gitlab",
       "chart": "gitlab",
-      "targetRevision": "8.7.0",
+      "targetRevision": "8.8.7",
       "repoURL": "https://charts.gitlab.io/",
-      "chartKey": "https://charts.gitlab.io/|gitlab|8.7.0"
+      "chartKey": "https://charts.gitlab.io/|gitlab|8.8.7"
     },
     {
       "appId": "full-ai-cluster/hat-system",

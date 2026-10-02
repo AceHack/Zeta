@@ -41,7 +41,20 @@ import {
 } from "./gitlab-upgrade-path-guard.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
-const APP_TEXT = readFileSync(resolve(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
+const SHIPPED_TEXT = readFileSync(resolve(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
+
+/**
+ * THE FIXTURE BASE IS FROZEN AT 8.7.0, NOT AT WHATEVER THE APPLICATION SHIPS TODAY.
+ *
+ * Every fixture below is "the real Application with only `targetRevision` rewritten", and its
+ * verdicts (8.7.0 -> 8.11.0 skips a stop, 8.7.0 -> 8.6.0 is a downgrade, ...) are statements about
+ * a FROM-pin. They used to read that pin from the Application itself, so the first real upgrade
+ * (the 17.7 -> 19.4 path, one chart bump per required stop) turned four of them red for a reason
+ * that has nothing to do with the guard: the base moved. The Application's VALUES are still the
+ * real ones; only the starting revision is pinned.
+ */
+const FIXTURE_BASE_REVISION = "8.7.0";
+const APP_TEXT = SHIPPED_TEXT.replace(/targetRevision:\s*\S+/, `targetRevision: ${FIXTURE_BASE_REVISION}`);
 const SHIPPED_REVISION = /targetRevision:\s*(\S+)/.exec(APP_TEXT)?.[1] ?? "";
 
 function withRevision(revision: string): string {
@@ -104,8 +117,9 @@ const HELM = onPath("helm");
 if (!HELM) console.warn("gitlab-upgrade-path-guard.test: helm not on PATH -- the chart-script half is SKIPPED, not passed");
 
 describe.skipIf(!HELM)("gitlab upgrade path -- the chart's own runcheck decides", () => {
-  test("the fixtures start from the shipped pin (8.7.0); if it moves, re-pick the fixture versions", () => {
+  test("the fixtures start from the frozen base pin (8.7.0), whatever the Application ships today", () => {
     expect(SHIPPED_REVISION).toBe("8.7.0");
+    expect(/targetRevision:\s*(\S+)/.exec(SHIPPED_TEXT)?.[1]).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
   test(
@@ -177,6 +191,6 @@ describe("CI wiring", () => {
     expect(charts).toContain("bun test src/Core.TypeScript/cluster/gitlab-upgrade-path-guard.test.ts");
   });
   test("the Application's comment points at this guard instead of a manual caveat", () => {
-    expect(APP_TEXT).toContain("gitlab-upgrade-path-guard.ts");
+    expect(SHIPPED_TEXT).toContain("gitlab-upgrade-path-guard.ts");
   });
 });
