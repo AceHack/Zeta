@@ -1,0 +1,284 @@
+# node-lan-hosts -- the NODE resolves gitlab.<domain> / registry.<domain> to the LAN gateway, not the router.
+#
+# WHY THIS EXISTS. MEASURED 2026-10-02 on node-5b2dfa: the kubelet/containerd pull
+# `registry.flowdent.net/flowdent/fd-core:<sha>` and fail with
+# `dial tcp 66.10.240.234:443: i/o timeout` (then `failed to fetch oauth token: Post
+# https://gitlab.flowdent.net/jwt/auth`). Those names resolve to the PUBLIC IP, which the node can only
+# reach by hairpinning through the home router, and the router has no TCP 443 forward at all. Pods use
+# CoreDNS and are unaffected; the kubelet/containerd use the HOST resolver, and on NixOS /etc/hosts is a
+# read-only symlink into /etc/static (declarative: it needs a rebuild + sudo, i.e. the OS layer). The same
+# LAN gateway answers correctly from the node (`curl --resolve registry...:443:<lb-ip>` -> 401 auth
+# challenge). So this pins ONLY the names the kubelet needs, at the gateway's own LB address.
+#
+# GITOPS ONLY, no OS change: a bind mount over /etc/hosts (the file is read-only, the mount point is
+# not). Re-asserted every 30s, so it survives a `nixos-rebuild` (new store path) and a reboot (/run is
+# tmpfs) -- both leave the entry absent until the next tick, never wrong.
+#
+#   discover  (kubectl)  reads the Gateway's LB address + its gitlab./registry. listener hostnames and
+#                        writes them to a shared emptyDir. A FAILED PROBE KEEPS THE LAST BLOCK: unknown
+#                        is not "remove".
+#   apply     (busybox)  privileged + hostPID; builds <host /etc/hosts minus our lines> + block, writes it
+#                        to /run/zeta-lan-hosts on the host, bind-mounts it once, then rewrites in place.
+#
+# SECOND JOB, same pod -- `forward`: TCP :443 on the node -> the Gateway's LB address. The owner's AT&T
+# router can only port-forward to a DEVICE (the node, 192.168.1.79), never to the Gateway's LB IP
+# (.240), and MEASURED 2026-10-02 nothing listens on the node's :443 -- only .240 answers
+# (`curl --resolve registry...:443:.240` -> 401, `:.79` -> refused). So the node relays 443 to the
+# gateway; TLS still terminates at the gateway (passthrough), the relay never sees plaintext. Client
+# source addresses are therefore the node's, not the internet's -- the cost of this relay.
+#
+# THIRD JOB -- `relay Service`: the router picks WHICH of the node's addresses gets the :443 forward.
+# MEASURED 2026-10-02: the forward worked at cutover, then outside SYNs began arriving for
+# 192.168.1.250 (the gitlab-lan Gateway, :80 only) and every connection hung -- the node's addresses
+# (.79 and each Cilium LB IP: .240 .241 .242 .250) share ONE MAC, so a MAC-keyed router can bind the
+# rule to any of them and can change its mind. An iptables DNAT cannot help (Cilium's eBPF owns those
+# IPs before netfilter; the rule saw 0 packets). A Service with `externalIPs` can: Cilium (KPR) makes
+# <ip>:443 a frontend for the relay, beside the Gateway's own :80. `discover` therefore keeps ONE Service,
+# `https-relay`, whose externalIPs are EVERY LoadBalancer address in the cluster that does not already
+# serve :443 -- so it follows a new gateway or a changed address with no edit here. A FAILED LISTING
+# KEEPS THE LAST SET (unknown is not "remove"). The public gateway (.240) serves :443 itself and is skipped.
+#
+# DELIBERATELY NOT PINNED: api.<domain> and api-staging.<domain>. Until the production cutover those
+# resolve to the Azure container apps; pinning them on the node would silently reroute host-side callers.
+#
+# Falsifier: src/Core.TypeScript/cluster/node-lan-hosts.test.ts (renders the manifest and RUNS the apply
+# script against a fake host root). Cannot prove: the bind mount on the real node -- only a live node does.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zeta-node-hosts
+  labels:
+    # The apply container is privileged by necessity (it enters the host mount namespace).
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-lan-hosts
+  namespace: zeta-node-hosts
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: node-lan-hosts-read-gateway
+  namespace: zeta-platform
+rules:
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["gateways"]
+    resourceNames: ["zeta-public-gateway"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-lan-hosts-read-gateway
+  namespace: zeta-platform
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: node-lan-hosts-read-gateway
+subjects:
+  - kind: ServiceAccount
+    name: node-lan-hosts
+    namespace: zeta-node-hosts
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-lan-hosts
+  namespace: zeta-node-hosts
+spec:
+  selector:
+    matchLabels: { app: node-lan-hosts }
+  template:
+    metadata:
+      labels: { app: node-lan-hosts }
+    spec:
+      serviceAccountName: node-lan-hosts
+      hostPID: true
+      # `forward` listens on the NODE's :443 (see header), so the pod shares the host network namespace.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      # Must run through disk-pressure / control-plane taints: it is what lets the node pull images.
+      tolerations:
+        - { operator: Exists }
+      volumes:
+        - name: shared
+          emptyDir: {}
+      containers:
+        - name: discover
+          image: registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0
+          resources:
+            requests: { cpu: 5m, memory: 16Mi }
+            limits: { memory: 64Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities: { drop: [ALL] }
+          volumeMounts:
+            - { name: shared, mountPath: /shared }
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              SHARED="${SHARED:-/shared}"
+              # Every LoadBalancer address that does NOT already expose :443 (one per line, sorted).
+              relay_ips() {
+                kubectl get svc -A -o jsonpath='{range .items[*]}{.status.loadBalancer.ingress[*].ip}{"|"}{.spec.ports[*].port}{"\n"}{end}' \
+                  | awk -F'|' '{ n = split($1, a, " "); for (i = 1; i <= n; i++) { seen[a[i]] = 1; if ((" " $2 " ") ~ / 443 /) has[a[i]] = 1 } }
+                               END { for (ip in seen) if (!(ip in has) && ip ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/) print ip }' \
+                  | sort
+              }
+              while :; do
+                ip=$(kubectl -n zeta-platform get gateway zeta-public-gateway \
+                  -o jsonpath='{.status.addresses[0].value}') || ip=""
+                hosts=$(kubectl -n zeta-platform get gateway zeta-public-gateway \
+                  -o jsonpath='{range .spec.listeners[*]}{.hostname}{"\n"}{end}') || hosts=""
+                hosts=$(printf '%s\n' "$hosts" | grep -E '^(gitlab|registry)\.' | sort -u)
+                # Only a complete answer replaces the block; anything else keeps the previous one.
+                if [ -n "$ip" ] && [ -n "$hosts" ]; then
+                  printf '%s\n' "$hosts" | sed "s|^|$ip |; s|\$| # zeta-lan-hosts|" > $SHARED/block.tmp \
+                    && mv $SHARED/block.tmp $SHARED/block
+                fi
+                # The relay Service. An empty listing means the probe failed or there is nothing to cover;
+                # only a NON-empty one is applied (a failed probe must never strip the node's reachability).
+                if ips=$(relay_ips) && [ -n "$ips" ]; then
+                  list=$(printf '%s\n' "$ips" | sed 's/.*/"&"/' | paste -sd, -)
+                  {
+                    printf '%s\n' 'apiVersion: v1' 'kind: Service' 'metadata:' '  name: https-relay' \
+                      '  namespace: zeta-node-hosts' '  labels: { app.kubernetes.io/part-of: node-lan-hosts }' \
+                      'spec:' '  type: ClusterIP' '  selector: { app: node-lan-hosts }' "  externalIPs: [$list]" \
+                      '  ports:' '    - { name: https, port: 443, targetPort: 443, protocol: TCP }'
+                  } | kubectl apply --server-side --force-conflicts --field-manager=node-lan-hosts-relay -f - >/dev/null
+                fi
+                [ -n "$ONCE" ] && exit 0
+                sleep 30
+              done
+        - name: apply
+          image: busybox:1.36
+          resources:
+            requests: { cpu: 5m, memory: 8Mi }
+            limits: { memory: 32Mi }
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - { name: shared, mountPath: /shared }
+          env:
+            # Root of the host filesystem as seen from this pod. Overridden by the test.
+            - { name: HOST, value: /proc/1/root }
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              TAG='# zeta-lan-hosts'; SHARED="${SHARED:-/shared}"; W="${WORK:-/tmp}"
+              STATE="$HOST/run/zeta-lan-hosts"
+              # /etc/hosts on NixOS is an ABSOLUTE symlink into /etc/static, which would resolve against
+              # THIS container's root through /proc/1/root -- so read it from inside the host mount ns.
+              HREAD="${HREAD:-nsenter -t 1 -m -- /run/current-system/sw/bin/cat /etc/hosts}"
+              # The node firewall (NixOS `nixos-fw`) has no rule for :443 -- MEASURED: the relay listened and
+              # the LAN still got no answer. Assert it each tick (idempotent: -C first). Best-effort on
+              # purpose: a host without that chain is not an error here, and the OS-layer fix is
+              # networking.firewall.allowedTCPPorts = [ 443 ] on the next ISO.
+              IPT="${IPT:-nsenter -t 1 -m -n -- /run/current-system/sw/bin/iptables}"
+              while :; do
+                $IPT -C nixos-fw -p tcp --dport 443 -j nixos-fw-accept 2>/dev/null                   || $IPT -I nixos-fw 1 -p tcp --dport 443 -j nixos-fw-accept 2>/dev/null || true
+                if [ -s $SHARED/block ]; then
+                  $HREAD > $W/cur || { [ -n "$ONCE" ] && exit 0; sleep 30; continue; }
+                  grep -vF "$TAG" $W/cur > $W/base
+                  # Never mount a hosts file that lost the base entries (localhost, control-plane...):
+                  # a node without them cannot reach its own API server.
+                  grep -q localhost $W/base || { [ -n "$ONCE" ] && exit 0; sleep 30; continue; }
+                  cat $W/base $SHARED/block > $W/new
+                  if grep -qF "$TAG" $W/cur; then
+                    # Already mounted: rewrite the SAME inode only when the block changed.
+                    cmp -s $W/new $W/cur || cat $W/new > "$STATE"
+                  else
+                    cat $W/new > "$STATE"
+                    ${MOUNT:-nsenter -t 1 -m -- /run/current-system/sw/bin/mount} --bind /run/zeta-lan-hosts /etc/hosts
+                  fi
+                fi
+                [ -n "$ONCE" ] && exit 0
+                sleep 30
+              done
+        - name: forward
+          image: alpine/socat:1.8.0.0
+          resources:
+            requests: { cpu: 5m, memory: 8Mi }
+            limits: { memory: 64Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            # Binding :443 as non-root needs only this one capability.
+            capabilities: { drop: [ALL], add: [NET_BIND_SERVICE] }
+          volumeMounts:
+            - { name: shared, mountPath: /shared }
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Target = the Gateway's LB address as discovered (first field of the shared block).
+              # Restart the relay if that address ever changes; do nothing until it is known.
+              cur=""; pid=""
+              while :; do
+                ip=$(cut -d' ' -f1 /shared/block 2>/dev/null | head -1)
+                if [ -n "$ip" ] && [ "$ip" != "$cur" ]; then
+                  [ -n "$pid" ] && kill "$pid" 2>/dev/null
+                  socat TCP-LISTEN:443,fork,reuseaddr TCP:"$ip":443 &
+                  pid=$!; cur=$ip
+                fi
+                # A dead relay (bind failed, crashed) must fail the container, not sit silently.
+                [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null && exit 1
+                sleep 10
+              done
+---
+# Read every Service's LoadBalancer address + ports (cluster-wide, read-only), to find which addresses
+# do not serve :443 yet.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-lan-hosts-list-services
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-lan-hosts-list-services
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: node-lan-hosts-list-services
+subjects:
+  - kind: ServiceAccount
+    name: node-lan-hosts
+    namespace: zeta-node-hosts
+---
+# Write ONLY the one relay Service, in its own namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: node-lan-hosts-relay-service
+  namespace: zeta-node-hosts
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    resourceNames: ["https-relay"]
+    verbs: ["get", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-lan-hosts-relay-service
+  namespace: zeta-node-hosts
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: node-lan-hosts-relay-service
+subjects:
+  - kind: ServiceAccount
+    name: node-lan-hosts
+    namespace: zeta-node-hosts
