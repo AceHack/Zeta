@@ -75,6 +75,11 @@ on:
       - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.test.ts"
       - "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml"
+      - "full-ai-cluster/k8s/examples/kubevirt-windows-gitlab-runner.yaml"
+      - "full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml"
+      - "full-ai-cluster/k8s/examples/windows-runner-unattend/**"
+      - "src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts"
+      - "src/Core.TypeScript/cluster/gitlab-windows-runner.test.ts"
       # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
       # nix sources file, its probe device name from the nix preflight module,
       # and its verdict from the node ledger, so a change to any of those moves
@@ -220,6 +225,11 @@ on:
       - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-vm-live-test.test.ts"
       - "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml"
+      - "full-ai-cluster/k8s/examples/kubevirt-windows-gitlab-runner.yaml"
+      - "full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml"
+      - "full-ai-cluster/k8s/examples/windows-runner-unattend/**"
+      - "src/Core.TypeScript/cluster/windows-runner-unattend-secret.ts"
+      - "src/Core.TypeScript/cluster/gitlab-windows-runner.test.ts"
       # The Cilium CNI lane. `cilium-kind-lane.ts` DERIVES its roster from the
       # nix sources file, its probe device name from the nix preflight module,
       # and its verdict from the node ledger, so a change to any of those moves
@@ -647,6 +657,9 @@ jobs:
 
       - name: Run kubevirt VM-boot proof unit tests
         run: bun test src/Core.TypeScript/cluster/kubevirt-vm-live-test.test.ts
+
+      - name: Run Windows GitLab-runner falsifiers (token Job executed, tag contract, VM spec)
+        run: bun test src/Core.TypeScript/cluster/gitlab-windows-runner.test.ts
 
       - name: Build kubevirt/cdi emulation proof plan (offline)
         run: bun src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts --dry-run

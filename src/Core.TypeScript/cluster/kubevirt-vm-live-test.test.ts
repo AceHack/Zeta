@@ -5,7 +5,19 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
-import { blankDataVolumeManifest, CIRROS_IMAGE, cirrosVmiManifest, templateKinds, templateNamespaces, WINDOWS_TEMPLATE_PATH } from "./kubevirt-vm-live-test.ts";
+import {
+  blankDataVolumeManifest,
+  CIRROS_IMAGE,
+  cirrosVmiManifest,
+  DRY_RUN_TEMPLATE_PATHS,
+  REQUIRED_KINDS,
+  templateKinds,
+  templateNamespaces,
+  templateRequiredNamespaces,
+  WINDOWS_RUNNER_TOKEN_PATH,
+  WINDOWS_RUNNER_VM_PATH,
+  WINDOWS_TEMPLATE_PATH,
+} from "./kubevirt-vm-live-test.ts";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 
@@ -80,6 +92,26 @@ describe("the Windows template the dry-run is judged against", () => {
   test("the template's Namespace is found, so the lane can create it before a server-side dry-run", () => {
     expect(templateNamespaces(readFileSync(join(REPO_ROOT, WINDOWS_TEMPLATE_PATH), "utf8"))).toContain("windows-example");
     expect(templateNamespaces("kind: ConfigMap\nmetadata: { name: x }\n")).toEqual([]);
+  });
+
+  test("the Windows GitLab-runner examples are dry-run too, and each still declares what makes its dry-run mean something", () => {
+    expect(DRY_RUN_TEMPLATE_PATHS).toEqual([WINDOWS_TEMPLATE_PATH, WINDOWS_RUNNER_VM_PATH, WINDOWS_RUNNER_TOKEN_PATH]);
+    for (const path of DRY_RUN_TEMPLATE_PATHS) {
+      const kinds = templateKinds(readFileSync(join(REPO_ROOT, path), "utf8"));
+      for (const need of REQUIRED_KINDS[path] ?? []) expect(kinds).toContain(need);
+      expect((REQUIRED_KINDS[path] ?? []).length).toBeGreaterThan(0);
+    }
+  });
+
+  test("the runner examples declare no Namespace but live in `gitlab`, so the lane must create it itself", () => {
+    // Without this the server-side dry-run is refused with `namespaces "gitlab" not found`, which would
+    // read as a spec defect rather than a missing bootstrap step.
+    for (const path of [WINDOWS_RUNNER_VM_PATH, WINDOWS_RUNNER_TOKEN_PATH]) {
+      const text = readFileSync(join(REPO_ROOT, path), "utf8");
+      expect(templateNamespaces(text)).toEqual([]);
+      expect(templateRequiredNamespaces(text)).toEqual(["gitlab"]);
+    }
+    expect(templateRequiredNamespaces(readFileSync(join(REPO_ROOT, WINDOWS_TEMPLATE_PATH), "utf8"))).toEqual(["windows-example"]);
   });
 
   test("an empty or kindless document yields no kinds rather than a crash", () => {

@@ -1,0 +1,196 @@
+# Mint a GitLab runner record for a NON-default runner and park its glrt- token in a Secret.
+# Shipped configured for the WINDOWS runner (docs/ops/WINDOWS-GITLAB-RUNNER.md); the three
+# `RUNNER_*` env values and the Secret name are the whole of what to change for any other
+# extra instance runner (a bigger / privileged Linux runner, a GPU runner, ...).
+#
+# THIS FILE IS NOT APPLIED, AND IT IS DELIBERATELY NOT UNDER k8s/applications/.
+# ArgoCD's root reads only `k8s/applications/*/Application.yaml`, so nothing syncs this. A runner
+# record nobody runs is clutter in Admin > CI/CD > Runners, and a Windows runner that is not
+# wanted must not exist at all, so this is opt-in: `kubectl apply -f` it when you are about to
+# bring the Windows VM up. (The sibling `kubevirt-windows-vm.yaml` is kept out of the tree for a
+# different reason -- its 64Gi claim would be priced as demand -- but the placement is the same.)
+#
+# WHAT IT DOES. The SAME in-cluster approach as Job `gitlab-runner-token` in
+# applications/gitlab/Application.yaml (the Linux runner): `gitlab-rails runner` in the toolbox pod
+# calls GitLab's own `Ci::Runners::CreateRunnerService`, so NO ADMIN PERSONAL ACCESS TOKEN is ever
+# minted (none can leak or outlive this Job). The token goes from the exec's stdout into a shell
+# variable and a tmpfs file; it is never printed.
+#
+# THE TAG CONTRACT -- the point of having a second runner at all. The Linux runner is created
+# with tags `kubernetes,zeta-cluster` and `run_untagged: true` (it takes the first tag-less
+# `.gitlab-ci.yml` anyone writes). This one is created with tag `windows` and
+# `run_untagged: false`, so:
+#   * a tag-less pipeline can NEVER land on a Windows guest (a bash script on PowerShell is a
+#     red pipeline that reads as "CI is broken"), and
+#   * a `tags: [windows]` job can NEVER land on the Linux runner (it does not carry the tag).
+# The tag sets are disjoint and exactly one runner takes untagged jobs; both are pinned by
+# src/Core.TypeScript/cluster/gitlab-windows-runner.test.ts, which reads the Linux side from the
+# Application and this side from here.
+#
+# NO create-on-Secrets PERMISSION. The Secret is pre-created EMPTY below and the Job only
+# `patch`es it by name, so the Role cannot touch any other Secret and nothing needs `create`.
+# Re-applying this file does not wipe the token: the Secret carries no `data` key in the
+# manifest, so a client-side apply has nothing to reset (an `runner-token: ""` line here WOULD
+# blank a live token on the next apply -- do not add one).
+#
+# A Job's pod template is immutable, so to re-run after an edit:
+#   kubectl -n gitlab delete job gitlab-windows-runner-token --ignore-not-found
+#   kubectl apply -f this-file
+# The script is idempotent: an existing token is left alone, an existing runner of the same
+# description is reused, never duplicated.
+#
+# FAILS LOUD, unlike the Linux Job. That one is a Sync hook and exits 0 on failure because a
+# failed hook would block every later GitLab sync; this one is run by a person who wants to
+# know, so any failure prints the operator step and exits 1.
+#
+# THE kubectl+bash IMAGE is the one the gitlab chart's own Jobs use at the pinned version, listed
+# in k8s/image-resolvability.json; a GitLab bump should move this tag with it.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-windows-runner-token
+  namespace: gitlab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gitlab-windows-runner-token
+  namespace: gitlab
+rules:
+  - apiGroups: [apps]
+    resources: [deployments]
+    resourceNames: [gitlab-toolbox]
+    verbs: [get]
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list]
+  - apiGroups: [""]
+    resources: [pods/exec]
+    verbs: [create]
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: [gitlab-windows-runner-token]
+    verbs: [get, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitlab-windows-runner-token
+  namespace: gitlab
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gitlab-windows-runner-token
+subjects:
+  - kind: ServiceAccount
+    name: gitlab-windows-runner-token
+    namespace: gitlab
+---
+# Pre-created EMPTY. The Job fills `runner-token`; the Windows VM mounts this Secret as a CD-ROM
+# (kubevirt-windows-gitlab-runner.yaml), where the key becomes the file `runner-token`.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-windows-runner-token
+  namespace: gitlab
+type: Opaque
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitlab-windows-runner-token
+  namespace: gitlab
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 900
+  template:
+    spec:
+      serviceAccountName: gitlab-windows-runner-token
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: tmp
+          emptyDir: { medium: Memory }
+      containers:
+        - name: mint
+          image: registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp }
+            # --- the knobs: change these (and the Secret name everywhere) for another runner ---
+            - { name: TARGET_SECRET, value: gitlab-windows-runner-token }
+            - { name: RUNNER_DESCRIPTION, value: zeta-windows }
+            # Comma-separated. MUST NOT intersect the Linux runner's `kubernetes,zeta-cluster`.
+            - { name: RUNNER_TAGS, value: "windows,zeta-windows" }
+            # `false` is the whole reason this runner is safe to add: see THE TAG CONTRACT.
+            - { name: RUN_UNTAGGED, value: "false" }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -uo pipefail
+              SECRET=${TARGET_SECRET}
+              # Same retry budget as the Linux Job and for the same reason: a Ready toolbox pod can
+              # still fail its first `gitlab-rails runner` (Rails boot on a cold node). Both knobs
+              # are env-overridable only so the falsifier does not have to wait 10 minutes.
+              MAX_ATTEMPTS=${MINT_MAX_ATTEMPTS:-40}
+              GIVE_UP_AFTER=${MINT_GIVE_UP_AFTER_SECONDS:-720}
+              fail() {
+                echo "runner token NOT minted: $1"
+                echo "Operator step: Admin > CI/CD > Runners > New instance runner (tags ${RUNNER_TAGS}, run untagged jobs: ${RUN_UNTAGGED}), then"
+                echo "  kubectl -n gitlab patch secret $SECRET --type merge -p '{\"stringData\":{\"runner-token\":\"<glrt-...>\"}}'"
+                exit 1
+              }
+              # These three are spliced into Ruby source below, so they are validated, not trusted.
+              case "$RUNNER_DESCRIPTION" in ''|*[!A-Za-z0-9._-]*) fail "RUNNER_DESCRIPTION must match [A-Za-z0-9._-]+" ;; esac
+              case "$RUNNER_TAGS" in ''|*[!A-Za-z0-9._,-]*) fail "RUNNER_TAGS must match [A-Za-z0-9._,-]+" ;; esac
+              case "$RUN_UNTAGGED" in true|false) ;; *) fail "RUN_UNTAGGED must be true or false" ;; esac
+              current=$(kubectl -n gitlab get secret "$SECRET" -o jsonpath='{.data.runner-token}') || fail "cannot read Secret $SECRET (apply the WHOLE file: the Secret is pre-created empty so this Job needs no create permission)"
+              if [ -n "$current" ]; then echo "runner-token already present in $SECRET; nothing to do"; exit 0; fi
+              read -r -d '' RUBY <<'RB'
+              root = User.find_by_username('root') || raise('no root user')
+              runner = Ci::Runner.instance_type.find_by(description: '@DESC@')
+              unless runner
+                result = Ci::Runners::CreateRunnerService.new(user: root, params: { runner_type: 'instance_type', description: '@DESC@', tag_list: %w[@TAGS@], run_untagged: @UNTAGGED@ }).execute
+                raise(result.message.to_s) unless result.success?
+                runner = result.payload[:runner]
+              end
+              token = runner.token.to_s
+              if token.empty?
+                runner.reset_token!
+                token = runner.token.to_s
+              end
+              print "\n" + token
+              RB
+              RUBY=${RUBY//@DESC@/$RUNNER_DESCRIPTION}
+              RUBY=${RUBY//@TAGS@/${RUNNER_TAGS//,/ }}
+              RUBY=${RUBY//@UNTAGGED@/$RUN_UNTAGGED}
+              run_rails() {
+                if command -v timeout >/dev/null 2>&1; then timeout 150 kubectl "$@"; else kubectl "$@"; fi
+              }
+              attempt=0
+              token=""
+              while [ -z "$token" ]; do
+                attempt=$((attempt + 1))
+                out=$(run_rails -n gitlab exec deploy/gitlab-toolbox -c toolbox -- gitlab-rails runner "$RUBY" 2>/tmp/rails.err)
+                token=$(printf '%s\n' "$out" | grep -o 'glrt-[A-Za-z0-9_-]*' | tail -n 1)
+                [ -n "$token" ] && break
+                if [ "$attempt" -ge "$MAX_ATTEMPTS" ] || [ "$SECONDS" -ge "$GIVE_UP_AFTER" ]; then
+                  tail -n 5 /tmp/rails.err
+                  fail "no glrt- token from deploy/gitlab-toolbox after $attempt attempts"
+                fi
+                echo "attempt $attempt: no glrt- token yet; retrying"
+                sleep 15
+              done
+              printf '{"data":{"runner-token":"%s"}}' "$(printf '%s' "$token" | base64 | tr -d '\n')" > /tmp/patch.json
+              kubectl -n gitlab patch secret "$SECRET" --type merge --patch-file /tmp/patch.json >/dev/null || fail "patching $SECRET was refused"
+              echo "minted a glrt- runner token into $SECRET"

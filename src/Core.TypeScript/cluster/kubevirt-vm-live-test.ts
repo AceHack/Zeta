@@ -42,6 +42,25 @@ const REPO_ROOT = resolve(import.meta.dir, "../../..");
 /** The template's own path, so a rename shows up as a missing file here, not a skipped check. */
 export const WINDOWS_TEMPLATE_PATH = "full-ai-cluster/k8s/examples/kubevirt-windows-vm.yaml";
 
+/** The Windows GitLab-runner guest (docs/ops/WINDOWS-GITLAB-RUNNER.md): a VM that mounts a Secret, a ConfigMap and a sysprep volume as CD-ROMs. */
+export const WINDOWS_RUNNER_VM_PATH = "full-ai-cluster/k8s/examples/kubevirt-windows-gitlab-runner.yaml";
+
+/** The Job + RBAC that mint that runner's token. Plain core/batch/rbac objects, but it sits in the `gitlab` namespace and is judged beside the VM. */
+export const WINDOWS_RUNNER_TOKEN_PATH = "full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml";
+
+/**
+ * Every opt-in example the server-side dry-run judges. A file added here but renamed or deleted is a
+ * missing-file failure of the lane, never a skipped check.
+ */
+export const DRY_RUN_TEMPLATE_PATHS: readonly string[] = [WINDOWS_TEMPLATE_PATH, WINDOWS_RUNNER_VM_PATH, WINDOWS_RUNNER_TOKEN_PATH];
+
+/** What each example must still declare for its dry-run to mean something. */
+export const REQUIRED_KINDS: Readonly<Record<string, readonly string[]>> = {
+  [WINDOWS_TEMPLATE_PATH]: ["VirtualMachine", "DataVolume"],
+  [WINDOWS_RUNNER_VM_PATH]: ["VirtualMachine", "DataVolume", "ConfigMap"],
+  [WINDOWS_RUNNER_TOKEN_PATH]: ["Job", "Role", "Secret"],
+};
+
 /** Upstream's own tiny demo guest -- the image KubeVirt's docs and e2e use. ~15 MiB. */
 export const CIRROS_IMAGE = "quay.io/kubevirt/cirros-container-disk-demo:v1.8.4";
 
@@ -107,6 +126,20 @@ export function templateNamespaces(templateText: string): readonly string[] {
     .map((d) => parseYaml(d) as { kind?: string; metadata?: { name?: string } } | null)
     .filter((o): o is { kind: string; metadata: { name: string } } => o?.kind === "Namespace" && typeof o.metadata?.name === "string")
     .map((o) => o.metadata.name);
+}
+
+/**
+ * Namespaces to create before the dry-run: those the file DECLARES plus those its objects merely
+ * LIVE IN. The Windows GitLab-runner examples declare no Namespace on purpose -- they join the
+ * `gitlab` namespace the GitLab Application creates -- so the lane has to stand in for that.
+ */
+export function templateRequiredNamespaces(templateText: string): readonly string[] {
+  const names = new Set<string>(templateNamespaces(templateText));
+  for (const doc of templateText.split(/^---\s*$/m)) {
+    const ns = (parseYaml(doc) as { metadata?: { namespace?: unknown } } | null)?.metadata?.namespace;
+    if (typeof ns === "string" && ns.length > 0) names.add(ns);
+  }
+  return [...names];
 }
 
 /** The template must declare every kind the dry-run is meant to exercise. */
@@ -211,18 +244,24 @@ async function main(): Promise<void> {
     prove("CDI imported a blank DataVolume to Succeeded on zeta-block-local (importer pod + storage binding)");
 
     // 2. The Windows template against the live admission webhooks.
-    const template = join(REPO_ROOT, WINDOWS_TEMPLATE_PATH);
-    for (const name of templateNamespaces(readFileSync(template, "utf8"))) {
-      const made = kube.run(["create", "namespace", name]);
-      if (made.code !== 0 && !made.out.includes("AlreadyExists")) throw new Error(`could not create the template's namespace ${name}: ${made.out}`);
+    //    Every opt-in example is judged, the Windows-runner guest and its token Job included: the
+    //    runner VM mounts a Secret, a ConfigMap and a sysprep volume as CD-ROMs with volume labels,
+    //    fields only KubeVirt's own admission can say are valid.
+    for (const path of DRY_RUN_TEMPLATE_PATHS) {
+      const template = join(REPO_ROOT, path);
+      const text = readFileSync(template, "utf8");
+      for (const name of templateRequiredNamespaces(text)) {
+        const made = kube.run(["create", "namespace", name]);
+        if (made.code !== 0 && !made.out.includes("AlreadyExists")) throw new Error(`could not create ${path}'s namespace ${name}: ${made.out}`);
+      }
+      const dry = kube.run(["apply", "--server-side", "--dry-run=server", "-f", template]);
+      if (dry.code !== 0) throw new Error(`${path} failed server-side dry-run:\n${dry.out}`);
+      const kinds = templateKinds(text);
+      for (const need of REQUIRED_KINDS[path] ?? []) {
+        if (!kinds.includes(need)) throw new Error(`${path} no longer declares a ${need}; the dry-run would prove nothing about it`);
+      }
+      prove(`${path} passes server-side dry-run against the live admission webhooks (${kinds.join(", ")})`);
     }
-    const dry = kube.run(["apply", "--server-side", "--dry-run=server", "-f", template]);
-    if (dry.code !== 0) throw new Error(`the Windows VM template failed server-side dry-run:\n${dry.out}`);
-    const kinds = templateKinds(readFileSync(template, "utf8"));
-    for (const need of ["VirtualMachine", "DataVolume"]) {
-      if (!kinds.includes(need)) throw new Error(`the template no longer declares a ${need}; the dry-run would prove nothing about it`);
-    }
-    prove(`the Windows VM template passes server-side dry-run against KubeVirt+CDI admission (${kinds.join(", ")})`);
 
     // 3. A VM boots.
     const kvm = kube.run(["get", "kubevirt", "kubevirt", "-n", "kubevirt", "-o", "jsonpath={.spec.configuration.developerConfiguration.useEmulation}"]).out;

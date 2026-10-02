@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The GENERALIZED-IMAGE path (examples/kubevirt-windows-gitlab-runner.yaml, "a prepared image" mode):
+  the root disk already holds a sysprepped Windows, so there is nothing to install and nothing here
+  carries a password. Windows Setup reads this from the `sysprep` CD-ROM during the specialize pass,
+  as SYSTEM. The network is not up that early, so it only copies bootstrap.ps1 to local disk and
+  schedules it at every startup; the script retries its own download and removes the task once the
+  runner is registered. For the evaluation-ISO path see Autounattend.xml beside this file (the
+  rendered Secret carries both; Setup uses the one that applies).
+  UNPROVEN: never executed against a real image.
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>zeta: schedule the GitLab runner bootstrap</Description>
+          <Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$v = Get-Volume | Where-Object { $_.FileSystemLabel -eq 'ZETABOOT' } | Select-Object -First 1; New-Item -ItemType Directory -Force C:\ProgramData\zeta | Out-Null; Copy-Item ($v.DriveLetter + ':\bootstrap.ps1') C:\ProgramData\zeta\bootstrap.ps1 -Force; schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-runner-bootstrap /tr 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1'"</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+</unattend>

@@ -857,8 +857,12 @@ const MANIFEST_ACCEPT = [
 
 /** An ANONYMOUS pull token. Deliberately unauthenticated: that IS the measurement. */
 async function anonymousToken(host: string, repository: string): Promise<string | null> {
-  const service = host === "registry-1.docker.io" ? "registry.docker.io" : host;
-  const realm = host === "registry-1.docker.io" ? "https://auth.docker.io/token" : `https://${host}/token`;
+  // Each registry names its own token realm. registry.gitlab.com's is gitlab.com/jwt/auth, NOT
+  // `https://<host>/token`: with the default guess it answered 401 for a PUBLIC image (measured on
+  // `cng/kubectl:v17.7.0`, which the GitLab runner token Jobs run), so a perfectly pullable image read as `denied`.
+  const service = host === "registry-1.docker.io" ? "registry.docker.io" : host === "registry.gitlab.com" ? "container_registry" : host;
+  const realm =
+    host === "registry-1.docker.io" ? "https://auth.docker.io/token" : host === "registry.gitlab.com" ? "https://gitlab.com/jwt/auth" : `https://${host}/token`;
   try {
     const scope = encodeURIComponent(`repository:${repository}:pull`);
     const r = await fetch(`${realm}?service=${encodeURIComponent(service)}&scope=${scope}`);

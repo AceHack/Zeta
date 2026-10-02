@@ -43,7 +43,13 @@ function yamlFilesUnder(root: string): string[] {
   const walk = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const p = join(dir, entry.name);
-      if (entry.isDirectory()) walk(p);
+      // `examples/` holds the opt-in templates that are deliberately NOT applied (see their headers):
+      // they are not part of the catalogue a metal install syncs, and a template that mounts the Secret
+      // its sibling template creates (or one an operator renders by hand, like the Windows runner's
+      // `windows-runner-unattend`) is neither a metal reference with no producer nor a producer.
+      if (entry.isDirectory()) {
+        if (entry.name !== "examples") walk(p);
+      }
       else if (p.endsWith(".yaml") || p.endsWith(".yml")) out.push(p);
     }
   };

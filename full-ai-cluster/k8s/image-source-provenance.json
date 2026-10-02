@@ -412,6 +412,18 @@
       "resolvedAt": "2026-09-22"
     },
     {
+      "repository": "registry.gitlab.com/gitlab-org/build/cng/kubectl",
+      "tags": {
+        "v17.7.0": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-10-01"
+    },
+    {
       "repository": "registry.k8s.io/kubectl",
       "tags": {
         "v1.32.3": 200
