@@ -3470,3 +3470,17 @@ CI on this SHA: 3 success, 3 in progress, 0 failure. Parent cross-verify (chart-
 Hard fails: none. Softs: CI in progress, auto-merge armed, blocked, parent reds with no tip run, live head is a later ungraded merge, disclosed missing publish date.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17867 leftover unique @ 21bb1428e595624b8ef671a56347b6ddc8365371 -- GRADE HOLD
+
+Tip 21bb1428e595624b8ef671a56347b6ddc8365371. Parent count 1. Parent cc31886dad379703840106ed4624cf366f809e6f. Not a merge. Tip-only +182/-3, 3 files: full-ai-cluster/k8s/applications/cluster-hygiene/node-lan-hosts.yaml (+86/-2), src/Core.TypeScript/cluster/node-lan-hosts-relay.test.ts (+95/-0, new), src/Core.TypeScript/cluster/node-lan-hosts.test.ts (+1/-1). Live head a46657806cfce55ea318b47081328245a9283f60 is a merge of 21bb1428 and beb4cd0f and was not graded. beb4cd0f was not graded. Squash auto-merge armed. mergeable_state blocked. Not disarmed.
+
+Hard fail: node-lan-hosts.yaml:268-270 grants create on every Service in zeta-node-hosts with no resourceNames. The comment at :257 says write only https-relay. get/patch/update at :266-267 are name-scoped to https-relay. create is not. node-lan-hosts-relay.test.ts:27-33 only checks the rule whose verbs include patch. Widening that create rule to create, delete, and deletecollection stayed 4 pass / 0 fail.
+
+Holds. Dynamic LoadBalancer discovery, not five hardcoded IPs: yaml:128-132. :443 exclusion: yaml:130-131. Mutation red (192.168.1.240 included). Failed listing keeps the last set: yaml:145-155. Mutation red (applied externalIPs: [""]). Service https-relay externalIPs: yaml:150-153. ClusterRole list-only: yaml:235-242. Removing resourceNames from get/patch/update went red. api hostname tweak: node-lan-hosts.test.ts:37-40 (assertion /api/ to /\bapi[.-]/). Tests at the tip: relay 4 pass, node-lan-hosts.test.ts 9 pass, 13 pass / 0 fail / 40 expect(). CI: zero check runs on 21bb1428. Parent cc31886 reds are gate (required) and test (TS hermetic) only, with no run on the tip. Not tip-red/parent-green.
+
+Softs. Live-run prose (five addresses answer :443; api.flowdent.net from 8 regions) is not in the tree. Reboot / nixos-rebuild unproven. No CI on this SHA. relay_ips has no pipefail; the keep-last mutation still went red. jsonpath reads .ip only.
+
+Path to GO: ship https-relay as a manifest, delete the create rule, and make every write verb require resourceNames [https-relay]. Do not land through merge a4665780.
+
+Sit leftover; Vera will not merge.
