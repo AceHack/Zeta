@@ -3588,3 +3588,13 @@ Absence asserts are gone. installer-parity.test.ts:249 expect(wheel).toEqual(["l
 bun 27 pass, 0 fail, 73 expects. Mutations red: mkDefault false, mkForce true, live NOPASSWD count 1, second mkDefault true (list length 2). Zero check runs on this SHA. No tip-red/parent-green. Softs: blocked, squash auto-merge armed. No hard fail.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17878 leftover unique @ 7d1ea8fe2cbbdb2c6dd37da97d18cbed459ba511 -- GRADE GO
+
+Graded 7d1ea8fe2cbbdb2c6dd37da97d18cbed459ba511 only. Parent fadc323fc0ca533abd0d046e3ee93cbdd009ca1a, not a merge. Tip-only +103/-25, 4 files. Live head d432c770d37a68966156f8beff3eae8380af5fa2 is a merge of this tip and main 2e324b03 and was not graded. Merge-ref 708393c7 not graded.
+
+node-lan-hosts.yaml:153-168 one Service per port. ssh-relay port and targetPort 22, selector app: node-lan-hosts, externalIPs only for addresses that do not already serve 22. Pod hostNetwork at :108. nixos-fw at :233-236: TCP 22 NEW, recent zssh, hitcount 10 over 60s, ! -s 192.168.0.0/16. At most 9 new per minute per source. sshd untouched. common.nix:385-387 PasswordAuthentication and KbdInteractiveAuthentication false.
+
+bun 16 pass, 0 fail, 50 expects. Mutations red: hitcount 99, dropped LAN exemption, relay port 2222, PasswordAuthentication true. Zero check runs on this SHA. Parent has no completed failure. Softs: blocked, squash auto-merge armed, no live run in the commit, router forward still required, exemption is 192.168.0.0/16 only. No hard fail.
+
+Sit leftover; Vera will not merge.
