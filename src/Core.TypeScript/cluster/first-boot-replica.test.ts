@@ -54,6 +54,7 @@ import {
   isKnownSealedByDesign,
   isAppliedManifestFilename,
   isKnownSoakRegression,
+  hostLimitExhaustionNote,
   isKnownSpireAgentDnsCrashLoop,
   k3sVersionToDockerTag,
   manifestTargetFilename,
@@ -1856,6 +1857,28 @@ describe("parseCrashLoopSubject", () => {
     expect(parseCrashLoopSubject("not-the-right-shape")).toBeNull();
     expect(parseCrashLoopSubject("ns/pod-no-brackets")).toBeNull();
     expect(parseCrashLoopSubject("ns-no-slash[container]")).toBeNull();
+  });
+});
+
+describe("hostLimitExhaustionNote", () => {
+  test("names the host-limit signature for the line measured on the real node (virt-handler)", () => {
+    const measured =
+      '{"component":"virt-handler","level":"fatal","msg":"Failed to create an inotify watcher",' +
+      '"reason":"too many open files","pos":"cert-manager.go:105"}';
+    const note = hostLimitExhaustionNote(measured);
+    expect(note).not.toBeNull();
+    expect(note).toContain("node-tunables.json");
+  });
+
+  test("recognises the other spellings the same exhaustion takes in Go and Node watchers", () => {
+    expect(hostLimitExhaustionNote("failed to create fsnotify watcher: too many open files")).not.toBeNull();
+    expect(hostLimitExhaustionNote("Error: ENOSPC: System limit for number of file watchers reached")).not.toBeNull();
+    expect(hostLimitExhaustionNote("accept tcp: EMFILE")).not.toBeNull();
+  });
+
+  test("returns null for an ordinary crash log -- null means 'no such signature here', never 'limits fine'", () => {
+    expect(hostLimitExhaustionNote("panic: nil pointer dereference\ngoroutine 1 [running]")).toBeNull();
+    expect(hostLimitExhaustionNote("")).toBeNull();
   });
 });
 

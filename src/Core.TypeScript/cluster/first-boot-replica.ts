@@ -3349,12 +3349,16 @@ function collectAppFailureDiagnostics(
       );
       const usePrevious = previous.status === 0 && previous.stdout.trim().length > 0;
       log(usePrevious ? "--- logs --previous (crashed instance) ---" : "--- logs (no previous terminated container; current instance) ---");
+      let podLogText: string;
       if (usePrevious) {
-        log(previous.stdout);
+        podLogText = previous.stdout;
       } else {
         const current = kubectl(runner, kubeconfigPath, ["-n", issue.namespace, "logs", issue.name, "--all-containers", "--tail=200"], 20_000);
-        log(current.stdout || current.stderr || "(no output)");
+        podLogText = current.stdout || current.stderr || "(no output)";
       }
+      log(podLogText);
+      const hostLimit = hostLimitExhaustionNote(podLogText);
+      if (hostLimit !== null) log(`${issue.namespace}/${issue.name}: ${hostLimit}`);
       logNamespaceEvents(issue.namespace);
     }
   }
@@ -3380,6 +3384,30 @@ function collectFailureDiagnostics(runner: Runner, kubeconfigPath: string, conta
   log(helmInstallLogs.stdout);
   log("=== docker logs (tail) ===");
   log(runner.run("docker", ["logs", "--tail", "200", containerName]).stdout);
+}
+
+/**
+ * Host-limit falsifier for the crash-loop diagnostics: a container that dies on
+ * "too many open files" / a failed inotify watcher is NOT an application bug,
+ * it is the HOST's `fs.inotify.max_user_instances` / `max_user_watches` (or an
+ * fd rlimit) exhausted by the whole roster sharing one kernel -- MEASURED on
+ * node-5b2dfa, where kubevirt `virt-handler` crash-looped with
+ * "Failed to create an inotify watcher ... reason: too many open files"
+ * (pkg/certificates/bootstrap/cert-manager.go:105) ~9 min after first boot.
+ * Returns a one-line pointer at the single declaration of those limits when the
+ * log text shows that signature, else null -- a null is "no such signature in
+ * THIS text", never "the host limits are fine".
+ */
+export function hostLimitExhaustionNote(logText: string): string | null {
+  if (!/too many open files|inotify (?:watcher|instance)|fsnotify watcher|limit for number of file watchers|ENOSPC.*watch|\bEMFILE\b/i.test(logText)) {
+    return null;
+  }
+  return (
+    "HOST LIMIT SIGNATURE: this log shows 'too many open files' / an inotify failure. That is the host's " +
+    "fs.inotify.max_user_instances / max_user_watches (or fd limit) exhausted across the roster, not an " +
+    "application defect -- see full-ai-cluster/k8s/node-tunables.json (applied on the NixOS host and, via " +
+    ".github/actions/apply-node-tunables, on this runner)."
+  );
 }
 
 export interface CrashLoopDiagnostic {
@@ -3434,6 +3462,8 @@ function collectCrashLoopDiagnostics(
     diagnostics.push(diagnostic);
     log(`=== stage 8 crash-loop diagnostics: ${issue.subject} (logs ${previousAvailable ? "--previous" : "current, --previous unavailable"}) ===`);
     log(diagnostic.logs);
+    const hostLimit = hostLimitExhaustionNote(diagnostic.logs);
+    if (hostLimit !== null) log(`${issue.subject}: ${hostLimit}`);
     log(`=== stage 8 crash-loop diagnostics: ${issue.subject} describe pod ===`);
     log(diagnostic.describePod);
   }

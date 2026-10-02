@@ -66,6 +66,32 @@ let
     if missingRequired == [ ] then true
     else throw "node-tunables.json is missing required key(s): ${toString missingRequired}";
 
+  # MINIMUM values, so a JSON edit that LOWERS one cannot pass just because the
+  # module faithfully ships the lowered number. fs.inotify.max_user_instances
+  # >= 8192: MEASURED on the real node-5b2dfa (NixOS, 2026-10-01 ISO, ~9 min after
+  # first boot, 150+ pods) kubevirt virt-handler crash-looped with "Failed to
+  # create an inotify watcher ... reason: too many open files"; the previous 512
+  # (kind's figure for a kind node) is too low for the whole roster on one node.
+  floors = {
+    "vm.max_map_count" = 524288;
+    "fs.inotify.max_user_instances" = 8192;
+    "fs.inotify.max_user_watches" = 1048576;
+  };
+
+  floorsHold =
+    lib.all
+      (key:
+        let
+          entry = lib.findFirst (e: e.key == key) null goldenEntries;
+        in
+        if entry == null then
+          throw "node-tunables.json has no entry for \"${key}\" (floor ${toString floors.${key}})"
+        else if entry.value < floors.${key} then
+          throw "node-tunables.json \"${key}\" = ${toString entry.value}, below the floor ${toString floors.${key}}"
+        else
+          true)
+      (builtins.attrNames floors);
+
   # Does a host's shipped `boot.kernel.sysctl` reproduce every golden entry,
   # exactly (value, not just presence)?
   checkHost = hostLabel: hostCfg:
@@ -86,7 +112,7 @@ let
 in
 {
   status =
-    if nonEmpty && allRequiredPresent && controlPlaneOk && secondHostOk
-    then "k8s-node-tunables: ${toString (builtins.length goldenEntries)} declared sysctl(s), all ${toString (builtins.length requiredKeys)} required keys present, control-plane and worker-gpu both reproduce every value"
+    if nonEmpty && allRequiredPresent && floorsHold && controlPlaneOk && secondHostOk
+    then "k8s-node-tunables: ${toString (builtins.length goldenEntries)} declared sysctl(s), all ${toString (builtins.length requiredKeys)} required keys present at or above their floors, control-plane and worker-gpu both reproduce every value"
     else throw "unreachable: every mismatch above throws";
 }

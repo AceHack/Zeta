@@ -159,6 +159,13 @@ jobs:
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
 
+      # The k3s container below shares THIS runner's kernel sysctls, so without this the
+      # lane cannot reproduce the host-level crash-loop class (kubevirt virt-handler 'too
+      # many open files' on the real node: fs.inotify.max_user_instances exhausted). Set to
+      # the NixOS host's values from full-ai-cluster/k8s/node-tunables.json BEFORE boot.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
+
       - name: Unit-test the parsers (fixture + LIVE-against-real-files)
         run: bun test src/Core.TypeScript/cluster/first-boot-replica.test.ts src/Core.TypeScript/cluster/first-boot-replica-container-death.test.ts
 
@@ -265,6 +272,11 @@ jobs:
 
       - name: Install bun dependencies
         run: bun install --frozen-lockfile
+
+      # See the same step in the unconstrained job above: the k3s container shares this
+      # runner's kernel, so the host's tunables must be applied before it boots.
+      - name: Apply node kernel tunables (parity with the NixOS host)
+        uses: ./.github/actions/apply-node-tunables
 
       - name: Show the plan and the derived envelope (dry-run)
         # --dry-run --constrained resolves the envelope from
