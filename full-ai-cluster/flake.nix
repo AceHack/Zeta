@@ -884,6 +884,23 @@
               echo "$status" | tee "$out"
             '';
 
+          # EVAL-ONLY (no VM, no boot): the fixes made at RUNTIME on node-5b2dfa on 2026-10-02
+          # that the next ISO must carry natively (work item 081M3YY6TWX087G0R003HZTVWQ): inbound
+          # TCP 443 open and 80 closed on both real hosts, the pure public-names function, kubelet
+          # image GC starting below the eviction line, and key-based sudo OFF by default.
+          # Reads the REAL control-plane and worker-gpu. See nixos/tests/installer-parity-eval-test.nix.
+          installer-parity-model =
+            let
+              report = import ./nixos/tests/installer-parity-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+                secondHostConfig = self.nixosConfigurations.worker-gpu;
+              };
+            in
+            pkgs.runCommand "installer-parity-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # EVAL-ONLY (no VM, no boot): what the module system actually DECIDED
           # about the installer's /iso mount (081M3B7Z38Q087G0R003F9X7HM). PR #17751's
           # pin to the single-claimant symlink was silently discarded by

@@ -58,6 +58,14 @@
     # server gets the `platform-public-tls` ArgoCD Application. Absent -> adds
     # nothing, and the platform runs LAN-only with no issuer and no hostname.
     ./injected-public-tls.nix
+    # docs/ops/INSTALL-TIME-CONFIG.md row 30: the SAME /etc/zeta/public-domain, read a second time for
+    # the node's own resolver. The kubelet pulls images through the HOST resolver, which sent
+    # `registry.<domain>` / `gitlab.<domain>` to the public IP the router cannot hairpin; this pins
+    # those two names to the node's own :443 relay. Absent domain -> adds nothing.
+    ./injected-public-hosts.nix
+    # docs/ops/INSTALL-TIME-CONFIG.md row 32: opt-in key-based sudo (OFF by default) and the option
+    # surface for it. Contributes no PAM change unless `zeta.operatorSudo.sshAgentAuth = true`.
+    ./operator-sudo.nix
     # docs/ops/INSTALL-TIME-CONFIG.md row 3: the Cilium LoadBalancer address range as
     # INSTALL-TIME configuration. With /etc/zeta/lb-pool present (`<first-ip>-<last-ip>`,
     # written by zeta-install.sh from the ESP conf or the start-of-install prompt, after

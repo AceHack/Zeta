@@ -49,6 +49,11 @@
     # 081M3K1K1SY087G0R0010A76XY: same kernel-level protection as the server
     # (k3s.service here holds the kubelet and containerd every pod depends on).
     ./k3s-process-protection.nix
+
+    # Inbound TCP 443 on every node: the node-lan-hosts relay (a DaemonSet, so it
+    # runs here too) is what a home router's device-keyed port forward reaches.
+    # See node-public-https.nix for the measurement and for why 80 stays closed.
+    ./node-public-https.nix
   ];
 
   # The agent's reservation targets are k3s-process-protection.nix's defaults

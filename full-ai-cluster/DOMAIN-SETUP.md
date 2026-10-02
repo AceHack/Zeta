@@ -67,12 +67,29 @@ kubectl -n zeta-platform logs job/ddns-now      # expect: "updated @" / "updated
 ### 3. Your router (the actual gate)
 
 - DHCP-reserve the machine's LAN IP.
-- Port-forward → the machine / the Cilium LB IP:
-  - **Portal HTTPS:** `80` + `443` TCP → the `zeta-public-gateway` LoadBalancer IP
-    (`kubectl -n zeta-platform get gateway zeta-public-gateway` / `get svc`). It exists
-    only when the install was given an ACME email + domain.
-  - **Game servers (UDP):** the game's ports → that game's LoadBalancer Service IP. e.g.
-    GMod `27015` UDP+TCP · Unturned `27015-27017` UDP · Arma Reforger `2001`+`17777` UDP.
+- Port-forward **to the machine (the node's own LAN address)**:
+  - **Portal / GitLab / API HTTPS:** TCP `443` → **the node**, not the `zeta-public-gateway`
+    LoadBalancer address. Most home routers (MEASURED on an AT&T gateway, 2026-10-02) forward to a
+    *device*, and the node answers for several addresses (its own plus every Cilium LoadBalancer IP)
+    on **one MAC**, so a forward aimed at the gateway's address can be bound to another of them and
+    production goes dark while every in-cluster check stays green. The node therefore serves `:443`
+    itself: the firewall opens TCP 443 (`nixos/modules/node-public-https.nix`) and the
+    `node-lan-hosts` relay passes it, TLS intact, to the public Gateway.
+    See `docs/DECISIONS/2026-10-02-the-router-reaches-the-node-not-a-loadbalancer-address-so-the-node-serves-443-itself.md`.
+  - **TCP `80`:** only HTTP-01 certificate issuance needs it, and it must reach the public Gateway's
+    own address (`kubectl -n zeta-platform get gateway zeta-public-gateway`). A device-keyed router
+    can send it to the wrong address; **DNS-01 needs no inbound port at all** (see Follow-ups).
+    TCP 80 is deliberately *not* open on the node's own address (nothing listens there).
+  - **Game servers (UDP):** the game's ports → that game's LoadBalancer Service IP (or the node, if
+    your router can only pick a device). e.g. GMod `27015` UDP+TCP · Unturned `27015-27017` UDP ·
+    Arma Reforger `2001`+`17777` UDP.
+- **Router with a "DMZ host" setting:** pointing it at the node sends *every* unsolicited port to
+  the node. It works, and it widens exposure from 443 to everything the node listens on; prefer
+  the single forward above.
+- **From inside the LAN** the router often cannot loop a public name back to itself (no NAT
+  hairpin). The node already handles this for the two names it needs (`gitlab.<domain>`,
+  `registry.<domain>` resolve to its own `:443` relay, from the same `--public-domain` value); other
+  LAN clients should use split-horizon DNS or the LAN addresses.
 
 ---
 

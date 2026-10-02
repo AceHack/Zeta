@@ -216,6 +216,11 @@ describe("(c) call-site wiring in the real scripts", () => {
   test("the completion banner names the DNS + port-forward step when SET", () => {
     const banner = SRC.slice(SRC.indexOf("ZETA CLUSTER NODE INSTALL COMPLETE"));
     expect(banner).toContain("portal.${ZETA_PUBLIC_TLS_DOMAIN}");
-    expect(banner).toMatch(/80.*443/);
+    // The router forwards to a DEVICE: the banner must send :443 to THIS NODE, not to a LoadBalancer
+    // address (measured 2026-10-02: a forward aimed at the public gateway's address was bound by the
+    // router to another of the node's addresses and production vanished). :80 is named as HTTP-01's.
+    expect(banner).toMatch(/forward TCP 443 .*to THIS NODE/);
+    expect(banner).toMatch(/TCP 80 to reach the public gateway/);
+    expect(banner).not.toMatch(/forward TCP 80 and 443 to the public gateway/);
   });
 });

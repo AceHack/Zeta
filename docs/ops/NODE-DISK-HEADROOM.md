@@ -119,6 +119,28 @@ do C alone** -- it only lowers the alarm.
 If A is not possible, the cheapest safe step is B at the next reinstall; if neither is, keep `concurrent`
 at 2 and watch `kubectl describe node` for `DiskPressure` during the first heavy pipeline day.
 
+## What the installer now carries (OS layer, installer-parity pass)
+
+Work item `081M3YY6TWX087G0R003HZTVWQ`; `docs/ops/INSTALL-TIME-CONFIG.md` row 33. Applied in
+`full-ai-cluster/nixos/modules/k3s-process-protection.nix`, so **both** roles get it, and reaching a node only with an ISO
+built after the change (the OS is pinned to the ISO commit; the live node is untouched):
+
+| kubelet flag | was (measured via `/proxy/configz`) | now | why |
+| --- | --- | --- | --- |
+| `image-gc-high-threshold` | 85 | **75** | GC started at 85% used, which is exactly where `imagefs.available<15%` evicts, so it had no head start |
+| `image-gc-low-threshold` | 80 | **65** | collect down far enough to buy a real margin, not 5 points |
+| `container-log-max-size` | 10Mi (default) | 10Mi, restated | a chart/k3s bump cannot move it |
+| `container-log-max-files` | 5 (default) | **3** | bound per container 30 MiB, not 50 MiB (a bound on a growth path, not a measured cause) |
+
+This is **not** option C: the `eviction-hard` map is untouched (that flag replaces the whole map and the boot generator owns it).
+Starting GC earlier is the part of the threshold story the table above says must move *with* any change. What is **still open and
+still the owner's decision** is the structural half - option A (a dedicated containerd partition) or B (a larger root, which changes
+`ZETA_ROOT_FLOOR_GIB` and the Longhorn capacity checks that read it) - because both change the disk layout and need a reinstall.
+Limits: a node whose steady state already sits above 75% used will report `FreeDiskSpaceFailed` every GC cycle when no unused image is
+left (noisy, not harmful, and the signal that the root is undersized); collecting unused images means a manual-sync app's preloaded image
+can be re-pulled at its first sync. Pinned by `src/Core.TypeScript/cluster/installer-parity.test.ts` (static) and the CI eval check
+`installer-parity-model` (the real hosts); **not run on a node**.
+
 ## What is proven and what is unproven
 
 **Proven (offline, in tests that fail without the change):**

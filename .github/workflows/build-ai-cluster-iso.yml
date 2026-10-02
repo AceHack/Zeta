@@ -359,13 +359,17 @@ jobs:
           # the EVALUATED /iso device. #17751's pin read as correct in source and was
           # discarded by the module system; only an eval can see that, and this step is
           # its only evaluator, so a green here that never reached it would re-open it.
+          # `installer-parity-model` added 2026-10-02 (081M3YY6TWX087G0R003HZTVWQ): the runtime
+          # fixes made on node-5b2dfa (443 firewall, GC below the eviction line, key-based sudo
+          # off by default) now carried natively; an eval is the only thing that sees them.
           missing=""
           for c in zeta-creds-to-k8s-model tpm2-seal-prereqs-model host-seal-profile-model \
                    secure-boot-desired-state-model longhorn-node-preflight \
                    longhorn-disk-registration longhorn-common-default-disk-eval \
                    cilium-wireguard-preflight gpu-node-label-preflight \
                    k3s-registry-mirrors-model k8s-node-tunables-model \
-                   k3s-etcd-peers-model install-medium-device-eval; do
+                   k3s-etcd-peers-model install-medium-device-eval \
+                   installer-parity-model; do
             grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
           done
           if [ -n "$missing" ]; then

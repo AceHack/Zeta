@@ -1,0 +1,14 @@
+{
+  "id": "080d07ef1b5cf010a01300085490d108",
+  "at": "2026-10-02T18:32:15.006Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3YY6TWX087G0R003HZTVWQ",
+    "type": "task",
+    "title": "Installer parity: make the node runtime fixes native (443 firewall, LAN names, disk-pressure GC, operator sudo break-glass)",
+    "slug": "installer-parity-make-the-node-runtime-fixes-native-443-fire",
+    "priority": "P2",
+    "filename": "081M3YY6TWX087G0R003HZTVWQ-installer-parity-make-the-node-runtime-fixes-native-443-fire.md"
+  }
+}

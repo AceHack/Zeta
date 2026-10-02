@@ -471,10 +471,25 @@ ignores exactly that field). Same shape as GitLab above, a separate Job scoped t
 
 1. **DNS:** an `A` record `portal.<domain>` → your public IP (and `gitlab.<domain>`,
    `registry.<domain>`, `git.<domain>` → the same IP to publish GitLab / Forgejo).
-2. **Router:** forward TCP **80** and **443** to the public gateway's LoadBalancer IP —
-   `sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'`.
+2. **Router:** forward TCP **443** to **the node** (its own, DHCP-reserved LAN address) — NOT to the
+   public gateway's LoadBalancer address. A home router forwards to a _device_, and the node answers for
+   several addresses on one MAC (measured 2026-10-02: the forward was bound to `.250`, the GitLab-only
+   gateway, and production vanished). The node serves `:443` itself: `nixos/modules/node-public-https.nix`
+   opens it and the `node-lan-hosts` relay passes it to the Gateway. **HTTP-01** additionally needs TCP
+   **80** to reach the Gateway's own address
+   (`sudo k3s kubectl -n zeta-platform get gateway zeta-public-gateway -o jsonpath='{.status.addresses[0].value}'`),
+   which a device-keyed router may not deliver — the DNS-01 opt-in below needs no inbound port. Port 80 is not
+   open on the node's own address, on purpose. Decision + measurements:
+   `docs/DECISIONS/2026-10-02-the-router-reaches-the-node-not-a-loadbalancer-address-so-the-node-serves-443-itself.md`.
 3. Watch `sudo k3s kubectl -n zeta-platform get certificate portal-tls` go Ready. HTTP-01
    reaches back on :80, so the certificate cannot issue before 1 and 2 hold.
+
+**The node's own resolver** (`nixos/modules/injected-public-hosts.nix`, row 30) reads the **same**
+`/etc/zeta/public-domain` and answers `gitlab.<domain>` and `registry.<domain>` with the node's loopback,
+which the relay forwards to the Gateway. Without it the kubelet resolved those names to the public IP — which
+the node can reach only through the router's (absent) hairpin — and every image pull from the in-cluster
+registry timed out. Only those two names: `git.`/`portal.` are not pulled from by the kubelet, and `api.*` is
+deliberately left to public DNS.
 
 **Opt-in DNS-01 (no inbound :80)** — an operator-created Secret, never an injection point: both issuers also
 carry a Cloudflare DNS-01 solver chosen only by the label `zeta.io/acme-solver: dns01` on the Gateway.

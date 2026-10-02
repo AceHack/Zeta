@@ -103,6 +103,40 @@
 # (`--eviction-soft` has no kubelet defaults, so unlike `--eviction-hard` it
 # cannot silently delete other signals.)
 #
+# ── DISK: IMAGE GC MUST START BEFORE THE EVICTION LINE ────────────────────────
+#
+# MEASURED on node-5b2dfa 2026-10-02 (kubelet /proxy/configz; docs/ops/NODE-DISK-HEADROOM.md): the
+# kubelet ran image GC at 85% / 80% (its defaults) and evicts on `imagefs.available<15%` -- which is
+# 85% USED. GC's start threshold and the eviction line were the SAME number, so GC could not begin
+# until the node was already at the line where it evicts (an inference from those two measured
+# settings, not a measured GC timeline). Image GC only reclaims images no container uses; it needs a
+# window between "start collecting" and "start evicting" to do that before pods are evicted.
+#
+#   image-gc-high-threshold=75   GC starts at 75% used  (10 points / ~12 GiB of a 119 GiB root before
+#   image-gc-low-threshold=65    eviction), and collects down to 65% used.
+#
+# Both are plain kubelet flags in v1.35 (cmd/kubelet/app/options/options.go registers them with no
+# deprecation), and `--kubelet-arg` APPENDS to the list, so this does not touch the eviction-hard map
+# the boot generator owns (that one REPLACES the map -- see k3s-server.nix). The `eviction-hard`
+# imagefs threshold is deliberately NOT lowered: docs/ops/NODE-DISK-HEADROOM.md option C records why
+# lowering the alarm instead of making room trades "evict at 19 GiB free" for "evict nearer a full disk
+# where containerd and the kubelet themselves fail".
+#
+# Container logs: `container-log-max-size=10Mi` is the kubelet's own default, restated so a chart bump
+# cannot move it; `container-log-max-files=3` lowers the default of 5. The bound per container is then
+# 30 MiB, not 50 MiB; across ~150 containers (the measured roster is ~150 pods, one container each at minimum) that is
+# 4.4 GiB worst case against 7.3 GiB. This is a bound on a growth path, NOT a measured cause of the 2026-10-02 event (logs were
+# not measured there).
+#
+# HONEST LIMITS. (1) These are the cheap half of the fix. The real source of the pressure is image/CI
+# churn on a root that the installer sizes to the roster's images and little else (zeta-install.sh
+# ZETA_ROOT_FLOOR_GIB); the structural options -- a dedicated containerd partition, a larger root -- change
+# the disk layout and need a reinstall, so they stay the owner's decision (NODE-DISK-HEADROOM.md A/B).
+# (2) A node whose steady state already sits above 75% used makes GC run every cycle and report
+# `FreeDiskSpaceFailed` when no unused image is left to remove: noisy, not harmful, and the signal that the
+# root is undersized for what it runs. (3) Collecting unused images means a manual-sync app's preloaded
+# image (cdi, kubevirt) can be re-pulled when it is first synced.
+#
 # ── RESERVATIONS ARE SIZED AT BOOT, TO THE NODE (081M3KC68TK087G0R002NT64S8) ──
 #
 # kube-reserved, system-reserved, eviction-hard and eviction-soft are NOT
@@ -202,6 +236,12 @@ in
       "--kubelet-arg=registry-qps=20"
       "--kubelet-arg=registry-burst=50"
       "--kubelet-arg=eviction-max-pod-grace-period=60"
+
+      # Disk: GC before the eviction line, bounded container logs. See the DISK section above.
+      "--kubelet-arg=image-gc-high-threshold=75"
+      "--kubelet-arg=image-gc-low-threshold=65"
+      "--kubelet-arg=container-log-max-size=10Mi"
+      "--kubelet-arg=container-log-max-files=3"
     ];
   };
 }

@@ -80,6 +80,12 @@
     # (081M10ZG61D087G0R001A70F0P). See the module header for the decision.
     ./k3s-etcd-peers.nix
 
+    # Inbound TCP 443: the node-lan-hosts relay is what a home router's
+    # device-keyed port forward reaches. Imported here AND on k3s-agent.nix --
+    # the relay is a DaemonSet. See that module for the measurement, and for why
+    # 80 stays closed.
+    ./node-public-https.nix
+
     # 081M39CR74D087G0R002BEG2G4: a has-ever-bootstrapped sentinel + recovery
     # pair, server role only (a worker has no server/db). Recovers a
     # STILLBORN datastore -- one truncated by a power cut in the first ~20s
