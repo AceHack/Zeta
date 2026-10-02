@@ -103,4 +103,24 @@ HTTP/2 end to end), a cluster-agent token, and the agent installed in the target
 
 ## Measured log
 
-(filled hop by hop below as each one completes)
+Everything below was measured on the owner's node (`node-5b2dfa`, one k3s node, 119 GiB root disk) on 2026-10-02.
+
+### Hop 1 -- 17.7.0 -> 17.8.7 (chart 8.7.0 -> 8.8.7), merged as PR 17868
+
+- ArgoCD synced ~1 minute after the refresh; shared-secrets Jobs, then `gitlab-migrations-zeta` (**74 s**), every
+  component Ready in ~2 minutes. Total user-visible GitLab downtime: about 3 minutes.
+- `/api/v4/version` = `17.8.7`; 9 projects and all 9 default-branch SHAs equal the pre-upgrade baseline.
+- Batched background migrations (rake `gitlab:background_migrations:status`): 7 `active` right after the Job,
+  **all `finished` about 10 minutes later**; the next hop was not started before that.
+- The runner kept its tags (`kubernetes`, `zeta-cluster`) and its token: the reason 17.8.7 was chosen over 17.8.0.
+- Registry: manifest and the largest blob of `flowdent/fd-core:080237f3` fetched through `registry.flowdent.net`
+  with a bearer token and the digest verified (this is what `docker pull` does; `docker login` was deliberately not
+  run, so no credential was written to the workstation's docker config). A throwaway pipeline (project
+  `zz-upgrade-probe`, kept for the later hops) succeeded on the Kubernetes-executor runner in 10 s.
+- Node disk: free space fell 26 -> 19 GiB while both image sets were present (eviction starts below ~17.7 GiB),
+  then recovered to 33 GiB once the kubelet collected the unused 17.7.0 images. Check free space before each hop.
+- Chart 8.8.7 no longer renders the duplicate gitaly `TZ` env that 8.7.0 did (a test pinned that defect; fixed).
+- Gaps found in the repo's own ledgers by the first CI run: the `reason-truth` citations of the chart pin and the
+  `inert-valuesobject-keys` schema snapshot both follow the pin and are re-done each hop. The chart-render
+  determinism check has a latent 1-in-36 flake (its wildcard keeps a shared first character of a random suffix:
+  `...test-runner-i*`); a re-run clears it.

@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://charts.gitlab.io/
     chart: gitlab
-    targetRevision: 8.8.7
+    targetRevision: 8.11.8
     helm:
       releaseName: gitlab
       valuesObject:
@@ -998,6 +998,13 @@ spec:
               requests: { cpu: 10m, memory: 16Mi }
             image:
               repository: bitnamilegacy/redis-exporter
+            # CHART 8.11 ADDED A LIVENESS PROBE TO THIS EXPORTER (kill budget 50 s, no startupProbe): the same
+            # slow-start exposure the other containers above are widened for. Measured by liveness-kill-budget.ts on
+            # the 17.8 -> 17.11 hop. The bundled Redis leaves with the datastore cut-over, so this is the short-lived
+            # half of the fix; it goes with the block.
+            startupProbe:
+              enabled: true
+              failureThreshold: 30
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
