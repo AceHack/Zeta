@@ -10,11 +10,14 @@
  * CANNOT PROVE: that Cilium honours externalIPs on a real node -- only the live node did (every address answered).
  */
 
-import { describe, expect, test } from "bun:test";
+import { describe, expect, setDefaultTimeout, test } from "bun:test";
 import { chmodSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parseAllDocuments } from "yaml";
+
+// These tests spawn bash several times each; on a loaded Windows box that exceeds the 5s default.
+setDefaultTimeout(30_000);
 
 type Doc = Record<string, unknown>;
 const FILE = resolve(import.meta.dir, "../../../full-ai-cluster/k8s/applications/cluster-hygiene/node-lan-hosts.yaml");

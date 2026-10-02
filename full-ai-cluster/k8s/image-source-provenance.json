@@ -9,8 +9,8 @@
       "artifact": "public",
       "sourceRepo": "acemod/docker-reforger",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -21,8 +21,8 @@
       "artifact": "public",
       "sourceRepo": "actions/runner",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -34,8 +34,8 @@
       "artifact": "public",
       "sourceRepo": "ich777/docker-steamcmd-server",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -44,10 +44,10 @@
         "0.29.3": 200
       },
       "artifact": "public",
-      "sourceRepo": "juanfont/headscale",
-      "sourceEvidence": "ghcr-package",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -70,8 +70,8 @@
       "artifact": "public",
       "sourceRepo": "Lucent-Financial-Group/Zeta",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -82,8 +82,8 @@
       "artifact": "public",
       "sourceRepo": "Lucent-Financial-Group/Zeta",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -94,8 +94,8 @@
       "artifact": "public",
       "sourceRepo": "Lucent-Financial-Group/Zeta",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -106,8 +106,8 @@
       "artifact": "public",
       "sourceRepo": "Lucent-Financial-Group/Zeta",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -118,8 +118,8 @@
       "artifact": "public",
       "sourceRepo": "vectorize-io/hindsight",
       "sourceEvidence": "oci-label",
-      "sourceVisibility": "public",
-      "packagePresence": "found",
+      "sourceVisibility": "unknown",
+      "packagePresence": "absent",
       "resolvedAt": "2026-10-02"
     },
     {
@@ -150,18 +150,6 @@
       "repository": "quay.io/kubevirt/virtio-container-disk",
       "tags": {
         "v1.8.4": 200
-      },
-      "artifact": "public",
-      "sourceRepo": null,
-      "sourceEvidence": "none",
-      "sourceVisibility": "unknown",
-      "packagePresence": "not-ghcr",
-      "resolvedAt": "2026-10-02"
-    },
-    {
-      "repository": "registry-1.docker.io/alpine/socat",
-      "tags": {
-        "1.8.0.0": 200
       },
       "artifact": "public",
       "sourceRepo": null,
@@ -295,6 +283,18 @@
       "tags": {
         "1.36": 200,
         "sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662": 200
+      },
+      "artifact": "public",
+      "sourceRepo": null,
+      "sourceEvidence": "none",
+      "sourceVisibility": "unknown",
+      "packagePresence": "not-ghcr",
+      "resolvedAt": "2026-10-02"
+    },
+    {
+      "repository": "registry-1.docker.io/library/haproxy",
+      "tags": {
+        "3.0-alpine": 200
       },
       "artifact": "public",
       "sourceRepo": null,

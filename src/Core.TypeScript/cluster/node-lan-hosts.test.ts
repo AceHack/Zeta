@@ -37,19 +37,26 @@ describe("render", () => {
   test("only gitlab./registry. are pinned -- never api.* (still Azure until the cutover)", () => {
     const discover = scriptOf("discover");
     expect(discover).toContain("(gitlab|registry)");
-    expect(discover).not.toMatch(/\bapi[.-]/); // a hostname, not the `apiVersion:` of the relay Service manifest
+    // The hosts BLOCK is built from this one grep; api.* must never be added to it (the edge, not /etc/hosts,
+    // handles those names). The listener names `discover` reads for the edge are a different thing.
+    expect(discover).toContain("grep -E '^(gitlab|registry)\\.'");
   });
 
-  test("the 443 relay: node network, :443, target discovered (never hardcoded), one capability", () => {
+  test("the 443 edge: node network, :443, gateway target discovered (never hardcoded), one capability", () => {
     const spec = ((ds["spec"] as Doc)["template"] as Doc)["spec"] as Doc;
     expect(spec["hostNetwork"]).toBe(true);
-    const fwd = scriptOf("forward");
-    expect(fwd).toContain("TCP-LISTEN:443");
-    expect(fwd).toContain("/shared/block");
-    expect(fwd).not.toMatch(/192\.168\./);
-    const sc = (containers.find((c) => c["name"] === "forward") as Doc)["securityContext"] as Doc;
+    const edge = scriptOf("edge");
+    expect(edge).toContain("bind :$PORT");
+    expect(edge).toContain("$SHARED/block");
+    expect(edge).not.toMatch(/192\.168\./);
+    const sc = (containers.find((c) => c["name"] === "edge") as Doc)["securityContext"] as Doc;
     expect(sc["privileged"]).toBeUndefined();
     expect((sc["capabilities"] as Doc)["add"]).toEqual(["NET_BIND_SERVICE"]);
+  });
+
+  test("the shared volume carries private keys, so it is memory-backed (never on disk)", () => {
+    const vol = (((ds["spec"] as Doc)["template"] as Doc)["spec"] as Doc)["volumes"] as Doc[];
+    expect((vol.find((v) => v["name"] === "shared") as Doc)["emptyDir"]).toEqual({ medium: "Memory" });
   });
 
   test("RBAC is read-only on the one Gateway", () => {

@@ -106,7 +106,8 @@ spec:
         - { operator: Exists }
       volumes:
         - name: shared
-          emptyDir: {}
+          # Memory-backed: /shared/edge/pem holds the API certificates' PRIVATE KEYS and must never touch disk.
+          emptyDir: { medium: Memory }
       containers:
         - name: discover
           image: registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0
@@ -152,6 +153,36 @@ spec:
                       'spec:' '  type: ClusterIP' '  selector: { app: node-lan-hosts }' "  externalIPs: [$list]" \
                       '  ports:' '    - { name: https, port: 443, targetPort: 443, protocol: TCP }'
                   } | kubectl apply --server-side --force-conflicts --field-manager=node-lan-hosts-relay -f - >/dev/null
+                fi
+                # The edge's inputs: for each API listener on the public Gateway, its certificate (cert + key as
+                # one PEM, in memory only) and which namespace serves it. Listener -> namespace is the repo's
+                # convention (k8s/public-tls: https-flowdent-api = production, -staging = staging). A failed read
+                # of ANY of it keeps the previous set (unknown is not "remove"): certificates are renewed in place,
+                # so a refetch picks the new one up and the edge reloads on the changed bytes.
+                if rows=$(kubectl -n zeta-platform get gateway zeta-public-gateway \
+                     -o jsonpath='{range .spec.listeners[*]}{.name}{"|"}{.hostname}{"|"}{.tls.certificateRefs[0].name}{"\n"}{end}') \
+                   && [ -n "$rows" ]; then
+                  mkdir -p "$SHARED/edge/pem.new"; : > "$SHARED/edge/upstreams.new"; edge_ok=1
+                  printf '%s\n' "$rows" > "$SHARED/edge/rows"
+                  while IFS='|' read -r lname lhost lsecret; do
+                    case "$lname" in
+                      https-flowdent-api) ns=flowdent-prod ;;
+                      https-flowdent-api-staging) ns=flowdent-staging ;;
+                      *) continue ;;
+                    esac
+                    [ -n "$lhost" ] && [ -n "$lsecret" ] || { edge_ok=""; break; }
+                    crt=$(kubectl -n zeta-platform get secret "$lsecret" -o jsonpath='{.data.tls\.crt}') \
+                      && key=$(kubectl -n zeta-platform get secret "$lsecret" -o jsonpath='{.data.tls\.key}') \
+                      && [ -n "$crt" ] && [ -n "$key" ] || { edge_ok=""; break; }
+                    { printf '%s' "$crt" | base64 -d; echo; printf '%s' "$key" | base64 -d; echo; } > "$SHARED/edge/pem.new/$lhost.pem"
+                    printf '%s %s\n' "$lhost" "$ns" >> "$SHARED/edge/upstreams.new"
+                  done < "$SHARED/edge/rows"
+                  if [ -n "$edge_ok" ] && [ -s "$SHARED/edge/upstreams.new" ]; then
+                    rm -rf "$SHARED/edge/pem"; mv "$SHARED/edge/pem.new" "$SHARED/edge/pem"
+                    mv "$SHARED/edge/upstreams.new" "$SHARED/edge/upstreams"
+                  else
+                    rm -rf "$SHARED/edge/pem.new" "$SHARED/edge/upstreams.new"
+                  fi
                 fi
                 [ -n "$ONCE" ] && exit 0
                 sleep 30
@@ -201,32 +232,117 @@ spec:
                 [ -n "$ONCE" ] && exit 0
                 sleep 30
               done
-        - name: forward
-          image: alpine/socat:1.8.0.0
+        - name: edge
+          image: docker.io/library/haproxy:3.0-alpine
           resources:
             requests: { cpu: 5m, memory: 8Mi }
-            limits: { memory: 64Mi }
+            limits: { memory: 128Mi }
           securityContext:
             allowPrivilegeEscalation: false
-            # Binding :443 as non-root needs only this one capability.
+            # Binding :443 needs only this one capability. Root is required for it to be effective
+            # (a non-root process gets no ambient capability from the pod spec); everything else is dropped.
+            runAsUser: 0
             capabilities: { drop: [ALL], add: [NET_BIND_SERVICE] }
           volumeMounts:
             - { name: shared, mountPath: /shared }
           command: ["/bin/sh", "-c"]
           args:
             - |
-              # Target = the Gateway's LB address as discovered (first field of the shared block).
-              # Restart the relay if that address ever changes; do nothing until it is known.
-              cur=""; pid=""
-              while :; do
-                ip=$(cut -d' ' -f1 /shared/block 2>/dev/null | head -1)
-                if [ -n "$ip" ] && [ "$ip" != "$cur" ]; then
-                  [ -n "$pid" ] && kill "$pid" 2>/dev/null
-                  socat TCP-LISTEN:443,fork,reuseaddr TCP:"$ip":443 &
-                  pid=$!; cur=$ip
+              # Node :443 edge. SNI-routes each TLS connection:
+              #   * the API hostnames  -> TLS is terminated HERE and the request is forwarded as HTTP with the
+              #     REAL client address in X-Forwarded-For (the app rate-limits per client IP and trusts the
+              #     nearest hop). A byte-for-byte relay cannot do this: it re-originates every connection from
+              #     the node, so every outside client shares ONE rate-limit bucket (MEASURED on staging: after
+              #     one client sent 100 requests, probes from 7 countries all got 429).
+              #   * every other hostname -> TLS passthrough to the public Gateway, unchanged.
+              # Certificates + upstreams are written by `discover` into the memory-backed /shared/edge.
+              # The hop between the two frontends is a LOOPBACK TCP port, not an abstract unix socket: MEASURED,
+              # a reload cannot re-bind abns@... while the old worker holds it ("cannot bind UNIX socket (already
+              # in use)"), so every reload failed and the OLD config kept serving -- the edge silently stayed in
+              # passthrough and the shared rate-limit bucket came back. TCP listeners reload via SO_REUSEPORT.
+              # Only host-local processes can reach 127.0.0.1 (pods cannot); a PROXY header there could claim any
+              # client address, which on a single-tenant node is an accepted, documented risk.
+              SHARED="${SHARED:-/shared}"; W="${WORK:-/tmp}"; PORT="${EDGE_PORT:-443}"; TERM_PORT="${EDGE_TERM_PORT:-18443}"
+              HAPROXY="${HAPROXY:-haproxy}"; PIDF="$W/haproxy.pid"
+              ran=""; sig=""
+              gen() {
+                gw="$1"
+                cat <<EOF
+              global
+                maxconn 4000
+              defaults
+                log stdout format raw local0
+                option dontlognull
+                timeout connect 5s
+                timeout client 120s
+                timeout server 300s
+                timeout http-request 30s
+                timeout tunnel 1h
+              frontend fe_edge
+                mode tcp
+                no log
+                bind :$PORT
+                tcp-request inspect-delay 5s
+                tcp-request content accept if { req.ssl_hello_type 1 }
+              EOF
+                names=$(awk '{print $1}' "$SHARED/edge/upstreams" 2>/dev/null | paste -sd' ' -)
+                [ -n "$names" ] && echo "  use_backend be_api if { req.ssl_sni -i $names }"
+                cat <<EOF
+                default_backend be_gateway
+              backend be_gateway
+                mode tcp
+                server gw $gw:443
+              EOF
+                if [ -n "$names" ]; then
+                  cat <<EOF
+              backend be_api
+                mode tcp
+                server term 127.0.0.1:$TERM_PORT send-proxy-v2
+              frontend fe_term
+                mode http
+                option httplog
+                option dontlog-normal
+                bind 127.0.0.1:$TERM_PORT accept-proxy ssl crt $SHARED/edge/pem alpn h2,http/1.1
+                http-request del-header X-Forwarded-For
+                option forwardfor
+                http-request set-header X-Forwarded-Proto https
+              EOF
+                  i=0
+                  while read -r host ns; do
+                    i=$((i + 1))
+                    echo "  use_backend app_$i if { ssl_fc_sni -i $host }"
+                  done < "$SHARED/edge/upstreams"
+                  i=0
+                  while read -r host ns; do
+                    i=$((i + 1))
+                    printf 'backend app_%s\n  mode http\n  server a flowdent-api.%s.svc.cluster.local:80\n' "$i" "$ns"
+                  done < "$SHARED/edge/upstreams"
                 fi
-                # A dead relay (bind failed, crashed) must fail the container, not sit silently.
-                [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null && exit 1
+              }
+              while :; do
+                gw=$(cut -d' ' -f1 "$SHARED/block" 2>/dev/null | head -1)
+                if [ -n "$gw" ]; then
+                  gen "$gw" > "$W/haproxy.cfg.new"
+                  # Reload only when the config OR any certificate changed (renewals land here).
+                  now=$( { cat "$W/haproxy.cfg.new"; cat "$SHARED"/edge/pem/*.pem 2>/dev/null; } | cksum)
+                  if [ "$now" != "$sig" ]; then
+                    if "$HAPROXY" -c -q -f "$W/haproxy.cfg.new"; then
+                      mv "$W/haproxy.cfg.new" "$W/haproxy.cfg"
+                      if [ -z "$ran" ]; then
+                        "$HAPROXY" -W -f "$W/haproxy.cfg" -p "$PIDF" &
+                        ran=$!
+                      else
+                        kill -USR2 "$ran" 2>/dev/null
+                      fi
+                      sig="$now"
+                    else
+                      echo "edge: refusing an invalid haproxy config; keeping the running one" >&2
+                    fi
+                  fi
+                fi
+                # A dead proxy (bind failed, crashed) must fail the container, not sit silently.
+                [ -n "$ran" ] && ! kill -0 "$ran" 2>/dev/null && exit 1
+                [ -n "$ONCE" ] && exit 0
                 sleep 10
               done
 ---
@@ -278,6 +394,32 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: node-lan-hosts-relay-service
+subjects:
+  - kind: ServiceAccount
+    name: node-lan-hosts
+    namespace: zeta-node-hosts
+---
+# The edge terminates TLS for the API hostnames, so `discover` reads exactly those two certificate Secrets.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: node-lan-hosts-read-api-certs
+  namespace: zeta-platform
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["flowdent-api-tls", "flowdent-api-staging-tls"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-lan-hosts-read-api-certs
+  namespace: zeta-platform
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: node-lan-hosts-read-api-certs
 subjects:
   - kind: ServiceAccount
     name: node-lan-hosts
