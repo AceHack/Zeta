@@ -170,7 +170,7 @@ describe("Longhorn's instance-manager request is accounted against the node (081
 
   test("the pre-fix arithmetic is over: the priced metal roster with the 12% default exceeds allocatable", () => {
     // The roster as it stands with the platform controllers priced and the default left alone.
-    const roster = 14347;
+    const roster = 14367; // 14347 -> 14367 on 2026-10-02: cluster-hygiene (two CronJobs, 10m each)
     expect(roster + Math.ceil((allocatable * LONGHORN_DEFAULT_PERCENT) / 100)).toBeGreaterThan(allocatable);
   });
 });

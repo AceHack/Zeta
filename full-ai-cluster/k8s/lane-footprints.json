@@ -50,6 +50,9 @@
     "full-ai-cluster/cloudnativepg": [
       "ghcr.io/cloudnative-pg/cloudnative-pg:1.30.0"
     ],
+    "full-ai-cluster/cluster-hygiene": [
+      "registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0"
+    ],
     "full-ai-cluster/cnpg-barman-cloud": [
       "ghcr.io/cloudnative-pg/plugin-barman-cloud:v0.15.1"
     ],

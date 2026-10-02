@@ -67,7 +67,12 @@ function restrictedAppDirs(): string[] {
 function podTemplates(dir: string): { file: string; owner: string; spec: any }[] {
   const out: { file: string; owner: string; spec: any }[] = [];
   for (const { file, doc } of docsIn(dir)) {
-    const spec = doc.spec?.template?.spec ?? (doc.kind === "Pod" ? doc.spec : undefined);
+    // A CronJob's pod template is one level deeper (`spec.jobTemplate.spec.template.spec`), and was
+    // INVISIBLE here until `cluster-hygiene` (2026-10-02) shipped two of them in a restricted namespace.
+    const spec =
+      doc.spec?.template?.spec ??
+      doc.spec?.jobTemplate?.spec?.template?.spec ??
+      (doc.kind === "Pod" ? doc.spec : undefined);
     if (spec?.containers !== undefined) {
       out.push({ file, owner: `${doc.kind ?? "?"}/${doc.metadata?.name ?? "?"}`, spec });
     }

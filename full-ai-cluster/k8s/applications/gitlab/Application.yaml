@@ -235,9 +235,17 @@ spec:
             requests: { cpu: 50m, memory: 64Mi }
           # JOBS RUN ON THIS ONE NODE, beside GitLab itself (~6 GiB of requests). The chart default
           # is 10 concurrent jobs, which on a single-node install is an OOM kill of GitLab
-          # waiting for a busy pipeline. 4 keeps a build burst inside what the node can hold; it
-          # is one `concurrent =` line to raise on a bigger machine.
-          concurrent: 4
+          # waiting for a busy pipeline. It is one `concurrent =` line to raise on a bigger machine.
+          #
+          # 2, NOT 4 -- MEASURED 2026-10-02 on the owner's real node (node-5b2dfa, root fs only ~119 GiB,
+          # imagefs eviction at 15% free = ~19 GiB): four parallel kaniko/dotnet/node pipelines briefly
+          # pushed imagefs free space under 15%, the node set DiskPressure=True, tainted itself
+          # `node.kubernetes.io/disk-pressure:NoSchedule`, and ~150 pods were evicted. Disk, not CPU or
+          # memory, is what a burst of image-heavy jobs exhausts on this box, and the measured top job
+          # (a kaniko build) was 1.8 GB of ephemeral storage. Two jobs at the 8 GiB per-job ceiling below
+          # is 16 GiB worst case; four was 32 GiB against a node that begins evicting at ~19 GiB free.
+          # Pinned (<= 2) by cluster/gitlab-runner-bringup.test.ts (b).
+          concurrent: 2
           # Stop the old manager before starting the new one (see the `strategy` note on `gitlab:` below):
           # no spare capacity needed, and never two managers polling GitLab for the same jobs.
           strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 0, maxUnavailable: 1 } }
@@ -263,12 +271,62 @@ spec:
                 memory_request = "256Mi"
                 helper_cpu_request = "25m"
                 helper_memory_request = "32Mi"
+                # EPHEMERAL STORAGE IS BOUNDED PER JOB, so ONE runaway job is evicted by the kubelet
+                # (`Pod ephemeral local storage usage exceeds the total limit of containers`) instead
+                # of the whole node going under DiskPressure. The limit is the build container's
+                # writable layer + logs + this pod's emptyDirs (the /builds workspace), summed over the
+                # pod's containers: 6Gi build + 2Gi helper = 8Gi per job.
+                #
+                # WHY 6Gi: the measured heaviest job on the real node was a kaniko build at 1.8 GB, so
+                # 6Gi is ~3x that headroom -- a normal pipeline is nowhere near it, a layer-cache
+                # runaway hits it. The REQUEST (1Gi) is the scheduler's reservation, so `concurrent`
+                # jobs cannot all land on a node that cannot hold them. Keys verified against
+                # gitlab-runner v17.6.0 common/config.go (the chart's appVersion at gitlab 8.7.0):
+                # `ephemeral_storage_{request,limit}` and `helper_ephemeral_storage_{request,limit}`.
+                # Jobs may not raise these: the `*_overwrite_max_allowed` keys are deliberately unset.
+                ephemeral_storage_request = "1Gi"
+                ephemeral_storage_limit = "6Gi"
+                helper_ephemeral_storage_request = "64Mi"
+                helper_ephemeral_storage_limit = "2Gi"
           # EXTRA OBJECTS OF THE GITLAB RELEASE. The umbrella chart has no values coordinate that
           # adds arbitrary objects; the runner subchart's `extraObjects`
           # (charts/gitlab-runner/templates/extra-manifests.yaml, rendered through `tpl` -- so no
           # double braces below except the one deliberate image helper call) is the one that does, and it keeps these objects in the same
           # ArgoCD Application, sync and prune scope as the Services they route to.
           extraObjects:
+            # --- ephemeral-storage backstop for EVERY pod in this namespace ---------------
+            # The runner config above sets explicit per-job ephemeral-storage requests/limits; this
+            # LimitRange is the backstop for anything in `gitlab` that names none (a job whose pod
+            # spec is hand-written, and GitLab's own pods), so no pod here is ever the unbounded
+            # one. It is applied at wave -1, ahead of the pods it defaults: a LimitRange only
+            # mutates pods admitted AFTER it exists.
+            #
+            # `default` (the LIMIT) 6Gi is the same figure as the runner's build container, ~3x the
+            # measured 1.8 GB kaniko build (node-5b2dfa, 2026-10-02); GitLab's own pods are far
+            # below it (the whole node's pod ephemeral total was ~4 GB at the time of the pressure
+            # event). `defaultRequest` is deliberately SMALL (256Mi): it is a scheduler reservation
+            # charged to every container here, and a large default would reserve more of a ~119 GiB
+            # root filesystem for GitLab's idle pods than the jobs it protects the node from.
+            #
+            # NO ResourceQuota, on purpose: a quota on `limits.ephemeral-storage` makes the API
+            # server REJECT a GitLab pod that would exceed it, and the namespace's own pods cannot be
+            # told apart from job pods by a quota -- a quota that stops a CI burst would also stop
+            # Gitaly from restarting. The bound that matters is per-pod (above) times `concurrent`.
+            # Falsifier: cluster/gitlab-runner-bringup.test.ts (i).
+            - apiVersion: v1
+              kind: LimitRange
+              metadata:
+                name: gitlab-ephemeral-storage
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-1"
+              spec:
+                limits:
+                  - type: Container
+                    defaultRequest:
+                      ephemeral-storage: 256Mi
+                    default:
+                      ephemeral-storage: 6Gi
             # --- LAN exposure (see global.hosts above) ------------------------------------
             # EXPOSURE IS CREATED BY A POSTSYNC HOOK FROM THE LIVE ADDRESS -- IT IS NOT RENDERED BY THIS RELEASE.
             #

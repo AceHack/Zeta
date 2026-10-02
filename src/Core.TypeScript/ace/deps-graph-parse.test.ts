@@ -217,7 +217,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // opensearch, not the reverse).
     // 49 -> 50 on 2026-09-27: `temporal-postgres` (temporal's CNPG database).
     // 50 -> 52 on 2026-10-01: `cnpg-barman-cloud` and `postgres-shared`.
-    expect(graph.spec.dependsOn.length).toBe(52);
+    // 52 -> 53 on 2026-10-02: `cluster-hygiene`.
+    expect(graph.spec.dependsOn.length).toBe(53);
   });
 
   test("ace, the yaml package, lane-partition and derive-sync-waves read the SAME nodes and edges", () => {
@@ -242,7 +243,8 @@ describe("081M0N90CHX087G0R0034C7NPT — ace agrees with the two tools that rout
     // 48 -> 49 on 2026-09-04: `opensearch` joined the tree, `dependsOn: []`.
     // 49 -> 50 on 2026-09-27: `temporal-postgres` joined.
     // 50 -> 52 on 2026-10-01: `cnpg-barman-cloud` and `postgres-shared` joined.
-    expect(viaAce.nodes.length).toBe(52);
+    // 52 -> 53 on 2026-10-02: `cluster-hygiene` joined.
+    expect(viaAce.nodes.length).toBe(53);
     expect(viaAce.edges.length).toBeGreaterThan(0);
 
     expect(viaAce).toEqual(viaYamlPkg);

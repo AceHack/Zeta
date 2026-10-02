@@ -11,6 +11,10 @@
  *        (a) no long-lived container in the render is BestEffort -- redis (the Sidekiq queue and
  *            session store) and the runner manager shipped `resources: {}`;
  *        (b) job pods carry requests and the runner's concurrency is bounded for ONE node;
+ *        (i) job pods carry an EPHEMERAL-STORAGE request and limit, and the namespace has a
+ *            LimitRange backstop -- the node's root fs is ~119 GiB and four parallel image-heavy
+ *            jobs pushed it into DiskPressure (measured 2026-10-02), so one job must be evicted
+ *            instead of the node;
  *        (c) the runner is created to take UNTAGGED jobs (a tags-only runner leaves the first
  *            tag-less `.gitlab-ci.yml` Pending forever behind a healthy runner);
  *        (h) the chart's four HPAs (floor 2 / ceiling 10) are bounded to what ONE node holds --
@@ -135,7 +139,44 @@ describe.skipIf(!HELM)("gitlab render -- runner and QoS", () => {
     }
     const concurrent = /^concurrent\s*=\s*(\d+)/m.exec(String(data["config.toml"] ?? ""));
     expect(concurrent).not.toBeNull();
-    expect(Number(concurrent![1])).toBeLessThanOrEqual(4);
+    // 2, not 4: disk (not CPU/memory) is what a burst of image-heavy jobs exhausts on this node.
+    expect(Number(concurrent![1])).toBeLessThanOrEqual(2);
+  }, T);
+
+  test("(i) every job pod is bounded in ephemeral storage, and the namespace has a LimitRange backstop", () => {
+    const docs = renderGitlab().docs;
+    const cm = ofKind(docs, "ConfigMap").find((c) => nameOf(c) === "gitlab-gitlab-runner");
+    const data = (cm?.["data"] ?? {}) as Record<string, string>;
+    const template = String(data["config.template.toml"] ?? "");
+    const mib = (key: string): number => {
+      const m = new RegExp(`^\\s*${key}\\s*=\\s*"(\\d+)(Mi|Gi)"`, "m").exec(template);
+      if (m === null) throw new Error(`runner config.template.toml sets no ${key}`);
+      return Number(m[1]) * (m[2] === "Gi" ? 1024 : 1);
+    };
+    const buildLimit = mib("ephemeral_storage_limit");
+    const helperLimit = mib("helper_ephemeral_storage_limit");
+    // Above the MEASURED heaviest job (a kaniko build, 1.8 GB) so a normal pipeline is never evicted ...
+    expect(buildLimit).toBeGreaterThanOrEqual(2 * 1024);
+    // ... and a request that is a real reservation, never above the limit it is a floor of.
+    expect(mib("ephemeral_storage_request")).toBeGreaterThan(0);
+    expect(mib("ephemeral_storage_request")).toBeLessThanOrEqual(buildLimit);
+    expect(mib("helper_ephemeral_storage_request")).toBeLessThanOrEqual(helperLimit);
+    // The worst case the node must absorb -- `concurrent` jobs, each at its pod ceiling -- has to stay inside
+    // what the kubelet leaves free before it evicts (imagefs 15% of ~119 GiB = ~19 GiB).
+    const concurrent = Number(/^concurrent\s*=\s*(\d+)/m.exec(String(data["config.toml"] ?? ""))?.[1]);
+    expect(((buildLimit + helperLimit) * concurrent) / 1024).toBeLessThanOrEqual(19);
+
+    const lr = ofKind(docs, "LimitRange").find((l) => nameOf(l) === "gitlab-ephemeral-storage");
+    expect(lr).toBeDefined();
+    const meta = (lr?.["metadata"] ?? {}) as Doc;
+    expect(meta["namespace"]).toBe("gitlab");
+    const limits = ((lr?.["spec"] as Doc | undefined)?.["limits"] ?? []) as Doc[];
+    const container = limits.find((l) => l["type"] === "Container");
+    expect(container).toBeDefined();
+    expect(((container?.["default"] ?? {}) as Doc)["ephemeral-storage"]).toBe("6Gi");
+    expect(((container?.["defaultRequest"] ?? {}) as Doc)["ephemeral-storage"]).toBeDefined();
+    // A LimitRange only defaults pods admitted AFTER it exists: it must sort ahead of every pod-bearing object.
+    expect(Number(((meta["annotations"] ?? {}) as Doc)["argocd.argoproj.io/sync-wave"])).toBeLessThan(0);
   }, T);
 
   test("(h) no HPA can scale a GitLab tier past what one node holds: floor 1, ceiling 2", () => {

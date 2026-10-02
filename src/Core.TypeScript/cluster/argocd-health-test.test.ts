@@ -690,6 +690,9 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
         // first-boot credential the dev bring-up does not mint). Reasons: DEV_EXCLUDED_REASONS.
         "postgres-shared",
         "cnpg-barman-cloud",
+        // 2026-10-02: node housekeeping (a Failed-pod janitor and a hindsight Secret gate) --
+        // nothing to collect in a lane that lives under an hour. Reason: DEV_EXCLUDED_REASONS.
+        "cluster-hygiene",
       ]),
     );
   });

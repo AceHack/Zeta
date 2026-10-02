@@ -1,0 +1,54 @@
+# cluster-hygiene -- two tiny CronJobs that keep a SINGLE-NODE cluster from being driven into
+# DiskPressure by its own debris. GitOps only: nothing here touches the OS or the kubelet.
+#
+# WHY THIS EXISTS. MEASURED 2026-10-02 on the owner's real node (node-5b2dfa, root fs ~119 GiB):
+# at 07:53Z the node set DiskPressure=True and tainted itself
+# `node.kubernetes.io/disk-pressure:NoSchedule`; ~150 pods were evicted and CI job pods went Pending.
+# Roughly 150 of the evictions were the crash-looping `hindsight` pods (Secret `hindsight-llm-api-key`
+# does not exist yet), and every eviction made the Deployment create another failed pod -- 168 `Failed`
+# pod objects had accumulated. Full measurements, thresholds and the options that need an OS change:
+# docs/ops/NODE-DISK-HEADROOM.md.
+#
+#   pod-janitor            reaps `Failed` / `Evicted` pod objects that have stayed Failed across a full
+#                          run interval, cluster-wide. Evicted pods are not cleaned up by the kubelet
+#                          or by the Deployment that replaces them; the controller-manager's own
+#                          terminated-pod GC only starts at 12500 pods (an OS-level flag), so on one
+#                          node the clutter simply accumulates.
+#   hindsight-secret-gate  holds hindsight's two Deployments at ZERO replicas while its operator-
+#                          supplied LLM key Secret does not exist, and restores them the moment it
+#                          does. Without the Secret every pod sits in CreateContainerConfigError, and
+#                          each one the kubelet evicts under pressure is replaced by another.
+#
+# Falsifier: src/Core.TypeScript/cluster/cluster-hygiene.test.ts -- it RUNS both scripts against a stub
+# kubectl and pins the RBAC and the admission policy that bounds the janitor.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    # After the CNI floor (cilium) and storage; before nothing -- no workload waits on this.
+    argocd.argoproj.io/sync-wave: "20"
+  name: cluster-hygiene
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/cluster-hygiene
+    directory:
+      # Apply the manifests, NOT this Application.yaml itself (no recursion).
+      include: '{namespace,pod-janitor,hindsight-secret-gate}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: zeta-hygiene
+  syncPolicy:
+    # Unbounded retry (limit -1, backoff capped at 5m). ArgoCD's automated-sync default is 5 attempts
+    # (~2.5 min) and it never re-attempts a revision whose sync already failed, so a control-plane blip
+    # longer than that strands the Application SyncFailed for good. Pinned for every automated
+    # Application by src/Core.TypeScript/cluster/application-retry-unbounded.test.ts.
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true ]

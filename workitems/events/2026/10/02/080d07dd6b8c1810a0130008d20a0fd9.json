@@ -1,0 +1,14 @@
+{
+  "id": "080d07dd6b8c1810a0130008d20a0fd9",
+  "at": "2026-10-02T08:14:03.139Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3XTTWC2087G0R000TDRBMM",
+    "type": "task",
+    "title": "Stop node DiskPressure from CI bursts and the hindsight failed-pod storm (GitOps only)",
+    "slug": "stop-node-diskpressure-from-ci-bursts-and-the-hindsight-fail",
+    "priority": "P2",
+    "filename": "081M3XTTWC2087G0R000TDRBMM-stop-node-diskpressure-from-ci-bursts-and-the-hindsight-fail.md"
+  }
+}

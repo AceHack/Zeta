@@ -298,8 +298,13 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   // pulls from ghcr.io (no token in this lane), backs up through a plugin whose
   // operator<->plugin mTLS handshake has never been exercised on a runner, and its
   // requests would land on a lane that is already over its memory budget.
+  //
+  // `cluster-hygiene/**` (2026-10-02) is housekeeping for a LONG-LIVED node -- a Failed-pod
+  // janitor and a hindsight Secret gate -- and a lane that lives for under an hour has
+  // nothing to garbage-collect; its two CronJobs' requests would also land on a lane that
+  // is already over its memory budget. Its reason is in argocd-health-test.ts.
   excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**,game-hosting/gmod/**,postgres-shared/**,cnpg-barman-cloud/**}",
+    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**,game-hosting/gmod/**,postgres-shared/**,cnpg-barman-cloud/**,cluster-hygiene/**}",
 };
 
 /**

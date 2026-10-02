@@ -13,6 +13,7 @@
     "full-ai-cluster/cilium",
     "full-ai-cluster/cilium-lb-ipam",
     "full-ai-cluster/cloudnativepg",
+    "full-ai-cluster/cluster-hygiene",
     "full-ai-cluster/cnpg-barman-cloud",
     "full-ai-cluster/cockroachdb",
     "full-ai-cluster/dapr",
@@ -328,6 +329,30 @@
           ],
           "overlaid": [
             "full-ai-cluster/cloudnativepg/manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/cluster-hygiene",
+          "cpuMillis": 10,
+          "memoryMib": 64,
+          "pods": 2,
+          "workloads": [
+            {
+              "workload": "CronJob/hindsight-secret-gate",
+              "replicas": 1,
+              "cpuMillis": 5,
+              "memoryMib": 32
+            },
+            {
+              "workload": "CronJob/pod-janitor",
+              "replicas": 1,
+              "cpuMillis": 5,
+              "memoryMib": 32
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/cluster-hygiene/hindsight-secret-gate",
+            "full-ai-cluster/cluster-hygiene/pod-janitor"
           ]
         },
         {
@@ -1727,6 +1752,30 @@
           ],
           "overlaid": [
             "full-ai-cluster/cloudnativepg/manager"
+          ]
+        },
+        {
+          "appId": "full-ai-cluster/cluster-hygiene",
+          "cpuMillis": 20,
+          "memoryMib": 64,
+          "pods": 2,
+          "workloads": [
+            {
+              "workload": "CronJob/hindsight-secret-gate",
+              "replicas": 1,
+              "cpuMillis": 10,
+              "memoryMib": 32
+            },
+            {
+              "workload": "CronJob/pod-janitor",
+              "replicas": 1,
+              "cpuMillis": 10,
+              "memoryMib": 32
+            }
+          ],
+          "overlaid": [
+            "full-ai-cluster/cluster-hygiene/hindsight-secret-gate",
+            "full-ai-cluster/cluster-hygiene/pod-janitor"
           ]
         },
         {

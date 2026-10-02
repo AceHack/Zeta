@@ -803,6 +803,44 @@
       }
     },
     {
+      "id": "full-ai-cluster/cluster-hygiene/hindsight-secret-gate",
+      "dir": "cluster-hygiene",
+      "path": "full-ai-cluster/k8s/applications/cluster-hygiene/hindsight-secret-gate.yaml",
+      "docIndex": 3,
+      "requestsField": "spec.jobTemplate.spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US 2026-10-02 (CronJob/hindsight-secret-gate, container `gate`): a bash+kubectl pod that runs for seconds every 2 minutes. It is governed rather than acknowledged because the class-closer in rendered-resource-requests.test.ts exists to stop a NEW raw manifest from arriving with a request no rung reaches. The CronJob pod exists only while its Job runs, but it is counted at 1 replica like any other pod: the scheduler holds a request whenever the pod could be there.",
+      "consequence": "Holds hindsight's two Deployments at zero replicas while its LLM key Secret is absent, and restores them when it exists (docs/ops/NODE-DISK-HEADROOM.md). CPU is compressible, so the 5m dev rung only slows a script that spends its time waiting on the API server; memory is the same at both rungs because a bash process is not a size anyone tuned.",
+      "cpuMillis": {
+        "dev": 5,
+        "metal": 10
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 32
+      }
+    },
+    {
+      "id": "full-ai-cluster/cluster-hygiene/pod-janitor",
+      "dir": "cluster-hygiene",
+      "path": "full-ai-cluster/k8s/applications/cluster-hygiene/pod-janitor.yaml",
+      "docIndex": 5,
+      "requestsField": "spec.jobTemplate.spec.template.spec.containers[0].resources.requests",
+      "pods": 1,
+      "metalSource": "manifest",
+      "evidence": "AUTHORED BY US 2026-10-02 (CronJob/pod-janitor, container `janitor`): a bash+kubectl pod that runs for seconds every 10 minutes. Governed for the same reason as the gate beside it, and counted at 1 replica for the same reason.",
+      "consequence": "Reaps Failed/Evicted pod objects (168 accumulated in one evening on the owner's node). CPU is compressible, so the 5m dev rung only slows a two-command script; memory is the same at both rungs.",
+      "cpuMillis": {
+        "dev": 5,
+        "metal": 10
+      },
+      "memoryMib": {
+        "dev": 32,
+        "metal": 32
+      }
+    },
+    {
       "id": "full-ai-cluster/cnpg-barman-cloud/plugin",
       "dir": "cnpg-barman-cloud",
       "path": "full-ai-cluster/k8s/applications/cnpg-barman-cloud/Application.yaml",

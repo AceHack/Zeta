@@ -191,6 +191,12 @@ NEVER_APPLIED_COVERAGE.set("game-hosting/gmod", {
     "2048Mi of a 9216Mi dev budget -- 18% -- to prove a Source-engine server loads a map and idles. Its own manifest calls it a sample workload, not on the PoC critical path",
 });
 
+NEVER_APPLIED_COVERAGE.set("cluster-hygiene", {
+  coveredBy: null,
+  reason:
+    "housekeeping for a long-lived node (2026-10-02): two CronJobs, a Failed-pod janitor and a hindsight Secret gate. A lane that lives under an hour has no eviction history to collect, ArgoCD gives a CronJob no health verdict, and its requests would land on a lane already over its memory budget. What IS covered is behaviour: cluster/cluster-hygiene.test.ts runs both scripts against a stub kubectl, and the manifests were applied with the scripts run as their ServiceAccounts on a throwaway k3s v1.35.6",
+});
+
 /**
  * Applications asserted under the FULL `Synced+Healthy` contract whose committed
  * resources are ALL health-less -- so the `Healthy` half of that contract carries

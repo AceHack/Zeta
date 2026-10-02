@@ -1,0 +1,149 @@
+# pod-janitor -- reap `Failed` / `Evicted` pod objects, cluster-wide, bounded.
+#
+# WHY. An evicted pod is not removed by anything on a one-node cluster: the Deployment that owns it
+# simply creates a replacement, and the controller-manager's terminated-pod GC only engages at 12500
+# objects (an OS-level kube-controller-manager flag this task is not allowed to change). MEASURED
+# 2026-10-02 on node-5b2dfa: 168 `Failed` pod objects had accumulated from one eviction storm. They hold
+# no disk themselves, but they bury `kubectl get pods`, bloat every list the controllers do, and make
+# the real signal (what is crash-looping NOW) unreadable.
+#
+# "OLDER THAN N MINUTES" WITHOUT A CLOCK. A pod is reaped only if it has been `Failed` across at least
+# ONE FULL RUN INTERVAL (10 min), by two phases in one pod:
+#   1. REAP -- delete pods that carry the marker label AND are still Failed (they were marked by an
+#      earlier run, so they have been Failed for >= one interval);
+#   2. MARK -- label every Failed pod that is not yet marked.
+# A pod that failed a second ago is therefore marked now and reaped on the NEXT run: it stays readable
+# (`kubectl describe`, `logs`) for 10-20 minutes, which is the window a human debugging a CI failure
+# needs, and the Event that explains the eviction outlives it (events live an hour by default). No
+# timestamp arithmetic, so no clock-skew or parse failure mode, and nothing needs `jq` or a date.
+#
+# BOUNDED, in four independent ways: (a) a ClusterRole that can only get/list/patch/delete PODS --
+# no exec, no secrets, no create; (b) a ValidatingAdmissionPolicy that refuses this ServiceAccount's
+# DELETE/UPDATE of any pod whose phase is not `Failed` (RBAC cannot express "only terminated pods",
+# admission can -- so this janitor can NEVER delete a running pod even if its script were wrong);
+# (c) the Job's activeDeadlineSeconds and a single non-overlapping run (concurrencyPolicy Forbid);
+# (d) tiny CPU/memory/ephemeral-storage limits.
+#
+# A FAILED RUN IS NOT SILENT but is also not a spam source: backoffLimit 0 and one retained failed Job.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-janitor
+  namespace: zeta-hygiene
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: zeta-pod-janitor
+rules:
+  # `list` for the selector-driven delete/label, `patch` for the marker label, `delete` for the reap.
+  # Nothing else: no `get` on secrets, no `pods/exec`, no `create`.
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list, patch, delete]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: zeta-pod-janitor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: zeta-pod-janitor
+subjects:
+  - kind: ServiceAccount
+    name: pod-janitor
+    namespace: zeta-hygiene
+---
+# The bound RBAC cannot express. Only requests made by THIS ServiceAccount are evaluated
+# (matchConditions); every other pod operation in the cluster is untouched.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: zeta-pod-janitor-failed-pods-only
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [UPDATE, DELETE]
+        resources: [pods]
+  matchConditions:
+    - name: only-the-pod-janitor
+      expression: "request.userInfo.username == 'system:serviceaccount:zeta-hygiene:pod-janitor'"
+  validations:
+    - expression: "(request.operation == 'DELETE' ? oldObject : object).status.phase == 'Failed'"
+      message: "pod-janitor may only modify or delete pods whose phase is Failed"
+      reason: Forbidden
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: zeta-pod-janitor-failed-pods-only
+spec:
+  policyName: zeta-pod-janitor-failed-pods-only
+  validationActions: [Deny]
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pod-janitor
+  namespace: zeta-hygiene
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 120
+      ttlSecondsAfterFinished: 3600
+      template:
+        spec:
+          serviceAccountName: pod-janitor
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile: { type: RuntimeDefault }
+          volumes:
+            - name: tmp
+              emptyDir: { sizeLimit: 32Mi }
+          containers:
+            - name: janitor
+              # bash + kubectl. The same image the GitLab chart's own Jobs run (and
+              # k8s/examples/gitlab-windows-runner-token.yaml pins literally), so it adds
+              # nothing to the image set. The rancher/kubectl image used elsewhere is shell-less,
+              # and two phases with a hard stop between them want a shell.
+              image: registry.gitlab.com/gitlab-org/build/cng/kubectl:v17.7.0
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: [ALL] }
+              env:
+                - { name: HOME, value: /tmp }
+                - { name: MARK_LABEL, value: "zeta.io/failed-pod-seen" }
+              volumeMounts:
+                - { name: tmp, mountPath: /tmp }
+              resources:
+                requests: { cpu: 10m, memory: 32Mi, ephemeral-storage: 16Mi }
+                limits: { memory: 128Mi, ephemeral-storage: 64Mi }
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  set -uo pipefail
+                  # PHASE 1 -- REAP. Marked by an earlier run AND still Failed => Failed for >= one interval.
+                  # `--wait=false`: the reap must not hold the run open on finalizers.
+                  if ! kubectl delete pods --all-namespaces -l "${MARK_LABEL}=true" --field-selector=status.phase=Failed --wait=false; then
+                    echo "pod-janitor: reap FAILED; not marking this run"
+                    exit 1
+                  fi
+                  # PHASE 2 -- MARK every Failed pod not yet marked (idempotent: --overwrite).
+                  if ! kubectl label pods --all-namespaces --field-selector=status.phase=Failed "${MARK_LABEL}=true" --overwrite; then
+                    echo "pod-janitor: mark FAILED"
+                    exit 1
+                  fi
+                  echo "pod-janitor: done"

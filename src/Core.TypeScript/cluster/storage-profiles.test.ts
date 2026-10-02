@@ -1302,7 +1302,8 @@ describe("the checked-in resource ladder", () => {
     // straight into the dev-excluded set would be one more thing CI never applies.
     // 49 -> 50 on 2026-09-27: `temporal/postgres` (nested, dev-excluded with temporal).
     // 50 -> 52 on 2026-10-01: `postgres-shared` and `cnpg-barman-cloud`, both dev-excluded.
-    expect(applicationDirs()).toHaveLength(52);
+    // 52 -> 53 on 2026-10-02: `cluster-hygiene`, dev-excluded (housekeeping for a long-lived node).
+    expect(applicationDirs()).toHaveLength(53);
     // 49/41 -> 49/40 on 2026-09-07: `game-hosting/gmod/**` joined the excludeGlob. The
     // catalogue is unchanged at 49 -- the Application still exists and is still
     // governed; the LANE is one smaller. That distinction is asserted just below.
@@ -1395,8 +1396,10 @@ describe("the checked-in resource ladder", () => {
     // under the 16000m node, 2355m spare.
     // 13997 -> 14347m / 32355 -> 33379Mi on 2026-10-01: postgres-shared became three instances on the
     // metal rung (3 x 200m / 3 x 512Mi, was 1 x 250m / 1 x 512Mi); 14347m still under the 16000m node.
-    expect(all.cpuMillis).toBe(14347);
-    expect(all.memoryMib).toBe(33379);
+    // 14347 -> 14367m / 33379 -> 33443Mi on 2026-10-02: `cluster-hygiene` joined (two CronJobs, 10m / 32Mi each at
+    // metal -- governed by two resourceClaims, 5m / 32Mi at dev). 14367m still under the 16000m node.
+    expect(all.cpuMillis).toBe(14367);
+    expect(all.memoryMib).toBe(33443);
   });
 
   // Aaron 2026-08-20: "make things small enough to fit for disk and ram on the

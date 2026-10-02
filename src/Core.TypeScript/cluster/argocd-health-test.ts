@@ -709,6 +709,24 @@ export const DEV_EXCLUDED_REASONS: ReadonlyMap<string, string> = new Map([
       "[cite: glob-defers cnpg-barman-cloud]",
   ],
   [
+    "cluster-hygiene",
+    "Housekeeping for a LONG-LIVED single node (2026-10-02): a CronJob that reaps `Failed`/`Evicted` pod objects " +
+      "and a CronJob that holds hindsight at zero replicas while its LLM key Secret is absent. Both exist because " +
+      "the owner's real node entered DiskPressure and evicted ~150 pods (docs/ops/NODE-DISK-HEADROOM.md). This lane " +
+      "lives for under an hour on a runner and has no eviction history to collect, so applying it here would assert " +
+      "only that two CronJobs exist -- ArgoCD gives a CronJob no health verdict, so the `Healthy` half of the " +
+      "assertion would carry no information -- while their requests land on a lane that is already over its " +
+      "memory budget. What IS tested is their behaviour: cluster/cluster-hygiene.test.ts RUNS both scripts against " +
+      "a stub kubectl and pins the RBAC, the admission policy and the hindsight replica contract; the same " +
+      "manifests were applied and the scripts run as their ServiceAccounts on a throwaway k3s v1.35.6. " +
+      "LIFTS WHEN: the lane has room for ~64Mi more, or a lane observes an eviction -- then " +
+      "`cluster-hygiene/**` leaves `DEFAULT_ROOT_DEV_CATALOG.excludeGlob` and a live run reports the CronJobs' " +
+      "first Job completing. " +
+      "ANCHORS, CHECKED BY `reason-truth.ts`: each names an artifact this tree holds, so a claim that outlives its artifact goes red instead of reading on. " +
+      "[cite: path full-ai-cluster/k8s/applications/cluster-hygiene/Application.yaml] " +
+      "[cite: glob-defers cluster-hygiene]",
+  ],
+  [
     "temporal",
     "CORRECTED WITHIN THE HOUR, BY ITS OWN AUTHOR (#13472 -> this). The reason written into #13472 said " +
       "temporal's chart HAS NO PERSISTENCE STORE CONFIGURED and does not render. That was true when it was " +

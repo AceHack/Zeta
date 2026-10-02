@@ -301,6 +301,17 @@ spec:
       dependsOn: []
       citations: {}
 
+    - chart: cluster-hygiene
+      # `dependsOn: []` is a REAL ANSWER, not an unfilled field. Its `hindsight-secret-gate`
+      # names hindsight's Deployments, and that is deliberately NOT an edge: the gate skips a
+      # Deployment that does not exist yet ("Deployment not present; skipping"), so it needs
+      # nothing from hindsight to reconcile, and hindsight needs nothing from it. Declaring
+      # `hindsight` here would also glue this two-CronJob Application into hindsight's
+      # quarantined lane closure (23.19 GiB, ~2.7x a lane budget, per the note above) for no ordering
+      # benefit -- the same intent-vs-observed distinction the adjudication above draws.
+      dependsOn: []
+      citations: {}
+
     - chart: keda
       # `dependsOn: []` is a REAL ANSWER here, not an unfilled field -- the file's own
       # header records that absence is how twelve Applications went missing, so this is

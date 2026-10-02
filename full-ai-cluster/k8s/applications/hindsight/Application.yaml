@@ -125,6 +125,12 @@ spec:
             size: 10Gi
 
         api:
+          # PINNED EXPLICITLY (1 is also the chart default) because `cluster-hygiene`'s
+          # `hindsight-secret-gate` scales this Deployment between 0 (Secret absent) and THIS
+          # number (Secret present), and that CronJob carries the same figure in GATE_DESIRED.
+          # cluster/cluster-hygiene.test.ts pins the two equal, so the gate can never restore a
+          # different count than the one this file declares. See ignoreDifferences below.
+          replicaCount: 1
           # LLM provider Hindsight uses for its own entity/relation extraction
           # (separate from a consumer-agent's LLM choice).
           #
@@ -345,12 +351,33 @@ spec:
         # `liveness-kill-budget.ts` gates on without matching a budget this
         # container's own startup profile does not justify.
         controlPlane:
+          # PINNED EXPLICITLY -- same reason as `api.replicaCount` above (the gate's GATE_DESIRED).
+          replicaCount: 1
           livenessProbe:
             failureThreshold: 15
 
   destination:
     server: https://kubernetes.default.svc
     namespace: hindsight
+  # THE REPLICA COUNT OF THESE TWO DEPLOYMENTS BELONGS TO `cluster-hygiene`'s `hindsight-secret-gate`,
+  # not to ArgoCD. MEASURED 2026-10-02 (docs/ops/NODE-DISK-HEADROOM.md): with Secret
+  # `hindsight-llm-api-key` absent every pod here sits in CreateContainerConfigError, and under node
+  # DiskPressure each one the kubelet evicts is replaced by another -- 168 `Failed` pod objects from one
+  # evening. The gate holds both Deployments at 0 until the Secret exists and restores them to the
+  # replicaCount declared above when it does. ArgoCD must neither fight that (selfHeal would scale them
+  # straight back up) nor report it as drift, hence this rule AND `RespectIgnoreDifferences=true` below
+  # (without it a sync still applies the rendered 1). The render still declares 1 replica each, so every
+  # resource ledger keeps pricing the app at the size it has once the operator supplies the key.
+  # Pinned by cluster/cluster-hygiene.test.ts.
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: hindsight-api
+      jsonPointers: [/spec/replicas]
+    - group: apps
+      kind: Deployment
+      name: hindsight-control-plane
+      jsonPointers: [/spec/replicas]
   # ServerSideApply DELIBERATELY ABSENT -- same class as cockroachdb/headscale, the
   # spire precedent (spire/Application.yaml). MEASURED 2026-09-22, chart 0.9.2 with
   # this valuesObject: the `hindsight-postgresql` StatefulSet's
@@ -376,3 +403,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true

@@ -1,6 +1,6 @@
 {
   "measuredOn": "2026-10-01",
-  "appsDiscovered": 60,
+  "appsDiscovered": 61,
   "charts": {
     "code.forgejo.org/forgejo-helm|forgejo|17.1.5": {
       "literal": {
@@ -37125,6 +37125,16 @@
       "targetRevision": "0.29.0",
       "repoURL": "https://cloudnative-pg.github.io/charts",
       "chartKey": "https://cloudnative-pg.github.io/charts|cloudnative-pg|0.29.0"
+    },
+    {
+      "appId": "full-ai-cluster/cluster-hygiene",
+      "chart": "",
+      "targetRevision": "main",
+      "repoURL": "https://github.com/Lucent-Financial-Group/Zeta",
+      "unavailable": {
+        "reason": "no-chart-yaml",
+        "detail": "full-ai-cluster/k8s/applications/cluster-hygiene is a git-path source with no Chart.yaml — nothing declares a schema"
+      }
     },
     {
       "appId": "full-ai-cluster/cnpg-barman-cloud",

@@ -788,6 +788,14 @@ same deliberate non-gating annotation. Lifts when a `ClusterSecretStore` +
 `ExternalSecret` land for this namespace; see the Application's own header for
 the five layers that still have to exist first.
 
+**While the Secret is absent, hindsight holds ZERO pods** (2026-10-02). With nothing supplying the key, its
+api and control-plane pods sat in `CreateContainerConfigError`, and on the real node each one evicted under
+DiskPressure was replaced by another (168 `Failed` pod objects from one evening,
+[`docs/ops/NODE-DISK-HEADROOM.md`](../docs/ops/NODE-DISK-HEADROOM.md)). `cluster-hygiene`'s
+`hindsight-secret-gate` CronJob now scales both Deployments to 0 until `hindsight-llm-api-key` exists and
+restores them to their declared replicas the moment it does -- so the operator step is unchanged
+(create the Secret; within ~2 minutes the pods come up) and nothing is minted on the operator's behalf.
+
 ## Remaining gaps (no backlog row yet — candidates per constitutional rail)
 
 Substrate-engineering targets NOT covered by 081KSKBP80008QG0R003AX2A69 or sibling rows.
