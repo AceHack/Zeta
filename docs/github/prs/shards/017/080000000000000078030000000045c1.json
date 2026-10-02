@@ -1,0 +1,12 @@
+{
+  "pr_number": 17857,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17857-feat-public-tls-opt-in-cloudflare-dns-01-solver-so-certificates-need-no-inbound-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T06:55:10.222Z",
+  "schema_version": "v1",
+  "commit_sha": "3caa13c4e9216873bd0185bdc4ba4326f9eb758a",
+  "title": "feat(public-tls): opt-in Cloudflare DNS-01 solver so certificates need no inbound :80",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T06:54:27Z",
+  "head_ref": "feat/public-tls-dns01-cloudflare-opt-in"
+}
