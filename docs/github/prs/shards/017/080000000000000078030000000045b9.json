@@ -1,0 +1,12 @@
+{
+  "pr_number": 17849,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17849-feat-installer-console-password-when-none-is-typed-is-an-explicit-policy-repo-de.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T02:58:12.329Z",
+  "schema_version": "v1",
+  "commit_sha": "98abd9022fb2cb7e0be8003808e6030071f5d561",
+  "title": "feat(installer): console password when none is typed is an explicit policy; repo default is the public password (owner's decision)",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T02:57:22Z",
+  "head_ref": "feat/console-password-policy"
+}

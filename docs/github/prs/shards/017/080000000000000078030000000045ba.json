@@ -1,0 +1,17 @@
+{
+  "pr_number": 17850,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17850-feat-installer-choose-the-storage-profile-that-fits-the-measured-longhorn-pool-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM74GD7j",
+    "comment:PRRC_kwDOSF9kNM74GG80",
+    "thread:PRRT_kwDOSF9kNM6oNS2O",
+    "thread:PRRT_kwDOSF9kNM6oNUvf"
+  ],
+  "fetched_at": "2026-10-02T03:54:11.125Z",
+  "schema_version": "v1",
+  "commit_sha": "94ccb1ae95bf4f37201ec0b06cec958300410080",
+  "title": "feat(installer): choose the storage profile that fits the measured Longhorn pool instead of refusing",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T03:53:22Z",
+  "head_ref": "feat/installer-storage-profile-fits-the-pool"
+}
