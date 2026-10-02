@@ -27,13 +27,13 @@ const containers = (((ds["spec"] as Doc)["template"] as Doc)["spec"] as Doc)["co
 const discover = ((containers.find((c) => c["name"] === "discover") as Doc)["args"] as string[])[0]!;
 
 describe("render", () => {
-  test("RBAC: cluster-wide LIST of services only; writes confined to the one relay Service in its own namespace", () => {
+  test("RBAC: cluster-wide LIST of services only; writes confined to the two relay Services in their own namespace", () => {
     const cr = docs.find((d) => d["kind"] === "ClusterRole") as Doc;
     expect(cr["rules"]).toEqual([{ apiGroups: [""], resources: ["services"], verbs: ["list"] }]);
     const roles = docs.filter((d) => d["kind"] === "Role" && ((d["metadata"] as Doc)["namespace"] as string) === "zeta-node-hosts");
     expect(roles).toHaveLength(1);
     const rules = (roles[0] as Doc)["rules"] as Doc[];
-    expect(rules.find((r) => (r["verbs"] as string[]).includes("patch"))?.["resourceNames"]).toEqual(["https-relay"]);
+    expect(rules.find((r) => (r["verbs"] as string[]).includes("patch"))?.["resourceNames"]).toEqual(["https-relay", "ssh-relay"]);
   });
 });
 
@@ -59,7 +59,7 @@ function run(opts: { services: string; failServices?: boolean }): { applied: str
       `  *"get svc"*) ${opts.failServices ? "exit 1" : `cat ${dir}/services.txt`} ;;`,
       '  *"get gateway"*"addresses"*) printf "192.168.1.240" ;;',
       '  *"get gateway"*) printf "gitlab.x.net\\nregistry.x.net\\n" ;;',
-      `  *apply*) cat > ${dir}/applied ;;`,
+      `  *apply*) { cat; echo '###'; } >> ${dir}/applied ;;`, // one record per applied Service, '###'-separated
       "esac",
       "",
     ].join("\n"),
@@ -79,20 +79,36 @@ function run(opts: { services: string; failServices?: boolean }): { applied: str
   return { applied };
 }
 
+/** The applied Service with this name, or undefined. */
+const svcOf = (applied: string | null, name: string): string | undefined =>
+  applied?.split("###").find((d) => d.includes(`name: ${name}\n`));
+
 describe("discover script, executed", () => {
-  test("relays every LB address that lacks :443, and skips the one that already serves it", () => {
-    const { applied } = run({ services: SERVICES });
-    expect(applied).toContain('externalIPs: ["192.168.1.241","192.168.1.242","192.168.1.250"]');
-    expect(applied).not.toContain("192.168.1.240");
-    expect(applied).toContain("name: https-relay");
-    expect(applied).toContain("selector: { app: node-lan-hosts }");
+  test("https-relay: every LB address that lacks :443, skipping the one that already serves it", () => {
+    const https = svcOf(run({ services: SERVICES }).applied, "https-relay");
+    expect(https).toContain('externalIPs: ["192.168.1.241","192.168.1.242","192.168.1.250"]');
+    expect(https).not.toContain("192.168.1.240");
+    expect(https).toContain("port: 443, targetPort: 443");
+    expect(https).toContain("selector: { app: node-lan-hosts }");
+  });
+
+  test("ssh-relay: EVERY LB address (none serves :22 -- the Gateway's :443 is irrelevant), to the node's sshd", () => {
+    const ssh = svcOf(run({ services: SERVICES }).applied, "ssh-relay");
+    expect(ssh).toContain('externalIPs: ["192.168.1.240","192.168.1.241","192.168.1.242","192.168.1.250"]');
+    expect(ssh).toContain("port: 22, targetPort: 22");
+    expect(ssh).toContain("selector: { app: node-lan-hosts }"); // the hostNetwork pod IS the node: its :22 is sshd
+  });
+
+  test("an address that already serves :22 is left alone", () => {
+    const ssh = svcOf(run({ services: SERVICES + "192.168.1.250|22\n" }).applied, "ssh-relay");
+    expect(ssh).not.toContain("192.168.1.250");
   });
 
   test("a FAILED listing applies nothing (unknown is not 'remove')", () => {
     expect(run({ services: "", failServices: true }).applied).toBeNull();
   });
 
-  test("nothing to cover (every address already serves :443) applies nothing", () => {
-    expect(run({ services: "192.168.1.240|80 443\n" }).applied).toBeNull();
+  test("nothing to cover (every address already serves both ports) applies nothing", () => {
+    expect(run({ services: "192.168.1.240|22 80 443\n" }).applied).toBeNull();
   });
 });

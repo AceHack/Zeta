@@ -38,6 +38,12 @@
 # serve :443 -- so it follows a new gateway or a changed address with no edit here. A FAILED LISTING
 # KEEPS THE LAST SET (unknown is not "remove"). The public gateway (.240) serves :443 itself and is skipped.
 #
+# FOURTH JOB -- SSH from the internet (owner's request). Same MAC-keyed-router problem, same fix: `ssh-relay` is a
+# second externalIPs Service (:22 -> the node's own sshd through the hostNetwork pod) over EVERY LoadBalancer
+# address, so a router forward of :22 to the node lands on sshd whichever address it bound. MEASURED before
+# this: only the node's own address answered :22, the gateway addresses timed out. sshd is key-only (passwords
+# disabled, root prohibit-password, 0 failed logins in 24h); `apply` adds a per-source new-connection rate limit.
+#
 # DELIBERATELY NOT PINNED: api.<domain> and api-staging.<domain>. Until the production cutover those
 # resolve to the Azure container apps; pinning them on the node would silently reroute host-side callers.
 #
@@ -127,8 +133,9 @@ spec:
               SHARED="${SHARED:-/shared}"
               # Every LoadBalancer address that does NOT already expose :443 (one per line, sorted).
               relay_ips() {
+                port="$1"
                 kubectl get svc -A -o jsonpath='{range .items[*]}{.status.loadBalancer.ingress[*].ip}{"|"}{.spec.ports[*].port}{"\n"}{end}' \
-                  | awk -F'|' '{ n = split($1, a, " "); for (i = 1; i <= n; i++) { seen[a[i]] = 1; if ((" " $2 " ") ~ / 443 /) has[a[i]] = 1 } }
+                  | awk -F'|' -v p="$port" '{ n = split($1, a, " "); for (i = 1; i <= n; i++) { seen[a[i]] = 1; if (index(" " $2 " ", " " p " ")) has[a[i]] = 1 } }
                                END { for (ip in seen) if (!(ip in has) && ip ~ /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/) print ip }' \
                   | sort
               }
@@ -143,17 +150,22 @@ spec:
                   printf '%s\n' "$hosts" | sed "s|^|$ip |; s|\$| # zeta-lan-hosts|" > $SHARED/block.tmp \
                     && mv $SHARED/block.tmp $SHARED/block
                 fi
-                # The relay Service. An empty listing means the probe failed or there is nothing to cover;
-                # only a NON-empty one is applied (a failed probe must never strip the node's reachability).
-                if ips=$(relay_ips) && [ -n "$ips" ]; then
-                  list=$(printf '%s\n' "$ips" | sed 's/.*/"&"/' | paste -sd, -)
-                  {
-                    printf '%s\n' 'apiVersion: v1' 'kind: Service' 'metadata:' '  name: https-relay' \
-                      '  namespace: zeta-node-hosts' '  labels: { app.kubernetes.io/part-of: node-lan-hosts }' \
-                      'spec:' '  type: ClusterIP' '  selector: { app: node-lan-hosts }' "  externalIPs: [$list]" \
-                      '  ports:' '    - { name: https, port: 443, targetPort: 443, protocol: TCP }'
-                  } | kubectl apply --server-side --force-conflicts --field-manager=node-lan-hosts-relay -f - >/dev/null
-                fi
+                # The relay Services, one per port: https-relay (:443 -> the edge) and ssh-relay (:22 -> the node's
+                # sshd). Each lists every LoadBalancer address that does not already serve that port. An empty
+                # listing means the probe failed or there is nothing to cover; only a NON-empty one is applied
+                # (a failed probe must never strip the node's reachability).
+                for spec in https-relay:443:https ssh-relay:22:ssh; do
+                  svc=${spec%%:*}; rest=${spec#*:}; port=${rest%%:*}; pname=${rest#*:}
+                  if ips=$(relay_ips "$port") && [ -n "$ips" ]; then
+                    list=$(printf '%s\n' "$ips" | sed 's/.*/"&"/' | paste -sd, -)
+                    {
+                      printf '%s\n' 'apiVersion: v1' 'kind: Service' 'metadata:' "  name: $svc" \
+                        '  namespace: zeta-node-hosts' '  labels: { app.kubernetes.io/part-of: node-lan-hosts }' \
+                        'spec:' '  type: ClusterIP' '  selector: { app: node-lan-hosts }' "  externalIPs: [$list]" \
+                        '  ports:' "    - { name: $pname, port: $port, targetPort: $port, protocol: TCP }"
+                    } | kubectl apply --server-side --force-conflicts --field-manager=node-lan-hosts-relay -f - >/dev/null
+                  fi
+                done
                 # The edge's inputs: for each API listener on the public Gateway, its certificate (cert + key as
                 # one PEM, in memory only) and which namespace serves it. Listener -> namespace is the repo's
                 # convention (k8s/public-tls: https-flowdent-api = production, -staging = staging). A failed read
@@ -214,6 +226,14 @@ spec:
               IPT="${IPT:-nsenter -t 1 -m -n -- /run/current-system/sw/bin/iptables}"
               while :; do
                 $IPT -C nixos-fw -p tcp --dport 443 -j nixos-fw-accept 2>/dev/null                   || $IPT -I nixos-fw 1 -p tcp --dport 443 -j nixos-fw-accept 2>/dev/null || true
+                # SSH is reachable from the internet (owner's request; key-only auth, passwords disabled). Damp
+                # brute-force noise: at most 9 NEW connections per minute per NON-private source. Private sources are
+                # exempt so scripted admin from the LAN is never throttled. Best-effort: a kernel without the
+                # `recent` match just skips it.
+                SSHM='-p tcp --dport 22 -m conntrack --ctstate NEW -m recent --name zssh'
+                $IPT -C nixos-fw ! -s 192.168.0.0/16 $SSHM --update --seconds 60 --hitcount 10 -j DROP 2>/dev/null \
+                  || { $IPT -I nixos-fw 1 ! -s 192.168.0.0/16 $SSHM --update --seconds 60 --hitcount 10 -j DROP \
+                       && $IPT -I nixos-fw 1 ! -s 192.168.0.0/16 $SSHM --set; } 2>/dev/null || true
                 if [ -s $SHARED/block ]; then
                   $HREAD > $W/cur || { [ -n "$ONCE" ] && exit 0; sleep 30; continue; }
                   grep -vF "$TAG" $W/cur > $W/base
@@ -379,7 +399,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["services"]
-    resourceNames: ["https-relay"]
+    resourceNames: ["https-relay", "ssh-relay"]
     verbs: ["get", "patch", "update"]
   - apiGroups: [""]
     resources: ["services"]
