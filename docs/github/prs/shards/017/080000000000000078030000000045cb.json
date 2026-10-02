@@ -1,0 +1,17 @@
+{
+  "pr_number": 17867,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17867-fix-cluster-pin-gitlab-registry-to-the-lan-gateway-on-the-node-so-the-kubelet-ca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM74auN0",
+    "comment:PRRC_kwDOSF9kNM74avzi",
+    "thread:PRRT_kwDOSF9kNM6oacvn",
+    "thread:PRRT_kwDOSF9kNM6oadvE"
+  ],
+  "fetched_at": "2026-10-02T18:42:17.871Z",
+  "schema_version": "v1",
+  "commit_sha": "0f600e6197775566f5aa38fe8efaa17d4e2ecdde",
+  "title": "fix(cluster): pin gitlab./registry. to the LAN gateway on the node so the kubelet can pull",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T18:41:37Z",
+  "head_ref": "fix/node-lan-hosts"
+}
