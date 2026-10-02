@@ -1,0 +1,12 @@
+{
+  "pr_number": 17859,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17859-feat-flowdent-opt-in-tenancy-for-the-fd-core-api-on-the-cluster-and-api-domain-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T09:01:09.339Z",
+  "schema_version": "v1",
+  "commit_sha": "0485dbfa3d350f739f29835b916d8a833147a8f4",
+  "title": "feat(flowdent): opt-in tenancy for the fd-core API on the cluster, and api.<domain> listeners",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T09:00:21Z",
+  "head_ref": "feat/flowdent-on-cluster"
+}
