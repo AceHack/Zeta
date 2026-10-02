@@ -1,0 +1,12 @@
+{
+  "pr_number": 17865,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17865-fix-gitlab-registry-streams-blobs-itself-so-pulls-work-outside-the-cluster.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T14:46:30.616Z",
+  "schema_version": "v1",
+  "commit_sha": "23b091cbc917a6591ab10a5b75f32dda01136eb6",
+  "title": "fix(gitlab): registry streams blobs itself so pulls work outside the cluster",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T14:45:44Z",
+  "head_ref": "fix/gitlab-registry-no-redirect"
+}
