@@ -55,14 +55,24 @@ let
 
   hashFile = "/etc/zeta/initial-hashedpassword";
 
-  # docs/ops/INSTALL-TIME-CONFIG.md row 19. When no password was typed the installer MINTS a random
-  # one-time password for this install (hash in `hashFile`, plus this marker) instead of leaving the
-  # shared `zeta-change-me` default in effect, or -- when it could not be shown to anyone -- LOCKS the
-  # account (the second marker). Both are applied ONCE (state file), so a later `passwd zeta` is never
-  # reverted by the next `nixos-rebuild switch`.
+  # docs/ops/INSTALL-TIME-CONFIG.md row 19. When no password was typed, the install-time POLICY
+  # (ZETA_CONSOLE_PASSWORD_POLICY) decides. Policy `mint` (explicit opt-in): the installer MINTS a
+  # random one-time password for this install (hash in `hashFile`, plus this marker), or -- when it
+  # could not be shown to anyone -- LOCKS the account (the second marker). Policy `default` (the repo
+  # default): see `defaultMarker` below. Each is applied ONCE (state file), so a later `passwd zeta` is
+  # never reverted by the next `nixos-rebuild switch`.
   mintedMarker = "/etc/zeta/initial-password-minted";
   lockedMarker = "/etc/zeta/console-password-locked";
   stateFile = "/var/lib/zeta/console-password-applied";
+
+  # Policy `default` (ZETA_CONSOLE_PASSWORD_POLICY, the repo default -- the OWNER's decision, because the
+  # minted one-time password scrolled off on a real node and left them locked out of their own console):
+  # no password typed => the PUBLIC zeta-change-me, NOT locked, NOT minted. The installer writes this
+  # marker (and the hash file); activation applies it ONCE, so a later `passwd zeta` is never reverted.
+  # Until the password changes, a reminder file is kept current by the service below and shown by login
+  # shells. SSH password login is NOT touched here: common.nix keeps `PasswordAuthentication = false`.
+  defaultMarker = "/etc/zeta/initial-password-default";
+  reminderFile = "/run/zeta/console-password-is-default";
 in
 {
   # Build-time default; will be overridden at activation if the
@@ -84,6 +94,23 @@ in
         echo "[console-password] zeta console password LOCKED (${lockedMarker}); use the SSH key, then 'sudo passwd zeta'"
       elif [ -f "${lockedMarker}" ]; then
         echo "[console-password] locked marker already applied once; leaving the account as the operator last set it"
+      elif [ -f "${defaultMarker}" ]; then
+        # Policy `default`, applied ONCE (the same state file as the minted branch).
+        if [ -f "${stateFile}" ]; then
+          echo "[console-password] public default already applied once; not re-applying"
+        else
+          hash=$(${pkgs.coreutils}/bin/cat "${hashFile}" 2>/dev/null | ${pkgs.coreutils}/bin/tr -d '\n' || true)
+          if [ -n "$hash" ] && [ "''${hash:0:3}" = '$6$' ]; then
+            ${pkgs.shadow}/bin/usermod -p "$hash" zeta
+          else
+            # The hash file is absent or malformed (mkpasswd failed at install): the build-time fallback
+            # hash is the SAME public password, so apply that rather than leave the account as it was.
+            ${pkgs.shadow}/bin/usermod -p '${fallbackHash}' zeta
+          fi
+          ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname "${stateFile}")"
+          ${pkgs.coreutils}/bin/touch "${stateFile}"
+          echo "[console-password] applied the PUBLIC default console password (policy 'default', once); change it: sudo passwd zeta"
+        fi
       elif [ -f "${hashFile}" ] && [ -f "${mintedMarker}" ]; then
         # MINTED for this install, applied ONCE: after the operator rotates it, a rebuild must not
         # put the one-time password back.
@@ -114,4 +141,51 @@ in
       fi
     '';
   };
+
+  # Policy `default` only: keep a visible reminder until the console password stops being the public
+  # one. The check is whether the live /etc/shadow hash still equals the hash this install applied, so
+  # `passwd zeta` clears it within one timer tick, and a node on any other policy (no marker) clears it
+  # at once. Nothing here changes the password or any SSH setting.
+  systemd.services.zeta-default-password-reminder = {
+    description = "Reminder that the zeta console password is still the public default";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      if [ ! -f "${defaultMarker}" ]; then
+        ${pkgs.coreutils}/bin/rm -f "${reminderFile}"
+        exit 0
+      fi
+      want=$(${pkgs.coreutils}/bin/cat "${hashFile}" 2>/dev/null | ${pkgs.coreutils}/bin/tr -d '\n' || true)
+      case "$want" in
+        '$6$'*) ;;
+        *) want='${fallbackHash}' ;;
+      esac
+      have=$(${pkgs.gnugrep}/bin/grep '^zeta:' /etc/shadow | ${pkgs.coreutils}/bin/cut -d: -f2 || true)
+      if [ "$have" = "$want" ]; then
+        ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname "${reminderFile}")"
+        printf '%s\n' 'NOTE: the zeta console password is still the PUBLIC default zeta-change-me -- change it: sudo passwd zeta' > "${reminderFile}"
+        ${pkgs.coreutils}/bin/chmod 0644 "${reminderFile}"
+      else
+        ${pkgs.coreutils}/bin/rm -f "${reminderFile}"
+      fi
+    '';
+  };
+
+  systemd.timers.zeta-default-password-reminder = {
+    description = "Re-check whether the zeta console password is still the public default";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "1min";
+      OnUnitActiveSec = "5min";
+      Unit = "zeta-default-password-reminder.service";
+    };
+  };
+
+  environment.interactiveShellInit = ''
+    if [ -r "${reminderFile}" ]; then
+      echo
+      cat "${reminderFile}"
+      echo
+    fi
+  '';
 }

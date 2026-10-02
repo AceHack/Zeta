@@ -124,6 +124,11 @@ import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
 import {
+  planConsolePasswordPolicy,
+  renderConsolePasswordPolicyConfLine,
+  type ConsolePasswordPolicy,
+} from "../installer/console-password-policy.ts";
+import {
   planFirstbootConfFileContent,
   validateJoinTokenMaterial,
   ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
@@ -851,6 +856,7 @@ async function injectPubkeyToUsb(
   joinTokenSourcePath: string | undefined,
   publicEndpoint: PublicEndpoint | null = null,
   lbPool: LbPoolSpec | null = null,
+  consolePasswordPolicy: ConsolePasswordPolicy | null = null,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
   if (testMode) {
@@ -975,7 +981,8 @@ async function injectPubkeyToUsb(
   // for the same reason and with the same no-role behaviour.
   const publicEndpointLines =
     (publicEndpoint === null ? "" : renderPublicEndpointConfLines(publicEndpoint)) +
-    (lbPool === null ? "" : renderLbPoolConfLine(lbPool));
+    (lbPool === null ? "" : renderLbPoolConfLine(lbPool)) +
+    (consolePasswordPolicy === null ? "" : renderConsolePasswordPolicyConfLine(consolePasswordPolicy));
   if (firstbootRole === undefined && publicEndpointLines.length > 0) {
     const confOnlyTarget = join(mountPoint, "zeta-firstboot.conf");
     try {
@@ -992,6 +999,7 @@ async function injectPubkeyToUsb(
       `install-time config: wrote ${confOnlyTarget}` +
         (publicEndpoint === null ? "" : ` (portal.${publicEndpoint.publicDomain})`) +
         (lbPool === null ? "" : ` (lb-pool ${lbPool.kind === "auto" ? "auto" : `${lbPool.start ?? ""}-${lbPool.stop ?? ""}`})`) +
+        (consolePasswordPolicy === null ? "" : ` (console-password ${consolePasswordPolicy})`) +
         "\n",
     );
   }
@@ -1125,6 +1133,7 @@ function bakeEspPayloadForLinux(
   pubkeyPath: string | null,
   hostOverride: string | null,
   testMode: boolean,
+  consolePasswordPolicy: ConsolePasswordPolicy | null = null,
 ): string {
   const tools = {
     qemuImg: whichTool("qemu-img"),
@@ -1166,6 +1175,7 @@ function bakeEspPayloadForLinux(
     ...(pubkeyPath === null ? {} : { pubkeyPath }),
     ...(hostOverride === null ? {} : { hostname: hostOverride }),
     ...(testMode ? { testMode: true } : {}),
+    ...(consolePasswordPolicy === null ? {} : { consolePasswordPolicy }),
   });
   if (!result.ok) {
     // Includes the 081KZHJPJCF read-back failure: mcopy exited 0 but the file is not on
@@ -1215,6 +1225,7 @@ async function main() {
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
+  let consolePasswordFlag: string | undefined;
   let agentMode = false;
   let testMode = false;
   const bakeCredArgs: string[] = [];
@@ -1281,13 +1292,14 @@ async function main() {
       testMode = true;
       continue;
     }
-    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool") {
+    if (a === "--acme-email" || a === "--public-domain" || a === "--lb-pool" || a === "--console-password") {
       const next = argv[i + 1];
       if (next === undefined || next.startsWith("-")) {
         bail(2, `${a} requires an argument`);
       }
       if (a === "--acme-email") acmeEmailFlag = next;
       else if (a === "--lb-pool") lbPoolFlag = next;
+      else if (a === "--console-password") consolePasswordFlag = next;
       else publicDomainFlag = next;
       i += 1;
       continue;
@@ -1440,6 +1452,15 @@ async function main() {
   if (lbPool.value !== null && noInject) {
     bail(2, "--lb-pool requires ESP injection; remove --no-inject");
   }
+  // docs/ops/INSTALL-TIME-CONFIG.md row 19 -- the console-password policy (default|mint); anything
+  // else is refused here, before any download or device work.
+  const consolePassword = planConsolePasswordPolicy(consolePasswordFlag);
+  if (!consolePassword.ok) {
+    bail(2, `console password policy refused: ${consolePassword.error}`);
+  }
+  if (consolePassword.value !== null && noInject) {
+    bail(2, "--console-password requires ESP injection; remove --no-inject");
+  }
 
   const credBake: CredBakeOptions = {
     bakeCredArgs,
@@ -1508,6 +1529,11 @@ async function main() {
         "                            the node's LAN, outside the router's DHCP range. 'auto' derives .240-.250 of\n" +
         "                            the node's /24 and the installer refuses if they answer. Omit: the installer\n" +
         "                            asks; with nobody there it is left UNSET (never a default).\n" +
+        "  --console-password <default|mint>\n" +
+        "                            what the zeta CONSOLE password is when none is typed at the installer prompt.\n" +
+        "                            default (also what omitting this means) = the PUBLIC zeta-change-me, with a loud\n" +
+        "                            banner and a login reminder until changed; mint = a random one-time password\n" +
+        "                            shown once. A typed password always wins. SSH password login stays disabled.\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -1762,6 +1788,11 @@ async function main() {
   // flag the Linux arm accepts, so passing the macOS argv would abort every flash at the
   // child's allowlist. `flashUsbLinuxArgv` cannot emit it.
   let flashUsbArgs: string[];
+  if (consolePassword.value !== null && !willInject) {
+    // Dropping the policy silently would leave the operator believing a node would come up with the
+    // password behaviour they chose. Refuse before any device work.
+    bail(2, "--console-password needs the ESP payload, but injection was skipped (no pubkey found); fix the key or drop the flag");
+  }
   if (isLinux) {
     if (expectDevice !== null || expectSizeRaw !== null || expectModel !== null) {
       bail(
@@ -1781,7 +1812,7 @@ async function main() {
       bakeCredCount: 0,
     };
     if (linuxBakeIsRequired(bakeRequest)) {
-      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode);
+      effectiveIso = bakeEspPayloadForLinux(isoPath, pubkeyPath, hostOverride, testMode, consolePassword.value);
     }
     const argv = flashUsbLinuxArgv(flashUsb, effectiveIso, { short: true });
     if (!argv.ok) bail(2, argv.error);
@@ -1928,7 +1959,7 @@ async function main() {
     }
   } else if (willInject) {
     try {
-      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value);
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, consolePassword.value);
     } finally {
       // `force: true` already means "no error if absent", so the `existsSync`
       // guard it replaces bought nothing and was itself a check-then-use race

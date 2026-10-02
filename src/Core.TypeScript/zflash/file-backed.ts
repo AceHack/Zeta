@@ -21,6 +21,7 @@ import {
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool, type LbPoolSpec } from "../installer/lan-config.ts";
+import { planConsolePasswordPolicy, type ConsolePasswordPolicy } from "../installer/console-password-policy.ts";
 import type {
   FileBackedEspWrite,
   FileBackedZflashImageExecution,
@@ -65,6 +66,8 @@ export interface FileBackedZflashCliOptions {
   readonly publicEndpoint?: PublicEndpoint;
   /** docs/ops/INSTALL-TIME-CONFIG.md row 3: `--lb-pool auto|<first-ip>-<last-ip>`, validated. See lib.ts. */
   readonly lbPool?: LbPoolSpec;
+  /** docs/ops/INSTALL-TIME-CONFIG.md row 19: `--console-password default|mint`, validated. See lib.ts. */
+  readonly consolePasswordPolicy?: ConsolePasswordPolicy;
 }
 
 export type FileBackedZflashCliParseResult =
@@ -143,7 +146,11 @@ const USAGE =
   "  --lb-pool <auto|first-ip-last-ip>  Cilium LoadBalancer range onto /zeta-firstboot.conf, e.g. 192.168.1.240-192.168.1.250.\n" +
   "                               'auto' derives .240-.250 of the node's /24 and refuses if it is in use. The range must be FREE\n" +
   "                               addresses on the node's LAN, outside the router's DHCP range. Omit: the installer asks; if nobody\n" +
-  "                               answers it is left UNSET (Services of type LoadBalancer stay pending) - never a default.\n";
+  "                               answers it is left UNSET (Services of type LoadBalancer stay pending) - never a default.\n" +
+  "  --console-password <default|mint>  what the zeta CONSOLE password is when none is typed at the installer prompt, onto\n" +
+  "                               /zeta-firstboot.conf. default (also what omitting this means) = the PUBLIC zeta-change-me, with a loud\n" +
+  "                               banner and a login reminder until it is changed; mint = a random one-time password shown once.\n" +
+  "                               A typed password always wins. Anyone with console access is root via sudo under 'default'.\n";
 
 function resolveTestInfraPubkeyPath(): string {
   return resolveZetaTestInfraPubkeyFromZflashModule(import.meta.url);
@@ -246,6 +253,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
   let acmeEmailFlag: string | undefined;
   let publicDomainFlag: string | undefined;
   let lbPoolFlag: string | undefined;
+  let consolePasswordFlag: string | undefined;
 
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
@@ -287,7 +295,8 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       arg === "--qemu-creds-passphrase-file" ||
       arg === "--acme-email" ||
       arg === "--public-domain" ||
-      arg === "--lb-pool"
+      arg === "--lb-pool" ||
+      arg === "--console-password"
     ) {
       const value = requireValue(args, index, arg);
       if (typeof value !== "string") return { kind: "error", error: value.error };
@@ -315,6 +324,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       else if (arg === "--acme-email") acmeEmailFlag = value;
       else if (arg === "--public-domain") publicDomainFlag = value;
       else if (arg === "--lb-pool") lbPoolFlag = value;
+      else if (arg === "--console-password") consolePasswordFlag = value;
       else inlineStagingDirectory = value;
       index++;
       continue;
@@ -343,6 +353,9 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
 
   const lbPool = planLbPool(lbPoolFlag);
   if (!lbPool.ok) return { kind: "error", error: lbPool.error };
+
+  const consolePassword = planConsolePasswordPolicy(consolePasswordFlag);
+  if (!consolePassword.ok) return { kind: "error", error: consolePassword.error };
 
   const namedArgv: string[] = [];
   if (baoLoadSiteFlag !== undefined) namedArgv.push(`--bao-load-site=${baoLoadSiteFlag}`);
@@ -395,6 +408,7 @@ export function parseFileBackedZflashArgs(args: readonly string[]): FileBackedZf
       ...(qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase }),
       ...(publicEndpoint.value === null ? {} : { publicEndpoint: publicEndpoint.value }),
       ...(lbPool.value === null ? {} : { lbPool: lbPool.value }),
+      ...(consolePassword.value === null ? {} : { consolePasswordPolicy: consolePassword.value }),
     },
   };
 }
@@ -591,6 +605,7 @@ export function runFileBackedZflashCli(
     ...(options.repoPinCommit === undefined ? {} : { repoPinCommit: options.repoPinCommit }),
     ...(options.publicEndpoint === undefined ? {} : { publicEndpoint: options.publicEndpoint }),
     ...(options.lbPool === undefined ? {} : { lbPool: options.lbPool }),
+    ...(options.consolePasswordPolicy === undefined ? {} : { consolePasswordPolicy: options.consolePasswordPolicy }),
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };

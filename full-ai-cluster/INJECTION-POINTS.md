@@ -173,14 +173,16 @@ NixOS module (declarative reader) + iter/backlog tag.
 | ----------------------- | ------------------------------------------------------------------------------------------------- |
 | **Stage**               | Cluster console at install time → typed twice                                                     |
 | **Content class**       | **Secret material** (NEVER on USB ESP)                                                            |
-| **Operator-driven via** | `read -s` prompt in `zeta-install.sh`; Enter to skip → a RANDOM one-time password is minted (below) |
+| **Operator-driven via** | `read -s` prompt in `zeta-install.sh` (a typed password always wins); Enter to skip → the console-password **policy** decides (below) |
+| **Policy carrier**      | `zflash --console-password default\|mint` → `ZETA_CONSOLE_PASSWORD_POLICY='…'` on the ESP `/zeta-firstboot.conf` (a **policy choice, not a secret**: the one ESP value in this row that is allowed there; exported by `zeta-first-boot.sh`). Unset = `default`. Never baked into the ISO's own conf. Validated by `installer/console-password-policy.ts`; shell twin `ZETA-CONSOLE-PW-POLICY` block (parity-tested); an unknown value refuses the install **before the wipe** |
 | **Hash mechanism**      | `mkpasswd -m sha-512 -s` (sha512crypt; reads from stdin to avoid argv exposure)                   |
 | **Backed by file**      | `/mnt/etc/zeta/initial-hashedpassword` (chmod 0600, chown root:root)                              |
 | **NixOS reader module** | `full-ai-cluster/nixos/modules/initial-password.nix`                                              |
 | **Iter / backlog**      | iter-5.3 (+ 081KSGS9H0008QG0R00120EEHM Bug 3b runtime-injection fix)                              |
 | **Reader entry point**  | `builtins.readFile` → `users.users.zeta.hashedPassword`                                           |
 | **Why console-only**    | Per constitutional rail above; password shouldn't transit Mac keychain OR USB ESP                 |
-| **No password typed**   | **minted per install** (24 lowercase base32 chars from `/dev/urandom`), shown ONCE on `/dev/console` + `/dev/tty1` and never on the tee'd stdout (so not in the log copied onto the node); hash written as above plus marker `/etc/zeta/initial-password-minted`; applied ONCE (state file) so a later `passwd zeta` is never reverted. Not shown anywhere -> account LOCKED (`/etc/zeta/console-password-locked`). The shared `zeta-change-me` default is retired for installer-built nodes (docs/ops/INSTALL-TIME-CONFIG.md row 19). `initial-password.nix` still carries it as the build-time default for a system built WITHOUT the installer |
+| **No password typed, policy `default`** (repo default; **the owner's decision** after a minted password scrolled off on a real node and locked them out of their own console) | the **PUBLIC** `zeta-change-me`: its sha512crypt hash (stdin, never argv) is written to the hash file plus marker `/etc/zeta/initial-password-default`; **NOT locked, NOT minted**; a loud banner (`CONSOLE PASSWORD IS THE PUBLIC DEFAULT zeta-change-me — change it: sudo passwd zeta. SSH password login stays disabled.`) goes to stdout + `/dev/console` + `/dev/tty1` and is repeated in the install-complete summary. Applied ONCE (state file) so a later `passwd zeta` is never reverted. First boot: `zeta-default-password-reminder` (service + 5-min timer) keeps `/run/zeta/console-password-is-default` while the live `/etc/shadow` hash still equals the applied one; login shells print it; `passwd zeta` clears it within one tick. **Risk:** anyone with console access is root via `sudo` (physical-access threat model) — do not use on exposed hardware. SSH `PasswordAuthentication = false` is unchanged. |
+| **No password typed, policy `mint`** (explicit opt-in: `zflash --console-password mint`) | **minted per install** (24 lowercase base32 chars from `/dev/urandom`), shown ONCE on `/dev/console` + `/dev/tty1` and never on the tee'd stdout (so not in the log copied onto the node); hash written as above plus marker `/etc/zeta/initial-password-minted`; applied ONCE (state file). Not shown anywhere -> account LOCKED (`/etc/zeta/console-password-locked`). The safe choice for anyone else (docs/ops/INSTALL-TIME-CONFIG.md row 19). `initial-password.nix` also carries the public hash as the build-time default for a system built WITHOUT the installer |
 
 ### 4. WiFi credentials
 
@@ -558,6 +560,11 @@ Allowlist from `zflash.ts`:
 --lb-pool <v>        LoadBalancer range (§11): `auto` (.240-.250 of the node's /24) or
                      <first-ip>-<last-ip> → ZETA_LB_POOL. Omitted: the installer asks;
                      nobody there → UNSET, loudly. Checked against the LAN at install.
+--console-password <v>
+                     console password when none is typed at the installer (§3):
+                     `default` (the PUBLIC zeta-change-me, loud banner; also what omitting
+                     this means) or `mint` (random one-time password) →
+                     ZETA_CONSOLE_PASSWORD_POLICY. A typed password always wins.
 ```
 
 ## In-flight injection points (substrate-engineering targets — not yet shipped)

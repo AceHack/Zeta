@@ -1111,6 +1111,33 @@ esac
 echo
 
 
+# ZETA-CONSOLE-PW-POLICY-BEGIN -----------------------------------
+# docs/ops/INSTALL-TIME-CONFIG.md row 19. What the console password is when NO password is typed:
+# `default` (the PUBLIC zeta-change-me, loudly -- the repo default, the owner's decision) or `mint`
+# (a random one-time password). From ZETA_CONSOLE_PASSWORD_POLICY (ESP /zeta-firstboot.conf via
+# zflash --console-password, or the environment); empty means `default`. Anything else is refused.
+# Shell twin of installer/console-password-policy.ts; parity-tested.
+zeta_console_password_policy_resolve() {
+  case "${ZETA_CONSOLE_PASSWORD_POLICY:-}" in
+    "") echo default ;;
+    default) echo default ;;
+    mint) echo mint ;;
+    *) return 1 ;;
+  esac
+}
+# ZETA-CONSOLE-PW-POLICY-END -------------------------------------
+
+# Refuse an unknown policy HERE, before anything is wiped: a typo that silently fell through to
+# either behaviour would be a password decision nobody made.
+if ! ZETA_CONSOLE_PASSWORD_POLICY_RESOLVED="$(zeta_console_password_policy_resolve)"; then
+  bail "ZETA_CONSOLE_PASSWORD_POLICY='${ZETA_CONSOLE_PASSWORD_POLICY:-}' is neither 'default' nor 'mint'. Re-flash with zflash --console-password default|mint (or fix the environment). Nothing has been wiped."
+fi
+echo "[console-password] policy when no password is typed: ${ZETA_CONSOLE_PASSWORD_POLICY_RESOLVED}"
+if [ "$ZETA_CONSOLE_PASSWORD_POLICY_RESOLVED" = "default" ]; then
+  echo "[console-password]   'default' = the PUBLIC zeta-change-me, with a loud banner (the owner's choice; anyone with" >&2
+  echo "[console-password]   console access is root via sudo). Choose 'mint' with zflash --console-password mint." >&2
+fi
+
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
@@ -3770,7 +3797,8 @@ else
   echo "  - photograph this diagnostic block + send to your AI collaborator"
   echo "  - install will continue with EMPTY operator-ssh-keys.nix"
   echo "  - fallback (iter-4 v1): on first boot, login at the console as zeta with the password you"
-  echo "    typed -- or the ONE-TIME password the password step below shows once on the console --"
+  echo "    typed -- or the one the password step below announces (policy 'default': the PUBLIC"
+  echo "    default, banner shown; policy 'mint': a ONE-TIME password shown once on the console) --"
   echo "    then passwd zeta, edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix,"
   echo "    sudo nixos-rebuild switch --impure --flake /etc/zeta/full-ai-cluster#$HOST"
   echo "=============================="
@@ -3798,6 +3826,30 @@ zeta_console_password_show() {
   done
   return "$shown"
 }
+
+# Policy `default` (the owner's decision; docs/ops/INSTALL-TIME-CONFIG.md row 19): the console
+# password is the PUBLIC, well-known default. Its hash goes through the same sha512crypt mechanism
+# as a typed password, fed on STDIN (never argv), and the installer says so LOUDLY. Nothing here is
+# secret: the value is public by design, which is exactly why it is announced rather than hidden.
+zeta_console_password_default_hash() {
+  printf '%s\n' "zeta-change-me" | mkpasswd -m sha-512 -s 2>/dev/null
+}
+
+zeta_console_password_default_banner_text() {
+  printf '\n  !! CONSOLE PASSWORD IS THE PUBLIC DEFAULT zeta-change-me — change it: sudo passwd zeta. SSH password login stays disabled.\n\n'
+}
+
+# The banner goes to stdout AND to every writable console device (/dev/console reaches the serial
+# console too when the kernel was given console=ttyS*). Always returns 0: the banner is a warning,
+# not a gate, and a device that refuses it must not abort the install.
+zeta_console_password_default_banner() {
+  local dev
+  zeta_console_password_default_banner_text
+  for dev in ${ZETA_CONSOLE_DEVICES:-/dev/console /dev/tty1}; do
+    zeta_console_password_default_banner_text | sudo tee "$dev" >/dev/null 2>&1 || true
+  done
+  return 0
+}
 # ZETA-CONSOLE-PW-END --------------------------------------------
 
 # ── Step 6.55: iter-5.3 prompt-for-initial-password (081KSGS9H0008QG0R003V23XNZ) ────
@@ -3814,10 +3866,11 @@ zeta_console_password_show() {
 # builtins.readFile at NixOS evaluation time + sets
 # users.users.zeta.hashedPassword.
 #
-# Fallback: if operator presses Enter to skip (no password typed),
-# the module's BACKWARD-COMPAT fallback hash (= sha512crypt of
-# "zeta-change-me") stays in effect so the system still boots
-# with a known credential.
+# Fallback: if operator presses Enter to skip (no password typed), the
+# console-password POLICY decides (ZETA_CONSOLE_PASSWORD_POLICY, resolved
+# before the wipe): `default` (the repo default) = the PUBLIC zeta-change-me,
+# loudly, never locked; `mint` = a random one-time password shown once. A
+# typed password always wins over both.
 #
 # Why type-on-console (one exception to typing-avoidance discipline):
 # secrets shouldn't transit non-operator surfaces (USB ESP, Aaron's
@@ -3829,9 +3882,15 @@ echo "[iter-5.3] ── prompt for initial password (instead of default) ──"
 echo "[iter-5.3] Set initial password for the 'zeta' user (used for"
 echo "[iter-5.3] console login; SSH uses the iter-4.2-injected pubkey)."
 echo "[iter-5.3] Operator can rotate later via 'passwd zeta' on the"
-echo "[iter-5.3] installed system. Press Enter to skip: a RANDOM ONE-TIME password is"
-echo "[iter-5.3] minted for THIS install and shown once on the console -- never a"
-echo "[iter-5.3] password every install shares."
+if [ "${ZETA_CONSOLE_PASSWORD_POLICY_RESOLVED:-default}" = "mint" ]; then
+  echo "[iter-5.3] installed system. Press Enter to skip: a RANDOM ONE-TIME password is"
+  echo "[iter-5.3] minted for THIS install and shown once on the console -- never a"
+  echo "[iter-5.3] password every install shares. (console-password policy: mint)"
+else
+  echo "[iter-5.3] installed system. Press Enter to skip: the console password becomes the"
+  echo "[iter-5.3] PUBLIC default (console-password policy: default; the owner's choice for this"
+  echo "[iter-5.3] install). A loud banner says so; change it with 'sudo passwd zeta'."
+fi
 echo
 INJECTED_PW=""
 INJECTED_PW_CONFIRM=""
@@ -3843,7 +3902,7 @@ if zeta_install_prompts_enabled; then
     read -r -s -p "[iter-5.3] Confirm:                       " INJECTED_PW_CONFIRM
     echo
     if [ "$INJECTED_PW" != "$INJECTED_PW_CONFIRM" ]; then
-      echo "[iter-5.3]   WARN: passwords don't match; skipping (keeps default)"
+      echo "[iter-5.3]   WARN: passwords don't match; skipping (the console-password policy applies instead)"
       INJECTED_PW=""
     fi
   fi
@@ -3873,8 +3932,29 @@ if [ -n "$INJECTED_PW" ]; then
     echo "[iter-5.3]   WARNING: mkpasswd produced an invalid hash; the zeta console password is LOCKED (not defaulted)." >&2
     echo "[iter-5.3]   Log in over SSH with the injected key, then 'sudo passwd zeta'." >&2
   fi
+elif [ "${ZETA_CONSOLE_PASSWORD_POLICY_RESOLVED:-default}" = "default" ]; then
+  # docs/ops/INSTALL-TIME-CONFIG.md row 19, policy `default` (the repo default; the OWNER's decision:
+  # the minted one-time password scrolled off on a real node and left the owner locked out of their
+  # own console). The PUBLIC default: hash of the well-known password via the same sha512crypt
+  # mechanism (stdin, never argv), NO lock, NO mint, and a banner that cannot be missed. The marker
+  # makes initial-password.nix apply it ONCE and keeps a first-boot reminder until it changes.
+  DEFAULT_PW_HASH="$(zeta_console_password_default_hash || true)"
+  sudo mkdir -p /mnt/etc/zeta
+  if printf '%s' "$DEFAULT_PW_HASH" | grep -Eq '^\$6\$'; then
+    printf '%s\n' "$DEFAULT_PW_HASH" | sudo tee /mnt/etc/zeta/initial-hashedpassword >/dev/null
+    sudo chmod 0600 /mnt/etc/zeta/initial-hashedpassword
+    sudo chown root:root /mnt/etc/zeta/initial-hashedpassword
+  else
+    echo "[iter-5.3]   WARN: mkpasswd could not hash the public default; the module's build-time fallback hash" >&2
+    echo "[iter-5.3]   (the same public password) applies instead. It is still NOT locked and NOT minted." >&2
+  fi
+  printf '1\n' | sudo tee /mnt/etc/zeta/initial-password-default >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/initial-password-default
+  echo "[iter-5.3]   no password entered: console-password policy 'default' -- the PUBLIC default is in effect."
+  zeta_console_password_default_banner
+  unset DEFAULT_PW_HASH
 else
-  # docs/ops/INSTALL-TIME-CONFIG.md row 19. No password was typed -- which the zero-typing path
+  # docs/ops/INSTALL-TIME-CONFIG.md row 19, policy `mint`. No password was typed -- which the zero-typing path
   # always is -- and the installed node used to keep the iter-4.x default `zeta-change-me`: the
   # SAME known password on every install. Now this install gets its OWN random one-time password,
   # shown once on the console (NOT through this script's tee'd stdout, so it is not in the install
@@ -5748,6 +5828,14 @@ echo "    user:     zeta"
 echo "    password: documented at install-time only; not shown"
 echo "              here (security + UX)"
 echo
+if [ -f /mnt/etc/zeta/initial-password-default ]; then
+  # The install-time policy left the console on the PUBLIC default (docs/ops/INSTALL-TIME-CONFIG.md
+  # row 19). Said again here because the 6.55 banner scrolled away long ago; the literal is not
+  # repeated in this block on purpose (the install-complete non-disclosure check reads it).
+  echo "  !! CONSOLE PASSWORD IS THE PUBLIC DEFAULT (install policy 'default'): change it with"
+  echo "  !!   sudo passwd zeta        (SSH password login stays disabled; login shells remind you)"
+  echo
+fi
 if [ "$GH_AUTH_OK" = 1 ] && [ "$GH_KEY_COUNT" != "0" ]; then
   echo "  iter-5.4.0 GH-AUTH + OPERATOR-PUBKEY INJECTION: SUCCESS ($GH_KEY_COUNT keys)"
   echo "    SSH access works on first boot from any machine using"

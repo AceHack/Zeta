@@ -49,6 +49,7 @@
  *     --host <name>  --role <r> [--flake-host <h>] [--join-server-url <u>] [--join-token <path>]
  *     --acme-email <addr> --public-domain <domain>   --repo-pin <40-hex>
  *     --lb-pool <auto|first-ip-last-ip>   Cilium LoadBalancer range (checked against the LAN at install)
+ *     --console-password <default|mint>   console password when none is typed at the installer (default: the PUBLIC zeta-change-me)
  *     -h, --help
  *   iso-path defaults to the newest %USERPROFILE%\Downloads\zeta-installer-*.iso
  *
@@ -83,6 +84,7 @@ import { firstbootRoleFromFlags } from "./firstboot-role.ts";
 import { railFindingsForEspWrites } from "./injection-rail.ts";
 import { planPublicEndpoint } from "../installer/public-endpoint.ts";
 import { planLbPool } from "../installer/lan-config.ts";
+import { planConsolePasswordPolicy } from "../installer/console-password-policy.ts";
 import { readFileBounded } from "../io/safe-io.ts";
 
 // ── Safety-rail constants — shared with every arm, not mirrored ──────
@@ -711,6 +713,7 @@ export interface WindowsFlasherArgs {
   readonly acmeEmail?: string;
   readonly publicDomain?: string;
   readonly lbPool?: string;
+  readonly consolePassword?: string;
   readonly repoPin?: string;
 }
 
@@ -726,6 +729,7 @@ const VALUE_FLAG_FIELDS: Readonly<Record<string, keyof WindowsFlasherArgs>> = {
   "--acme-email": "acmeEmail",
   "--public-domain": "publicDomain",
   "--lb-pool": "lbPool",
+  "--console-password": "consolePassword",
   "--repo-pin": "repoPin",
 };
 
@@ -766,6 +770,17 @@ export type EspWritesResult =
   | { readonly ok: false; readonly message: string };
 
 /**
+ * The `--dry-run` line for the console-password policy. Said even when the flag was omitted: the
+ * default is the PUBLIC password, and a plan that stays silent about it would hide the one
+ * decision this flag exists to make visible.
+ */
+export function consolePasswordDryRunLine(policy: string | undefined): string {
+  if (policy === "mint") return "mint (a random one-time password shown once; locked if unseen)";
+  if (policy === "default") return "default (the PUBLIC zeta-change-me, loud banner + login reminder; console access = root via sudo)";
+  return "default (flag omitted -> the installer's repo default: the PUBLIC zeta-change-me; pass --console-password mint to avoid it)";
+}
+
+/**
  * The ESP writes for this flash, from the SHARED planner (lib.ts
  * `planFileBackedZflashImage`) — so a Windows stick carries byte-for-byte the
  * payloads the other arms bake for the same flags: pubkey, hostname, firstboot
@@ -794,12 +809,15 @@ export function planWindowsEspWrites(
   if (!pe.ok) return { ok: false, message: `public TLS refused: ${pe.error}` };
   const lb = planLbPool(args.lbPool);
   if (!lb.ok) return { ok: false, message: `LoadBalancer range refused: ${lb.error}` };
+  const cp = planConsolePasswordPolicy(args.consolePassword);
+  if (!cp.ok) return { ok: false, message: `console password policy refused: ${cp.error}` };
   const nothingAsked =
     pubkeyContent === undefined &&
     args.host === undefined &&
     role.value === undefined &&
     pe.value === null &&
     lb.value === null &&
+    cp.value === null &&
     args.repoPin === undefined;
   if (nothingAsked) return { ok: true, value: [] };
   const planned = planFileBackedZflashImage({
@@ -812,6 +830,7 @@ export function planWindowsEspWrites(
     ...(args.joinTokenPath === undefined ? {} : { joinTokenSourcePath: args.joinTokenPath }),
     ...(pe.value === null ? {} : { publicEndpoint: pe.value }),
     ...(lb.value === null ? {} : { lbPool: lb.value }),
+    ...(cp.value === null ? {} : { consolePasswordPolicy: cp.value }),
     ...(args.repoPin === undefined ? {} : { repoPinCommit: args.repoPin }),
   });
   if (!planned.ok) return { ok: false, message: planned.error };
@@ -1057,6 +1076,7 @@ export const VALUE_FLAGS: readonly string[] = [
   "--acme-email",
   "--public-domain",
   "--lb-pool",
+  "--console-password",
   "--repo-pin",
 ];
 
@@ -1120,6 +1140,8 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
         "    --acme-email <addr> --public-domain <domain>   public TLS pair, appended to /zeta-firstboot.conf\n" +
         "    --lb-pool <auto|first-ip-last-ip>   Cilium LoadBalancer range (FREE addresses on the node's LAN, outside DHCP);\n" +
         "                               appended to /zeta-firstboot.conf; the installer checks it against the LAN\n" +
+        "    --console-password <default|mint>   console password when none is typed at the installer; default (also: omitted) = the PUBLIC\n" +
+        "                               zeta-change-me with a loud banner; mint = a random one-time password. Appended to /zeta-firstboot.conf\n" +
         "    --repo-pin <40-hex>        /zeta-repo-pin (pin the installed tree to a commit)\n",
     );
     process.exit(0);
@@ -1227,6 +1249,7 @@ async function main(runner: CommandRunner = realRunner): Promise<void> {
         (espFiles.value.length > 0
           ? `  <bake into the copy's ESP (MBR 0xEF @ LBA ${espLoc.value.startLba}), each read back and compared:\n${bakeList}>\n`
           : `  <no ESP payloads (--no-inject, nothing else asked)>\n`) +
+        `  <console password when none is typed at the installer: ${consolePasswordDryRunLine(args.consolePassword)}>\n` +
         diskPreparationScripts(disk.number).map((s) => `  ${s}\n`).join("") +
         `  <raw write -> ${drivePath}: bytes past ${human(PARTITION_TABLE_BYTES)} first, partition table LAST>\n` +
         `  <read back the written range from ${drivePath}, compare sha256 with the baked image>\n` +

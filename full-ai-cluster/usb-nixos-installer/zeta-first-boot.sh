@@ -1112,6 +1112,13 @@ export ZETA_PUBLIC_DOMAIN="${ZETA_PUBLIC_DOMAIN:-}"
 # Empty is the normal value: zeta-install then offers a prompt behind one keypress and,
 # failing that, leaves the pool UNSET -- loudly, never a placeholder.
 export ZETA_LB_POOL="${ZETA_LB_POOL:-}"
+# docs/ops/INSTALL-TIME-CONFIG.md row 19: what the `zeta` console password is when none is typed
+# at the installer prompt -- `default` (the PUBLIC zeta-change-me, loudly) or `mint` (a random
+# one-time password). zflash --console-password writes it to the ESP conf. Same pass-through:
+# sourced vars need an explicit export. Empty is the normal value and means `default`; zeta-install
+# validates it and REFUSES the install, before the wipe, on anything else. `${VAR:-}` and nothing
+# more: this line sets no policy of its own, and the ISO's own conf never carries one.
+export ZETA_CONSOLE_PASSWORD_POLICY="${ZETA_CONSOLE_PASSWORD_POLICY:-}"
 # The operator override for the pod/service-vs-LAN address-space collision refusal.
 # Like ZETA_ALLOW_LONGHORN_UNDERSIZED it is NEVER baked into the ISO's own conf: a value
 # there would clear the guard for every install, which is the guard deleting itself.

@@ -1,11 +1,13 @@
 /**
  * console-password-shell.test.ts - docs/ops/INSTALL-TIME-CONFIG.md row 19.
  *
- * With no password typed - which the zero-typing path always is - the installed node kept the
- * iter-4.x default `zeta-change-me`: the SAME known console password on every install. Now each
- * install mints its own random one-time password, shown ONCE on the console devices and NEVER on
- * the script's tee'd stdout (that is copied into the install log on the node); when it cannot be
- * shown, the account is LOCKED rather than defaulted.
+ * THE `mint` POLICY. With no password typed - which the zero-typing path always is - the installed
+ * node kept the iter-4.x default `zeta-change-me`: the SAME known console password on every install.
+ * Under policy `mint` each install instead mints its own random one-time password, shown ONCE on the
+ * console devices and NEVER on the script's tee'd stdout (that is copied into the install log on the
+ * node); when it cannot be shown, the account is LOCKED rather than defaulted. `mint` is the explicit
+ * opt-in (`zflash --console-password mint`); the repo default is the owner's `default` policy, which is
+ * pinned in console-password-policy-shell.test.ts (the policy, both branches executed, the reminder).
  *
  * Extracts the ZETA-CONSOLE-PW block from the real zeta-install.sh and runs it under bash; the call
  * site and the Nix activation are pinned on their text (no nix here: stated, not implied).

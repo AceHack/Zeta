@@ -128,7 +128,7 @@ describe("device zflash: the same flag, the same validator", () => {
 
   test("the value reaches the ESP: cli.ts hands it to the injector alongside the public-TLS pair", () => {
     const cli = readFileSync(resolve(import.meta.dir, "cli.ts"), "utf8");
-    expect(cli).toContain("firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value)");
+    expect(cli).toContain("firstbootRole.value, joinTokenPathFlag, publicEndpoint.value, lbPool.value, consolePassword.value)");
     expect(cli).toContain("renderLbPoolConfLine(lbPool)");
   });
 });

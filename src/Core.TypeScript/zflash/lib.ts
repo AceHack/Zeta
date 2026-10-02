@@ -15,6 +15,11 @@ import { isFullGitCommitSha } from "../installer/repo-pin.ts";
 import { LONGHORN_UNDERSIZED_OVERRIDE_ENV } from "../installer/longhorn-capacity-preflight.ts";
 import { planPublicEndpoint, renderPublicEndpointConfLines, type PublicEndpoint } from "../installer/public-endpoint.ts";
 import { LB_POOL_AUTO, planLbPool, renderLbPoolConfLine, type LbPoolSpec } from "../installer/lan-config.ts";
+import {
+  planConsolePasswordPolicy,
+  renderConsolePasswordPolicyConfLine,
+  type ConsolePasswordPolicy,
+} from "../installer/console-password-policy.ts";
 
 /**
  * RFC1123 hostname regex.
@@ -309,6 +314,15 @@ export interface FileBackedZflashImagePlanInput {
    * wipe. Omitted -> no line at all, and the installer asks instead.
    */
   readonly lbPool?: LbPoolSpec;
+  /**
+   * docs/ops/INSTALL-TIME-CONFIG.md row 19: the console-password policy (zflash `--console-password`),
+   * appended to the ESP `/zeta-firstboot.conf` as `ZETA_CONSOLE_PASSWORD_POLICY='default|mint'`. What
+   * the `zeta` console password is when NO password is typed at the installer prompt (a typed one
+   * always wins). Re-validated here by the same `planConsolePasswordPolicy` the CLI runs. Omitted ->
+   * no line at all, and the installer's own default (`default`: the public `zeta-change-me`, loudly)
+   * applies. Never baked into the ISO's own conf.
+   */
+  readonly consolePasswordPolicy?: ConsolePasswordPolicy;
   /**
    * WP21 (081M35C7NJR087G0R002S4R654): when set, writes `/zeta-repo-pin`
    * (`ZETA_ISO_COMMIT='<commit>'`) so the booting node checks out this exact
@@ -710,6 +724,30 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
           return {
             ok: false,
             error: `lbPool cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
+          };
+        }
+        espWrites[existing] = { ...prior, content: prior.content + line };
+      } else {
+        espWrites.push({ content: line, destination: ZETA_FIRSTBOOT_CONF_ESP_DESTINATION });
+      }
+    }
+  }
+
+  // docs/ops/INSTALL-TIME-CONFIG.md row 19 -- the console-password policy, appended to the same ONE
+  // conf and validated by the same function the CLI used. Ordered before WP27 below so that override
+  // stays the conf's last line.
+  if (input.consolePasswordPolicy !== undefined) {
+    const cp = planConsolePasswordPolicy(input.consolePasswordPolicy);
+    if (!cp.ok) return { ok: false, error: cp.error };
+    if (cp.value !== null) {
+      const line = renderConsolePasswordPolicyConfLine(cp.value);
+      const existing = espWrites.findIndex((w) => w.destination === ZETA_FIRSTBOOT_CONF_ESP_DESTINATION);
+      if (existing >= 0) {
+        const prior = espWrites[existing];
+        if (prior === undefined || prior.content === undefined) {
+          return {
+            ok: false,
+            error: `consolePasswordPolicy cannot append to ${ZETA_FIRSTBOOT_CONF_ESP_DESTINATION}: that ESP write has no inline content`,
           };
         }
         espWrites[existing] = { ...prior, content: prior.content + line };
