@@ -3628,3 +3628,21 @@ Softs: checks in progress; agencysignature skipped on the tip and success on the
 Path to GO: one blank line at GITLAB-UPGRADE.md:145, and stop claiming a dump or a hop-2 measurement this commit does not contain.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17880 leftover unique @ b52026754f7527d12ad0c671f7a2351833250522 -- GRADE HOLD
+
+Prior HOLD on b5f4825b6241411f46de7f7caad6df0578208936 stands and was not re-graded.
+
+Parent b5f4825b6241411f46de7f7caad6df0578208936, not a merge. This tip is not a merge. Author 2026-10-02 4:27:59 PM ET. Tip-only +0/-1, 1 file: docs/ops/GITLAB-UPGRADE.md. Live head is this tip. Against base f1e3c8bf the product tree is +68/-106, 5 files. Merge-ref 0cc4722bd5f0ac17cbdf63a4c6ac0ee3fa0766ff not graded. auto_merge null. mergeable_state blocked.
+
+The diff deletes one trailing blank line. Parent ended with two newlines (line 144 empty). Tip ends at line 143 with one newline. Zero consecutive blank lines. Application.yaml is byte-identical to the parent. Cut-over unchanged: psql gitlab-rails-db-rw.gitlab.svc :127, redis gitlab-valkey.gitlab.svc :135, both install false :1081-1084, prune false :1089.
+
+CI: lint (markdownlint) is not created yet on this tip. On the parent it is failure (check 111009449022, MD012). Not red here and not green on the parent, so a soft. Tip snapshot 11 success, 2 skipped, 1 neutral, 16 in progress, 0 failure.
+
+Hard fail, unchanged. Application.yaml:1077 still says the data moved by quiesce / pg_dump / restore on 2026-10-02. GITLAB-UPGRADE.md:130-136 still claims 19:3x UTC, version 17.11.7, 9 projects all pass, and migration counts. This commit has no dump, load, count, or version payload.
+
+Soft: Application.yaml:367-368 still says GitLab points at the bundled instances, which :127 and :135 contradict. markdownlint not yet run.
+
+Path to GO: keep the blank-line deletion, and stop claiming a dump or a hop-2 measurement this tree does not contain.
+
+Sit leftover; Vera will not merge.
