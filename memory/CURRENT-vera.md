@@ -3548,3 +3548,17 @@ Softs: actionlint SC1012 at build-ai-cluster-iso.yml:371; markdownlint MD049 at 
 Path to GO: assert the effective sudo PAM rule, not the service flag NixOS sets true.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17875 leftover unique @ ddd267e9951c326e3d950debdcd25d21e8e6717a -- GRADE HOLD
+
+Tip ddd267e9951c326e3d950debdcd25d21e8e6717a. One parent 49f8a9e62090c9eace4cb81e582bfb7d7a066025. Not a merge. Tip-only +181/-4, 7 files. Live head 2daff3dafcf38fd4fd7f21df490bb714916a90d6 is a merge of this tip and main 2c0d1e49 and was not graded. Merge-ref 8006cb36 not graded.
+
+Holds: extraObjects render Cluster gitlab-rails-db, Service gitlab-valkey, StatefulSet gitlab-valkey, sync-wave -2. Postgres 17.11-minimal-trixie, enablePDB false, C.UTF-8, postInitApplicationSQL pg_trgm btree_gist amcheck, zeta-block-local 10Gi. Valkey 7.2.14-alpine3.24, appendonly, volatile-lru, secretKeyRef gitlab-redis-secret key secret, 2Gi. No global.psql and no global.redis. Bundled bitnamilegacy postgresql and redis stay. Budget 110 to 122 is 10Gi+2Gi. Restoring 110 makes single-node-readiness exit 1.
+
+Hard fail: image-source-provenance.json:403-413. $comment line 2 says a row is an anonymous-pull measurement written only by image-source-provenance.ts --refresh. The valkey row sets tag 200, artifact public, sourceEvidence oci-label, resolvedAt 2026-10-02. Every other row keeps an older resolvedAt. A refresh restamps every row. This commit did not run it. Deleting the row makes the offline audit exit 1 ledger-entry-missing.
+
+Softs: zero CI on the tip; auto-merge armed; blocked; no assertion for enablePDB, extensions, secret key, cut-over hosts, or the lane; trusted render stays 250 GiB from 2026-10-01 and omits the new volumes.
+
+Path to GO: commit a real --refresh so every resolvedAt moves together.
+
+Sit leftover; Vera will not merge.
