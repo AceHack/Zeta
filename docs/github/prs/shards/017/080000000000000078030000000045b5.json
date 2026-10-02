@@ -1,0 +1,12 @@
+{
+  "pr_number": 17845,
+  "archive_path": "docs/history/pr-reviews/2026/10/02/PR-17845-fix-k8s-host-inotify-limits-sized-for-the-whole-roster-virt-handler-died-on-too-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-02T01:30:10.630Z",
+  "schema_version": "v1",
+  "commit_sha": "1d3aecc56eb99141c85c0c06aaee3ab28290315d",
+  "title": "fix(k8s): host inotify limits sized for the whole roster -- virt-handler died on 'too many open files'",
+  "state": "MERGED",
+  "merged_at": "2026-10-02T01:29:34Z",
+  "head_ref": "fix/inotify-limits-virt-handler-too-many-open-files"
+}
