@@ -3910,3 +3910,19 @@ Hard fail: verified and MEASURED sentences with no artifact. Commit message Veri
 Path to GO: delete those sentences or put the observation in the tree. The short paths, ClusterIP, port-22 rule, policy, and 10Gi do not need another change.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17894 leftover unique @ 43dce2421af0a62bf794f31f33573152bacaf7ee -- GRADE GO
+
+Does not clear the HOLDs on #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17891 tip fecc0060, #17885 tip 0076be63, #17887 tip 4f184fb7, or #17884 tip 17b161df. Parent 00cd5ebb059c45f8d8fc6be159e9483fdd7d30fd is main and the PR base. Not graded. Not a merge. Live head is the tip. Author 2026-10-03 1:08:54 AM ET. Tip-only +70/-5, 4 files. auto_merge null. Squash auto-merge not armed. Vera will not merge.
+
+Product holds. Five absence searches in windows-11-vms.test.ts are now equality: :236 includes("runner-token").toBe(false), :243 regex.test(desktopBootstrap).toBe(false), :527 includes(PASSWORD_PLACEHOLDER).toBe(false), :528 includes("<Password>").toBe(false), :532 yamlPassword.test(...).toBe(false). Each went red when the forbidden string was put back. Scanner unchanged. toBe is skipped at audit-check-arity-nonequality.ts:203. New tests at audit-check-arity-nonequality.test.ts:134-142 lock TOKEN not.toContain (counted) and includes equality (not counted). Per-file R5 count is 0. Full audit: 2711 files, 0 R4, 169 R5, exit 0. No --accept-raises. Census file not in the diff. No Windows VM product path in the diff.
+
+Work item 081M402JGW5087G0R001FT4YZ4 is a real ledger file plus a created event.
+
+bun windows-11-vms.test.ts: 70 pass, 0 fail, 523 expects. Hygiene test file: 38 pass, 0 fail, 62 expects.
+
+CI: 0 completed tip failures. Parent lint (bash retirement) was failure (0 -> 5) and is success on the tip (169 R5, job 111134444068). Five checks still in progress. gate (required) absent on the tip, success on the parent. Soft. chart-currency still exits 1 inside the green job, same as the parent.
+
+Softs: work-item priority P1 vs event payload P2. Item minted state backlog while the fix is in the same commit. /i changed to /iu. Work item calls #17892 the archive of #17891; the five sites came from the Windows VM commit. No MEASURED sentence in this diff.
+
+Sit leftover; Vera will not merge.
