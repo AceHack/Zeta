@@ -3892,3 +3892,21 @@ CI about 12:04 AM ET: parent has zero check runs. Tip: 79 success, 25 skipped, 1
 Path to GO: delete the MEASURED sentences or put the observation in the tree. The route can stay.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17893 leftover unique @ ff0f9e892f2369f398f6653cf9802f594bab008b -- GRADE HOLD
+
+Does not clear the HOLDs on #17890, #17885, #17887, #17884, or #17891. Parent 00cd5ebb059c45f8d8fc6be159e9483fdd7d30fd is main and the PR base. Not graded. Not a merge. Live head is the tip. Author 2026-10-03 12:58:26 AM ET. Tip-only +314/-50, 8 files. Squash auto-merge armed. Not disarmed. Vera will not merge.
+
+Product holds. RunSynchronous path of 505 characters is now two commands, decoded 157 and 161 (Autounattend.xml:156 and :161). All 28 Autounattend Path elements are 161 or shorter. Test reads both answer files (windows-11-vms.test.ts:511-512) and asserts every RunSynchronous Path <= 259 (:579). A path of 282 went red. Windows Server answer files absent from the diff and byte-identical (blobs 0d510bf658b5f9d2848679d819e7c23b4fa46f75 and 35f5a4209fd73605b08a90d08ca6e2b59b2cf715). Their long path is 477, not 500.
+
+OpenSSH sha256 ddec9c53864280759cf9f74791cefd387100e3946aa849a1c138a4ed1b96b7d9 at 30-win11-desktop.yaml:38-39. Key-only at :117-118. ConfigMap win11-desktop-ssh-keys at :323-326. Service ClusterIP port 22 at :184-190. Firewall port 22 only at :131. Cilium ingress from host and fromEndpoints {} at 40-network-policy.yaml:14-29. ISO 10Gi at 10-iso.yaml:54 (parent was 8Gi).
+
+bun: 73 pass, 0 fail, 580 expects. Mutations red at :579, :448, :402, :408, :455, :425, :127. One sha256 hex digit stayed green. Test only checks /^[0-9a-f]{64}$/ at :442. Significant soft.
+
+CI ~1:08 AM ET. Only completed failure is lint (bash retirement), already failure on the parent (0 -> 5 there, 0 -> 8 here). Soft. Three checks still in progress, success on the parent. agencysignature (main tip) skipped on the tip, success on the parent. Soft.
+
+Hard fail: verified and MEASURED sentences with no artifact. Commit message Verified live paragraph. WINDOWS-11-VMS.md:5-6, :52, :202-203, :319-320, :439-451, :502-511. Autounattend.xml:141-144. Test title at windows-11-vms.test.ts:575. The unproven list at :453-458 is a non-claim. PR-body copies are not this tip's fail. Older measured sentences already on the parent remain the standing #17890 HOLD.
+
+Path to GO: delete those sentences or put the observation in the tree. The short paths, ClusterIP, port-22 rule, policy, and 10Gi do not need another change.
+
+Sit leftover; Vera will not merge.
