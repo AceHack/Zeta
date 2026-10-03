@@ -451,7 +451,7 @@ describe("D. RDP is reached through an SSH tunnel to a ClusterIP, never publishe
     expect(desktopBootstrap.indexOf("does not match the pinned")).toBeLessThan(desktopBootstrap.indexOf("Move-Item $tmp $Dest"));
     expect(desktopBootstrap).toContain("'PasswordAuthentication no'");
     expect(desktopBootstrap).toContain("'PubkeyAuthentication yes'");
-    expect(desktopBootstrap).not.toMatch(/PasswordAuthentication yes/);
+    expect(/PasswordAuthentication yes/u.test(desktopBootstrap)).toBe(false);
     expect(desktopBootstrap).toContain("administrators_authorized_keys");
     expect(desktopBootstrap).toContain("/inheritance:r");
     expect(desktopBootstrap).toContain("-LocalPort 22 ");
@@ -641,7 +641,7 @@ describe("F. the Secret renderer: fills the password and computer name once, esc
       expect(d.metadata.namespace).toBe("windows-vms");
       expect(Object.keys(d.stringData).sort()).toEqual(["Autounattend.xml", "Unattend.xml"]);
       expect(d.stringData["Autounattend.xml"]).toContain(`<Value>${good}</Value>`);
-      expect(d.stringData["Autounattend.xml"]).not.toContain(PASSWORD_PLACEHOLDER);
+      expect(String(d.stringData["Autounattend.xml"]).includes(PASSWORD_PLACEHOLDER)).toBe(false);
       expect(d.stringData["Autounattend.xml"]).not.toContain(COMPUTER_NAME_PLACEHOLDER);
       expect(d.stringData["Unattend.xml"]).not.toContain(good);
     }

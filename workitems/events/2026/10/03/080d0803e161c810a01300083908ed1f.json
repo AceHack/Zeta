@@ -1,0 +1,14 @@
+{
+  "id": "080d0803e161c810a01300083908ed1f",
+  "at": "2026-10-03T06:38:20.217Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M407RB1R087G0R003ZEAPEZ",
+    "type": "bug",
+    "title": "Strengthen remaining windows-11-vms R5 sites after #17893",
+    "slug": "strengthen-remaining-windows-11-vms-r5-sites-after-17893",
+    "priority": "P2",
+    "filename": "081M407RB1R087G0R003ZEAPEZ-strengthen-remaining-windows-11-vms-r5-sites-after-17893.md"
+  }
+}
