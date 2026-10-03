@@ -130,6 +130,16 @@ describe("R5 -- absence assertions under a taint / 2-safety claim are RECOGNISED
     const src = ts("expect(/jsonpath|yaml|json|go-template|base64/u.test(secretCalls[0])).toBe(false);");
     expect(sitesOf("t.test.ts", src)).toHaveLength(0);
   });
+
+  test("not.toContain of a TOKEN literal is the windows-11-vms live shape (081M402JGW5087G0R001FT4YZ4)", () => {
+    const src = ts('expect(JSON.stringify(vmDesktop)).not.toContain("runner-token");');
+    expect(sitesOf("t.test.ts", src)).toHaveLength(1);
+  });
+
+  test("boolean equality on String.includes is not absence, even when the needle names TOKEN", () => {
+    const src = ts('expect(JSON.stringify(vmDesktop).includes("runner-token")).toBe(false);');
+    expect(sitesOf("t.test.ts", src)).toHaveLength(0);
+  });
 });
 
 describe("R5 ratchets in BOTH directions", () => {

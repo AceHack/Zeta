@@ -229,14 +229,18 @@ describe("B. the tag contract: the two runners can never take each other's jobs"
     expect(token.secret.volumeLabel).toBe("ZETATOKEN");
     const desktopVolumes = vmDesktop.spec.template.spec.volumes as Doc[];
     expect(desktopVolumes.find((v) => v.name === "runner-token")).toBeUndefined();
-    expect(JSON.stringify(vmDesktop)).not.toContain("runner-token");
+    // Equality on `.includes()`, not `not.toContain`: R5 counts an absence
+    // search whose matcher names token as one rendering of a leak, never its
+    // absence (`audit-check-arity-nonequality.ts`). `toBe(false)` is the same
+    // claim with arity that can fail.
+    expect(JSON.stringify(vmDesktop).includes("runner-token")).toBe(false);
     // the minting Job writes the Secret the copier reads
     expect(win.secret).toBe("gitlab-windows-runner-token");
     expect(readFileSync(RUNBOOK, "utf8")).toContain("--from gitlab/gitlab-windows-runner-token");
   });
 
   test("VM B is not a runner: nothing in its bootstrap downloads, registers or installs gitlab-runner", () => {
-    expect(desktopBootstrap).not.toMatch(/gitlab-runner|glrt-|runner-token|--token/i);
+    expect(/gitlab-runner|glrt-|runner-token|--token/iu.test(desktopBootstrap)).toBe(false);
   });
 
   test("registration is the authentication-token flow: a glrt- token and none of the flags GitLab refuses alongside it", () => {
@@ -553,11 +557,15 @@ describe("E. the answer file: Windows 11 Enterprise Evaluation, no credential, n
   test("the password and the computer name are placeholders, EXACTLY once each, and no literal credential is committed", () => {
     expect(autounattend.split(PASSWORD_PLACEHOLDER).length - 1).toBe(1);
     expect(autounattend.split(COMPUTER_NAME_PLACEHOLDER).length - 1).toBe(1);
-    expect(unattend).not.toContain(PASSWORD_PLACEHOLDER);
-    expect(unattend).not.toContain("<Password>");
+    // Equality on `.includes()` / `.test()`, not `not.toContain` / `not.toMatch`:
+    // R5 counts an absence search whose matcher names PASSWORD as one rendering
+    // of a leak, never its absence. `toBe(false)` can fail.
+    expect(unattend.includes(PASSWORD_PLACEHOLDER)).toBe(false);
+    expect(unattend.includes("<Password>")).toBe(false);
     for (const m of autounattend.matchAll(/<Value>([^<]*)<\/Value>/g)) expect(["1", PASSWORD_PLACEHOLDER]).toContain(m[1]!);
     // no plaintext password anywhere in the manifests (the Secrets are rendered by the owner)
-    for (const f of walk(DIR).filter((p) => p.endsWith(".yaml"))) expect(readFileSync(f, "utf8")).not.toMatch(/WINDOWS_ADMIN_PASSWORD\s*=\s*\S|password:\s*\S/i);
+    const yamlPassword = /WINDOWS_ADMIN_PASSWORD\s*=\s*\S|password:\s*\S/iu;
+    for (const f of walk(DIR).filter((p) => p.endsWith(".yaml"))) expect(yamlPassword.test(readFileSync(f, "utf8"))).toBe(false);
   });
 
   test("it hands off to each VM's own bootstrap: copy bootstrap.ps1 off whichever CD carries it, schedule it at startup as SYSTEM", () => {

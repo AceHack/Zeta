@@ -1,0 +1,14 @@
+{
+  "id": "080d08014a1c3010a01300084b523e92",
+  "at": "2026-10-03T05:07:46.694Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M402JGW5087G0R001FT4YZ4",
+    "type": "bug",
+    "title": "Strengthen windows-11-vms R5 absence assertions",
+    "slug": "strengthen-windows-11-vms-r5-absence-assertions",
+    "priority": "P2",
+    "filename": "081M402JGW5087G0R001FT4YZ4-strengthen-windows-11-vms-r5-absence-assertions.md"
+  }
+}
