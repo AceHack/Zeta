@@ -3738,3 +3738,21 @@ Softs: six checks still running. Squash auto-merge armed. Not disarmed. mergeabl
 Path to GO: add a provenance ledger row the offline audit accepts, and stop stating measurements the tree does not hold.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17884 leftover unique @ 8b930b9b035f67701711dd4c010dedb091db94ef -- GRADE HOLD
+
+Tip 8b930b9b035f67701711dd4c010dedb091db94ef only. Prior HOLD on eaaf83f1f76a8c08fcf4ad21b0b2898ff73e0f34 stands and was not re-graded. One parent, that SHA, not a merge. Live head is this tip. Merge 4390e45d and product a3689f57 were not graded as their own SHAs. Author maximdolphin, 2026-10-02 8:54:59 PM ET. Tip-only +12/-2, 3 files.
+
+The allowlist half is fixed. local-storage-placement.sh is under host-service wrappers, 10 to 11. Inventory --enforce exit 0, retained 39 expected 39. The cite token is fixed: argocd-health-test.ts:555 is pvc-total full-ai-cluster/gitlab 62, and the snapshot is 62 GiB / 3 claims (gitaly 50 + rails-db 10 + valkey 2). Mutating the cite to 63 went red.
+
+Hard fail 1 is not fully gone. reason-truth only parses the cite. argocd-health-test.ts:525-526 still says WHAT IS MEASURED NOW is 66 GiB, gitaly 50, postgresql 8, redis 8. :536 still says 66 GiB of node-local claims.
+
+Hard fail 2 is still on the tree. STORAGE-RELOCATION.md:20-21 still states root 75.6 GiB used, containerd 37.5 GiB, and 22 local-path PVCs 8.6 GiB. :27-28 still says a read-only hostPath helper measured them. No command artifact. Baseline reasons at rendered-storage-claims.baseline.json:85 and :91 still cite live sizes the checker never opens. The PR body still claims a live CNPG webhook dry run with nothing in the tree.
+
+Standing facts unchanged: zeta-block-replicated, ladder 1043, node-local 186, 607 GiB selects minimal. Not a hold.
+
+CI: 48 checks, 0 failure, 20 in progress. No red-on-tip green-on-base. Squash auto-merge armed. Not disarmed.
+
+Path to GO: rewrite the 66 GiB sentences to the 62 GiB render, and remove or artifact the live-byte and webhook claims.
+
+Sit leftover; Vera will not merge.
