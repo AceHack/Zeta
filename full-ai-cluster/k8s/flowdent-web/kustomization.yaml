@@ -8,3 +8,4 @@ resources:
   - service.yaml
   - pdb.yaml
   - httproute.yaml
+  - http-redirect.yaml

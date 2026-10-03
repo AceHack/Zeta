@@ -1,0 +1,14 @@
+{
+  "id": "080d07fec1953810a01300086e11df18",
+  "at": "2026-10-03T03:39:13.959Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3ZXGCN6087G0R000855A8C",
+    "type": "bug",
+    "title": "Plain http:// to the public hosts lands on GitLab, the portal or a timeout (router scatters :80)",
+    "slug": "plain-http-to-the-public-hosts-lands-on-gitlab-the-portal-or",
+    "priority": "P2",
+    "filename": "081M3ZXGCN6087G0R000855A8C-plain-http-to-the-public-hosts-lands-on-gitlab-the-portal-or.md"
+  }
+}

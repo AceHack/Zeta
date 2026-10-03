@@ -33,7 +33,7 @@ describe("render", () => {
     const roles = docs.filter((d) => d["kind"] === "Role" && ((d["metadata"] as Doc)["namespace"] as string) === "zeta-node-hosts");
     expect(roles).toHaveLength(1);
     const rules = (roles[0] as Doc)["rules"] as Doc[];
-    expect(rules.find((r) => (r["verbs"] as string[]).includes("patch"))?.["resourceNames"]).toEqual(["https-relay", "ssh-relay"]);
+    expect(rules.find((r) => (r["verbs"] as string[]).includes("patch"))?.["resourceNames"]).toEqual(["https-relay", "ssh-relay", "http-relay"]);
   });
 });
 
@@ -97,6 +97,13 @@ describe("discover script, executed", () => {
     expect(ssh).toContain('externalIPs: ["192.168.1.240","192.168.1.241","192.168.1.242","192.168.1.250"]');
     expect(ssh).toContain("port: 22, targetPort: 22");
     expect(ssh).toContain("selector: { app: node-lan-hosts }"); // the hostNetwork pod IS the node: its :22 is sshd
+  });
+
+  test("http-relay: only the LB addresses that lack :80 (the router can bind plain HTTP to any of them)", () => {
+    const http = svcOf(run({ services: SERVICES }).applied, "http-relay");
+    expect(http).toContain('externalIPs: ["192.168.1.242"]'); // .240 .241 .250 already serve :80; the game server does not
+    expect(http).toContain("port: 80, targetPort: 80");
+    expect(http).toContain("selector: { app: node-lan-hosts }");
   });
 
   test("an address that already serves :22 is left alone", () => {

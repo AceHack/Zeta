@@ -1,0 +1,20 @@
+# Plain HTTP for the public flowdent.net names -> 301 to https, on the two Gateways that serve :80 on a LAN address.
+# MEASURED 2026-10-02: the home router scatters :80 over every node address (they share one MAC), so
+# `http://flowdent.net` landed on GitLab's own LAN Gateway (.250) or the portal (.241). The route lives in namespace
+# `gitlab` because `gitlab-lan` admits routes from its own namespace only; the public Gateway (.240) already
+# redirects through the per-app routes. The node edge (cluster-hygiene/node-lan-hosts.yaml) covers .79 and .242.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: public-http-redirect
+  namespace: gitlab
+  labels: { app.kubernetes.io/part-of: flowdent }
+spec:
+  hostnames: [flowdent.net, www.flowdent.net, api.flowdent.net, api-staging.flowdent.net, portal.flowdent.net, git.flowdent.net]
+  parentRefs:
+    - { name: gitlab-lan }
+    - { name: zeta-gateway, namespace: zeta-platform, sectionName: http }
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect: { scheme: https, statusCode: 301 }

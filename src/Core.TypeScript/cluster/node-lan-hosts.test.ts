@@ -142,6 +142,7 @@ echo "$@" >> ${dir}/ipt-inserts
   test("firewall: the :443 ACCEPT is inserted first in nixos-fw when absent, and NOT again when present", () => {
     const ins = withRun(BASE, BLOCK).inserts;
     expect(ins).toContain("-I nixos-fw 1 -p tcp --dport 443 -j nixos-fw-accept\n");
+    expect(ins).toContain("-I nixos-fw 1 -p tcp --dport 80 -j nixos-fw-accept\n"); // the :80 redirect edge
     // SSH is exposed to the internet: new connections are rate-limited per NON-private source (LAN is exempt)
     expect(ins).toContain("! -s 192.168.0.0/16 -p tcp --dport 22");
     expect(ins).toContain("-m recent --name zssh --set");

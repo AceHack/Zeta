@@ -95,6 +95,13 @@ describe("edge script, executed", () => {
     expect(cfg).toContain("server a flowdent-api.flowdent-staging.svc.cluster.local:80");
   });
 
+  test("plain HTTP on the node is redirected to HTTPS, whatever the host (the router can send :80 to any address)", () => {
+    const { cfg } = runEdge({ block: true });
+    expect(cfg).toContain("frontend fe_http");
+    expect(cfg).toContain("bind :80");
+    expect(cfg).toContain("http-request redirect scheme https code 301");
+  });
+
   test("the internal hop is loopback TCP -- an abstract unix socket cannot be reloaded (the live incident)", () => {
     const { cfg } = runEdge({ block: true, upstreams: "api.x.net flowdent-prod\n" });
     expect(cfg).not.toContain("abns@");
