@@ -1,0 +1,14 @@
+{
+  "id": "080d0806ef416810a0130008aaaa0660",
+  "at": "2026-10-03T08:25:05.325Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M40DVT18087G0R001KBRA6F",
+    "type": "bug",
+    "title": "Regenerate Rust path-dep locks after xxhash-rust 0.8.19",
+    "slug": "regenerate-rust-path-dep-locks-after-xxhash-rust-0-8-19",
+    "priority": "P2",
+    "filename": "081M40DVT18087G0R001KBRA6F-regenerate-rust-path-dep-locks-after-xxhash-rust-0-8-19.md"
+  }
+}
