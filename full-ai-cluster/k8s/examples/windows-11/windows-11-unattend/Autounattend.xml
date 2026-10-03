@@ -138,6 +138,10 @@
          schedules it at every startup as SYSTEM (it retries its own downloads, and removes the task once
          it has finished). It finds the script by FILE NAME on whichever drive carries it, not by volume
          label: the label is a property of how KubeVirt builds the CD-ROM, the file is the contract.
+         TWO short commands, not one: a RunSynchronousCommand Path is limited to 259 characters, and the
+         first version of this file (one 500-character powershell line, as in the Server answer file) made Setup
+         reject the whole file at the specialize pass: "The computer restarted unexpectedly or encountered an
+         unexpected error" (setuperr.log: the unattend value is invalid). MEASURED on build 26300, 2026-10-03.
          The BypassNRO value is harmless where unused: it only enables the offline-account path in OOBE. -->
     <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <RunSynchronous>
@@ -148,8 +152,13 @@
         </RunSynchronousCommand>
         <RunSynchronousCommand wcm:action="add">
           <Order>2</Order>
-          <Description>zeta: schedule this VM's bootstrap</Description>
-          <Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$d = Get-PSDrive -PSProvider FileSystem | Where-Object { Test-Path (Join-Path $_.Root 'bootstrap.ps1') } | Select-Object -First 1; New-Item -ItemType Directory -Force C:\ProgramData\zeta | Out-Null; Copy-Item (Join-Path $d.Root 'bootstrap.ps1') C:\ProgramData\zeta\bootstrap.ps1 -Force; schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-bootstrap /tr 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1'"</Path>
+          <Description>zeta: copy this VM's bootstrap.ps1 off its CD-ROM</Description>
+          <Path>cmd.exe /c mkdir C:\ProgramData\zeta &amp; for %d in (D E F G H I J K) do @if exist %d:\bootstrap.ps1 copy /y %d:\bootstrap.ps1 C:\ProgramData\zeta\bootstrap.ps1</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <Description>zeta: schedule it at every startup as SYSTEM</Description>
+          <Path>schtasks.exe /create /f /ru SYSTEM /sc onstart /tn zeta-bootstrap /tr "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1"</Path>
         </RunSynchronousCommand>
       </RunSynchronous>
     </component>

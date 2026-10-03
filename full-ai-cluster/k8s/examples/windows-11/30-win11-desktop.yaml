@@ -34,7 +34,9 @@ metadata:
 data:
   settings.json: |
     {
-      "adminUser": "zetaadmin"
+      "adminUser": "zetaadmin",
+      "opensshUrl": "https://github.com/PowerShell/Win32-OpenSSH/releases/download/10.0.0.0p2-Preview/OpenSSH-Win64-v10.0.0.0.msi",
+      "opensshSha256": "ddec9c53864280759cf9f74791cefd387100e3946aa849a1c138a4ed1b96b7d9"
     }
   # Idempotent and safe on every boot; the transcript is C:\ProgramData\zeta\bootstrap.log. Files are found by
   # NAME on whichever drive carries them, not by volume label. A step that cannot finish THROWS, which leaves
@@ -53,6 +55,24 @@ data:
         Start-Sleep -Seconds 5
       }
       throw "no drive carries $File"
+    }
+
+    # Download to a temp file, verify the pinned sha256 BEFORE the file is moved anywhere it can run.
+    function Get-Pinned([string]$Url, [string]$Sha256, [string]$Dest) {
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      $tmp = "$Dest.download"
+      $ok = $false
+      for ($i = 1; $i -le 30 -and -not $ok; $i++) {
+        try { Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $tmp; $ok = $true }
+        catch { Write-Host "download attempt $i failed: $($_.Exception.Message)"; Start-Sleep -Seconds 20 }
+      }
+      if (-not $ok) { throw "could not download $Url" }
+      $actual = (Get-FileHash -Algorithm SHA256 -Path $tmp).Hash.ToLowerInvariant()
+      if ($actual -ne $Sha256.ToLowerInvariant()) {
+        Remove-Item $tmp -Force
+        throw "sha256 $actual does not match the pinned $Sha256 for $Url"
+      }
+      Move-Item $tmp $Dest -Force
     }
 
     $boot = Find-Drive 'settings.json'
@@ -76,6 +96,45 @@ data:
     Set-NetFirewallRule -DisplayGroup 'Remote Desktop' -Profile Any
     Get-NetConnectionProfile -ErrorAction SilentlyContinue | Set-NetConnectionProfile -NetworkCategory Private -ErrorAction SilentlyContinue
     Write-Host 'remote desktop enabled'
+
+    # OpenSSH server, KEY-ONLY. This is the way in for everything but the console: `ssh -J` through the node,
+    # with -L forwards for RDP and for an API that listens on this machine's loopback only. The Windows
+    # firewall opens port 22 and NOTHING ELSE for it: in particular not 5000 (the Flowdent API binds
+    # 127.0.0.1:5000 and must be reachable only through the tunnel).
+    $sshDir = 'C:\Program Files\OpenSSH'
+    if (-not (Test-Path (Join-Path $sshDir 'sshd.exe'))) {
+      $msi = Join-Path $zeta 'OpenSSH.msi'
+      Get-Pinned $settings.opensshUrl $settings.opensshSha256 $msi
+      $p = Start-Process msiexec.exe -ArgumentList ('/i "' + $msi + '" /qn /norestart') -Wait -PassThru
+      if ($p.ExitCode -notin 0, 3010) { throw "OpenSSH msi exited $($p.ExitCode)" }
+      Remove-Item $msi -Force
+    }
+    if (-not (Get-Service sshd -ErrorAction SilentlyContinue)) { & (Join-Path $sshDir 'install-sshd.ps1') }
+    $keysSrc = Join-Path (Find-Drive 'authorized_keys') 'authorized_keys'
+    $sshData = 'C:\ProgramData\ssh'
+    New-Item -ItemType Directory -Force -Path $sshData | Out-Null
+    & (Join-Path $sshDir 'ssh-keygen.exe') -A | Out-Null
+    $conf = @(
+      'Port 22', 'ListenAddress 0.0.0.0', 'PubkeyAuthentication yes', 'PasswordAuthentication no',
+      'KbdInteractiveAuthentication no', 'PermitEmptyPasswords no', 'AllowTcpForwarding yes', 'GatewayPorts no',
+      'AuthorizedKeysFile .ssh/authorized_keys', 'Subsystem sftp sftp-server.exe',
+      'Match Group administrators', '       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys'
+    )
+    Set-Content -Path (Join-Path $sshData 'sshd_config') -Value $conf -Encoding ASCII
+    $adminKeys = Join-Path $sshData 'administrators_authorized_keys'
+    Set-Content -Path $adminKeys -Value (Get-Content $keysSrc) -Encoding ASCII
+    icacls.exe $adminKeys /inheritance:r /grant 'SYSTEM:(F)' /grant 'BUILTIN\Administrators:(F)' | Out-Null
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\OpenSSH' -Name DefaultShell -Value 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -PropertyType String -Force | Out-Null
+    & (Join-Path $sshDir 'sshd.exe') -t
+    if ($LASTEXITCODE -ne 0) { throw 'sshd_config did not validate' }
+    if (-not (Get-NetFirewallRule -Name zeta-sshd -ErrorAction SilentlyContinue)) {
+      New-NetFirewallRule -Name zeta-sshd -DisplayName 'zeta sshd (22 only)' -Direction Inbound -Protocol TCP -LocalPort 22 -Action Allow -Profile Any | Out-Null
+    }
+    Set-Service sshd -StartupType Automatic
+    Restart-Service sshd
+    New-Item -ItemType Directory -Force -Path 'C:\flowdent' | Out-Null
+    Set-Content -Path 'C:\flowdent\README.txt' -Value 'The Flowdent API must listen on http://127.0.0.1:5000 ONLY (Kestrel: --urls http://127.0.0.1:5000). The Windows firewall deliberately has no rule for 5000: reach it with ssh -L 5000:127.0.0.1:5000.' -Encoding ASCII
+    Write-Host 'openssh server enabled, key-only, port 22'
 
     # The virtio drivers that are not boot-critical (balloon, serial, rng, input, ...) and the QEMU guest
     # agent, from the virtio-win CD. Skipped when already installed.
@@ -227,6 +286,9 @@ spec:
             - name: sysprep
               cdrom:
                 bus: sata
+            - name: ssh-keys
+              cdrom:
+                bus: sata
           interfaces:
             - name: default
               masquerade: {}
@@ -257,6 +319,12 @@ spec:
           sysprep:
             secret:
               name: win11-desktop-unattend
+        # The PUBLIC keys allowed to ssh in (a file named authorized_keys). Created by the owner from the node's
+        # own trusted keys, not committed: see the runbook ("SSH keys").
+        - name: ssh-keys
+          configMap:
+            name: win11-desktop-ssh-keys
+            volumeLabel: ZETAKEYS
 ---
 # RDP. ClusterIP and ONLY ClusterIP: reached through `ssh -L` (see the header), never published. The
 # selector is the label KubeVirt stamps on the virt-launcher pod from `template.metadata.labels`; there is no
@@ -275,4 +343,22 @@ spec:
     - name: rdp
       port: 3389
       targetPort: 3389
+      protocol: TCP
+---
+# SSH, the way in for the tunnel. ClusterIP and ONLY ClusterIP: reached with `ssh -J zeta@ssh.flowdent.net` through
+# the node, never published. Ingress is further limited to the node host and this namespace by
+# 40-network-policy.yaml.
+apiVersion: v1
+kind: Service
+metadata:
+  name: win11-desktop-ssh
+  namespace: windows-vms
+spec:
+  type: ClusterIP
+  selector:
+    kubevirt.io/domain: win11-desktop
+  ports:
+    - name: ssh
+      port: 22
+      targetPort: 22
       protocol: TCP

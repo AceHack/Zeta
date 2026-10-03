@@ -45,7 +45,7 @@ spec:
     limits.memory: 28Gi
     requests.ephemeral-storage: 4Gi
     limits.ephemeral-storage: 32Gi
-    # Steady state: 80Gi + 100Gi of guest disk (each +6% CDI filesystem overhead) + the 8Gi ISO + two 12Mi
+    # Steady state: 80Gi + 100Gi of guest disk (each +6% CDI filesystem overhead) + the 10Gi ISO + two 12Mi
     # TPM-state claims, ~205Gi. CDI's populator ALSO creates a transient "prime" claim of the same size as the
     # volume it is filling, plus a scratch claim for an HTTP import (measured: a quota of 240Gi refused the
     # prime claim of the second 100Gi disk with ErrCreatingPVCPrime). So the ceiling is steady state + the

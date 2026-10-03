@@ -23,11 +23,11 @@
 #     import dies on this node: the importer cannot open the raw device (`blockdev: cannot open
 #     /dev/cdi-block-volume: Permission denied` -- the container runtime does not hand a non-root importer
 #     ownership of a block device). Filesystem mode imports as a `disk.img` file and works (measured).
-#   * the claim is `storage:`, so CDI adds its 6% filesystem overhead itself: 8Gi asks Longhorn for ~8.5Gi.
+#   * the claim is `storage:`, so CDI adds its 6% filesystem overhead itself: 10Gi asks Longhorn for ~10.6Gi.
 #   * CDI also creates a SCRATCH claim of the same size for an HTTP import (measured, python and a
 #     Range-capable server alike) on `cdi` `spec.config.scratchSpaceStorageClass`. Git still names
 #     `zeta-block-local` for it (cdi-cr.yaml); this cluster's LIVE value is `zeta-block-replicated`, because
-#     scratch on the default class is 8Gi on the root disk. Without the override the namespace quota in
+#     scratch on the default class is 10Gi on the root disk. Without the override the namespace quota in
 #     00-namespace.yaml REFUSES the scratch claim and the import waits, loudly. See the runbook.
 apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
@@ -51,4 +51,4 @@ spec:
     storageClassName: zeta-block-replicated
     resources:
       requests:
-        storage: 8Gi
+        storage: 10Gi

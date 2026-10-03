@@ -1,0 +1,29 @@
+# Who may reach the two Windows guests. Apply AFTER 00-namespace.yaml (it needs Cilium, which the node runs).
+#
+# Ingress to a guest is allowed from exactly two places and denied from everywhere else:
+#   * `host`   -- the node itself: its kubelet probes, and the SSH jump (`ssh -J zeta@ssh.flowdent.net`) whose
+#                 forwards originate on the node and reach the ClusterIP Services (win11-desktop-ssh :22,
+#                 win11-desktop-rdp :3389);
+#   * this namespace -- the two guests, and any helper pod you start here.
+# So no other pod in the cluster can open a connection to Windows, and nothing outside the cluster ever could
+# (every Service here is ClusterIP). EGRESS is not restricted: a guest must reach GitLab, the runner download
+# bucket and the Windows update endpoints.
+#
+# Deliberately selects the guests by their KubeVirt domain label and not the whole namespace, so CDI's importer
+# and upload pods (which the cdi namespace's upload proxy must reach) are not cut off.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: windows-guests-ingress
+  namespace: windows-vms
+spec:
+  endpointSelector:
+    matchExpressions:
+      - key: kubevirt.io/domain
+        operator: In
+        values: [ win11-ci, win11-desktop ]
+  ingress:
+    - fromEntities:
+        - host
+    - fromEndpoints:
+        - {}

@@ -120,11 +120,11 @@ describe("A. storage: nothing lands on the node's 120 GB root disk", () => {
     }
   });
 
-  test("sizes: 80Gi CI disk, 100Gi desktop disk, an ISO claim big enough for the evaluation ISO but not wasteful", () => {
+  test("sizes: 80Gi CI disk, 100Gi desktop disk, an ISO claim big enough for the 8.2 GB evaluation ISO but not wasteful", () => {
     const size = (n: string) => claims().find((c) => c.name === n)!.size;
     expect(size("win11-ci-root")).toBe("80Gi");
     expect(size("win11-desktop-root")).toBe("100Gi");
-    expect(size("win11-iso")).toBe("8Gi");
+    expect(size("win11-iso")).toBe("10Gi");
   });
 
   test("the namespace REFUSES any claim on the local-path class: a forgotten storageClassName is a rejected claim, not a full root disk", () => {
@@ -137,7 +137,7 @@ describe("A. storage: nothing lands on the node's 120 GB root disk", () => {
   test("the quota covers steady state PLUS CDI's transient prime claim (a 240Gi ceiling refused the second disk, measured)", () => {
     const quota = kindOf(nsDocs, "ResourceQuota")[0]!;
     const gi = (v: string) => Number(/^(\d+)Gi$/.exec(v)![1]);
-    const steady = 80 * 1.06 + 100 * 1.06 + 8 * 1.06;
+    const steady = 80 * 1.06 + 100 * 1.06 + 10 * 1.06;
     const largestTransient = 100 * 1.06;
     expect(gi(quota.spec.hard["requests.storage"])).toBeGreaterThanOrEqual(Math.ceil(steady + largestTransient));
   });
@@ -351,12 +351,15 @@ describe("C. Windows 11: Secure Boot + SMM + persistent TPM + a real CPU model, 
   test("every object a VM mounts is defined in these files, or is one of the three the OWNER creates (and the runbook names)", () => {
     const configMaps = new Set(kindOf(allDocs, "ConfigMap").map((c) => c.metadata.name));
     const dvs = new Set(kindOf(allDocs, "DataVolume").map((c) => c.metadata.name));
-    const external = new Set(["win11-ci-runner-token", "win11-ci-unattend", "win11-desktop-unattend"]);
+    const external = new Set(["win11-ci-runner-token", "win11-ci-unattend", "win11-desktop-unattend", "win11-desktop-ssh-keys"]);
     const runbook = readFileSync(RUNBOOK, "utf8");
     for (const vm of VMS) {
       for (const v of vm.spec.template.spec.volumes as Doc[]) {
         if (v.dataVolume) expect(dvs.has(v.dataVolume.name)).toBe(true);
-        if (v.configMap) expect(configMaps.has(v.configMap.name)).toBe(true);
+        if (v.configMap) {
+          expect(configMaps.has(v.configMap.name) || external.has(v.configMap.name)).toBe(true);
+          if (external.has(v.configMap.name)) expect(runbook).toContain(v.configMap.name);
+        }
         const secret = v.secret?.secretName ?? v.sysprep?.secret?.name;
         if (secret !== undefined) {
           expect(external.has(secret)).toBe(true);
@@ -407,12 +410,21 @@ describe("D. RDP is reached through an SSH tunnel to a ClusterIP, never publishe
     }
   });
 
-  test("the only Service is the desktop's RDP port, selecting the label KubeVirt stamps on its launcher pod; VM A has no Service", () => {
-    expect(services.map((s) => s.metadata.name)).toEqual(["win11-desktop-rdp"]);
-    const s = services[0]!;
-    expect(s.spec.ports.map((p: Doc) => p.port)).toEqual([3389]);
-    expect(s.spec.selector).toEqual({ "kubevirt.io/domain": "win11-desktop" });
+  test("the only Services are the desktop's RDP and SSH ports, selecting the label KubeVirt stamps on its launcher pod; VM A has none", () => {
+    expect(services.map((s) => s.metadata.name)).toEqual(["win11-desktop-rdp", "win11-desktop-ssh"]);
+    expect(services.map((s) => s.spec.ports.map((p: Doc) => p.port))).toEqual([[3389], [22]]);
+    for (const s of services) expect(s.spec.selector).toEqual({ "kubevirt.io/domain": "win11-desktop" });
     expect(vmDesktop.spec.template.metadata.labels["kubevirt.io/domain"]).toBe("win11-desktop");
+  });
+
+  test("a CiliumNetworkPolicy admits the guests' ingress only from the node host and their own namespace, and leaves egress alone", () => {
+    const np = loadDocs(join(DIR, "40-network-policy.yaml"))[0]!;
+    expect(np.kind).toBe("CiliumNetworkPolicy");
+    expect(np.metadata.namespace).toBe("windows-vms");
+    expect(np.spec.endpointSelector.matchExpressions[0].values.sort()).toEqual(["win11-ci", "win11-desktop"]);
+    expect(np.spec.ingress).toEqual([{ fromEntities: ["host"] }, { fromEndpoints: [{}] }]);
+    expect(np.spec.egress).toBeUndefined();
+    expect(np.spec.ingressDeny).toBeUndefined();
   });
 
   test("the masquerade interface declares NO ports, so KubeVirt forwards every port to the guest (what makes 3389 reach Windows)", () => {
@@ -423,6 +435,30 @@ describe("D. RDP is reached through an SSH tunnel to a ClusterIP, never publishe
     expect(desktopBootstrap).toContain("fDenyTSConnections");
     expect(desktopBootstrap).toContain("Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'");
     expect(ciBootstrap).not.toMatch(/fDenyTSConnections|Remote Desktop/);
+  });
+
+  test("OpenSSH is KEY-ONLY, pinned by sha256, authorised by the keys ConfigMap, and the firewall opens 22 and never the API port", () => {
+    const settings = JSON.parse(desktopConfigMap.data["settings.json"]) as Record<string, string>;
+    expect(settings["opensshSha256"]).toMatch(/^[0-9a-f]{64}$/);
+    const url = new URL(settings["opensshUrl"]!);
+    expect(url.protocol).toBe("https:");
+    expect(url.hostname).toBe("github.com");
+    expect(url.pathname.startsWith("/PowerShell/Win32-OpenSSH/releases/download/")).toBe(true);
+    expect(desktopBootstrap.indexOf("does not match the pinned")).toBeLessThan(desktopBootstrap.indexOf("Move-Item $tmp $Dest"));
+    expect(desktopBootstrap).toContain("'PasswordAuthentication no'");
+    expect(desktopBootstrap).toContain("'PubkeyAuthentication yes'");
+    expect(desktopBootstrap).not.toMatch(/PasswordAuthentication yes/);
+    expect(desktopBootstrap).toContain("administrators_authorized_keys");
+    expect(desktopBootstrap).toContain("/inheritance:r");
+    expect(desktopBootstrap).toContain("-LocalPort 22 ");
+    // the API stays on loopback: no firewall rule may name 5000
+    expect(desktopBootstrap.split("\n").filter((l) => /FirewallRule/.test(l) && /5000/.test(l))).toEqual([]);
+    expect(desktopBootstrap).toContain("127.0.0.1:5000");
+    const keys = (vmDesktop.spec.template.spec.volumes as Doc[]).find((v) => v.name === "ssh-keys")!;
+    expect(keys.configMap.name).toBe("win11-desktop-ssh-keys");
+    expect(keys.configMap.volumeLabel).toBe("ZETAKEYS");
+    // no key material (public or private) is committed: the owner creates the ConfigMap from the node's keys
+    for (const f of OWN_FILES) expect(readFileSync(f, "utf8"), f).not.toMatch(/ssh-(rsa|ed25519) AAAA|BEGIN [A-Z ]*PRIVATE KEY/);
   });
 
   test("the runbook documents the tunnel (a high local port, not 3389) and says never to publish it", () => {
@@ -524,15 +560,27 @@ describe("E. the answer file: Windows 11 Enterprise Evaluation, no credential, n
     for (const f of walk(DIR).filter((p) => p.endsWith(".yaml"))) expect(readFileSync(f, "utf8")).not.toMatch(/WINDOWS_ADMIN_PASSWORD\s*=\s*\S|password:\s*\S/i);
   });
 
-  test("it hands off to each VM's own bootstrap: find bootstrap.ps1 BY NAME, copy it local, schedule it at startup as SYSTEM", () => {
+  test("it hands off to each VM's own bootstrap: copy bootstrap.ps1 off whichever CD carries it, schedule it at startup as SYSTEM", () => {
     for (const text of [autounattend, unattend]) {
-      expect(text).toContain("bootstrap.ps1");
-      expect(text).toContain("schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-bootstrap");
-      expect(text).toContain("Get-PSDrive -PSProvider FileSystem");
+      const t = stripXmlComments(text);
+      expect(t).toContain("bootstrap.ps1");
+      expect(t).toContain("copy /y %d:\\bootstrap.ps1 C:\\ProgramData\\zeta\\bootstrap.ps1");
+      expect(t).toContain("schtasks.exe /create /f /ru SYSTEM /sc onstart /tn zeta-bootstrap");
     }
     // both bootstraps remove that same task when they have finished
     expect(ciBootstrap).toContain("Unregister-ScheduledTask -TaskName zeta-bootstrap");
     expect(desktopBootstrap).toContain("Unregister-ScheduledTask -TaskName zeta-bootstrap");
+  });
+
+  test("every RunSynchronous command fits the 259-character limit on <Path> (a longer one made Setup reject the whole file: measured)", () => {
+    for (const text of [autounattend, unattend]) {
+      const paths = [...stripXmlComments(text).matchAll(/<RunSynchronousCommand[\s\S]*?<Path>([^<]*)<\/Path>/g)].map((m) => m[1]!);
+      expect(paths.length).toBeGreaterThanOrEqual(2);
+      for (const path of paths) expect(path.replaceAll("&amp;", "&").length).toBeLessThanOrEqual(259);
+      // and they are ordered 1..n without gaps, or Setup refuses the list
+      const orders = [...stripXmlComments(text).matchAll(/<RunSynchronousCommand[\s\S]*?<Order>(\d+)<\/Order>/g)].map((m) => Number(m[1]));
+      expect(orders).toEqual(orders.map((_, i) => i + 1));
+    }
   });
 
   test("the bootstraps find files by NAME, not by a volume label that is a property of how KubeVirt builds the CD", () => {
@@ -585,7 +633,8 @@ describe("F. the Secret renderer: fills the password and computer name once, esc
       expect(d.metadata.namespace).toBe("windows-vms");
       expect(Object.keys(d.stringData).sort()).toEqual(["Autounattend.xml", "Unattend.xml"]);
       expect(d.stringData["Autounattend.xml"]).toContain(`<Value>${good}</Value>`);
-      expect(d.stringData["Autounattend.xml"]).not.toContain("@");
+      expect(d.stringData["Autounattend.xml"]).not.toContain(PASSWORD_PLACEHOLDER);
+      expect(d.stringData["Autounattend.xml"]).not.toContain(COMPUTER_NAME_PLACEHOLDER);
       expect(d.stringData["Unattend.xml"]).not.toContain(good);
     }
     expect(docs[0]!.stringData["Autounattend.xml"]).toContain("<ComputerName>WIN11-CI</ComputerName>");
@@ -717,7 +766,7 @@ describe("G. the runbook", () => {
     for (const name of [
       "00-namespace.yaml", "10-iso.yaml", "20-win11-ci.yaml", "30-win11-desktop.yaml", "Autounattend.xml",
       "windows-11-unattend-secrets.ts", "copy-secret.ts", "windows-11-vm.ts",
-      "win11-ci", "win11-desktop", "win11-iso", "win11-ci-unattend", "win11-desktop-unattend", "win11-ci-runner-token", "win11-desktop-rdp",
+      "win11-ci", "win11-desktop", "win11-iso", "win11-ci-unattend", "win11-desktop-unattend", "win11-ci-runner-token", "win11-desktop-rdp", "win11-desktop-ssh", "win11-desktop-ssh-keys", "40-network-policy.yaml", "CiliumNetworkPolicy",
       "gitlab-windows-runner-token.yaml", "windows-vms",
     ]) expect(runbook, name).toContain(name);
   });

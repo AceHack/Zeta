@@ -2,9 +2,9 @@
 
 > Two Windows 11 guests live in namespace `windows-vms`: **`win11-ci`**, a headless-ish GitLab runner tagged `windows`, `zeta-windows`
 > that never takes untagged jobs, and **`win11-desktop`**, an interactive desktop reached over VNC and over RDP through an SSH tunnel.
-> **Everything that can be proven without a Windows image has been proven on this node; the install itself has not been run.** A human
-> downloads the Windows 11 Enterprise Evaluation ISO and accepts Microsoft's terms; nothing here fetches, ships or hosts Windows, and
-> the Administrator password is typed by that human and lives only in a Secret. **No disk, scratch or state claim may land on the node's
+> **`win11-desktop` has been installed unattended from the Windows 11 Enterprise Evaluation ISO (build 26300) on this node and reached over a
+> key-only SSH jump; see "What is proven".** A human downloads the ISO and accepts Microsoft's terms; nothing here fetches, ships or hosts
+> Windows, and the Administrator password is generated or typed by a human and lives only in a Secret. **No disk, scratch or state claim may land on the node's
 > 120 GB root filesystem: every claim names Longhorn, and the namespace refuses the default class.**
 
 Sibling runbook for a Windows *Server* runner in the `gitlab` namespace: [`WINDOWS-GITLAB-RUNNER.md`](WINDOWS-GITLAB-RUNNER.md) (its
@@ -18,7 +18,9 @@ token Job, tag contract and "prepared image" mode are reused here). Storage cont
 | Namespace `windows-vms`, quota, limit range (the storage fence) | `full-ai-cluster/k8s/examples/windows-11/00-namespace.yaml` | you, first |
 | The shared installer ISO, DataVolume `win11-iso` | `.../windows-11/10-iso.yaml` | you, after the ISO is reachable |
 | VM A `win11-ci` (+ its ConfigMap, 80Gi disk) | `.../windows-11/20-win11-ci.yaml` | you |
-| VM B `win11-desktop` (+ ConfigMap, 100Gi disk, Service `win11-desktop-rdp`) | `.../windows-11/30-win11-desktop.yaml` | you |
+| VM B `win11-desktop` (+ ConfigMap, 100Gi disk, Services `win11-desktop-rdp` and `win11-desktop-ssh`) | `.../windows-11/30-win11-desktop.yaml` | you |
+| Who may reach the guests: a `CiliumNetworkPolicy` (ingress only from the node host and the namespace) | `.../windows-11/40-network-policy.yaml` | you, after the guest is up |
+| The PUBLIC ssh keys the desktop accepts, ConfigMap `win11-desktop-ssh-keys` (created from the node's trusted keys, not committed) | see "SSH, the jump and the API" | you |
 | The answer files | `.../windows-11/windows-11-unattend/{Autounattend.xml,Unattend.xml}` | rendered into Secrets `win11-ci-unattend`, `win11-desktop-unattend` by `src/Core.TypeScript/cluster/windows-11-unattend-secrets.ts` |
 | Runner record + `glrt-` token (Job, in namespace `gitlab`) | `full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml` | you, once |
 | The token, copied into `windows-vms` as Secret `win11-ci-runner-token` | `src/Core.TypeScript/cluster/copy-secret.ts` | you |
@@ -35,8 +37,8 @@ demand that no sync provisions. Both VMs are `runStrategy: Manual`: **nothing bo
 | vCPU | 4 (`host-passthrough`) | 4 | |
 | CPU reserved on the node | 2 | 2 | |
 | RAM | 8Gi (+ KubeVirt's overhead) | 8Gi | |
-| System disk (usable) | 80Gi | 100Gi | 8Gi, imported once, shared read-only |
-| Claim actually asked of Longhorn | ~85Gi | ~106Gi | ~8.5Gi (CDI adds 6% filesystem overhead itself) |
+| System disk (usable) | 80Gi | 100Gi | 10Gi (the evaluation ISO is 8.2 GB), imported once, shared read-only |
+| Claim actually asked of Longhorn | ~85Gi | ~106Gi | ~10.6Gi (CDI adds 6% filesystem overhead itself) |
 
 **Why a 2-CPU reservation for a 4-vCPU guest.** The node has 21.25 allocatable CPUs and the platform's own *requests* took 19.1 of them
 (the real use was ~11%). A 4-CPU request per guest left the second one `Insufficient cpu`. There is no CPU limit, so a guest still bursts
@@ -47,7 +49,7 @@ to four when the node is idle. Check before you start both: `kubectl describe no
 1. Open the Microsoft Evaluation Center in your browser (search for "Windows 11 Enterprise Evaluation"; this repository deliberately
    carries no Microsoft link), read and accept Microsoft's evaluation terms, register as it asks, and download the **64-bit Windows 11
    Enterprise Evaluation ISO** yourself. Put it somewhere on the PC that will serve it, for example `D:\isos\`.
-2. **Check the edition index in the ISO**, because `Autounattend.xml` installs `/IMAGE/INDEX` 1 (believed to be the only image).
+2. **Check the edition index in the ISO**, because `Autounattend.xml` installs `/IMAGE/INDEX` 1. **Measured 2026-10-03 on `win11-ent-eval-26300-en-us.iso` (8,225,329,152 bytes):** `install.wim` holds exactly ONE image, index 1, `Windows 11 Enterprise Evaluation`, edition `EnterpriseEval`, build 26300 (read from the WIM's XML header, since `dism` needs an elevated prompt).
    Double-click the ISO in Explorer (it mounts as a drive), then from any Windows prompt:
    `dism /Get-WimInfo /WimFile:E:\sources\install.wim` (use the mounted drive letter). If it lists several images, edit the `<Value>1</Value>`
    under `/IMAGE/INDEX` in `windows-11-unattend/Autounattend.xml`. Dismount afterwards.
@@ -158,11 +160,19 @@ password on argv, a weak one (under 12 characters, fewer than 3 of lower / upper
 template without each placeholder exactly once. The runner does not need this password (its tasks run as SYSTEM); it is for the install and
 for your console and RDP login. Keep it in your password manager: there is no recovery.
 
+### 4b. The desktop's SSH keys (before the first start of `win11-desktop`)
+
+```bash
+ssh zeta@192.168.1.79 'cat /etc/ssh/authorized_keys.d/zeta' > authorized_keys     # trim to the devices you mean (see "SSH, the jump and the API")
+kubectl -n windows-vms create configmap win11-desktop-ssh-keys --from-file=authorized_keys=authorized_keys
+```
+
 ### 5. Apply the guests (they stay stopped)
 
 ```bash
 kubectl apply -f full-ai-cluster/k8s/examples/windows-11/20-win11-ci.yaml -f full-ai-cluster/k8s/examples/windows-11/30-win11-desktop.yaml
 kubectl -n windows-vms get vm,dv,pvc          # both DataVolumes Succeeded; every claim on zeta-block-replicated
+kubectl apply -f full-ai-cluster/k8s/examples/windows-11/40-network-policy.yaml      # ingress to the guests: node host + own namespace only
 ```
 
 ### 6. Start `win11-desktop` first (the one you watch), then `win11-ci`
@@ -175,20 +185,22 @@ kubectl -n windows-vms get vmi win11-desktop -w        # Running in about a minu
 ```
 
 **The one key press.** With a blank disk first in the boot order, firmware falls through to the ISO, and the Windows ISO prints "Press
-any key to boot from CD or DVD". Nothing presses it, so send it:
+any key to boot from CD or DVD". Nothing presses it. Measured: `KEY_SPACE --repeat 40` sent right after the VMI is `Running` worked once
+(the first start of `win11-desktop`) and landed in the firmware's menu on every later start (three more times). The path that worked every
+time is the Boot Manager one described below; try the quick form first:
 
 ```bash
 bun src/Core.TypeScript/cluster/windows-11-vm.ts key win11-desktop KEY_SPACE --repeat 45
 bun src/Core.TypeScript/cluster/windows-11-vm.ts screenshot win11-desktop --out desktop.png     # open desktop.png
 ```
 
-If you missed the window, firmware shows "No bootable option or device was found" (this exact screen was observed): send `KEY_SPACE` once
-for the Boot Manager menu and choose the DVD-ROM entry from `virtctl vnc`, or `virtctl restart win11-desktop -n windows-vms` and press again.
+If you missed the window, firmware shows "No bootable option or device was found" (observed twice) and the key presses land in its menu. Measured
+recovery with `windows-11-vm.ts key win11-desktop` alone: `KEY_DOWN`, `KEY_DOWN`, `KEY_ENTER` (Boot Manager), then `KEY_DOWN`, `KEY_ENTER` (the first
+"QEMU DVD-ROM" entry is the ISO), then `KEY_SPACE --repeat 12` for the Windows prompt. Or `virtctl restart win11-desktop -n windows-vms` and press again.
 After Windows is installed the disk boots first and the prompt never appears again; **do not** press keys while the installer reboots.
 
-Expected timeline (**not measured**, no Windows image has been run): ISO boot and Setup copy 10 to 20 minutes; two reboots; the OOBE pass
-and first sign-in 5 to 10 minutes; then the startup task `zeta-bootstrap` runs (the desktop: RDP, virtio tools and the guest agent, a few
-minutes; the runner: Git for Windows and the runner download, ~5 to 10 minutes). Watch it with `windows-11-vm.ts screenshot`, `virtctl vnc`, or
+Timeline MEASURED for `win11-desktop` (2026-10-03, build 26300): start to the Setup progress screen ~4 minutes (most of it the firmware and the ISO
+boot), Setup to the installed first boot ~8 minutes, and port 22 answering ~13 minutes after the start. The ISO import itself took 2.5 minutes for 8.2 GB. Watch it with `windows-11-vm.ts screenshot`, `virtctl vnc`, or
 `kubectl -n windows-vms get vmi,vm` (a guest-agent-reported IP appears once the desktop's bootstrap has installed the agent).
 
 When the desktop is up, start the runner the same way (`win11-ci`, then `key win11-ci KEY_SPACE --repeat 45`). Memory check first: both guests
@@ -257,6 +269,58 @@ nothing. Sign in as `.\zetaadmin` with the password you typed in step 4.
 
 The tunnel path was measured end to end through the node's LAN address; `ssh.flowdent.net` was not exercised from the preparation machine
 (its host key was not known there).
+
+## SSH, the jump and the API (the way in for everything but the console)
+
+The desktop runs **OpenSSH server, key-only**, and the only route to it is through the node:
+
+```
+your PC --ssh--> zeta@ssh.flowdent.net (the node's sshd) --direct-tcpip--> <win11-desktop-ssh ClusterIP>:22 (the guest's sshd)
+```
+
+Nothing is exposed: every Service is `ClusterIP`, the Windows firewall opens port 22 and **nothing else** (in particular not 5000), and a
+`CiliumNetworkPolicy` (`40-network-policy.yaml`) lets the guests accept ingress only from the node host and their own namespace.
+
+**Connect** (the ClusterIP is `kubectl -n windows-vms get svc win11-desktop-ssh -o jsonpath='{.spec.clusterIP}'`; `-J` is OpenSSH's jump host):
+
+```bash
+ssh -J zeta@ssh.flowdent.net zetaadmin@<win11-desktop-ssh ClusterIP> -L 5000:127.0.0.1:5000 -L 13389:127.0.0.1:3389
+#   then, in another window:   RDP client -> localhost:13389        (mstsc /v:localhost:13389)
+#                              the Flowdent API inside the VM, on its 127.0.0.1:5000  ->  http://localhost:5000 on your PC
+# from the LAN, the jump host is zeta@192.168.1.79; add -N to forward without a shell.
+```
+
+`-L 13389:127.0.0.1:3389` forwards to the guest's own loopback (an RDP listener on the guest), so RDP needs no second Service hop. Use local
+port 13389, not 3389 (a Windows PC with its own Remote Desktop server already listens on 3389).
+
+**The API.** The Flowdent API must listen on `http://127.0.0.1:5000` inside the guest (Kestrel: `--urls http://127.0.0.1:5000`); `C:\flowdent\README.txt`
+says so. There is deliberately **no firewall rule for 5000** and nothing publishes it, so the only path to it is the `-L 5000:127.0.0.1:5000`
+forward above, which is authenticated by your SSH key twice (the node, then the guest). Open Dental and the API themselves are not installed here.
+
+**Keys.** The guest accepts the PUBLIC keys in ConfigMap `win11-desktop-ssh-keys` (file `authorized_keys`, mounted as a CD labelled `ZETAKEYS`; the
+bootstrap writes it to `C:\ProgramData\ssh\administrators_authorized_keys` with `icacls` limited to SYSTEM and Administrators, which is where
+OpenSSH for Windows reads an Administrators member's keys), and `PasswordAuthentication no` is set. Create or change the ConfigMap from keys the
+node already trusts (no key is committed to git), then restart the guest so the CD is rebuilt:
+
+```bash
+ssh zeta@192.168.1.79 'cat /etc/ssh/authorized_keys.d/zeta' > authorized_keys        # add or remove lines by hand: ONLY the devices you mean
+kubectl -n windows-vms create configmap win11-desktop-ssh-keys --from-file=authorized_keys=authorized_keys --dry-run=client -o yaml | kubectl apply -f -
+```
+
+Which keys were used on 2026-10-03: `/etc/ssh/authorized_keys.d/zeta` on the node holds one key (this PC's RSA key), not two; the second key is
+the `maximka.dolphin@gmail.com` ED25519 entry from `~zeta/.ssh/authorized_keys`. The two `stsia@DESKTOP-...` entries there were NOT included.
+Edit the ConfigMap if that is wrong.
+
+**The OpenSSH build** is the official `PowerShell/Win32-OpenSSH` GitHub release `10.0.0.0p2-Preview` (`OpenSSH-Win64-v10.0.0.0.msi`), pinned by
+sha256 `ddec9c53864280759cf9f74791cefd387100e3946aa849a1c138a4ed1b96b7d9`, which is the digest GitHub records for that release asset (hash source: the
+release's asset metadata, `gh api repos/PowerShell/Win32-OpenSSH/releases`). The bootstrap verifies it before running the installer. Every release
+of that project is labelled Preview or Beta; the pin is what makes it reproducible.
+
+**The guest's Administrator password** (the account is `zetaadmin`) was generated at random in memory when the Secrets were rendered, never
+printed, and exists only inside the cluster Secrets `win11-ci-unattend` / `win11-desktop-unattend`; SSH does not use it, RDP and the console do.
+To read it deliberately: `kubectl -n windows-vms get secret win11-desktop-unattend -o jsonpath='{.data.Autounattend\.xml}' | base64 -d | grep -A1 "<Password>"`
+(do this in a private terminal; the output is the secret). To choose your own, re-run step 4 with your own `read -rs` password and restart the guest
+only if you want it applied to a fresh install; to change it on a running guest use `net user zetaadmin *` over SSH.
 
 ## Which step failed?
 
@@ -370,18 +434,29 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
   produced the firmware's Boot Manager menu on the stopped-OS guest).
 - Static: `src/Core.TypeScript/cluster/windows-11-vms.test.ts`.
 
-### UNPROVEN, stated plainly
+### Proven with a real Windows image, 2026-10-03 (`win11-ent-eval-26300-en-us.iso`, 8,225,329,152 bytes)
 
-- **No Windows image has ever run on this cluster.** Setup reading `Autounattend.xml` from the sysprep CD, the `/IMAGE/INDEX`, the partition
-  layout, the drivers loading in WinPE and being injected offline, the OOBE screens skipping (Windows 11's OOBE changes between builds), and
-  the first-boot task finding its files have **not been run**.
-- That Windows 11's own checks accept this VM (Secure Boot and the TPM are present and measured with Linux; Setup's verdict is unmeasured).
-- That the "Press any key to boot from CD or DVD" prompt is answered in time by `windows-11-vm.ts key` (the key injection is proven on the
-  firmware menu; the Windows ISO prompt is not).
-- `zeta-bootstrap`: the runner download, `gitlab-runner register` against GitLab 19.4.1 with the v19.4.1 binary, the Git for Windows install, RDP
-  being reachable after the bootstrap, the guest tools and agent installing silently.
-- RDP through `ssh.flowdent.net` (proven through the node's LAN address only), mstsc / Windows App behaviour, performance.
-- The upload path (`virtctl image-upload`).
+- **The unattended install of `win11-desktop` ran to completion** on build 26300: Setup read `Autounattend.xml` from the sysprep CD, found the virtio
+  disk (`viostor` loaded in WinPE), applied index 1, rebooted from the disk, created `zetaadmin`, and the first-boot task ran to the end. The guest
+  reports `Microsoft Windows 11 Enterprise Evaluation`, build 26300, computer name `WIN11-DESK`. `C:\ProgramData\zeta\bootstrap.log` ends with
+  "remote desktop enabled", "openssh server enabled, key-only, port 22", "virtio guest tools and the QEMU guest agent are installed", "desktop
+  bootstrap finished"; `sshd` and `QEMU-GA` are Running. (An earlier attempt failed at the specialize pass: known issue 13a.)
+- **Key-only SSH through the jump**: `ssh -J zeta@192.168.1.79 zetaadmin@<ClusterIP>` authenticated by public key; a password-only attempt is refused
+  (`Permission denied (publickey)`).
+- **RDP and the loopback API through the tunnel**: with `-L 5000:127.0.0.1:5000 -L 13389:127.0.0.1:3389` open, `curl http://localhost:5000/` returned the
+  body of a throwaway listener bound to `127.0.0.1:5000` inside the guest, and an RDP X.224 connection request to `localhost:13389` was answered with a
+  connection confirm and negotiation response. The guest listens on `0.0.0.0:22` and `0.0.0.0:3389` and on nothing else; from the node,
+  `<guest pod IP>:5000` times out (no listener on a routable address, no firewall rule), while `:22` and `:3389` connect.
+- **The network policy**: with `40-network-policy.yaml` applied, the node still reaches both ClusterIPs, the guest still reaches GitLab's Workhorse and the
+  runner download bucket, and a pod in the `default` namespace is refused (while the same pod reaches GitLab: the probe works).
+
+### Still UNPROVEN, stated plainly
+
+- `win11-ci`: see the result recorded in "The CI runner" below, if present; otherwise it was started and not yet verified when this was written.
+- RDP with a real client (mstsc / Windows App) and a real login; only the protocol handshake through the tunnel was exercised.
+- The `ssh.flowdent.net` leg from outside the LAN (the jump was exercised through the node's LAN address, `192.168.1.79`).
+- Open Dental and the Flowdent API (not installed here; the guest is only prepared for them).
+- The upload path (`virtctl image-upload`), `virtctl vnc`.
 
 ## Known issues (hit during the 2026-10-03 preparation)
 
@@ -423,6 +498,17 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
     anyway. Fixing it is an ArgoCD `ignoreDifferences` on those two paths plus alphabetizing the patches, outside this change.
 13. **The token Job's image is `kubectl:v17.7.0`** while GitLab runs 19.4.1; the Job still worked on 19.4.1. The runner binary pinned for the
     guests is v19.4.1 (sha256 from the vendor's `release.sha256`), to match the server.
+
+13a. **Setup rejects a long `RunSynchronous` command: "The computer restarted unexpectedly or encountered an unexpected error".** First real run on build
+    26300, at the specialize pass: `C:\Windows\Panther\setuperr.log` (read through Shift+F10 on the error screen, typed with `virsh send-key`) said
+    the value of `RunSynchronous/RunSynchronousCommand[Order="2"]` in `unattend.xml` "is invalid" and "is not a valid unattended Setup file". The
+    cause is the documented 259-character limit on a command's `<Path>`; the first answer file here used one ~500-character `powershell.exe` line
+    (copied from the Windows Server answer file, `windows-runner-unattend/Autounattend.xml` and `Unattend.xml`, which has the SAME defect and has never
+    been run: **not fixed in this change**, it is the sibling runbook's file). Fixed here with two short commands; `windows-11-vms.test.ts` now
+    pins every `<Path>` at 259 characters or fewer. The failed install cost ~12 minutes; the root DataVolume had to be recreated blank (a partly
+    installed disk boots before the ISO does).
+13b. **Which SSH keys.** The node's `/etc/ssh/authorized_keys.d/zeta` holds one key today, not the two the request described; see "SSH, the jump and
+    the API" for what was included and what was left out.
 
 ## Uninstall
 
