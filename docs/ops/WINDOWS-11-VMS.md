@@ -99,7 +99,7 @@ bun src/Core.TypeScript/cluster/copy-secret.ts --from gitlab/gitlab-windows-runn
 The Job is the sibling runbook's (Rails call in the toolbox pod, no admin PAT, the token is never printed). It creates an **instance
 runner** `zeta-windows` with tags `windows,zeta-windows` and *run untagged: off*. A Secret can only be mounted from the VM's own namespace,
 so `copy-secret.ts` moves the `runner-token` key across without ever printing it (it reads from one `kubectl`'s stdout and writes to
-the other's stdin; it refuses an empty key, which is what you would copy if the Job had not finished). Mint **before** starting `win11-ci`.
+the other's stdin; it refuses an empty key, which is what you would copy if the Job had not finished). Mint **before** starting `win11-ci`. **On GitLab 19.4.1 the minted token did not verify** (known issue 13c): check it before the first start: `POST /api/v4/runners/verify` with it must answer 200 (this call marks the runner `online`, which proves nothing about the guest).
 
 ### 3. Give the cluster the ISO
 
@@ -339,6 +339,7 @@ only if you want it applied to a fresh install; to change it on a running guest 
 | Setup says "This PC can't run Windows 11" | the VM is wrong, not the check: Secure Boot, TPM, RAM and disk are provided (verify with `kubectl -n windows-vms get vm win11-desktop -o yaml`) |
 | an OOBE screen appears (network, Microsoft account) | Windows 11 changed it: press Shift+F10, run `start ms-cxh:localonly`, create `zetaadmin` by hand; then fix the answer file and record it here |
 | installed, no runner appears | on the guest: `C:\ProgramData\zeta\bootstrap.log` |
+| `bootstrap.log`: `Verifying runner... is not valid`, `PANIC: Failed to verify the runner` | the Job-minted token is rejected by GitLab 19.4.1 (known issue 13c): reset it with the API, patch both Secrets, stop and start `win11-ci` |
 | `no drive carries runner-token` | `win11-ci-runner-token` was empty or absent at VM start: mint and copy (step 2), then stop and start the VM (KubeVirt builds Secret disks at start) |
 | no network in the guest | `NetKVM` was not injected; the bootstrap tries the virtio guest tools MSI; otherwise install it from the virtio-win CD by hand |
 | `sha256 ... does not match the pinned` | the guest's egress, or the pin in `settings.json` disagrees with the vendor's `release.sha256` for that exact version |
@@ -450,9 +451,15 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
 - **The network policy**: with `40-network-policy.yaml` applied, the node still reaches both ClusterIPs, the guest still reaches GitLab's Workhorse and the
   runner download bucket, and a pod in the `default` namespace is refused (while the same pod reaches GitLab: the probe works).
 
+- **`win11-ci` installed unattended the same way, and its runner registered**: the bootstrap installed Git for Windows (pinned sha256) and
+  `gitlab-runner` v19.4.1 (pinned sha256), and after the token fix below GitLab shows runner 2 (`zeta-windows`) with version `19.4.1`, platform `windows`,
+  architecture `amd64`, tags `windows` + `zeta-windows`, run-untagged **false**. The guest shows "Windows License valid for 90 days" and build 26300.
+  CAUTION when verifying: `POST /api/v4/runners/verify` itself makes the runner read `online`; trust `version` / `platform` being filled in, which only
+  a real runner contact sets.
+
 ### Still UNPROVEN, stated plainly
 
-- `win11-ci`: see the result recorded in "The CI runner" below, if present; otherwise it was started and not yet verified when this was written.
+- A CI **job** on `win11-ci` (the runner registered and heartbeats; no pipeline was run on it), and the untagged-job contract end to end.
 - RDP with a real client (mstsc / Windows App) and a real login; only the protocol handshake through the tunnel was exercised.
 - The `ssh.flowdent.net` leg from outside the LAN (the jump was exercised through the node's LAN address, `192.168.1.79`).
 - Open Dental and the Flowdent API (not installed here; the guest is only prepared for them).
@@ -507,6 +514,14 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
     been run: **not fixed in this change**, it is the sibling runbook's file). Fixed here with two short commands; `windows-11-vms.test.ts` now
     pins every `<Path>` at 259 characters or fewer. The failed install cost ~12 minutes; the root DataVolume had to be recreated blank (a partly
     installed disk boots before the ISO does).
+13c. **The token the Job mints is rejected by GitLab 19.4.1.** `gitlab-windows-runner-token.yaml` (the sibling runbook's Job, run unchanged) wrote a
+    43-character `glrt-` token that the runner's `register` refused ("Verifying runner... is not valid", `PANIC: Failed to verify the runner`);
+    `POST /api/v4/runners/verify` answered 403 for it. `POST /api/v4/runners/2/reset_authentication_token` (an admin token) returned a 56-character token
+    that verifies (200) and registered. The runner record, tags and run-untagged were unchanged; the new token was written straight into both
+    Secrets (`gitlab/gitlab-windows-runner-token`, `windows-vms/win11-ci-runner-token`) without being printed. KubeVirt builds the Secret CD at start, so
+    the guest had to be stopped and started once; its `zeta-bootstrap` task had stayed in place (it throws on failure) and registered on the next boot.
+    The Job's own script (`runner.token.to_s` right after creation) should be changed to reset the token and print that, or the Job replaced by the API
+    call; not done here.
 13b. **Which SSH keys.** The node's `/etc/ssh/authorized_keys.d/zeta` holds one key today, not the two the request described; see "SSH, the jump and
     the API" for what was included and what was left out.
 
