@@ -1,0 +1,12 @@
+{
+  "pr_number": 17890,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17890-feat-windows-two-windows-11-vms-on-kubevirt-ci-runner-desktop-prepared-and-prove.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T04:27:10.504Z",
+  "schema_version": "v1",
+  "commit_sha": "4ced1113e8fba2e4085d3b7a57a1fb8f61c9f5cd",
+  "title": "feat(windows): two Windows 11 VMs on KubeVirt (CI runner + desktop), prepared and proven short of the ISO",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T04:26:31Z",
+  "head_ref": "feat/windows-11-vms"
+}

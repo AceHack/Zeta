@@ -1,0 +1,12 @@
+{
+  "pr_number": 17893,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17893-feat-windows-win11-desktop-installs-unattended-on-build-26300-key-only-ssh-jump-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T05:24:19.748Z",
+  "schema_version": "v1",
+  "commit_sha": "96a172024b8e16a0e4435e55a478b8d9596ddc2d",
+  "title": "feat(windows): win11-desktop installs unattended on build 26300; key-only SSH jump, network policy, answer-file fix",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T05:23:23Z",
+  "head_ref": "feat/windows-11-vms-ssh"
+}
