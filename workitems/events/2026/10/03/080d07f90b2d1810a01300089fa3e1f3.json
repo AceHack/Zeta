@@ -1,0 +1,14 @@
+{
+  "id": "080d07f90b2d1810a01300089fa3e1f3",
+  "at": "2026-10-03T00:19:33.923Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3ZJ2SD1087G0R001CYQFZ3",
+    "type": "task",
+    "title": "Relocate stateful data off the 120 GB root onto the Longhorn data disks (postgres-shared, seaweedfs, forgejo, gitaly) and make fresh installs place local volumes on the big disk",
+    "slug": "relocate-stateful-data-off-the-120-gb-root-onto-the-longhorn",
+    "priority": "P2",
+    "filename": "081M3ZJ2SD1087G0R001CYQFZ3-relocate-stateful-data-off-the-120-gb-root-onto-the-longhorn.md"
+  }
+}

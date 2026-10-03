@@ -512,6 +512,19 @@ function selectorGoverning(doc: Json, storageField: string): readonly (readonly 
 }
 
 function replicasGoverning(doc: Json, storageField: string): number {
+  // A CloudNativePG `Cluster` carries its pod count in `spec.instances`, not in a `replicas`
+  // key, and the operator creates ONE data PVC per instance from `spec.storage`. Read as a
+  // generic document the extractor found no replica key and priced the claim at ONE pod, so
+  // moving postgres-shared's 3 x 20Gi onto the Longhorn pool would have counted 20 GiB and
+  // understated the disk by 40 (2026-10-02). Matched by apiVersion + kind, never by the bare
+  // word `instances`, which other documents use for other things.
+  if (isRecord(doc)) {
+    const apiVersion = at(doc, "apiVersion");
+    if (at(doc, "kind") === "Cluster" && typeof apiVersion === "string" && apiVersion.startsWith("postgresql.cnpg.io/")) {
+      const instances = at(at(doc, "spec"), "instances");
+      if (typeof instances === "number" && Number.isInteger(instances) && instances >= 1) return instances;
+    }
+  }
   let best = 1;
   let bestDepth = -1;
   for (const [field, value] of walk(doc)) {

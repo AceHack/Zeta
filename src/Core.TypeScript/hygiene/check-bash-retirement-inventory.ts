@@ -91,6 +91,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
   "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh",
+  "full-ai-cluster/nixos/modules/local-storage-placement.sh",
   "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
   "full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
@@ -190,6 +191,12 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // tracked `.sh` so `k3s-process-protection.test.ts` EXECUTES it over node
   // sizes from 2 GiB to 256 GiB in CI.
   "full-ai-cluster/nixos/modules/k3s-kubelet-reservations.sh": "host-service wrappers",
+  // 081M3ZJ2SD1087G0R001CYQFZ3: a systemd `ExecStart` ordered before k3s.service that bind-mounts the
+  // largest Longhorn data disk onto the local-path provisioner's directory, so local volumes are not
+  // on the 120 GB root. Same boot-path edge as its siblings: the node's closure carries no bun, and
+  // an ExecStart cannot wait for one. A tracked `.sh` (not an inline Nix string) so
+  // `lint-local-storage-placement.test.ts` EXECUTES every branch of it in CI.
+  "full-ai-cluster/nixos/modules/local-storage-placement.sh": "host-service wrappers",
   // 081M3K23YCP087G0R003BVDS1P: zeta-dev-toolchain.service's ExecStart. It is
   // the unit that INSTALLS bun (tools/setup/install.sh), so it cannot be bun;
   // it moved the dev toolchain out of zeta-install.sh (already retained, same

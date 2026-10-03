@@ -35,6 +35,17 @@
 #
 # Installed as a K3S auto-applied manifest so it's available before
 # ArgoCD comes up.
+#
+# WHERE THE LOCAL CLASS LIVES ON DISK (2026-10-02). `rancher.io/local-path` has no quota: a
+# "20Gi" local PVC is an unbounded directory. On the measured node that directory sat on a
+# 120 GB root already holding 39 GB of container images, while the two Longhorn data disks
+# (1.7 TB) were ~98% free; the root was evicting pods at the same time. So the directory below
+# is NOT left on root when a big data disk exists: `zeta-local-storage-placement` bind-mounts
+# the largest /var/lib/longhorn-disk* filesystem's `zeta-local-storage/` onto it, before k3s.
+# The path every PV records does not change, only the disk under it. Small disks (the QEMU
+# lanes) keep it on root. Logic and refusals: local-storage-placement.sh; executed by
+# src/Core.TypeScript/hygiene/lint-local-storage-placement.test.ts. NOT run on a booted
+# guest or on hardware -- nix is not available where this was written.
 
 { config, pkgs, lib, ... }:
 
@@ -43,6 +54,30 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/zeta-local-storage 0755 root root - -"
   ];
+
+  # Place the local-path directory on the big data disk, once, before k3s. `before` +
+  # `requiredBy` makes the script's single exit-1 (a node that WAS placed whose data disk is
+  # missing now) hold k3s down instead of letting local-path hand out EMPTY directories over
+  # data that is still on that disk; every other outcome exits 0 and boots normally.
+  systemd.services.zeta-local-storage-placement = {
+    description = "Put local-path volumes on the largest Longhorn data disk instead of the root filesystem";
+    before = [ "k3s.service" ];
+    requiredBy = [ "k3s.service" ];
+    after = [ "local-fs.target" "systemd-tmpfiles-setup.service" ];
+    path = [ pkgs.coreutils pkgs.util-linux pkgs.gawk ];
+    environment = {
+      ZETA_LOCAL_STORAGE_DIR = "/var/lib/zeta-local-storage";
+      ZETA_LONGHORN_DISK_GLOB = "/var/lib/longhorn-disk*";
+      ZETA_LOCAL_STORAGE_MIN_GIB = "200";
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.bash}/bin/bash ${./local-storage-placement.sh}";
+      StandardOutput = "journal+console";
+      StandardError = "journal+console";
+    };
+  };
 
   # Install rancher/local-path-provisioner via K3S manifest. K3S
   # actually ships this by default but we re-declare it explicitly

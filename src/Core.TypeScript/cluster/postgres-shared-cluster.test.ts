@@ -182,8 +182,8 @@ describe("postgres-shared is sized, not guessed: a governed row, one instance on
     expect(cluster.spec.seccompProfile.type).toBe("RuntimeDefault");
   });
 
-  test("storage is node-local, sized, and read by the claim ledger as the PVC the operator creates", () => {
-    expect(cluster.spec.storage.storageClass).toBe("zeta-block-local");
+  test("storage is on the Longhorn pool, sized, and read by the claim ledger as the PVC the operator creates", () => {
+    expect(cluster.spec.storage.storageClass).toBe("zeta-block-replicated");
     expect(cluster.spec.storage.size).toMatch(/^\d+Gi$/);
   });
 

@@ -245,13 +245,14 @@ describe("splitDemand", () => {
 });
 
 describe("the committed tree — the measurement this work item was filed on", () => {
-  test("943 GiB declared, 400 undecidable, 543–943 schedulable", () => {
+  test("1043 GiB declared, 400 undecidable, 643–1043 schedulable", () => {
+    // 943 / 543-943 until 2026-10-02: +100 for postgres-shared (3 x 20), seaweedfs and forgejo moving onto the pool.
     const split = longhornSchedulableDemand(REPO_ROOT);
     expect(split).not.toBeNull();
-    expect(split?.declaredGib).toBe(943);
+    expect(split?.declaredGib).toBe(1043);
     expect(split?.undecidableGib).toBe(400);
-    expect(split?.lowerBoundGib).toBe(543);
-    expect(split?.upperBoundGib).toBe(943);
+    expect(split?.lowerBoundGib).toBe(643);
+    expect(split?.upperBoundGib).toBe(1043);
     expect(split?.exact).toBe(false);
   });
 

@@ -95,6 +95,12 @@ spec:
         - /spec/source/helm/valuesObject/storage/persistentVolume/size
     - group: argoproj.io
       kind: Application
+      name: forgejo
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/persistence/size
+    - group: argoproj.io
+      kind: Application
       name: hindsight
       namespace: argocd
       jsonPointers:
@@ -142,6 +148,12 @@ spec:
       jsonPointers:
         - /spec/source/helm/valuesObject/replica/persistence/size
         - /spec/source/helm/valuesObject/replica/replicas
+    - group: argoproj.io
+      kind: Application
+      name: seaweedfs
+      namespace: argocd
+      jsonPointers:
+        - /spec/source/helm/valuesObject/allInOne/data/size
     - group: argoproj.io
       kind: Application
       name: tempo

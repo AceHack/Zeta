@@ -152,21 +152,32 @@ describe("(a) the ladder is DERIVED from the catalogue, never restated", () => {
     expect(demand).toBe(profileTotalGib(catalogue, committed));
   });
 
-  test("the owner's pool: 607 GiB schedulable selects `standard`, and its demand is the declared 571", () => {
+  test("the owner's pool: 607 GiB schedulable selects `minimal` since 2026-10-02, because `standard` now declares 671", () => {
     const standard = ladder.find((r) => r.name === "standard");
-    expect(standard?.demandGib).toBe(571);
+    // 571 -> 671 on 2026-10-02: postgres-shared (3 x 20Gi), seaweedfs (20Gi) and forgejo (20Gi) are on the
+    // Longhorn pool now, so a single-1-TB-disk install (607 GiB schedulable) NO LONGER FITS `standard` and the
+    // installer selects `minimal` for it. That is the honest price of putting these volumes on bounded
+    // storage instead of an unmetered directory on root; the remedies (a second disk, or LONGHORN1_TAIL) are
+    // named in docs/ops/STORAGE-RELOCATION.md and in the installer's own refusal text.
+    expect(standard?.demandGib).toBe(671);
     expect(standard?.demandGib).toBe(profileTotalGib(catalogue, "standard"));
-    expect(ladder.filter((r) => r.demandGib <= 607).map((r) => r.name)).toEqual(["minimal", "standard"]);
+    expect(ladder.filter((r) => r.demandGib <= 607).map((r) => r.name)).toEqual(["minimal"]);
   });
 
   test("what a rung charges is what it ACTUALLY requests: below the committed rung it can exceed the catalogue total", () => {
-    // `minimal` declares 192 GiB, but four git-path claims cannot be resized at install time and keep their
-    // committed size, so the pool must hold 204. Charging the smaller number would be a lie that fills a disk.
+    // `minimal` declares 231 GiB, but five git-path claims cannot be resized at install time and keep their
+    // committed size, so the pool must hold 279. Charging the smaller number would be a lie that fills a disk.
     const minimal = ladder.find((r) => r.name === "minimal")?.demandGib ?? 0;
     expect(minimal).toBeGreaterThan(profileTotalGib(catalogue, "minimal"));
     const keptGib = catalogue.claims
       .filter((c) => classifyClaim(c).kind === "committed")
-      .reduce((sum, c) => sum + (parseFloat(c.sizes[committed] ?? "0") - parseFloat(c.sizes["minimal"] ?? "0")), 0);
+      // x the pod count at `minimal`: a per-instance claim (postgres-shared, 3 instances) keeps its
+      // committed size on EVERY pod, so the deficit is per-pod size x pods, not the size alone.
+      .reduce(
+        (sum, c) =>
+          sum + (parseFloat(c.sizes[committed] ?? "0") - parseFloat(c.sizes["minimal"] ?? "0")) * (c.pods["minimal"] ?? 1),
+        0,
+      );
     expect(minimal - profileTotalGib(catalogue, "minimal")).toBeCloseTo(keptGib, 5);
     // And above the committed rung nothing can grow past what it keeps.
     const top = ladder.at(-1);
@@ -184,6 +195,7 @@ describe("(a) the ladder is DERIVED from the catalogue, never restated", () => {
       "game-hosting-gmod/data 10Gi",
       "headscale/data 3Gi",
       "platform/portal 5Gi",
+      "postgres-shared/data 20Gi",
     ]);
   });
 });
@@ -211,14 +223,15 @@ describe("(a) every generated artefact is current — regenerate with `storage-p
 describe("(b) how each claim is reached — derived from the manifests, nothing stated by hand", () => {
   const byKind = (kind: string): string[] => catalogue.claims.filter((c) => classifyClaim(c).kind === kind).map((c) => c.id);
 
-  test("14 claims are helm valuesObject leaves (a merge patch moves them), 1 is a kustomize patch, 4 stay committed, 1 is applied by nothing", () => {
-    expect(byKind("values")).toHaveLength(14);
+  test("16 claims are helm valuesObject leaves (a merge patch moves them), 1 is a kustomize patch, 5 stay committed, 1 is applied by nothing", () => {
+    expect(byKind("values")).toHaveLength(16);
     expect(byKind("kustomize")).toEqual(["full-ai-cluster/vllm/hf-cache"]);
     expect(byKind("committed")).toEqual([
       "full-ai-cluster/agent-memory/memory",
       "full-ai-cluster/game-hosting-gmod/data",
       "full-ai-cluster/headscale/data",
       "full-ai-cluster/platform/portal",
+      "full-ai-cluster/postgres-shared/data",
     ]);
     expect(byKind("unapplied")).toEqual(["full-ai-cluster/arc-runner-set/model-cache"]);
   });
@@ -285,7 +298,7 @@ describe("(b) applying a profile's patches to the COMMITTED Application yields e
           expect(getIn(pvc, claim.sizeField)).toBe(claim.sizes[rung.name]);
         }
       }
-      expect(reached).toBe(15);
+      expect(reached).toBe(17);
     });
   }
 
@@ -345,7 +358,12 @@ describe("(b) the root ignores exactly the leaves the Jobs write — and nothing
 
   test("every patched Application has an entry whose pointers are exactly the generated set", () => {
     for (const app of patchedApplications()) {
-      expect(ignore.find((e) => e.name === app.app)?.pointers).toEqual([...app.pointers]);
+      // `some`, not `find`: forgejo carries TWO entries since 2026-10-02 -- the install-time public-domain
+      // one (/spec/source/helm/parameters, owned by platform-public-tls) and the generated size one. Two
+      // entries naming one Application is legal ArgoCD; each must stay exactly its own writer's pointers.
+      const entries = ignore.filter((e) => e.name === app.app);
+      expect(entries.length).toBeGreaterThan(0);
+      expect(entries.some((e) => JSON.stringify(e.pointers) === JSON.stringify([...app.pointers]))).toBe(true);
     }
   });
 

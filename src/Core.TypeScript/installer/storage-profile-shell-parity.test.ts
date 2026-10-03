@@ -62,7 +62,8 @@ function runShell(script: string, env: Readonly<Record<string, string>> = {}): s
   return result.stdout.trim();
 }
 
-const SCHEDULABLE = [0, 1, 100, 203, 204, 205, 570, 571, 572, 607, 942, 943, 944, 1560, 1561, 1562, 5000];
+// The rung demands (279 / 671 / 1043 / 1701 since 2026-10-02) and one GiB either side of each.
+const SCHEDULABLE = [0, 1, 100, 278, 279, 280, 670, 671, 672, 607, 1042, 1043, 1044, 1700, 1701, 1702, 5000];
 const REQUESTED = ["", "auto", "minimal", "standard", "measured", "large", "huge", "ci", "Standard", "AUTO", "standard "];
 const FLOORS = ["", "minimal", "standard", "measured", "large", "none", "garbage"];
 const OVERRIDES = ["", "1", "0", "yes"];
@@ -162,7 +163,7 @@ describe("zeta_storage_profile_select agrees with selectStorageProfile over ever
 describe("zeta_storage_profile_decide agrees with decideStorageProfile over every input class", () => {
   it("every case, including the override", () => {
     const cases: string[][] = [];
-    for (const s of [0, 1, 204, 607, 943, 1561])
+    for (const s of [0, 1, 279, 607, 1043, 1701])
       for (const r of ["", "large", "huge"])
         for (const f of ["", "large"])
           for (const o of ["", "1"]) cases.push([String(s), r, f, o]);
@@ -244,7 +245,7 @@ describe("THE OWNER'S INSTALL, through the real assert_longhorn_pool_holds_the_r
   // NOT adopted, so it contributes nothing. 810 x 75% = 607 GiB schedulable.
   const owner = runAssert(810, []);
 
-  it("does NOT refuse (it used to bail with 'short by 336 GiB')", () => {
+  it("does NOT refuse (it used to bail with 'short by 336 GiB', against a roster that declared 943)", () => {
     expect(owner.stderr).toBe("");
     expect(owner.status).toBe(0);
     expect(owner.stdout).not.toContain("ERROR");
@@ -253,34 +254,35 @@ describe("THE OWNER'S INSTALL, through the real assert_longhorn_pool_holds_the_r
   it("prints the measured pool exactly as the refusal did", () => {
     expect(owner.stdout).toContain("longhorn1 tail on /dev/nvme0n1      810 GiB");
     expect(owner.stdout).toContain("x 75% Longhorn will place       607 GiB");
-    expect(owner.stdout).toContain("committed roster DECLARES         943 GiB");
+    expect(owner.stdout).toContain("committed roster DECLARES         1043 GiB");
   });
 
   it("shows the whole ladder with what fits and what does not", () => {
-    expect(owner.stdout).toMatch(/minimal\s+204 GiB\s+fits, 403 GiB spare/);
-    expect(owner.stdout).toMatch(/standard\s+571 GiB\s+fits, 36 GiB spare\s+<- auto choice/);
-    expect(owner.stdout).toMatch(/measured\s+943 GiB\s+too big, short by 336 GiB/);
-    expect(owner.stdout).toMatch(/large\s+1561 GiB\s+too big, short by 954 GiB/);
+    // Since 2026-10-02 `standard` is 671 (was 571): postgres-shared, seaweedfs and forgejo are Longhorn claims now.
+    expect(owner.stdout).toMatch(/minimal\s+279 GiB\s+fits, 328 GiB spare\s+<- auto choice/);
+    expect(owner.stdout).toMatch(/standard\s+671 GiB\s+too big, short by 64 GiB/);
+    expect(owner.stdout).toMatch(/measured\s+1043 GiB\s+too big, short by 436 GiB/);
+    expect(owner.stdout).toMatch(/large\s+1701 GiB\s+too big, short by 1094 GiB/);
   });
 
   it("names the profile chosen and what it shrinks", () => {
-    expect(owner.stdout).toContain("CHOSEN storage profile: standard (auto)");
-    expect(owner.stdout).toContain("ollama/models 200Gi->48Gi");
-    expect(owner.stdout).toContain("vllm/hf-cache 200Gi->48Gi");
+    expect(owner.stdout).toContain("CHOSEN storage profile: minimal (auto)");
+    expect(owner.stdout).toContain("ollama/models 200Gi->10Gi");
+    expect(owner.stdout).toContain("vllm/hf-cache 200Gi->10Gi");
     expect(owner.stdout).toContain("written as install-time config");
     expect(owner.stdout).toContain("Growing later needs no reinstall");
     expect(owner.stdout).toContain("It NEVER shrinks");
   });
 
-  it("hands the writer the choice: standard, to be written", () => {
-    expect(owner.stdout).toContain("RESULT chosen=[standard] write=[1] source=[auto]");
+  it("hands the writer the choice: minimal, to be written", () => {
+    expect(owner.stdout).toContain("RESULT chosen=[minimal] write=[1] source=[auto]");
   });
 });
 
 describe("the same function on every other pool shape", () => {
   it("a pool that holds the committed profile chooses it and writes NOTHING", () => {
-    // 1258 x 75% = 943.
-    const run = runAssert(1258, []);
+    // 1391 x 75% = 1043.
+    const run = runAssert(1391, []);
     expect(run.status).toBe(0);
     expect(run.stdout).toContain("RESULT chosen=[measured] write=[0] source=[auto]");
     expect(run.stdout).toContain("the committed profile; nothing is written");
@@ -296,18 +298,18 @@ describe("the same function on every other pool shape", () => {
   it("a 1 GiB pool REFUSES, naming the smallest profile and the three remedies", () => {
     const run = runAssert(1, []);
     expect(run.status).toBe(1);
-    expect(run.stderr).toContain("even the SMALLEST storage profile, 'minimal', declares 204 GiB");
-    expect(run.stderr).toContain("short by 204 GiB");
+    expect(run.stderr).toContain("even the SMALLEST storage profile, 'minimal', declares 279 GiB");
+    expect(run.stderr).toContain("short by 279 GiB");
     expect(run.stderr).toContain("Nothing has been wiped");
     expect(run.stderr).toContain("(1) ADD A SECOND INTERNAL DISK");
-    expect(run.stderr).toContain("(2) raise the boot disk's Longhorn slice, e.g. LONGHORN1_TAIL=273G");
+    expect(run.stderr).toContain("(2) raise the boot disk's Longhorn slice, e.g. LONGHORN1_TAIL=373G");
     expect(run.stderr).toContain("(3) install anyway");
     expect(run.stderr).toContain("ZETA_ALLOW_LONGHORN_UNDERSIZED=1");
   });
 
-  it("the smallest profile is the boundary: 272 GiB tail (204 schedulable) installs, 271 refuses", () => {
-    expect(runAssert(272, []).stdout).toContain("RESULT chosen=[minimal] write=[1] source=[auto]");
-    expect(runAssert(271, []).status).toBe(1);
+  it("the smallest profile is the boundary: 372 GiB tail (279 schedulable) installs, 371 refuses", () => {
+    expect(runAssert(372, []).stdout).toContain("RESULT chosen=[minimal] write=[1] source=[auto]");
+    expect(runAssert(371, []).status).toBe(1);
   });
 
   it("under ZETA_ALLOW_LONGHORN_UNDERSIZED=1 nothing fits -> the committed tree applies, nothing is written", () => {
@@ -335,12 +337,12 @@ describe("the explicit override (ZETA_STORAGE_PROFILE=<name>) — how the owner 
   it("is refused when the pool cannot hold it, saying what auto WOULD have chosen", () => {
     const run = runAssert(810, [], { ZETA_STORAGE_PROFILE: "large" });
     expect(run.status).toBe(1);
-    expect(run.stderr).toContain("ZETA_STORAGE_PROFILE='large' declares 1561 GiB");
-    expect(run.stderr).toContain("ZETA_STORAGE_PROFILE=auto would choose: standard auto");
+    expect(run.stderr).toContain("ZETA_STORAGE_PROFILE='large' declares 1701 GiB");
+    expect(run.stderr).toContain("ZETA_STORAGE_PROFILE=auto would choose: minimal auto");
   });
 
   it("`auto` spelled out is the same as unset", () => {
-    expect(runAssert(810, [], { ZETA_STORAGE_PROFILE: "auto" }).stdout).toContain("RESULT chosen=[standard] write=[1] source=[auto]");
+    expect(runAssert(810, [], { ZETA_STORAGE_PROFILE: "auto" }).stdout).toContain("RESULT chosen=[minimal] write=[1] source=[auto]");
   });
 
   it("a name that is not a profile REFUSES before the wipe and lists the real ones", () => {
@@ -367,7 +369,8 @@ describe("NEVER SHRINKS, through the real function: a re-install over an existin
   });
 
   it("a floor the pool DOES hold is kept, and a bigger pool grows past it", () => {
-    expect(runAssert(810, [], { ZETA_REPAIR_STORAGE_PROFILE: "standard" }).stdout).toContain("RESULT chosen=[standard] write=[1] source=[auto]");
+    // A 900 GiB tail is 675 schedulable: holds `standard` (671) and not `measured` (1043).
+    expect(runAssert(900, [], { ZETA_REPAIR_STORAGE_PROFILE: "standard" }).stdout).toContain("RESULT chosen=[standard] write=[1] source=[auto]");
     expect(runAssert(1000, [1400], { ZETA_REPAIR_STORAGE_PROFILE: "standard" }).stdout).toContain("RESULT chosen=[large] write=[1] source=[auto]");
   });
 
@@ -380,13 +383,13 @@ describe("NEVER SHRINKS, through the real function: a re-install over an existin
   it("ZETA_STORAGE_PROFILE_FLOOR=none is the NAMED act of someone destroying the old volumes", () => {
     const run = runAssert(810, [], { ZETA_REPAIR_STORAGE_PROFILE: "large", ZETA_STORAGE_PROFILE_FLOOR: "none" });
     expect(run.status).toBe(0);
-    expect(run.stdout).toContain("RESULT chosen=[standard] write=[1] source=[auto]");
+    expect(run.stdout).toContain("RESULT chosen=[minimal] write=[1] source=[auto]");
   });
 
   it("a recovered value that is not a rung is ignored rather than trusted", () => {
     const run = runAssert(810, [], { ZETA_REPAIR_STORAGE_PROFILE: "garbage", ZETA_REPAIR_STORAGE_PROFILE_HW: "<script>" });
     expect(run.status).toBe(0);
-    expect(run.stdout).toContain("RESULT chosen=[standard] write=[1] source=[auto]");
+    expect(run.stdout).toContain("RESULT chosen=[minimal] write=[1] source=[auto]");
   });
 });
 

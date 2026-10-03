@@ -37,9 +37,13 @@ import {
 
 const OWNER_TAIL_GIB = 810;
 const OWNER_SCHEDULABLE_GIB = schedulableLonghornGib(provisionedLonghornGib(OWNER_TAIL_GIB, []));
-const COMMITTED_DEMAND_GIB = 943;
+const COMMITTED_DEMAND_GIB = 1043;
 
-describe("the owner's box: 607 GiB schedulable against a roster that declares 943", () => {
+// RE-MEASURED 2026-10-02: the roster declares 1043 GiB now (was 943; +100 for postgres-shared, seaweedfs and
+// forgejo, which moved onto the Longhorn pool), and `standard` is 671 (was 571). The header above is the
+// original defect, in the original numbers, kept as history. The consequence for THIS box -- a single 1 TB
+// boot disk, 607 GiB schedulable -- is that the largest rung that fits is now `minimal`.
+describe("the owner's box: 607 GiB schedulable against a roster that declares 1043", () => {
   it("the arithmetic reproduces the refusal's own numbers", () => {
     expect(OWNER_SCHEDULABLE_GIB).toBe(607);
     // This is what the OLD gate did with them, and it is the thing that must no longer end the install.
@@ -49,17 +53,17 @@ describe("the owner's box: 607 GiB schedulable against a roster that declares 94
   it("selects a smaller profile that FITS and does NOT refuse", () => {
     const decision = decideStorageProfile(OWNER_SCHEDULABLE_GIB, "", "", "");
     expect(decision.verdict).toBe("ok");
-    expect(decision.profile).toBe("standard");
-    expect(decision.demandGib).toBe(571);
+    expect(decision.profile).toBe("minimal");
+    expect(decision.demandGib).toBe(279);
     expect(decision.demandGib).toBeLessThanOrEqual(OWNER_SCHEDULABLE_GIB);
     // Differs from the committed `measured`, so it is written as install-time config.
     expect(decision.write).toBe(true);
-    expect(decision.selection).toEqual({ ok: true, profile: "standard", source: "auto" });
+    expect(decision.selection).toEqual({ ok: true, profile: "minimal", source: "auto" });
   });
 
   it("is the LARGEST rung that fits: the next one up does not", () => {
-    const next = STORAGE_PROFILE_LADDER[storageProfileRank("standard") ?? 0];
-    expect(next?.name).toBe("measured");
+    const next = STORAGE_PROFILE_LADDER[storageProfileRank("minimal") ?? 0];
+    expect(next?.name).toBe("standard");
     expect(next?.demandGib).toBeGreaterThan(OWNER_SCHEDULABLE_GIB);
   });
 });
@@ -166,7 +170,7 @@ describe("an explicit request (ZETA_STORAGE_PROFILE=<name>) forces that rung", (
 
 describe("NEVER SHRINKS: a re-run on a live cluster cannot select below what is already applied", () => {
   it("an auto choice is RAISED to the floor, not left at what the pool would fit", () => {
-    // The pool would pick `standard`; the cluster already runs `large`.
+    // The pool would pick `minimal`; the cluster already runs `large`.
     const selection = selectStorageProfile(OWNER_SCHEDULABLE_GIB, "", "large");
     expect(selection).toEqual({ ok: true, profile: "large", source: "floor" });
   });
@@ -190,7 +194,7 @@ describe("NEVER SHRINKS: a re-run on a live cluster cannot select below what is 
   });
 
   it("a floor that is not a rung is no floor (`none` is the operator naming that they are destroying the volumes)", () => {
-    expect(selectStorageProfile(OWNER_SCHEDULABLE_GIB, "", "none")).toEqual({ ok: true, profile: "standard", source: "auto" });
+    expect(selectStorageProfile(OWNER_SCHEDULABLE_GIB, "", "none")).toEqual({ ok: true, profile: "minimal", source: "auto" });
     expect(selectStorageProfile(2000, "minimal", "none")).toEqual({ ok: true, profile: "minimal", source: "explicit" });
     expect(selectStorageProfile(2000, "minimal", "")).toEqual({ ok: true, profile: "minimal", source: "explicit" });
   });

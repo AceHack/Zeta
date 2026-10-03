@@ -41,6 +41,8 @@ spec:
         # ZETA-STORAGE-PROFILE-JOBS-BEGIN
         - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-cockroachdb }
           patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-cockroachdb-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-forgejo }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-forgejo-@ZETA_STORAGE_PROFILE@"}]'
         - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-hindsight }
           patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-hindsight-@ZETA_STORAGE_PROFILE@"}]'
         - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-kube-prometheus-stack }
@@ -55,6 +57,8 @@ spec:
           patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-openziti-controller-@ZETA_STORAGE_PROFILE@"}]'
         - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-redis }
           patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-redis-@ZETA_STORAGE_PROFILE@"}]'
+        - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-seaweedfs }
+          patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-seaweedfs-@ZETA_STORAGE_PROFILE@"}]'
         - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-tempo }
           patch: '[{"op":"replace","path":"/metadata/name","value":"zeta-storage-profile-tempo-@ZETA_STORAGE_PROFILE@"}]'
         - target: { group: batch, version: v1, kind: Job, name: zeta-storage-profile-vllm }

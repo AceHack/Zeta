@@ -50,7 +50,7 @@ spec:
     # valuesObject below: both render; 9 -> 10 resources; the single addition is
     # Secret/blob-store-seaweedfs-s3-secret (the S3 credential becomes a real Secret
     # instead of being inlined); nothing removed. Every value still takes effect --
-    # all five buckets render, the PVC is still 20Gi on zeta-local-path under the
+    # all five buckets render, the PVC is still 20Gi (then on the node-local class) under the
     # same claimName, auth is still on, master/volume/filer stay disabled.
     #
     # WATCH ON FIRST DEPLOY: seaweedfs changed its S3 identity loader to fail CLOSED
@@ -99,10 +99,18 @@ spec:
           existingConfigSecret: zeta-blob-store
         allInOne:
           enabled: true
+          # ON THE LONGHORN POOL since 2026-10-02 (was `zeta-block-local`). This ONE volume backs the
+          # GitLab registry/artifacts/uploads, Loki, Mimir AND the CNPG Barman WAL/base backups, and
+          # `rancher.io/local-path` has no quota: on the real node it was a directory on a 120 GB root
+          # that also holds 39 GB of container images. The data (2.6 GB measured) now lives on the
+          # Longhorn data disks, bounded by its 20Gi. docs/ops/STORAGE-RELOCATION.md has the measurements and
+          # the cut-over; CHANGING THIS FIELD ON A LIVE CLUSTER FAILS the Application's sync (a bound
+          # PVC's storageClassName is immutable) -- the live PVC was re-created under the same claimName
+          # with the data copied, see that document before editing.
           data:
             type: persistentVolumeClaim
             size: 20Gi
-            storageClass: zeta-block-local
+            storageClass: zeta-block-replicated
           s3:
             enabled: true
             enableAuth: true

@@ -49,9 +49,10 @@
 #
 # THE COST, STATED HONESTLY. On the ONE-node install this tree ships to today, three instances
 # are 3x the memory (3 x 512Mi requested, 1Gi limit each, plus a ~64Mi Barman sidecar apiece),
-# 3 x 250m CPU requested, and THREE 20Gi PVCs on one disk. The anti-affinity is `preferred`, not
-# `required`, so all three co-locate -- and they STAY there: each replica's PVC is node-local
-# (zeta-block-local), so a node that joins later does not pull an existing replica across; it
+# 3 x 250m CPU requested, and THREE 20Gi PVCs on one node. The anti-affinity is `preferred`, not
+# `required`, so all three co-locate -- and they STAY there: each replica's PVC is bound to the
+# node it was provisioned on (Longhorn `zeta-block-replicated`, 1 replica, on that node's data
+# disks), so a node that joins later does not pull an existing replica across; it
 # receives only pods the operator creates afterwards. That is not high availability against
 # losing the NODE, and this Application is acknowledged as nominal redundancy in
 # single-node-budget.json (`acknowledgedFalseRedundancy`) exactly as cockroachdb, nats and
@@ -69,7 +70,8 @@
 # SeaweedFS (objectstore.yaml), 14-day recovery window. That is a REAL backup: a bad
 # DELETE replicates to replicas in milliseconds, and it does not reach the archive's
 # earlier base backups. It does NOT protect against losing the NODE: SeaweedFS's volume
-# is a node-local PVC on the same disk as this database. Off-node durability needs a
+# is a PVC on the same node's data disks as this database (both Longhorn, 1 replica, since
+# 2026-10-02 -- not the root disk). Off-node durability needs a
 # second node or an external store, and the maintainer ruled out external services here.
 # An honest "backed up" in this tree means "survives a logical error and a lost pod",
 # not "survives the machine".

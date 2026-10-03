@@ -604,9 +604,9 @@ describe("the live catalogue against the measured render", () => {
 
   // The numbers, pinned. Not decoration: this is what makes a declaration edit
   // that nobody re-measured go red offline, with no helm and no network.
-  test("MEASURED 2026-08-22 — declared 943 GiB, rendered 843 GiB on the replicated capability (was `longhorn`)", () => {
+  test("MEASURED 2026-10-02 — declared 1043 GiB, rendered 943 GiB on the replicated capability (was 943 / 843 before the stateful volumes moved off root)", () => {
     const result = auditAgainstSnapshot(snapshot!, {});
-    expect(declaredTotalGib(result.expectations)).toBe(943);
+    expect(declaredTotalGib(result.expectations)).toBe(1043);
     const totals = renderedTotalsByClass(result.rendered, result.clusterDefault);
     // 831 -> 861 -> 843 and 201 -> 193 -> 269, in two steps on the same day.
     //
@@ -622,7 +622,10 @@ describe("the live catalogue against the measured render", () => {
     // thing an unrenderable app ever hides.
     // `longhorn` -> `zeta-block-replicated` on 2026-09-23: the same 843 GiB on the
     // same metal pool, under the capability name charts request now.
-    expect(totals.get("zeta-block-replicated")).toBe(843);
+    // 843 -> 943 on 2026-10-02 (+100): postgres-shared (3 x 20Gi), seaweedfs (20Gi) and forgejo (20Gi)
+    // moved off the node-local class onto the Longhorn pool, because local-path has no quota and the
+    // real node's root is 120 GB shared with 39 GB of container images (docs/ops/STORAGE-RELOCATION.md).
+    expect(totals.get("zeta-block-replicated")).toBe(943);
     expect(totals.get("longhorn")).toBeUndefined();
     // 249 -> 301 on 2026-09-01, when the snapshot was re-measured against the
     // charts already merged on main: dapr's scheduler 1Gi x1 -> 16Gi x3 (+47)
@@ -638,7 +641,12 @@ describe("the live catalogue against the measured render", () => {
     // 220 -> 230 on 2026-09-27: temporal-postgres, a CNPG Cluster on node-local
     // storage by design; its operator-created PVC is now read from the CR.
     // 230 -> 250 on 2026-10-01: postgres-shared (20Gi), the shared general-purpose CNPG Cluster.
-    expect(totals.get("zeta-block-local")).toBe(250);
+    // 250 -> 186 on 2026-10-02: -60 (the old snapshot priced postgres-shared at ONE instance, 20Gi, plus
+    // seaweedfs 20Gi and forgejo 20Gi, all of which left this class), +12 for the gitlab valkey (2Gi) and
+    // rails-db (10Gi) claims the re-measured snapshot records for the first time, and -16 when the GitLab
+    // datastore migration (#17880) removed the bundled PostgreSQL (8Gi) and Redis (8Gi) from the render.
+    // 250 - 60 + 12 - 16 = 186.
+    expect(totals.get("zeta-block-local")).toBe(186);
   });
 
   // WAS "the two live inert-values defects are still exactly two apps". Both

@@ -2230,6 +2230,35 @@
       }
     },
     {
+      "id": "full-ai-cluster/forgejo/data",
+      "path": "full-ai-cluster/k8s/applications/forgejo/Application.yaml",
+      "docIndex": 0,
+      "storageClassField": "spec.source.helm.valuesObject.persistence.storageClass",
+      "sizeField": "spec.source.helm.valuesObject.persistence.size",
+      "podsField": null,
+      "podsSource": "singleton",
+      "podsEvidence": "forgejo renders one Deployment (strategy Recreate) with one chart-created PersistentVolumeClaim (gitea-shared-storage); sqlite3 is a single-writer database, so the pod count is 1 by construction.",
+      "scheduledAtBringUp": true,
+      "bringUpNote": "automated sync",
+      "consequence": "The git host's repositories AND its sqlite3 database share this one volume (the chart default; no external database is configured), so filling it is a write failure on the only copy of whatever was pushed, not a cache miss. MOVED ONTO THE LONGHORN POOL 2026-10-02 from the node-local class: local-path has no quota, so on the real node (120 GB root, 39 GB of it container images) this '20Gi' volume was a directory that could grow into the eviction line. Measured 5 MB used. minimal is a mirror-sized 5Gi; none of the rungs changes the pod count (1, a single writer).",
+      "renderedApp": "full-ai-cluster/forgejo",
+      "renderedPvcPattern": "^gitea-shared-storage$",
+      "sizes": {
+        "ci": "1Gi",
+        "minimal": "5Gi",
+        "standard": "20Gi",
+        "measured": "20Gi",
+        "large": "40Gi"
+      },
+      "pods": {
+        "ci": 1,
+        "minimal": 1,
+        "standard": 1,
+        "measured": 1,
+        "large": 1
+      }
+    },
+    {
       "id": "full-ai-cluster/game-hosting-gmod/data",
       "path": "full-ai-cluster/k8s/applications/game-hosting/gmod/statefulset.yaml",
       "docIndex": 0,
@@ -2617,6 +2646,35 @@
       }
     },
     {
+      "id": "full-ai-cluster/postgres-shared/data",
+      "path": "full-ai-cluster/k8s/applications/postgres-shared/cluster.yaml",
+      "docIndex": 0,
+      "storageClassField": "spec.storage.storageClass",
+      "sizeField": "spec.storage.size",
+      "podsField": "spec.instances",
+      "podsSource": "manifest",
+      "podsEvidence": "",
+      "scheduledAtBringUp": true,
+      "bringUpNote": "automated sync, wave 5",
+      "consequence": "One data volume PER INSTANCE (CNPG creates `<cluster>-<n>`), so the total is size x instances: 3 x 20Gi on the metal rungs. MOVED ONTO THE LONGHORN POOL 2026-10-02 from the node-local class: local-path has no quota, so on the real node (120 GB root, 39 GB of it container images) each '20Gi' volume was a directory that could grow into the eviction line, and the production databases (flowdent_prod, flowdent_staging) lived there. Measured 1.0 GB used per instance. The pod count is the instance count (3 on every rung, as the ci rule requires: the ci rung changes DISK, never the replica topology; the dev lane's single instance comes from rung-overrides.yaml `postgres-shared/single-instance-dev`, which also flips enablePDB and primaryUpdateMethod -- postgres-shared-cluster.test.ts). Dropping instances is an HA decision, not a size cut. minimal is 8Gi per instance: the volume holds the data plus the WAL between archive runs, and the 14-day recovery window lives in the object store, not here.",
+      "renderedApp": "full-ai-cluster/postgres-shared",
+      "renderedPvcPattern": "^pgdata/postgres-shared$",
+      "sizes": {
+        "ci": "1Gi",
+        "minimal": "8Gi",
+        "standard": "20Gi",
+        "measured": "20Gi",
+        "large": "20Gi"
+      },
+      "pods": {
+        "ci": 3,
+        "minimal": 3,
+        "standard": 3,
+        "measured": 3,
+        "large": 3
+      }
+    },
+    {
       "id": "full-ai-cluster/redis",
       "path": "full-ai-cluster/k8s/applications/redis/Application.yaml",
       "docIndex": 0,
@@ -2644,6 +2702,35 @@
         "standard": 3,
         "measured": 3,
         "large": 3
+      }
+    },
+    {
+      "id": "full-ai-cluster/seaweedfs/data",
+      "path": "full-ai-cluster/k8s/applications/seaweedfs/Application.yaml",
+      "docIndex": 0,
+      "storageClassField": "spec.source.helm.valuesObject.allInOne.data.storageClass",
+      "sizeField": "spec.source.helm.valuesObject.allInOne.data.size",
+      "podsField": null,
+      "podsSource": "singleton",
+      "podsEvidence": "seaweedfs 4.45.0 allInOne renders ONE Deployment (strategy Recreate, replicas 1) with one chart-created PersistentVolumeClaim (blob-store-seaweedfs-all-in-one-data); master, volume and filer are disabled as separate workloads.",
+      "scheduledAtBringUp": true,
+      "bringUpNote": "automated sync, wave -5",
+      "consequence": "THE blob store: one volume backs the GitLab registry/artifacts/uploads, Loki chunks, Mimir blocks AND the CNPG Barman WAL and base backups. Filling it stops every one of them at once, and it stops the database backups first (WAL archiving fails, WAL accumulates on the database volumes). MOVED ONTO THE LONGHORN POOL 2026-10-02 from the node-local class: local-path has no quota, so on the real node (120 GB root, 39 GB of it container images) this '20Gi' volume was a directory that could grow into the eviction line. Measured 2.6 GB used across 202 files. SeaweedFS pre-grows volumes per bucket, so a bucket count x volumeSizeLimitMB sets a floor well above the byte count; minimal 10Gi holds the 10 buckets' pre-grown volumes only because `maxVolumes` is raised to 100 and slots are reserved capacity, not bytes. Pod count is 1 in every rung (allInOne).",
+      "renderedApp": "full-ai-cluster/seaweedfs",
+      "renderedPvcPattern": "^blob-store-seaweedfs-all-in-one-data$",
+      "sizes": {
+        "ci": "2Gi",
+        "minimal": "10Gi",
+        "standard": "20Gi",
+        "measured": "20Gi",
+        "large": "40Gi"
+      },
+      "pods": {
+        "ci": 1,
+        "minimal": 1,
+        "standard": 1,
+        "measured": 1,
+        "large": 1
       }
     },
     {

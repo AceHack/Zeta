@@ -83,7 +83,11 @@ spec:
         persistence:
           enabled: true
           size: 20Gi
-          storageClass: zeta-block-local   # or zeta-block-replicated for durable, replicated storage
+          # ON THE LONGHORN POOL since 2026-10-02 (was `zeta-block-local`): local-path has no quota and
+          # on the real node it is a directory on the 120 GB root shared with 39 GB of images. sqlite3
+          # lives here, so this is a database volume. See docs/ops/STORAGE-RELOCATION.md; changing the
+          # class of a LIVE claim needs the claim re-created with its data copied (the field is immutable).
+          storageClass: zeta-block-replicated
         # THE LONG-RUNNING CONTAINER WAS BestEffort. Rendered at this pin, the chart
         # ships `resources: {}` for the `forgejo` container while its three init
         # containers (init-directories, init-app-ini, configure-gitea) each request
@@ -140,7 +144,7 @@ spec:
         # consequence of leaving it open: this Application now auto-syncs, so sqlite3
         # on the PVC above is what actually runs rather than what would run if anyone
         # ever synced it. That is a real posture with a real limitation -- one writer,
-        # no replication, backed by the 20Gi local-path volume -- and it is now being
+        # no replication, backed by the 20Gi Longhorn volume -- and it is now being
         # exercised instead of merely described.
   destination:
     server: https://kubernetes.default.svc

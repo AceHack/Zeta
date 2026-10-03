@@ -98,11 +98,25 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: postgres-shared
-  # NODE-LOCAL on purpose (CNPG's own guidance: it replicates at the PostgreSQL level, so a
-  # replicated block volume underneath replicates the same bytes twice). 20Gi: a shared
-  # general-purpose database with room for WAL between archive runs. Not governed by the
-  # Longhorn-pool storage ladder (a local-path class has no pool); rendered-storage-claims.ts
-  # reads this block as the PVC the operator creates and the local-path advisory counts it.
+  # ON THE LONGHORN POOL since 2026-10-02, NOT on the root disk. It was node-local (CNPG's
+  # own guidance: it replicates at the PostgreSQL level, so a replicated block volume
+  # underneath replicates the same bytes twice) and that guidance still holds -- but the
+  # `zeta-block-replicated` class is `numberOfReplicas: 1` on this install, so nothing is
+  # written twice; the class is chosen for WHERE it lands, not for a second copy. The
+  # measured reason: the root filesystem of the one real node is 120 GB shared with
+  # containerd images (39 GB), the kubelet and the OS, and `rancher.io/local-path` has NO
+  # QUOTA, so a "20Gi" local PVC is a directory that can grow into the eviction line.
+  # A Longhorn volume is bounded by its size and lives on the multi-hundred-GB data disks.
+  # docs/ops/STORAGE-RELOCATION.md has the measurements and the live migration.
+  # 20Gi: a shared general-purpose database with room for WAL between archive runs.
+  # Governed by the Longhorn-pool storage ladder (storage-profiles.json claim
+  # `full-ai-cluster/postgres-shared/postgres`); rendered-storage-claims.ts reads this block
+  # as the PVCs the operator creates.
+  #
+  # CHANGING THIS FIELD MOVES NOTHING. CNPG applies `storageClass` only to PVCs it creates
+  # afterwards; each existing instance keeps the volume it has until that instance's PVC and
+  # pod are deleted (the operator then re-clones it from the primary onto this class). That
+  # is the migration path, replica by replica, primary last via switchover.
   storage:
-    storageClass: zeta-block-local
+    storageClass: zeta-block-replicated
     size: 20Gi

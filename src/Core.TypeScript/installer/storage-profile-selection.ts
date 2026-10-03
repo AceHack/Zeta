@@ -74,10 +74,10 @@ export interface StorageProfileRung {
  */
 // STORAGE-PROFILE-LADDER-BEGIN
 export const STORAGE_PROFILE_LADDER: readonly StorageProfileRung[] = [
-  { name: "minimal", demandGib: 204 },
-  { name: "standard", demandGib: 571 },
-  { name: "measured", demandGib: 943 },
-  { name: "large", demandGib: 1561 },
+  { name: "minimal", demandGib: 279 },
+  { name: "standard", demandGib: 671 },
+  { name: "measured", demandGib: 1043 },
+  { name: "large", demandGib: 1701 },
 ];
 
 export const STORAGE_PROFILE_COMMITTED = "measured";

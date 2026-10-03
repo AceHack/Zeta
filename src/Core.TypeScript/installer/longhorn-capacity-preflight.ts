@@ -18,7 +18,7 @@
  *   longhorn/Application.yaml  createDefaultDiskLabeledNodes: true
  *
  * so Longhorn's entire schedulable pool on a one-disk box is the 1 GiB tail —
- * whatever the disk's size. Against it the committed roster declares ~943 GiB
+ * whatever the disk's size. Against it the committed roster declares ~1043 GiB
  * of `driver.longhorn.io` PVCs (see `COMMITTED_LONGHORN_DEMAND_GIB`). Fifteen
  * Applications' PVCs pend forever and the operator reads PVC events to find out
  * why.
@@ -138,7 +138,7 @@ export const ROOT_FLOOR_SAFETY_FACTOR = 1.15;
  *   (73 images + 30 OS) x 1.15 = 118.45  ->  120 GiB
  *
  * NOT INCLUDED, AND DELIBERATELY SO: the local-path PVC ceilings that also land
- * on root — `LOCAL_PATH_ADVISORY_GIB` below, 250 GiB today. Reserving them
+ * on root — `LOCAL_PATH_ADVISORY_GIB` below, 186 GiB today. Reserving them
  * would starve the Longhorn pool for bytes nobody has written, because
  * `local-storage.nix` binds `zeta-block-local` `WaitForFirstConsumer` and the
  * local-path provisioner's own helper is `mkdir -m 0777 -p "$VOL_DIR"` — a
@@ -155,13 +155,18 @@ export const ROOT_FLOOR_GIB = 120;
  *
  * MEASURED 2026-09-24 from `rendered-storage-claims.snapshot.json` over the
  * classes bound to `rancher.io/local-path` (`zeta-block-local` plus the cluster
- * default): gitlab 66, dapr 48, forgejo 20, loki 20, opensearch 20, seaweedfs
- * 20, postgres-shared 20, openbao 15, temporal-postgres 10, mimir 6, spire 5 = 250 GiB
- * (temporal-postgres joined 2026-09-27 and postgres-shared 2026-10-01: both CNPG PVCs are
- * node-local by design). Pinned by test to that snapshot,
- * so it cannot drift silently any more than the Longhorn demand can.
+ * default): gitlab 62, dapr 48, loki 20, opensearch 20, openbao 15, temporal-postgres 10,
+ * mimir 6, spire 5 = 186 GiB. Was 250 until 2026-10-02: postgres-shared, seaweedfs and
+ * forgejo (60 GiB) moved onto the Longhorn pool (see COMMITTED_LONGHORN_DEMAND_GIB), and
+ * gitlab went 66 -> 62 (+valkey 2, +rails-db 10, -bundled PostgreSQL 8, -bundled Redis 8) in the re-measured snapshot. Pinned by test
+ * to that snapshot, so it cannot drift silently any more than the Longhorn demand can.
+ *
+ * WHERE THESE BYTES LAND (2026-10-02): on every real install, a data disk, not root. The unit
+ * `zeta-local-storage-placement` (nixos/modules/local-storage-placement.sh) bind-mounts the
+ * largest mounted /var/lib/longhorn-disk* of at least 200 GiB onto the provisioner's directory
+ * before k3s starts. Only a small disk (the QEMU lanes' 1 GiB tail) leaves them on root.
  */
-export const LOCAL_PATH_ADVISORY_GIB = 250;
+export const LOCAL_PATH_ADVISORY_GIB = 186;
 
 /** The ESP, GiB. `sgdisk -n "1:0:+1G"` in zeta-install.sh. */
 export const ESP_GIB = 1;
@@ -218,10 +223,17 @@ export function autoLonghornTailGib(diskGib: number, rootFloorGib: number = ROOT
  * as bound to `driver.longhorn.io` in `local-storage.nix` — today
  * `zeta-block-replicated` and `zeta-shared`:
  *
- *   zeta-block-replicated   max(rendered 843, derived 779) = 843 GiB
+ *   zeta-block-replicated   max(rendered 943, derived 879) = 943 GiB
  *   zeta-shared             max(rendered   0, derived 100) = 100 GiB
  *                                                          ---------
- *                                                            943 GiB
+ *                                                           1043 GiB
+ *
+ * RE-MEASURED 2026-10-02 (was 843 + 100 = 943): +100 GiB because postgres-shared (3 x 20Gi), seaweedfs
+ * (20Gi) and forgejo (20Gi) moved off the node-local class onto this pool -- local-path has no quota and
+ * on the real node it is a directory on a 120 GB root shared with 39 GB of container images
+ * (docs/ops/STORAGE-RELOCATION.md). The consequence for a fresh single-1-TB-disk install is real and
+ * stated there: `standard` is now 671 GiB against that disk's 607 schedulable, so the installer selects
+ * `minimal` for it unless LONGHORN1_TAIL is raised or a second disk is added.
  *
  * `max` rather than either reading alone: the two are blind in OPPOSITE
  * directions. The derived extractor cannot see pod counts that live in an
@@ -229,7 +241,7 @@ export function autoLonghornTailGib(diskGib: number, rootFloorGib: number = ROOT
  * A comparator that takes the smaller of two available readings because it is
  * the one that flatters the conclusion has chosen its own verdict.
  *
- * The 843 is 29 REPLICA-WEIGHTED claims across 15 Applications, not the 23
+ * The 943 is 34 REPLICA-WEIGHTED claims across 18 Applications, not the 26
  * claim ROWS in the snapshot. The row count is the wrong number: a row carries
  * a `count` (a StatefulSet's `volumeClaimTemplate` renders one PVC per pod —
  * cockroachdb is 48Gi x 3), and it is the weighted total that has to fit on a
@@ -242,7 +254,7 @@ export function autoLonghornTailGib(diskGib: number, rootFloorGib: number = ROOT
  * this constant, so the roster growing past what the installer refuses at is a
  * red gate, not a quiet drift.
  */
-export const COMMITTED_LONGHORN_DEMAND_GIB = 943;
+export const COMMITTED_LONGHORN_DEMAND_GIB = 1043;
 
 /**
  * The demand the installer actually REFUSES at, in GiB.
@@ -255,7 +267,7 @@ export const COMMITTED_LONGHORN_DEMAND_GIB = 943;
  * which is how a fail-closed check becomes a formality.
  *
  * TODAY THE TWO ARE EQUAL, AND THAT IS THE POINT RATHER THAN AN OVERSIGHT.
- * 400 GiB of the 943 belongs to `ollama` and `vllm`, both
+ * 400 GiB of the 1043 belongs to `ollama` and `vllm`, both
  * `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
  * an Intel adapter. But the capture was `lspci … | head -1` — ONE device — so
  * those records establish what IS present and can never establish what is NOT.
@@ -273,7 +285,7 @@ export const COMMITTED_LONGHORN_DEMAND_GIB = 943;
  * And a node joining with an NVIDIA card moves it back up, with no manifest
  * edit involved. This is a property of the FLEET, not of the roster.
  */
-export const COMMITTED_LONGHORN_SCHEDULABLE_GIB = 943;
+export const COMMITTED_LONGHORN_SCHEDULABLE_GIB = 1043;
 
 /** Env var an operator sets to proceed past an undersized Longhorn pool. */
 export const LONGHORN_UNDERSIZED_OVERRIDE_ENV = "ZETA_ALLOW_LONGHORN_UNDERSIZED";

@@ -283,17 +283,18 @@ assert_boot_disk_large_enough() {
 ZETA_LONGHORN_USABLE_PERCENT=75
 
 # The committed roster's driver.longhorn.io-class demand, GiB. Measured
-# 2026-09-24; see COMMITTED_LONGHORN_DEMAND_GIB in the TS oracle for the
+# 2026-09-24, re-measured 2026-10-02 (943 -> 1043: postgres-shared, seaweedfs and
+# forgejo moved onto the pool); see COMMITTED_LONGHORN_DEMAND_GIB in the TS oracle for the
 # derivation. Recomputed from the render snapshot on every run of
 # src/Core.TypeScript/cluster/single-node-readiness.ts, which REFUSES when the
 # roster has moved past this number — so it cannot go stale quietly.
-ZETA_LONGHORN_DEMAND_GIB=943
+ZETA_LONGHORN_DEMAND_GIB=1043
 
 # What the installer actually REFUSES at: the demand the CURRENTLY REGISTERED
 # fleet could ever be asked for, GiB. 081M397QHX8087G0R003DQSY0B.
 #
 # Equal to the declared total today, and that is the point rather than an
-# oversight. 400 GiB of the 943 belongs to ollama and vllm, both
+# oversight. 400 GiB of the 1043 belongs to ollama and vllm, both
 # `nodeSelector: zeta.io/gpu: nvidia`, and every checked-in ClusterNode records
 # an Intel adapter -- but under the old `lspci ... | head -1` capture those
 # records establish what IS present and never what is NOT, so the exclusion is
@@ -306,7 +307,7 @@ ZETA_LONGHORN_DEMAND_GIB=943
 #
 # BOTH are printed. Convicting on one while showing only the other is how a
 # number stops meaning what its reader thinks it means.
-ZETA_LONGHORN_SCHEDULABLE_GIB=943
+ZETA_LONGHORN_SCHEDULABLE_GIB=1043
 
 # A positive whole number, or 0. Negative, fractional and non-numeric all
 # collapse to 0 so both sides of the parity refuse junk identically.
@@ -399,14 +400,20 @@ ZETA_ESP_GIB=1
 # there is one minimum in this file rather than two that agree by coincidence.
 ZETA_LONGHORN_MIN_TAIL_GIB=1
 
-# Declared local-path PVC capacity that also lands on ROOT. ADVISORY, NOT
-# RESERVED, and not part of the root floor: local-storage.nix binds
-# zeta-block-local WaitForFirstConsumer and the provisioner's helper is
-# `mkdir -m 0777 -p "$VOL_DIR"` -- a directory with no quota -- so a PVC there
-# consumes the bytes WRITTEN and nothing more. Reserving it would starve the
-# Longhorn pool for bytes nobody has written. It is PRINTED because it is
-# still the first thing that fills root.
-ZETA_LOCAL_PATH_ADVISORY_GIB=250
+# Declared local-path PVC capacity. ADVISORY, NOT RESERVED, and not part of the
+# root floor: local-storage.nix binds zeta-block-local WaitForFirstConsumer and
+# the provisioner's helper is `mkdir -m 0777 -p "$VOL_DIR"` -- a directory with
+# no quota -- so a PVC there consumes the bytes WRITTEN and nothing more.
+# Reserving it would starve the Longhorn pool for bytes nobody has written.
+# Since 2026-10-02 the unit zeta-local-storage-placement bind-mounts the largest
+# /var/lib/longhorn-disk* (>= 200 GiB) onto the provisioner's directory, so on
+# every real install these bytes land on a data disk, not on root; on a small
+# disk (the QEMU lanes) they still land on root. 250 -> 186 the same day:
+# postgres-shared, seaweedfs and forgejo (60 GiB) moved onto the Longhorn pool
+# (counted in ZETA_LONGHORN_DEMAND_GIB instead); gitlab's valkey + rails-db
+# (+12 GiB) entered the re-measured render and its bundled PostgreSQL + Redis
+# (-16 GiB) left it.
+ZETA_LOCAL_PATH_ADVISORY_GIB=186
 
 # The longhorn1 tail for a boot disk of <disk_gib>, under LONGHORN1_TAIL=auto:
 # root takes a computed FLOOR and longhorn1 takes the REST.
@@ -459,12 +466,12 @@ zeta_auto_longhorn1_tail_gib() {
 # ZETA_STORAGE_PROFILE_CHANGES_<rung> is what choosing that rung changes against the committed one.
 # ZETA-STORAGE-PROFILE-DATA-BEGIN
 ZETA_STORAGE_PROFILE_COMMITTED="measured"
-ZETA_STORAGE_PROFILE_LADDER="minimal:204 standard:571 measured:943 large:1561"
-ZETA_STORAGE_PROFILE_CHANGES_minimal="cockroachdb/data 48Gi->32Gi; cockroachdb/data pods 3->1; hindsight/postgres 10Gi->8Gi; kube-prometheus-stack/alertmanager 5Gi->2Gi; kube-prometheus-stack/grafana 5Gi->2Gi; kube-prometheus-stack/prometheus 32Gi->16Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->12GiB; mimir/compactor 16Gi->8Gi; mimir/ingester 16Gi->8Gi; mimir/store-gateway 16Gi->8Gi; nats/jetstream 10Gi->4Gi; nats/jetstream pods 3->1; ollama/models 200Gi->10Gi; oz/data 3Gi->2Gi; redis 8Gi->4Gi; redis pods 3->2; tempo/traces 20Gi->8Gi; vllm/hf-cache 200Gi->10Gi; weaviate/data 32Gi->12Gi"
+ZETA_STORAGE_PROFILE_LADDER="minimal:279 standard:671 measured:1043 large:1701"
+ZETA_STORAGE_PROFILE_CHANGES_minimal="cockroachdb/data 48Gi->32Gi; cockroachdb/data pods 3->1; forgejo/data 20Gi->5Gi; hindsight/postgres 10Gi->8Gi; kube-prometheus-stack/alertmanager 5Gi->2Gi; kube-prometheus-stack/grafana 5Gi->2Gi; kube-prometheus-stack/prometheus 32Gi->16Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->12GiB; mimir/compactor 16Gi->8Gi; mimir/ingester 16Gi->8Gi; mimir/store-gateway 16Gi->8Gi; nats/jetstream 10Gi->4Gi; nats/jetstream pods 3->1; ollama/models 200Gi->10Gi; oz/data 3Gi->2Gi; redis 8Gi->4Gi; redis pods 3->2; seaweedfs/data 20Gi->10Gi; tempo/traces 20Gi->8Gi; vllm/hf-cache 200Gi->10Gi; weaviate/data 32Gi->12Gi"
 ZETA_STORAGE_PROFILE_CHANGES_standard="ollama/models 200Gi->48Gi; vllm/hf-cache 200Gi->48Gi"
 ZETA_STORAGE_PROFILE_CHANGES_measured=""
-ZETA_STORAGE_PROFILE_CHANGES_large="cockroachdb/data 48Gi->100Gi; hindsight/postgres 10Gi->20Gi; kube-prometheus-stack/alertmanager 5Gi->10Gi; kube-prometheus-stack/grafana 5Gi->10Gi; kube-prometheus-stack/prometheus 32Gi->100Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->75GiB; mimir/compactor 16Gi->50Gi; mimir/ingester 16Gi->50Gi; mimir/store-gateway 16Gi->50Gi; nats/jetstream 10Gi->20Gi; oz/data 3Gi->5Gi; redis 8Gi->10Gi; tempo/traces 20Gi->50Gi; weaviate/data 32Gi->100Gi"
-ZETA_STORAGE_PROFILE_KEPT="agent-memory/memory 8Gi; game-hosting-gmod/data 10Gi; headscale/data 3Gi; platform/portal 5Gi"
+ZETA_STORAGE_PROFILE_CHANGES_large="cockroachdb/data 48Gi->100Gi; forgejo/data 20Gi->40Gi; hindsight/postgres 10Gi->20Gi; kube-prometheus-stack/alertmanager 5Gi->10Gi; kube-prometheus-stack/grafana 5Gi->10Gi; kube-prometheus-stack/prometheus 32Gi->100Gi; kube-prometheus-stack/prometheus retentionSize 24GiB->75GiB; mimir/compactor 16Gi->50Gi; mimir/ingester 16Gi->50Gi; mimir/store-gateway 16Gi->50Gi; nats/jetstream 10Gi->20Gi; oz/data 3Gi->5Gi; redis 8Gi->10Gi; seaweedfs/data 20Gi->40Gi; tempo/traces 20Gi->50Gi; weaviate/data 32Gi->100Gi"
+ZETA_STORAGE_PROFILE_KEPT="agent-memory/memory 8Gi; game-hosting-gmod/data 10Gi; headscale/data 3Gi; platform/portal 5Gi; postgres-shared/data 20Gi"
 # ZETA-STORAGE-PROFILE-DATA-END
 
 # Demand of a named rung in GiB, or nothing when it is not on the ladder.
@@ -1395,7 +1402,7 @@ if [[ -z "$LONGHORN1_TAIL_BYTES" ]]; then
   echo "  - ESP                             ${ZETA_ESP_GIB} GiB"
   echo "  - root floor                      ${ZETA_ROOT_FLOOR_GIB} GiB   (73 GiB images all-cohort + 30 GiB OS, x1.15)"
   echo "  = longhorn1                       ${auto_tail_gib} GiB"
-  echo "  local-path PVC ceilings on root   ${ZETA_LOCAL_PATH_ADVISORY_GIB} GiB   ADVISORY, NOT RESERVED — the first thing that fills root"
+  echo "  local-path PVC ceilings           ${ZETA_LOCAL_PATH_ADVISORY_GIB} GiB   ADVISORY, NOT RESERVED — placed on the largest data disk (>= 200 GiB) at first boot, else on root"
   echo "  Set LONGHORN1_TAIL=<size> to override (>=1G, <=1T); root then takes what is left."
 fi
 

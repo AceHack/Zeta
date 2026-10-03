@@ -16,6 +16,8 @@ metadata:
 data:
   minimal--cockroachdb.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"persistentVolume":{"size":"32Gi"}},"statefulset":{"replicas":1}}}}}}
+  minimal--forgejo.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"5Gi"}}}}}}
   minimal--hindsight.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"postgresql":{"persistence":{"size":"8Gi"}}}}}}}
   minimal--kube-prometheus-stack.json: |-
@@ -30,6 +32,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"2Gi"}}}}}}
   minimal--redis.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"replica":{"persistence":{"size":"4Gi"},"replicas":1}}}}}}
+  minimal--seaweedfs.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"allInOne":{"data":{"size":"10Gi"}}}}}}}
   minimal--tempo.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"8Gi"}}}}}}
   minimal--vllm.json: |-
@@ -38,6 +42,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"size":"12Gi"}}}}}}
   standard--cockroachdb.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"persistentVolume":{"size":"48Gi"}},"statefulset":{"replicas":3}}}}}}
+  standard--forgejo.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"20Gi"}}}}}}
   standard--hindsight.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"postgresql":{"persistence":{"size":"10Gi"}}}}}}}
   standard--kube-prometheus-stack.json: |-
@@ -52,6 +58,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"3Gi"}}}}}}
   standard--redis.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"replica":{"persistence":{"size":"8Gi"},"replicas":2}}}}}}
+  standard--seaweedfs.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"allInOne":{"data":{"size":"20Gi"}}}}}}}
   standard--tempo.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"20Gi"}}}}}}
   standard--vllm.json: |-
@@ -60,6 +68,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"size":"32Gi"}}}}}}
   measured--cockroachdb.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"persistentVolume":{"size":"48Gi"}},"statefulset":{"replicas":3}}}}}}
+  measured--forgejo.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"20Gi"}}}}}}
   measured--hindsight.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"postgresql":{"persistence":{"size":"10Gi"}}}}}}}
   measured--kube-prometheus-stack.json: |-
@@ -74,6 +84,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"3Gi"}}}}}}
   measured--redis.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"replica":{"persistence":{"size":"8Gi"},"replicas":2}}}}}}
+  measured--seaweedfs.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"allInOne":{"data":{"size":"20Gi"}}}}}}}
   measured--tempo.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"20Gi"}}}}}}
   measured--vllm.json: |-
@@ -82,6 +94,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"size":"32Gi"}}}}}}
   large--cockroachdb.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"storage":{"persistentVolume":{"size":"100Gi"}},"statefulset":{"replicas":3}}}}}}
+  large--forgejo.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"40Gi"}}}}}}
   large--hindsight.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"postgresql":{"persistence":{"size":"20Gi"}}}}}}}
   large--kube-prometheus-stack.json: |-
@@ -96,6 +110,8 @@ data:
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"5Gi"}}}}}}
   large--redis.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"replica":{"persistence":{"size":"10Gi"},"replicas":2}}}}}}
+  large--seaweedfs.json: |-
+    {"spec":{"source":{"helm":{"valuesObject":{"allInOne":{"data":{"size":"40Gi"}}}}}}}
   large--tempo.json: |-
     {"spec":{"source":{"helm":{"valuesObject":{"persistence":{"size":"50Gi"}}}}}}
   large--vllm.json: |-

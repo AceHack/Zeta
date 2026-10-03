@@ -174,12 +174,14 @@ const CPU_COUNT = 2;
 //
 //   tail          = disk - ZETA_ESP_GIB(1) - ZETA_ROOT_FLOOR_GIB(120)
 //   schedulable   = tail * ZETA_LONGHORN_USABLE_PERCENT(75) / 100   [integer]
-//   verdict `ok`  requires schedulable >= ZETA_LONGHORN_DEMAND_GIB(943)
+//   verdict `ok`  requires schedulable >= ZETA_LONGHORN_DEMAND_GIB(1043)
 //
-// so tail >= ceil(943 * 100 / 75) = 1258, and disk >= 1 + 120 + 1258 = 1379.
-// 1400 is that with slack: tail 1279, schedulable 959 >= 943. The slack is
+// so tail >= ceil(1043 * 100 / 75) = 1391, and disk >= 1 + 120 + 1391 = 1512.
+// 1540 is that with slack: tail 1419, schedulable 1064 >= 1043. The slack is
 // deliberate — an exact fit would turn any future +1 GiB of roster demand into
-// a red lane with no margin to absorb it.
+// a red lane with no margin to absorb it. (1400 / 959 >= 943 until 2026-10-02,
+// when postgres-shared, seaweedfs and forgejo moved onto the Longhorn pool and
+// the roster's demand rose by 100 GiB; the disk is sparse, so this is free.)
 //
 // WHY THIS IS NEARLY FREE, AND WHY IT IS MEASURED RATHER THAN ASSERTED. qcow2
 // is SPARSE: `qemu-img create` allocates a couple of hundred KB regardless of
@@ -190,7 +192,7 @@ const CPU_COUNT = 2;
 // is not a measurement. `reportQcowAllocation` prints the virtual AND allocated
 // size after every phase, so a run says which of the two worlds it is in
 // instead of leaving it to be assumed.
-const QEMU_DISK_SIZE_GB = 1400;
+const QEMU_DISK_SIZE_GB = 1540;
 
 // 20 -> 40. The first failure in this lane's red streak was ENOSPC, not the
 // marker above: `uv tool install` died with "No space left on device" while the

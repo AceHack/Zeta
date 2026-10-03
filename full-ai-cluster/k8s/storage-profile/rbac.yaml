@@ -19,7 +19,7 @@ rules:
     verbs: ["get", "list", "watch"]
   - apiGroups: ["argoproj.io"]
     resources: ["applications"]
-    resourceNames: ["cockroachdb", "hindsight", "kube-prometheus-stack", "mimir", "nats", "ollama", "openziti-controller", "redis", "tempo", "vllm", "weaviate"]
+    resourceNames: ["cockroachdb", "forgejo", "hindsight", "kube-prometheus-stack", "mimir", "nats", "ollama", "openziti-controller", "redis", "seaweedfs", "tempo", "vllm", "weaviate"]
     verbs: ["patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

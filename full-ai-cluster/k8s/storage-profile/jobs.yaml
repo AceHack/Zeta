@@ -65,6 +65,65 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  name: zeta-storage-profile-forgejo
+  namespace: kube-system
+  annotations:
+    # A Job that waits for an Application which may never exist (an install that removed it, or a lane
+    # whose envelope excludes it) must not hold the `zeta-storage-profile` Application Progressing.
+    # Same reason, same annotation as k8s/lb-ipam/gitlab-lan-address.yaml.
+    argocd.argoproj.io/ignore-healthcheck: "true"
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      serviceAccountName: zeta-storage-profile
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: patch
+          configMap: { name: zeta-storage-profile }
+      initContainers:
+        - name: wait-for-forgejo-application
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+          command: ["/bin/kubectl"]
+          args: ["wait", "--for=create", "applications.argoproj.io/forgejo", "-n", "argocd", "--timeout=24h"]
+      containers:
+        - name: patch
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - name: ZETA_STORAGE_PROFILE
+              valueFrom:
+                configMapKeyRef: { name: zeta-storage-profile, key: profile }
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 128Mi }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: patch, mountPath: /patch, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "applications.argoproj.io", "forgejo", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/$(ZETA_STORAGE_PROFILE)--forgejo.json"]
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
   name: zeta-storage-profile-hindsight
   namespace: kube-system
   annotations:
@@ -474,6 +533,65 @@ spec:
             - { name: patch, mountPath: /patch, readOnly: true }
           command: ["/bin/kubectl"]
           args: ["patch", "applications.argoproj.io", "redis", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/$(ZETA_STORAGE_PROFILE)--redis.json"]
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zeta-storage-profile-seaweedfs
+  namespace: kube-system
+  annotations:
+    # A Job that waits for an Application which may never exist (an install that removed it, or a lane
+    # whose envelope excludes it) must not hold the `zeta-storage-profile` Application Progressing.
+    # Same reason, same annotation as k8s/lb-ipam/gitlab-lan-address.yaml.
+    argocd.argoproj.io/ignore-healthcheck: "true"
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      serviceAccountName: zeta-storage-profile
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile: { type: RuntimeDefault }
+      volumes:
+        - name: kubecache
+          emptyDir: {}
+        - name: patch
+          configMap: { name: zeta-storage-profile }
+      initContainers:
+        - name: wait-for-seaweedfs-application
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+          command: ["/bin/kubectl"]
+          args: ["wait", "--for=create", "applications.argoproj.io/seaweedfs", "-n", "argocd", "--timeout=24h"]
+      containers:
+        - name: patch
+          image: docker.io/rancher/kubectl:v1.35.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: HOME, value: /tmp/kubecache }
+            - name: ZETA_STORAGE_PROFILE
+              valueFrom:
+                configMapKeyRef: { name: zeta-storage-profile, key: profile }
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { memory: 128Mi }
+          volumeMounts:
+            - { name: kubecache, mountPath: /tmp/kubecache }
+            - { name: patch, mountPath: /patch, readOnly: true }
+          command: ["/bin/kubectl"]
+          args: ["patch", "applications.argoproj.io", "seaweedfs", "-n", "argocd", "--type", "merge", "--patch-file", "/patch/$(ZETA_STORAGE_PROFILE)--seaweedfs.json"]
 ---
 apiVersion: batch/v1
 kind: Job

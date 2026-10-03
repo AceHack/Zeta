@@ -236,8 +236,14 @@ describe("(d) GitLab follows the install-time public domain", () => {
     // cluster/storage-profile-install.test.ts pins that half and that the two sets never overlap. This
     // assertion used to be an `toEqual` on the whole list, which silently meant "no other input may ever
     // own an ignore"; the narrower statement is the one it was written to make.
+    // Forgejo carries a SECOND entry since 2026-10-02 -- the storage-profile Job's size leaf, owned by the
+    // other input and pinned by storage-profile-install.test.ts -- so forgejo is selected by the pointer THIS
+    // input owns, not by name alone.
     const owned = new Set(["gitlab", "forgejo"]);
-    const ignored: unknown[] = (root.spec.ignoreDifferences as Array<{ name: string }>).filter((entry) => owned.has(entry.name));
+    const ignored: unknown[] = (root.spec.ignoreDifferences as Array<{ name: string; jsonPointers: string[] }>).filter(
+      (entry) =>
+        owned.has(entry.name) && (entry.name !== "forgejo" || entry.jsonPointers.includes(GITLAB_APPLICATION_PARAMETERS_POINTER)),
+    );
     expect(ignored).toEqual([
       {
         group: "argoproj.io",

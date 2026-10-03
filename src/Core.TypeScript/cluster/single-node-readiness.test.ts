@@ -1022,6 +1022,45 @@ spec:
   blueprint: mssql
 `;
 
+describe("extractStorageClaims — a CloudNativePG Cluster is priced at spec.instances, not at one pod", () => {
+  const CNPG = (instances: string, apiVersion = "postgresql.cnpg.io/v1", kind = "Cluster") => `
+apiVersion: ${apiVersion}
+kind: ${kind}
+metadata:
+  name: pg
+spec:
+${instances}
+  storage:
+    storageClass: zeta-block-replicated
+    size: 20Gi
+`;
+
+  test("three instances are three PVCs: 3 x 20Gi, not 20Gi", () => {
+    const claims = extractStorageClaims(manifest("t/k8s/applications/pg/cluster.yaml", CNPG("  instances: 3")));
+    expect(claims).toHaveLength(1);
+    expect(claims[0]?.replicas).toBe(3);
+    expect(claims[0]?.gibibytes).toBe(20);
+  });
+
+  test("RED: without the CNPG reading the claim is one pod (the 2026-10-02 undercount); a non-Cluster kind is NOT read this way", () => {
+    // The same `spec.instances: 3` on a document that is not a CNPG Cluster must not change the count --
+    // `instances` is a common word and the rule is apiVersion + kind, nothing looser.
+    const other = extractStorageClaims(
+      manifest("t/k8s/applications/pg/cluster.yaml", CNPG("  instances: 3", "example.io/v1", "Cluster")),
+    );
+    expect(other[0]?.replicas).toBe(1);
+    const wrongKind = extractStorageClaims(
+      manifest("t/k8s/applications/pg/cluster.yaml", CNPG("  instances: 3", "postgresql.cnpg.io/v1", "Pooler")),
+    );
+    expect(wrongKind[0]?.replicas).toBe(1);
+  });
+
+  test("a CNPG Cluster with no instances key is the operator's default of one", () => {
+    const claims = extractStorageClaims(manifest("t/k8s/applications/pg/cluster.yaml", CNPG("  imageName: x")));
+    expect(claims[0]?.replicas).toBe(1);
+  });
+});
+
 describe("extractStorageClaims — a blank storageClassName is the cluster DEFAULT, not absence", () => {
   test("a blank class resolves to the supplied default and is counted", () => {
     const claims = extractStorageClaims(manifest("t/k8s/applications/x/Application.yaml", BLANK_CLASS), {

@@ -1,5 +1,5 @@
 {
-  "measuredOn": "2026-10-01",
+  "measuredOn": "2026-10-03",
   "clusterDefaultStorageClass": "zeta-block-local",
   "rendered": [
     {
@@ -46,7 +46,7 @@
       "origin": "PersistentVolumeClaim",
       "name": "gitea-shared-storage",
       "workload": "",
-      "storageClassName": "zeta-block-local",
+      "storageClassName": "zeta-block-replicated",
       "accessModes": [
         "ReadWriteOnce"
       ],
@@ -70,27 +70,27 @@
     {
       "appId": "full-ai-cluster/gitlab",
       "origin": "volumeClaimTemplate",
-      "name": "data/gitlab-postgresql",
-      "workload": "StatefulSet/gitlab-postgresql",
-      "storageClassName": "",
+      "name": "data/gitlab-valkey",
+      "workload": "StatefulSet/gitlab-valkey",
+      "storageClassName": "zeta-block-local",
       "accessModes": [
         "ReadWriteOnce"
       ],
-      "size": "8Gi",
-      "gibibytes": 8,
+      "size": "2Gi",
+      "gibibytes": 2,
       "count": 1
     },
     {
       "appId": "full-ai-cluster/gitlab",
-      "origin": "volumeClaimTemplate",
-      "name": "redis-data/gitlab-redis-master",
-      "workload": "StatefulSet/gitlab-redis-master",
-      "storageClassName": "",
+      "origin": "operatorStorageSpec",
+      "name": "pgdata/gitlab-rails-db",
+      "workload": "Cluster/gitlab-rails-db",
+      "storageClassName": "zeta-block-local",
       "accessModes": [
         "ReadWriteOnce"
       ],
-      "size": "8Gi",
-      "gibibytes": 8,
+      "size": "10Gi",
+      "gibibytes": 10,
       "count": 1
     },
     {
@@ -410,13 +410,13 @@
       "origin": "operatorStorageSpec",
       "name": "pgdata/postgres-shared",
       "workload": "Cluster/postgres-shared",
-      "storageClassName": "zeta-block-local",
+      "storageClassName": "zeta-block-replicated",
       "accessModes": [
         "ReadWriteOnce"
       ],
       "size": "20Gi",
       "gibibytes": 20,
-      "count": 1
+      "count": 3
     },
     {
       "appId": "full-ai-cluster/redis",
@@ -436,7 +436,7 @@
       "origin": "PersistentVolumeClaim",
       "name": "blob-store-seaweedfs-all-in-one-data",
       "workload": "",
-      "storageClassName": "zeta-block-local",
+      "storageClassName": "zeta-block-replicated",
       "accessModes": [
         "ReadWriteOnce"
       ],

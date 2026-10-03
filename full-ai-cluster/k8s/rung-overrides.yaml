@@ -118,22 +118,6 @@ overrides:
     resizes:
       - claim: full-ai-cluster/dapr dapr-scheduler-data-dir/dapr-scheduler-server
         size: 1Gi
-  - id: forgejo/disk-dev
-    path: full-ai-cluster/k8s/applications/forgejo/Application.yaml
-    docIndex: 0
-    rung: dev
-    reason: >-
-      20Gi of git storage declared on zeta-block-local, on a runner with 70 GiB
-      free and ~34 GiB of images; the smoke test creates no repositories, so the
-      volume holds forgejo's own bootstrap data and nothing else.
-    liftsWhen: >-
-      the dev lane runs on a substrate whose free disk holds the committed
-      declaration beside its images; then this entry is deleted.
-    set:
-      "spec.source.helm.valuesObject.persistence.size": 1Gi
-    resizes:
-      - claim: full-ai-cluster/forgejo gitea-shared-storage
-        size: 1Gi
   - id: loki/disk-dev
     path: full-ai-cluster/k8s/applications/loki/Application.yaml
     docIndex: 0
@@ -210,22 +194,6 @@ overrides:
     resizes:
       - claim: full-ai-cluster/opensearch opensearch-cluster-master/opensearch-cluster-master
         size: 1Gi
-  - id: seaweedfs/disk-dev
-    path: full-ai-cluster/k8s/applications/seaweedfs/Application.yaml
-    docIndex: 0
-    rung: dev
-    reason: >-
-      The cluster blob store (loki, mimir, tempo buckets) declares 20Gi on
-      zeta-block-local, on a runner with 70 GiB free and ~34 GiB of images.
-      2Gi holds the buckets' contents for a smoke run's duration.
-    liftsWhen: >-
-      the dev lane runs on a substrate whose free disk holds the committed
-      declaration beside its images; then this entry is deleted.
-    set:
-      "spec.source.helm.valuesObject.allInOne.data.size": 2Gi
-    resizes:
-      - claim: full-ai-cluster/seaweedfs blob-store-seaweedfs-all-in-one-data
-        size: 2Gi
   # NOT APPLIED ON THE FIRST-BOOT REPLICA (081M3HYPQCR087G0R003C2VPRS). That lane also
   # runs k3s's bootstrap roster, whose spire-install.yaml installs this same release at
   # the committed 5Gi -- and a StatefulSet's volumeClaimTemplates are immutable, so the
