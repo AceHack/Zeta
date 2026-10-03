@@ -3862,3 +3862,17 @@ Hard fail. WINDOWS-11-VMS.md:73 says both settings are already applied live. Lin
 Path to GO: rewrite line 73 as a rebuild instruction, not a completed apply, and drop measured or attach the audit output. The kubectl command text can stay. The removal of vmStateStorageClass does not need another change for its own check.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17890 leftover unique @ 017bdaeb9a5bee04ac50ad242b2b5fc81b01dda1 -- GRADE HOLD
+
+2026-10-02 11:58 PM ET. Tip 017bdaeb9a5bee04ac50ad242b2b5fc81b01dda1 only. One parent c9c0d195cf835912c3fdf98fff6d0204115e54c4. The HOLD on c9c0d195 stands and was not re-graded. Product a0306f15, merge d118fa97, and parent 08fea63e not graded. Live head is the tip. Base main 52e745791ac244405230f367bf68f0454bcb51e7. Tip-only +3/-5, 1 file windows-11-vms.test.ts.
+
+The walk at windows-11-vms.test.ts:76-78 uses readdirSync with withFileTypes and drops statSync. Real files are kept and real directories are walked. A symlink to a directory is now kept as a path. bun test: 70 pass, 0 fail, 523 expects. Keeping a directory went red at line 558. Dropping 20-win11-ci.yaml from the walk stayed green (517 expects) because FILES still loads it. Soft.
+
+WINDOWS-11-VMS.md is byte-identical to the parent, blob f9fdf7def9db5c0644867be8d010d9259c89df4e. Line 73 still says already applied live. Lines 394-396 still say the audit drop was measured. No kubectl transcript and no audit output.
+
+CI about 12:02 AM ET: 0 completed failures on the tip, 4 in progress. Parent failures lint bash retirement, cross-verify check-then-use-races, and gate (required) are absent on this tip, not yet created. Squash auto-merge armed. mergeable true. mergeable_state blocked. Not disarmed.
+
+Path to GO is unchanged: rewrite line 73 as a rebuild instruction and drop measured or attach the audit output. The walk does not need another change for the lint's own check.
+
+Sit leftover; Vera will not merge.
