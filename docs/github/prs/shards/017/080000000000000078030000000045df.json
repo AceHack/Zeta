@@ -1,0 +1,12 @@
+{
+  "pr_number": 17887,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17887-docs-ops-live-storage-relocation-record-postgres-shared-opensearch-gitaly-onto-l.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T02:23:30.220Z",
+  "schema_version": "v1",
+  "commit_sha": "7fa9fd3c69bdc01fcd0df4cf2e4abd0440410785",
+  "title": "docs(ops): live storage relocation record -- postgres-shared, opensearch, gitaly onto Longhorn",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T02:22:40Z",
+  "head_ref": "fix/storage-relocation-gitaly-opensearch"
+}
