@@ -1,0 +1,12 @@
+{
+  "pr_number": 17900,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17900-deps-bump-the-gomod-minor-patch-group-across-1-directory-with-3-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T07:39:25.569Z",
+  "schema_version": "v1",
+  "commit_sha": "d8b917b51f2421fc72c592cb9485e50b000f846b",
+  "title": "deps: Bump the gomod-minor-patch group across 1 directory with 3 updates",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T07:38:44Z",
+  "head_ref": "dependabot/go_modules/full-ai-cluster/k8s/applications/hat-system/operator/gomod-minor-patch-584c9e40f9"
+}

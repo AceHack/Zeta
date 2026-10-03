@@ -1,0 +1,12 @@
+{
+  "pr_number": 17902,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17902-deps-bump-the-cargo-minor-patch-group-across-2-directories-with-1-update.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T07:40:01.011Z",
+  "schema_version": "v1",
+  "commit_sha": "da41bc895eb04f5f1273694849ad65c0017d5128",
+  "title": "deps: Bump the cargo-minor-patch group across 2 directories with 1 update",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T07:39:04Z",
+  "head_ref": "dependabot/cargo/src/Core.Rust.Merkle/cargo-minor-patch-359fa53d4c"
+}
