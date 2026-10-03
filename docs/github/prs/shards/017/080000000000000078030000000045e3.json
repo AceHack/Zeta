@@ -1,0 +1,12 @@
+{
+  "pr_number": 17891,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17891-fix-cluster-answer-plain-http-on-every-router-reachable-address-with-a-redirect-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T04:22:26.224Z",
+  "schema_version": "v1",
+  "commit_sha": "df88317a60b3e12e92242ac9a76bd38aed4a35e2",
+  "title": "fix(cluster): answer plain HTTP on every router-reachable address with a redirect to HTTPS",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T04:21:43Z",
+  "head_ref": "feat/node-edge-http-redirect"
+}
