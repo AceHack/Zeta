@@ -1,0 +1,12 @@
+{
+  "pr_number": 17896,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17896-docs-windows-win11-ci-installed-and-its-runner-registered-the-job-minted-token-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T05:38:27.793Z",
+  "schema_version": "v1",
+  "commit_sha": "ab1b0330dc2310b6796f03801e9079d8a10a305b",
+  "title": "docs(windows): win11-ci installed and its runner registered; the Job-minted token is rejected by GitLab 19.4.1",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T05:37:46Z",
+  "head_ref": "feat/windows-11-vms-doc"
+}

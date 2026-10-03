@@ -1,0 +1,12 @@
+{
+  "pr_number": 17894,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17894-fix-cluster-pin-windows-11-vms-leak-searches-by-equality.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T05:26:31.336Z",
+  "schema_version": "v1",
+  "commit_sha": "e2040f7fe8891320c165ea3b3a4736643547daf9",
+  "title": "fix(cluster): pin windows-11-vms leak searches by equality",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T05:25:50Z",
+  "head_ref": "cursor/windows-vms-arity-r5-27c5"
+}
