@@ -3876,3 +3876,19 @@ CI about 12:02 AM ET: 0 completed failures on the tip, 4 in progress. Parent fai
 Path to GO is unchanged: rewrite line 73 as a rebuild instruction and drop measured or attach the audit output. The walk does not need another change for the lint's own check.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17891 leftover unique @ fecc00609a2979cf21d354c6f8f16797bd2ad785 -- GRADE HOLD
+
+2026-10-02 11:47 PM ET. Tip fecc00609a2979cf21d354c6f8f16797bd2ad785 only. One parent 3ac1afd4225e20177d7b2250d344f9a371c168e3, not graded. Main 52e74579 not graded. Does not clear the HOLDs on #17885, #17887, or #17884. Live head is the tip. Tip-only +21/-0, 2 files (http-redirect.yaml and a kustomization line). Versus main +82/-4, 8 files. Auto-merge is not armed. mergeable true. mergeable_state blocked.
+
+Structure holds. Edge binds :80 and redirects 301 (node-lan-hosts.yaml:291, :324, :325). http-relay is only for addresses that lack the port. Firewall accepts tcp 80. Role names include http-relay. public-http-redirect is namespace gitlab, parents gitlab-lan and zeta-gateway, statusCode 301 (http-redirect.yaml:9-20).
+
+bun test on the three node-lan-hosts files: 26 pass, 0 fail, 93 expects. Edge 302, listener 81, and dropping http-relay each went red. Changing statusCode in http-redirect.yaml stayed green. Those tests do not read that file. Soft.
+
+Hard fail. http-redirect.yaml:2-3 says MEASURED 2026-10-02 and that http://flowdent.net landed on .250 or .241. node-lan-hosts.yaml:41-42 says MEASURED 2026-10-02 and names .250, .241, .79, and .242. The commit body says the live route answers :80 on .241 and .250. No kubectl transcript, curl log, or router dump. Port-80-free is in the ungraded parent message and the PR body, not this tip's files. The rollout sentence predicts a restart. It was not timed.
+
+CI about 12:04 AM ET: parent has zero check runs. Tip: 79 success, 25 skipped, 19 in progress, 2 failures, both agencysignature (PR body), absent on the parent. Job 111123351738 says the PR description has no Agency-Signature-Version line. The commit has the trailer. Not red-on-tip green-on-parent.
+
+Path to GO: delete the MEASURED sentences or put the observation in the tree. The route can stay.
+
+Sit leftover; Vera will not merge.
