@@ -3955,3 +3955,21 @@ CI ~1:37 AM ET. Tip 95 runs: 63 success, 28 skipped, 4 in progress, 0 failure. P
 Path to GO: rewrite the new observation sentences (commit message, :102 did not verify, :342's rejection cause, :454-458, the registered and heartbeats parenthesis on :462, and :517-522) as instructions or an explicitly unproven note, or put a transcript, runner API JSON, bootstrap.log excerpt, or command output in the tree that shows the install, the runner version and platform, and the 403 and 200. The untagged-job non-claim can stay. Rewriting the standing #17893 desktop measurements is not required to clear this SHA.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17898 leftover unique @ 36a4cdf9f3ad6ee499bae0f3478d560f24b078b8 -- GRADE GO
+
+Does not clear the HOLD on #17896 tip 2d4825a2, the HOLD on #17893 tip ff0f9e89, or the HOLDs on #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Parent 31c39fb7b331493de2ada0dc0eb9d4fc33c36567 is main and the PR base, not graded. One parent. Not a merge. Live head is the tip (cursor/windows-vms-arity-r5b-27c5). Author Cursor Agent, 2026-10-03 2:38:44 AM ET. Tip-only +46/-2, 3 files. Squash auto-merge is armed (AceHack). Not disarmed. mergeable true, mergeable_state blocked.
+
+Product holds. Two PASSWORD-named absence searches in windows-11-vms.test.ts are now equality, and each went red when the forbidden string was put back. :454 expect(/PasswordAuthentication yes/u.test(desktopBootstrap)).toBe(false), replacing not.toMatch. :644 expect(String(d.stringData["Autounattend.xml"]).includes(PASSWORD_PLACEHOLDER)).toBe(false), replacing not.toContain. Scanner unchanged. toBe is still skipped at audit-check-arity-nonequality.ts:203. No new hygiene lock test in this diff; the skip is the pre-existing one. Per-file R5 count for windows-11-vms.test.ts is 0. Full audit, no --accept-raises: 2711 files, 0 R4, 169 R5, exit 0. Census file not in the diff. No Windows VM manifest, answer file, or WINDOWS-11-VMS.md in the diff. Work item 081M407RB1R087G0R003ZEAPEZ is a real ledger file plus a created event, not only a trailer.
+
+The parent job counted 3 sites for these two lines. Job 111139712952: count rose 0 -> 3, listing :454 not.toMatch, :640 not.toContain(PASSWORD_PLACEHOLDER), and :644 not.toContain(PASSWORD_PLACEHOLDER). At the tip :640 is the for loop and :644 is the rewritten includes check. The scanner joined the unbalanced for and also walked the inner line, so one not.toContain was counted twice. Both counted shapes are the two lines this tip replaced.
+
+bun windows-11-vms.test.ts: 73 pass, 0 fail, 580 expects. Mutations: appending PasswordAuthentication yes to the :454 subject went red (expected false, received true). Appending PASSWORD_PLACEHOLDER to the :644 subject went red the same way. 0 pass, 2 fail.
+
+CI ~2:51 AM ET. Tip 104 runs: 78 success, 22 skipped, 3 in progress, 1 neutral (CodeQL), 0 completed failures. Parent's only failure, lint (bash retirement inventory + hygiene unit tests), is skipped on the tip. Skipped is not red. No check red on the tip and green on the parent. Three checks still in progress (Analyze csharp, Analyze javascript-typescript, test TS hermetic). Soft.
+
+Softs: work-item front matter priority P1 disagrees with the created-event payload P2. Item minted state backlog in the same commit that applies the fix. No new lock test for the PASSWORD not.toContain shape; the equality relies on the pre-existing toBe skip. Commit message says the lint went red after #17897; the parent job log confirms the 0 -> 3 rise on the two #17893 sites and does not name a PR. No MEASURED sentence in this diff. The local R5 listing is 0 sentence matches the audit run.
+
+Sit leftover; Vera will not merge.
