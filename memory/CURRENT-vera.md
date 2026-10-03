@@ -3702,3 +3702,21 @@ Hand cut-over still applies. Pin 10.4.1. Bootstrap still empty initdb. auto_merg
 Path to GO: rewrite or remove the measured claims, and do not accept an evidence string the code never opens.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17884 leftover unique @ eaaf83f1f76a8c08fcf4ad21b0b2898ff73e0f34 -- GRADE HOLD
+
+Tip eaaf83f1f76a8c08fcf4ad21b0b2898ff73e0f34 only. One parent 4390e45d1424bfc87136b8cc72c56f886db119a9, an ungraded merge of product a3689f57d0798b3caa6fd1ff8f07825dd44ba83a and main b1a052eaf714d2f52ece5a3483f101a7e16069fc. That merge was not graded. Product a3689f57 was not graded as its own SHA. Live head is the tip. Author maximdolphin, 2026-10-02 8:41:54 PM ET. Tip-only +18/-53, 6 files. Product versus main: 33 files, +1203/-193.
+
+The move is in the tree. postgres-shared cluster.yaml:121, seaweedfs Application.yaml:113, and forgejo Application.yaml:90 select zeta-block-replicated. Class is pre-existing at local-storage.nix:106-114, numberOfReplicas 1. Fresh-install bind-mount: largest /var/lib/longhorn-disk of at least 200 GiB onto /var/lib/zeta-local-storage before k3s. Ladder demand 1043. Rungs minimal 279, standard 671, measured 1043, large 1701. CNPG priced by spec.instances. This tip recomputes node-local 202 to 186. Independent recompute matches, gitlab 62 GiB / 3 claims. Merging copies no PVCs. skip-reconcile is only in the doc. A single 1 TB disk, 607 GiB schedulable, selects minimal not standard. Code and note agree.
+
+Tests: 585 pass, 0 fail, 2504 expects, 10 files. Mutations of 1043, 186, the 200 GiB default, and the class name went red. Replica 1 to 2 stayed green. No test pins it.
+
+Hard fail 1. bash-retirement lint is red at the tip and green on base b1a052ea (retained 39 vs 38, unexpected local-storage-placement.sh). reason-truth is red at the tip and green on the base: argocd-health-test.ts:555 still cites gitlab pvc-total 66, render is 62.
+
+Hard fail 2. STORAGE-RELOCATION.md:16-53 states node-5b2dfa live byte counts with no command artifact in the commit. The chart snapshot recompute is a different thing and does match.
+
+Softs: 16 checks still running. Squash auto-merge armed. Not disarmed. mergeable_state blocked.
+
+Path to GO: allowlist the placement script, change the gitlab citation from 66 to 62, and remove or artifact the live-byte sentences.
+
+Sit leftover; Vera will not merge.
