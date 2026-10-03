@@ -316,6 +316,9 @@ url = "https://download.java.net/java/GA/jdk26.0.2.1/3b8e6c7ec6274148a7aa15e7e7d
 version = "24.16.0"
 backend = "core:node"
 
+[tools.node.options]
+compile = "false"
+
 [tools.node."platforms.linux-arm64"]
 checksum = "sha256:589f5b6dd4fcfee4dfda73013903c966abaa8abd93dbc9d436544e472b4f0e74"
 url = "https://nodejs.org/dist/v24.16.0/node-v24.16.0-linux-arm64.tar.gz"
@@ -367,6 +370,9 @@ url = "https://nodejs.org/dist/v24.16.0/node-v24.16.0-win-x64.zip"
 [[tools."npm:markdownlint-cli2"]]
 version = "0.23.3"
 backend = "npm:markdownlint-cli2"
+
+[tools."npm:markdownlint-cli2".options]
+trust_policy_excludes = '["fastq@1.20.2"]'
 
 [[tools."pipx:mypy"]]
 version = "2.3.1"

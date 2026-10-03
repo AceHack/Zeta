@@ -998,6 +998,21 @@ spec:
               requests: { cpu: 10m, memory: 16Mi }
             image:
               repository: bitnamilegacy/redis-exporter
+            # STARTUP PROBE -- WIDENED, NOT A LIVENESS CHANGE: MEASURED (helm pull
+            # gitlab 8.11.8, charts/redis/templates/master/application.yaml). The
+            # redis-exporter sidecar renders `startupProbe` from
+            # `.Values.metrics.startupProbe.enabled` (chart default false) alongside
+            # the always-on `.Values.metrics.livenessProbe` (chart default enabled:
+            # initialDelaySeconds 10 + (failureThreshold 5 - 1) * periodSeconds 10 =
+            # 50s kill budget -- under the 120s liveness-kill-budget floor). The
+            # metrics container is a fast Go exporter, but it shares the pod with the
+            # slow-starting redis master (startupProbe enabled above), so until the
+            # pod is up the exporter's TCP endpoint is unreachable and its 50s
+            # liveness would fire-and-kill the pod mid-boot. Enabling the exporter's
+            # own startupProbe holds its livenessProbe off until the port first
+            # answers -- same shape as the postgresql metrics block above.
+            startupProbe:
+              enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: gitlab
