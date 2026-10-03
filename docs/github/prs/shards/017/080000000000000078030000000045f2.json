@@ -1,0 +1,12 @@
+{
+  "pr_number": 17906,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17906-deps-bump-the-npm-minor-patch-group-across-2-directories-with-4-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T07:39:01.705Z",
+  "schema_version": "v1",
+  "commit_sha": "fc62ce4a87491b0d05b3f62dbaeefffae416756f",
+  "title": "deps: Bump the npm-minor-patch group across 2 directories with 4 updates",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T07:38:14Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/npm-minor-patch-6a04825e83"
+}

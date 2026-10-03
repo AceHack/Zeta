@@ -1,0 +1,12 @@
+{
+  "pr_number": 17904,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17904-deps-bump-prettier-plugin-toml-from-2-0-6-to-3-0-2.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T07:39:14.215Z",
+  "schema_version": "v1",
+  "commit_sha": "22f98191d51d907c07fc5c9c2766cd4087b21409",
+  "title": "deps: Bump prettier-plugin-toml from 2.0.6 to 3.0.2",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T07:38:32Z",
+  "head_ref": "dependabot/bun/prettier-plugin-toml-3.0.2"
+}
