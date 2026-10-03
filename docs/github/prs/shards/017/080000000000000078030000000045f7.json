@@ -1,0 +1,12 @@
+{
+  "pr_number": 17911,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17911-fix-rust-refresh-path-dep-locks-after-xxhash-rust-0-8-19.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T08:38:13.384Z",
+  "schema_version": "v1",
+  "commit_sha": "42312627ce972fb8600ce096dbc4dab24ac4c105",
+  "title": "fix(rust): refresh path-dep locks after xxhash-rust 0.8.19",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T08:37:27Z",
+  "head_ref": "cursor/algebra-xxhash-lock-27c5"
+}
