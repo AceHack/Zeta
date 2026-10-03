@@ -3926,3 +3926,32 @@ CI: 0 completed tip failures. Parent lint (bash retirement) was failure (0 -> 5)
 Softs: work-item priority P1 vs event payload P2. Item minted state backlog while the fix is in the same commit. /i changed to /iu. Work item calls #17892 the archive of #17891; the five sites came from the Windows VM commit. No MEASURED sentence in this diff.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17896 leftover unique @ 2d4825a2a428c5b205b33bb9745c90c7a3699cda -- GRADE HOLD
+
+Does not clear the HOLD on #17893 tip ff0f9e89, or the HOLDs on #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Parent 6c8fdc373e7549fc982fe9ccbd57c0183307c9ec is main and the PR base, not graded. One parent. Not a merge. Live head is the tip (feat/windows-11-vms-doc). Author maximdolphin, 2026-10-03 1:32:41 AM ET. Tip-only +17/-2, 1 file docs/ops/WINDOWS-11-VMS.md. Squash auto-merge is armed (maximdolphin). Not disarmed. mergeable true, mergeable_state blocked.
+
+Hard fail: live observations stated as fact, with no transcript, API JSON, bootstrap.log, or command output in the one-file diff.
+
+Commit message says win11-ci installed and its runner registered, and that the Job-minted token is rejected by GitLab 19.4.1. The body states the unattended install, the API token reset, Verifying runner... is not valid, 403 on /runners/verify, and registration at version 19.4.1, platform windows, amd64, tags windows + zeta-windows, run-untagged false.
+
+WINDOWS-11-VMS.md at the tip:
+- :102 On GitLab 19.4.1 the minted token did not verify
+- :342 table row quotes bootstrap.log Verifying runner... is not valid and PANIC: Failed to verify the runner, and says the Job-minted token is rejected by GitLab 19.4.1
+- :454-458 under Proven with a real Windows image: win11-ci installed unattended, gitlab-runner v19.4.1, GitLab shows runner 2 (zeta-windows) version 19.4.1, platform windows, amd64, tags windows + zeta-windows, run-untagged false, the guest shows Windows License valid for 90 days and build 26300, and POST /runners/verify itself makes the runner read online
+- :462 parenthetical the runner registered and heartbeats inside the still-unproven CI-job bullet
+- :517-522 known issue 13c: a 43-character glrt- token, register refused, POST /runners/verify answered 403, POST /runners/2/reset_authentication_token returned a 56-character token that verifies (200) and registered, written into both Secrets, guest stopped and started, registered on the next boot
+
+Non-claims, not the fail: :462 A CI job on win11-ci and no pipeline was run on it under Still UNPROVEN; :523-524 not done here.
+
+Standing #17893 measured sentences are byte-identical to the parent (including tip:5-6 desktop installed, tip:411 Proven on this node, tip:431-433 runner never_contacted, tip:438-452 desktop install and SSH). Not a new fail of this SHA. Not re-graded.
+
+No tests in the diff. No mutations.
+
+CI ~1:37 AM ET. Tip 95 runs: 63 success, 28 skipped, 4 in progress, 0 failure. Parent's one failure, lint (bash retirement inventory + hygiene unit tests), is skipped on the tip, not red. No check red on the tip and green on the parent. Soft: four checks still in progress (cross-verify byte-lock-oracles, Analyze javascript-typescript, Analyze go, Analyze csharp).
+
+Path to GO: rewrite the new observation sentences (commit message, :102 did not verify, :342's rejection cause, :454-458, the registered and heartbeats parenthesis on :462, and :517-522) as instructions or an explicitly unproven note, or put a transcript, runner API JSON, bootstrap.log excerpt, or command output in the tree that shows the install, the runner version and platform, and the 403 and 200. The untagged-job non-claim can stay. Rewriting the standing #17893 desktop measurements is not required to clear this SHA.
+
+Sit leftover; Vera will not merge.
