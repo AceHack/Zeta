@@ -160,4 +160,78 @@ per-volume override was exercised.
 
 ## What is proven and what is unproven
 
-(Filled in as the live steps complete -- see the end of this document.)
+Everything below was measured on `node-5b2dfa` on 2026-10-03 (UTC) between 01:20 and 02:20; times are UTC.
+
+### Live result, per claim
+
+| Claim | Now | How | Old copy (kept, `Retain`, **Released**) | Proof |
+| --- | --- | --- | --- | --- |
+| `postgres-shared-1,2,3` | `zeta-block-replicated` (Longhorn, 1 replica) | CNPG replica by replica: PVC + pod deleted, CNPG re-cloned from the primary (about 60 s each); primary switched to `-3` by patching `status.targetPrimary`; old primary re-cloned last | `pvc-cf9f589a...` `-70b8f48c...` `-4679cdb1...` (1.0 GiB each) | 3/3 ready, `pg_stat_replication` streaming + lag 0 on both standbys, `flowdent_prod` / `flowdent_staging` byte sizes identical on primary and a moved standby, Barman `ContinuousArchiving=True`, fresh on-demand `Backup`s completed before (02:02) and after (02:07) |
+| `object-store/blob-store-seaweedfs-all-in-one-data` | Longhorn (moved by the previous session) | claim swap | `pvc-53076ecd...` (2.8 GiB, **stale since the move**: writes since then are only on the new volume) | S3 put / get / delete round-trip on **all 11 buckets** (`git-lfs`, `gitlab-artifacts`, `gitlab-backups`, `gitlab-packages`, `gitlab-registry`, `gitlab-uploads`, `loki-chunks`, `loki-ruler`, `mimir-ruler`, `mimir-tsdb`, `zeta-backups`); `weed` topology 82/100 volume slots used, 18 free; registry pull of two images (manifest, config blob sha256, 43 MB layer HEAD) and a push of a minimal image into the probe project, pulled back byte-identical, then deleted |
+| `forgejo/gitea-shared-storage` | Longhorn (moved by the previous session) | claim swap | `pvc-6c3d172c...` (5 MiB) | `https://git.flowdent.net/api/healthz` 200 |
+| `opensearch/...-master-0` | Longhorn | claim swap (below) | `pvc-0c426751...` (0.8 MiB) | 139 files, sha256 manifests identical, ownership/modes identical, pod Ready, Application Synced/Healthy |
+| `gitlab/repo-data-gitlab-gitaly-0` | Longhorn | claim swap (below); gitaly stopped **02:14:41 - 02:15:39** (58 s) | `pvc-5a784d60...` (0.24 GiB) | 689 files / 247520 KiB source = 689 files destination, sha256 manifest identical; the default-branch SHA of all 10 projects (9 in group `flowdent` plus `root/zz-upgrade-probe`) identical before and after; `git clone` + `git fsck --connectivity-only` clean; a pipeline ran to `success`; a commit written through the API landed, was read back and its branch deleted; `sign_in` 200 |
+
+Root filesystem (the node's own `stats/summary`): **81.95 GB used / 38.3 GB available before, 82.06 GB used / 38.2 GB after.** It did not
+move, and that is the honest figure: the seven old directories (~6.1 GB) are deliberately still there. When the owner lets them go the root
+is expected at roughly 76 GB used / 44 GB available, 25 GB above the 18.9 GB eviction line. Pruning images was measured and **declined**: of
+129 images only 5 (0.1 GB) are referenced by no container, so `crictl rmi --prune` would reclaim nothing. `DiskPressure` was `False` throughout.
+
+Production during the move: `api.flowdent.net/health` and `api-staging` were polled once a second from 02:03 through the end of the PostgreSQL steps. **Exactly one interruption:
+02:04:44 - 02:04:50 UTC, 6 s of 503, at the postgres switchover** (the pods reconnected on their own; one failed background tick per API pod was
+logged in that window and nothing after it). Replica moves and every claim swap caused none.
+
+The old primary `postgres-shared-1` restarted once at the switchover (CNPG demoted it), as expected.
+
+### The claim swap, as actually performed (opensearch, gitaly)
+
+`skip-reconcile` on the Application, `kubectl scale sts 0`, wait for the pod to be gone, a new Longhorn PVC under a temporary name, a copy Job
+(`busybox cp -a`, old claim read-only) that prints source/destination file counts and sha256 manifests, a second read-only Job that diffs
+`ls -lanR` of both trees (the only differences were `lost+found` and the root directory's mtime/link count), `Retain` on the new PV, delete the
+temporary claim, clear its `claimRef`, delete the old claim, create the claim under the **original name** with `volumeName` of the new PV, scale
+up, remove `skip-reconcile`. Because the StatefulSet's `volumeClaimTemplates` were left as they were, ArgoCD found live == git and had nothing to
+do. **Rollback:** scale to 0, delete the new claim, remove `/spec/claimRef` from the old PV (`kubectl patch pv <old> --type=json`), create a
+claim with `volumeName: <old pv>` under the same name, scale up. The old data is untouched.
+
+### Two traps found on the way, both fixed live and worth knowing
+
+1. **ArgoCD took ownership of `spec.volumeName` on the hand-made claims and then tried to blank it.** forgejo's and seaweedfs's claims had been
+   created with `kubectl apply` (managed by `kubectl-client-side-apply`); ArgoCD's server-side apply migrates that manager to `argocd-controller`,
+   which then owns `volumeName`, and the git render has none -- so the first sync after `skip-reconcile` was removed failed with `spec is immutable`.
+   Fix: delete `f:volumeName` from the owning manager's `managedFields` entry (a metadata-only patch; done on both claims) **before** un-skipping.
+   Do the same for any claim recreated by hand under a helm- or Argo-owned name.
+2. **The `stage0-independence` ratchet** failed PR #17884 because `local-storage-placement.sh` is a new door; it is recorded as the ninth exception.
+
+### Not done in git, and why (the owner's decision)
+
+gitaly and opensearch are **on Longhorn live but the git manifests still say the cluster default** (`zeta-block-local`). This is deliberate and it
+is harmless today (a StatefulSet's `volumeClaimTemplates` are not compared against a bound claim, and a fresh install now puts local-path on the big
+disk through `local-storage-placement.sh`), but it is a divergence and it is stated here rather than left to be found. Declaring them in git means two
+new `storage-profiles.json` rows (gitaly 50Gi, opensearch 20Gi, +70 GiB), and that **does not fit the invariant the catalogue test pins**: the
+`measured` rung must fit the smallest measured node, whose pool is **1047 GiB** -- the roster already declares 1043, so the margin is **4 GiB** and
+1113 fails `storage-profiles.test.ts` ("standard and measured fit the smallest measured node"). Landing it needs one of: smaller declared sizes
+elsewhere, a decision that the invariant's bound is wrong, or a bigger reference node. Everything else that change touches (the two rows, the
+generated kit, the installer ladder `304 / 741 / 1113 / 1841`, `ZETA_LONGHORN_DEMAND_GIB`, the QEMU lane disk) is mechanical and was prototyped; it
+was reverted rather than shipped with a red test.
+
+### What is unproven
+
+- **Nothing in this document was exercised on bare metal beyond this one node.** `nix` is not installed on the machine that wrote the repo changes:
+  the `zeta-local-storage-placement` unit is read by a test and never evaluated or booted, and the bind mount of a `longhorn-disk*` subdirectory under
+  the real local-path helper pods has not run on hardware.
+- Longhorn volumes are **one replica** (and `replica-soft-anti-affinity` is false): a volume on `longhorn2` is lost with that drive, exactly as the
+  local-path directory was lost with the root. The CNPG standbys give the databases a second copy only because CNPG replicates at the PostgreSQL level;
+  gitaly, SeaweedFS, forgejo and opensearch have no second copy beyond the Retained old directories (which go stale) and the Barman/GitLab backups.
+- The three CNPG instances all sit on one node: this is a placement fix, not high availability.
+- PostgreSQL moved with the cluster **running**; the claim "no committed transaction was lost" rests on streaming lag 0, identical database sizes, and the
+  fact that the only primary change was a clean CNPG switchover, not on a row-level comparison.
+- One transient was seen: right after gitaly came back, the very first API read of project 4's default branch returned an error body; the same call
+  seconds later returned the recorded SHA, and all ten matched. Not investigated further.
+- The 2 prod pods and 1 staging pod were not restarted, so a cold start against the new volumes is untested.
+
+### Orphans and the leftovers (the owner's to delete, none touched)
+
+Four `zeta-block-local` claims have no consumer: `gitlab/data-gitlab-postgresql-0`, `gitlab/redis-data-gitlab-redis-master-0`, `mimir/kafka-data-mimir-kafka-0`,
+`mimir/storage-mimir-alertmanager-0` (1.1 GiB). Seven Released PVs hold the old copies listed above (~6.1 GiB on root); keep them **>= 48 h** (until
+2026-10-04T23:00Z at the earliest) and delete only on the owner's word: `kubectl delete pv <name>`, then remove the directory under
+`/var/lib/zeta-local-storage/` on the node (deleting a Retained PV object does not remove the data).
