@@ -3814,3 +3814,19 @@ No test reads the doc. Zero check runs is not a red.
 Path to GO: remove or artifact the 30-curl paragraph, the probe rates, the zone listing, the md5s, the byte counts, and the live-apply sentences. The Always Use HTTPS recommendation can stay as a recommendation.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17885 leftover unique @ 0076be6300f38c18bd05f3525b9bdd3360ad1a6c -- GRADE HOLD
+
+Prior HOLDs on c358675b and 44555c0b stand. Not re-graded. 5f525359 was not graded. Parent fb85a766 was not graded: merge of c358675b and main 54b14956.
+
+Live head is this tip. One parent. Not a merge. Author maximdolphin, 2026-10-02 10:05:48 PM ET. Tip-only +10/-2, 1 file src/Core.TypeScript/cluster/flowdent-web.test.ts. AZURE-EXIT.md is byte-identical to the parent (sha256 7b95ab90e717faf040e5a559c24cf35fe0306c80ec6382c8e945f7bbd70f010d). Squash auto-merge armed. Not disarmed. Not merged.
+
+The test change is real. flowdent-web.test.ts:64-76 fails if any YAML document directly in full-ai-cluster/k8s/flowdent-web has an image key, and line 75 still rejects Deployment, StatefulSet, DaemonSet, Job, CronJob, and Pod. The registry.flowdent.net regex is gone. bun test: 10 pass, 0 fail, 43 expects. A stray image key went red at line 76. A Deployment with no image key went red at line 75.
+
+What remains. AZURE-EXIT.md:163-166 still says Measured 01:5xZ, 30 curls, 26 GitLab 302s. Probe rates at 150-153. An md5 at line 79. 6.26 GB and 6260260709 bytes at 241-242. Live apply at 420-421. No artifact. The image string remains in the doc only.
+
+CI about 10:10 PM ET: 21 checks, 0 completed failures, 9 in progress. Provenance checks success on the parent and absent on the tip. Not a tip-red.
+
+Path to GO: this test does not need another change for the image-key assertion. Remove or artifact the 30-curl paragraph, the probe rates, the md5s, the byte counts, and the live-apply sentences.
+
+Sit leftover; Vera will not merge.
