@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The GENERALIZED-IMAGE path for the Windows 11 guests (docs/ops/WINDOWS-11-VMS.md, "A licensed prepared
+  image"): the root disk already holds a sysprepped Windows, so there is nothing to install and nothing here
+  carries a password. Windows Setup reads this from the `sysprep` CD-ROM during the specialize pass, as
+  SYSTEM. The network is not up that early, so it only copies bootstrap.ps1 to local disk and schedules it at
+  every startup; the script retries its own downloads and removes the task once it has finished. For the
+  evaluation-ISO path see Autounattend.xml beside this file (the rendered Secret carries both; Setup uses
+  the one that applies). It finds the script by FILE NAME on whichever drive carries it, exactly as
+  Autounattend.xml does.
+  UNPROVEN: never executed against a real image.
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>zeta: schedule this VM's bootstrap</Description>
+          <Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$d = Get-PSDrive -PSProvider FileSystem | Where-Object { Test-Path (Join-Path $_.Root 'bootstrap.ps1') } | Select-Object -First 1; New-Item -ItemType Directory -Force C:\ProgramData\zeta | Out-Null; Copy-Item (Join-Path $d.Root 'bootstrap.ps1') C:\ProgramData\zeta\bootstrap.ps1 -Force; schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-bootstrap /tr 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1'"</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+</unattend>

@@ -49,16 +49,38 @@ export const WINDOWS_RUNNER_VM_PATH = "full-ai-cluster/k8s/examples/kubevirt-win
 export const WINDOWS_RUNNER_TOKEN_PATH = "full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml";
 
 /**
+ * The two Windows 11 guests (docs/ops/WINDOWS-11-VMS.md): a namespace with a storage-fence quota, a shared ISO
+ * DataVolume, a CI-runner VM and a desktop VM. They carry Secure Boot, SMM, a persistent TPM, a sysprep Secret and
+ * Filesystem-mode claims, which only KubeVirt's and CDI's own admission can say are valid.
+ */
+export const WINDOWS_11_NAMESPACE_PATH = "full-ai-cluster/k8s/examples/windows-11/00-namespace.yaml";
+export const WINDOWS_11_ISO_PATH = "full-ai-cluster/k8s/examples/windows-11/10-iso.yaml";
+export const WINDOWS_11_CI_PATH = "full-ai-cluster/k8s/examples/windows-11/20-win11-ci.yaml";
+export const WINDOWS_11_DESKTOP_PATH = "full-ai-cluster/k8s/examples/windows-11/30-win11-desktop.yaml";
+
+/**
  * Every opt-in example the server-side dry-run judges. A file added here but renamed or deleted is a
  * missing-file failure of the lane, never a skipped check.
  */
-export const DRY_RUN_TEMPLATE_PATHS: readonly string[] = [WINDOWS_TEMPLATE_PATH, WINDOWS_RUNNER_VM_PATH, WINDOWS_RUNNER_TOKEN_PATH];
+export const DRY_RUN_TEMPLATE_PATHS: readonly string[] = [
+  WINDOWS_TEMPLATE_PATH,
+  WINDOWS_RUNNER_VM_PATH,
+  WINDOWS_RUNNER_TOKEN_PATH,
+  WINDOWS_11_NAMESPACE_PATH,
+  WINDOWS_11_ISO_PATH,
+  WINDOWS_11_CI_PATH,
+  WINDOWS_11_DESKTOP_PATH,
+];
 
 /** What each example must still declare for its dry-run to mean something. */
 export const REQUIRED_KINDS: Readonly<Record<string, readonly string[]>> = {
   [WINDOWS_TEMPLATE_PATH]: ["VirtualMachine", "DataVolume"],
   [WINDOWS_RUNNER_VM_PATH]: ["VirtualMachine", "DataVolume", "ConfigMap"],
   [WINDOWS_RUNNER_TOKEN_PATH]: ["Job", "Role", "Secret"],
+  [WINDOWS_11_NAMESPACE_PATH]: ["Namespace", "ResourceQuota", "LimitRange"],
+  [WINDOWS_11_ISO_PATH]: ["DataVolume"],
+  [WINDOWS_11_CI_PATH]: ["VirtualMachine", "DataVolume", "ConfigMap"],
+  [WINDOWS_11_DESKTOP_PATH]: ["VirtualMachine", "DataVolume", "ConfigMap", "Service"],
 };
 
 /** Upstream's own tiny demo guest -- the image KubeVirt's docs and e2e use. ~15 MiB. */

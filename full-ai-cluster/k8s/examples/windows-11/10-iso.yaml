@@ -1,0 +1,54 @@
+# The Windows 11 Enterprise EVALUATION installer ISO, from a source YOU supply. Runbook:
+# docs/ops/WINDOWS-11-VMS.md. ONE import, shared read-only by both guests (win11-ci and win11-desktop
+# both attach it as a CD-ROM; a ReadWriteOnce volume may be mounted by two pods on the same node, which is
+# the only node there is -- measured 2026-10-03 with two pods on one such volume).
+#
+# WE DO NOT SHIP, FETCH OR REDISTRIBUTE WINDOWS, and no Microsoft download URL is in this repository. A
+# HUMAN downloads the ISO from the Microsoft Evaluation Center, which means reading and accepting
+# Microsoft's evaluation terms -- not automatable, not ours to do -- and then makes it reachable by the
+# cluster in ONE of two ways (pick one; exact commands in the runbook):
+#
+#   A. an HTTP URL you host on your LAN for the duration of the import (a throwaway `python -m http.server`
+#      on the PC that holds the ISO). Replace the sentinel below, e.g. with sed:
+#        sed "s#http://iso-host.invalid:8088/windows-11-enterprise-evaluation.iso#http://<PC-LAN-IP>:8088/<the-file>#" \
+#          10-iso.yaml | kubectl apply -f -
+#   B. `virtctl image-upload` through the CDI upload proxy: set `source: { upload: {} }`, apply, upload.
+#
+# The URL is an RFC 2606 `.invalid` name on purpose: it can never resolve, so applying this file untouched
+# fails the import loudly (the importer backs off) instead of booting or fetching anything unintended.
+#
+# STORAGE -- read before editing the class. The node's ROOT filesystem is ~120 GB and the DEFAULT class is a
+# directory on it. This claim names a Longhorn class explicitly, in Filesystem mode:
+#   * `volumeMode: Filesystem` is explicit because the class's CDI StorageProfile says Block, and a Block
+#     import dies on this node: the importer cannot open the raw device (`blockdev: cannot open
+#     /dev/cdi-block-volume: Permission denied` -- the container runtime does not hand a non-root importer
+#     ownership of a block device). Filesystem mode imports as a `disk.img` file and works (measured).
+#   * the claim is `storage:`, so CDI adds its 6% filesystem overhead itself: 8Gi asks Longhorn for ~8.5Gi.
+#   * CDI also creates a SCRATCH claim of the same size for an HTTP import (measured, python and a
+#     Range-capable server alike) on `cdi` `spec.config.scratchSpaceStorageClass`. Git still names
+#     `zeta-block-local` for it (cdi-cr.yaml); this cluster's LIVE value is `zeta-block-replicated`, because
+#     scratch on the default class is 8Gi on the root disk. Without the override the namespace quota in
+#     00-namespace.yaml REFUSES the scratch claim and the import waits, loudly. See the runbook.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: win11-iso
+  namespace: windows-vms
+  annotations:
+    # An ISO is read once; do not keep the importer pod around after it succeeds.
+    cdi.kubevirt.io/storage.deleteAfterCompletion: "true"
+    # The Longhorn class is WaitForFirstConsumer and cdi-cr.yaml honours it, so without this the import
+    # would wait for a pod that wants the claim -- and the only such pod is a VM, which is not started until
+    # the ISO is there. Bind now, so the import (or the upload) proceeds while the VMs are off.
+    cdi.kubevirt.io/storage.bind.immediate.requested: "true"
+spec:
+  source:
+    http:
+      url: http://iso-host.invalid:8088/windows-11-enterprise-evaluation.iso # EDIT: where YOU serve the ISO you downloaded (or `upload: {}`)
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    volumeMode: Filesystem
+    storageClassName: zeta-block-replicated
+    resources:
+      requests:
+        storage: 8Gi

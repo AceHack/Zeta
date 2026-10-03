@@ -1,0 +1,278 @@
+# VM B -- `win11-desktop`: an interactive Windows 11 desktop, reached with a GUI over VNC (KubeVirt's console)
+# and RDP. Runbook: docs/ops/WINDOWS-11-VMS.md. Sibling: 20-win11-ci.yaml (VM A, the GitLab runner) -- read
+# its header: the Windows 11 requirements, the boot-order reasoning and the storage reasoning are the same
+# here and are not repeated.
+#
+# THIS FILE IS NOT APPLIED BY ANY SYNC and is deliberately NOT under k8s/applications/ (see 00-namespace.yaml).
+# OPT-IN BY CONSTRUCTION: `runStrategy: Manual`. START THIS ONE FIRST: it is the one you watch install.
+#
+# WHAT IT NEEDS BEFORE IT IS STARTED: 00-namespace.yaml, 10-iso.yaml (Succeeded), and Secret
+# `win11-desktop-unattend` (the password lives only there; the same command renders both VMs' Secrets):
+#     bun src/Core.TypeScript/cluster/windows-11-unattend-secrets.ts | kubectl apply -f -
+# No runner token: this guest is not a runner and no GitLab credential is ever mounted into it.
+#
+# HOW YOU REACH THE DESKTOP -- two ways, and the second is the everyday one:
+#   1. VNC, KubeVirt's console:  `virtctl vnc win11-desktop -n windows-vms`. Needs no guest cooperation, so it
+#      is how you watch the install and how you debug a guest that has no network.
+#   2. RDP, through an SSH tunnel -- NEVER a LoadBalancer. The Service below is ClusterIP: nothing outside
+#      the cluster can reach 3389, and an internet- or LAN-facing 3389 is the most-scanned port there is. The
+#      node can reach ClusterIPs (measured 2026-10-03), so:
+#        ssh -N -L 13389:<ClusterIP>:3389 zeta@ssh.flowdent.net     # <ClusterIP>: kubectl -n windows-vms get svc win11-desktop-rdp
+#      then point an RDP client at localhost:13389 and sign in as `.\zetaadmin`. (13389, not 3389: a Windows
+#      PC with its own Remote Desktop server already listens on 3389.)
+#
+# WHAT THE GUEST BECOMES, by its own bootstrap.ps1 (run once at startup as SYSTEM after the install): Remote
+# Desktop on, its firewall rule enabled for every profile, the network marked Private, the virtio guest tools
+# (drivers incl. balloon, serial, rng, input) and the QEMU guest agent installed -- so KubeVirt can report the
+# guest's IPs and hostname -- and the evaluation watchdog scheduled.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: win11-desktop-bootstrap
+  namespace: windows-vms
+data:
+  settings.json: |
+    {
+      "adminUser": "zetaadmin"
+    }
+  # Idempotent and safe on every boot; the transcript is C:\ProgramData\zeta\bootstrap.log. Files are found by
+  # NAME on whichever drive carries them, not by volume label. A step that cannot finish THROWS, which leaves
+  # the startup task in place so the next boot retries it.
+  bootstrap.ps1: |
+    $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
+    $zeta = 'C:\ProgramData\zeta'
+    New-Item -ItemType Directory -Force -Path $zeta | Out-Null
+    Start-Transcript -Path (Join-Path $zeta 'bootstrap.log') -Append | Out-Null
+
+    function Find-Drive([string]$File) {
+      for ($i = 0; $i -lt 60; $i++) {
+        $d = Get-PSDrive -PSProvider FileSystem | Where-Object { Test-Path (Join-Path $_.Root $File) } | Select-Object -First 1
+        if ($d) { return $d.Root }
+        Start-Sleep -Seconds 5
+      }
+      throw "no drive carries $File"
+    }
+
+    $boot = Find-Drive 'settings.json'
+    $settings = Get-Content (Join-Path $boot 'settings.json') -Raw | ConvertFrom-Json
+
+    # Evaluation-expiry watchdog: REPORTS, never acts (see eval-watch.ps1).
+    $watch = Join-Path $boot 'eval-watch.ps1'
+    if (Test-Path $watch) {
+      Copy-Item $watch (Join-Path $zeta 'eval-watch.ps1') -Force
+      if (-not (Get-ScheduledTask -TaskName zeta-eval-watch -ErrorAction SilentlyContinue)) {
+        $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\eval-watch.ps1'
+        Register-ScheduledTask -TaskName zeta-eval-watch -Action $action -Trigger (New-ScheduledTaskTrigger -Daily -At 3am) -User 'SYSTEM' -RunLevel Highest | Out-Null
+      }
+    }
+
+    # Remote Desktop: enabled, its firewall group open on every profile, the network Private. The firewall
+    # change is what the reachable-from-the-tunnel claim rests on; the ClusterIP Service is what keeps it
+    # off every other network.
+    Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name fDenyTSConnections -Value 0
+    Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
+    Set-NetFirewallRule -DisplayGroup 'Remote Desktop' -Profile Any
+    Get-NetConnectionProfile -ErrorAction SilentlyContinue | Set-NetConnectionProfile -NetworkCategory Private -ErrorAction SilentlyContinue
+    Write-Host 'remote desktop enabled'
+
+    # The virtio drivers that are not boot-critical (balloon, serial, rng, input, ...) and the QEMU guest
+    # agent, from the virtio-win CD. Skipped when already installed.
+    $virtio = Find-Drive 'virtio-win-gt-x64.msi'
+    if (-not (Get-Service QEMU-GA -ErrorAction SilentlyContinue)) {
+      $p = Start-Process msiexec.exe -ArgumentList ('/i "' + $virtio + 'virtio-win-gt-x64.msi" /qn /norestart') -Wait -PassThru
+      if ($p.ExitCode -notin 0, 3010) { throw "virtio-win-gt-x64.msi exited $($p.ExitCode)" }
+      $p = Start-Process msiexec.exe -ArgumentList ('/i "' + $virtio + 'guest-agent\qemu-ga-x86_64.msi" /qn /norestart') -Wait -PassThru
+      if ($p.ExitCode -notin 0, 3010) { throw "qemu-ga-x86_64.msi exited $($p.ExitCode)" }
+    }
+    Write-Host 'virtio guest tools and the QEMU guest agent are installed'
+
+    # The evaluation account must not lock the guest out at 42 days. The OOBE creates it after this task
+    # first runs, so wait for it, and fail (the task stays and retries next boot) rather than skip.
+    $ok = $false
+    for ($i = 0; $i -lt 40 -and -not $ok; $i++) {
+      if (Get-LocalUser -Name $settings.adminUser -ErrorAction SilentlyContinue) {
+        Set-LocalUser -Name $settings.adminUser -PasswordNeverExpires $true
+        $ok = $true
+      } else { Start-Sleep -Seconds 15 }
+    }
+    if (-not $ok) { throw "local user $($settings.adminUser) does not exist yet" }
+
+    Unregister-ScheduledTask -TaskName zeta-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
+    Write-Host 'desktop bootstrap finished'
+    Stop-Transcript | Out-Null
+  # Runs daily as SYSTEM. REPORTS the evaluation clock, and does nothing about it: it never runs
+  # `slmgr /rearm` or any licensing method. Whether to extend an evaluation is the operator's decision
+  # under Microsoft's terms, not something a script should do quietly. Output: eval-watch.log, and a
+  # Warning in the Application event log (source zeta-eval-watch, id 4101) inside 14 days of expiry.
+  eval-watch.ps1: |
+    $ErrorActionPreference = 'Stop'
+    $zeta = 'C:\ProgramData\zeta'
+    $lic = Get-CimInstance -ClassName SoftwareLicensingProduct -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1
+    $service = Get-CimInstance -ClassName SoftwareLicensingService
+    $caption = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+    $isEval = ($null -ne $lic) -and (($lic.Description -match 'EVAL') -or ($caption -match 'Evaluation'))
+    $days = if ($null -ne $lic) { [math]::Round(([int64]$lic.GracePeriodRemaining) / 1440, 1) } else { -1 }
+    Add-Content -Path (Join-Path $zeta 'eval-watch.log') -Value ('{0} os="{1}" evaluation={2} licenseStatus={3} daysRemaining={4} rearmsLeft={5}' -f (Get-Date -Format o), $caption, $isEval, $lic.LicenseStatus, $days, $service.RemainingWindowsReArmCount)
+    if ($isEval -and $days -ge 0 -and $days -lt 14) {
+      if (-not [System.Diagnostics.EventLog]::SourceExists('zeta-eval-watch')) { New-EventLog -LogName Application -Source 'zeta-eval-watch' }
+      Write-EventLog -LogName Application -Source 'zeta-eval-watch' -EventId 4101 -EntryType Warning -Message "The Windows evaluation on this desktop expires in $days days. Plan a licensed image; see docs/ops/WINDOWS-11-VMS.md."
+    }
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: win11-desktop-root
+  namespace: windows-vms
+  annotations:
+    cdi.kubevirt.io/storage.bind.immediate.requested: "true"
+spec:
+  source:
+    blank: {}
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    volumeMode: Filesystem
+    storageClassName: zeta-block-replicated
+    resources:
+      requests:
+        storage: 100Gi
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: win11-desktop
+  namespace: windows-vms
+  labels:
+    app.kubernetes.io/part-of: zeta-windows
+    zeta.io/windows-role: desktop
+spec:
+  # Manual: nothing boots until `virtctl start win11-desktop -n windows-vms`.
+  runStrategy: Manual
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: win11-desktop
+        zeta.io/windows-role: desktop
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 4
+          model: host-passthrough
+        memory:
+          guest: 8Gi
+        resources:
+          # 4 vCPUs for the guest, but only 2 CPUs RESERVED on the node: this single node's CPU requests are
+          # ~90% taken by the platform (measured 2026-10-03: 19.1 of 21.25 CPUs), so a 4-CPU request per
+          # guest left the second VM unschedulable ("Insufficient cpu"). No CPU limit, so a guest still
+          # bursts to all four when the node is idle -- the platform's real use was ~11%.
+          requests:
+            cpu: "2"
+            memory: 8Gi
+          limits:
+            memory: 8Gi
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true
+              persistent: true
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: true
+          hyperv:
+            relaxed: {}
+            vapic: {}
+            spinlocks:
+              spinlocks: 8191
+            vpindex: {}
+            runtime: {}
+            synic: {}
+            synictimer:
+              direct: {}
+            tlbflush: {}
+            ipi: {}
+            frequencies: {}
+            reset: {}
+        clock:
+          utc: {}
+          timer:
+            hpet:
+              present: false
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+            hyperv: {}
+        devices:
+          tpm:
+            persistent: true
+          disks:
+            - name: root
+              bootOrder: 1
+              disk:
+                bus: virtio
+            - name: iso
+              bootOrder: 2
+              cdrom:
+                bus: sata
+            - name: virtio-win
+              cdrom:
+                bus: sata
+            - name: bootstrap
+              cdrom:
+                bus: sata
+            - name: sysprep
+              cdrom:
+                bus: sata
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+          inputs:
+            - type: tablet
+              bus: usb
+              name: tablet
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 300
+      volumes:
+        - name: root
+          dataVolume:
+            name: win11-desktop-root
+        - name: iso
+          dataVolume:
+            name: win11-iso
+        - name: virtio-win
+          containerDisk:
+            image: quay.io/kubevirt/virtio-container-disk:v1.8.4
+        - name: bootstrap
+          configMap:
+            name: win11-desktop-bootstrap
+            volumeLabel: ZETABOOT
+        - name: sysprep
+          sysprep:
+            secret:
+              name: win11-desktop-unattend
+---
+# RDP. ClusterIP and ONLY ClusterIP: reached through `ssh -L` (see the header), never published. The
+# selector is the label KubeVirt stamps on the virt-launcher pod from `template.metadata.labels`; there is no
+# Service-for-a-VM object, it is an ordinary Service over the launcher pod. With a masquerade interface that
+# declares no ports, KubeVirt forwards every port to the guest, so 3389 reaches Windows once RDP is on.
+apiVersion: v1
+kind: Service
+metadata:
+  name: win11-desktop-rdp
+  namespace: windows-vms
+spec:
+  type: ClusterIP
+  selector:
+    kubevirt.io/domain: win11-desktop
+  ports:
+    - name: rdp
+      port: 3389
+      targetPort: 3389
+      protocol: TCP

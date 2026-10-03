@@ -1,0 +1,358 @@
+# VM A -- `win11-ci`: a headless-ish Windows 11 guest that registers itself with the in-cluster GitLab as an
+# instance runner tagged `windows`, `zeta-windows` (run_untagged FALSE), for Windows builds (e.g. the FlowDent
+# installers). Runbook: docs/ops/WINDOWS-11-VMS.md. Sibling: 30-win11-desktop.yaml (VM B, the interactive one).
+#
+# THIS FILE IS NOT APPLIED BY ANY SYNC and is deliberately NOT under k8s/applications/ (see 00-namespace.yaml).
+# OPT-IN BY CONSTRUCTION: `runStrategy: Manual` -- nothing boots until you run `virtctl start win11-ci -n
+# windows-vms`, and the ISO sentinel in 10-iso.yaml cannot resolve, so an untouched apply starts nothing.
+#
+# WHAT IT NEEDS BEFORE IT IS STARTED (all in the runbook, in order):
+#   * 00-namespace.yaml and 10-iso.yaml applied, the ISO DataVolume `win11-iso` Succeeded;
+#   * Secret `win11-ci-unattend` -- the Administrator password lives ONLY there:
+#       bun src/Core.TypeScript/cluster/windows-11-unattend-secrets.ts | kubectl apply -f -
+#   * Secret `win11-ci-runner-token` -- the glrt- token, minted by examples/gitlab-windows-runner-token.yaml
+#     into the `gitlab` namespace and COPIED here (a Secret can only be mounted from the VM's own namespace):
+#       bun src/Core.TypeScript/cluster/copy-secret.ts --from gitlab/gitlab-windows-runner-token \
+#         --to windows-vms/win11-ci-runner-token
+#   KubeVirt builds Secret / ConfigMap disks when the VM STARTS: both Secrets must exist first.
+#
+# THE TAG CONTRACT (why this is safe next to the Linux runner `zeta-cluster`). The runner RECORD carries the
+# tags and run-untagged (set when the token was minted, not on any command line here): tags `windows`,
+# `zeta-windows`, untagged OFF. The Linux runner takes tag-less jobs; this one never does. A tag-less
+# `.gitlab-ci.yml` therefore can never land on Windows. Pinned by src/Core.TypeScript/cluster/windows-11-vms.test.ts.
+#
+# WINDOWS 11 NEEDS (each PROVEN to boot on this node with a Linux guest, 2026-10-03; Windows itself NOT yet):
+#   * UEFI + Secure Boot  : firmware.bootloader.efi.secureBoot + features.smm.enabled
+#   * TPM 2.0, persistent : devices.tpm.persistent -- the TPM's state lives in a claim KubeVirt creates on the
+#                           class the KubeVirt CR names (`vmStateStorageClass: longhorn`, set LIVE; runbook step 0)
+#   * a real CPU model    : cpu.model host-passthrough (a Windows 11 requirement in practice: x86-64-v2)
+#   * Hyper-V enlightenments, a virtio disk and NIC (drivers from the virtio-win CD, see Autounattend.xml)
+#
+# BOOT ORDER: the root disk FIRST, the ISO second. A blank disk has nothing to boot, so firmware falls
+# through to the ISO; once Windows is installed, every later boot goes to the disk and the Windows ISO's
+# "Press any key to boot from CD or DVD" prompt never appears again. THE ONE KEY PRESS: on that first
+# fall-through the prompt DOES appear and nothing presses the key -- the runbook sends it with
+# `src/Core.TypeScript/cluster/windows-11-vm.ts key`.
+#
+# STORAGE: Longhorn, named explicitly, Filesystem mode (the class's StorageProfile says Block, and a Block
+# import dies on this node, see 10-iso.yaml). The root disk is 80Gi of usable guest disk: CDI adds the 6%
+# filesystem overhead itself. 00-namespace.yaml refuses any claim on the node's root disk.
+---
+# Everything the guest needs that is not a secret. Mounted as a CD-ROM labelled ZETABOOT.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: win11-ci-bootstrap
+  namespace: windows-vms
+data:
+  settings.json: |
+    {
+      "gitlabUrl": "http://gitlab-webservice-default.gitlab.svc.cluster.local:8181",
+      "installDir": "C:\\GitLab-Runner",
+      "concurrent": 2,
+      "runnerVersion": "v19.4.1",
+      "runnerExeUrl": "https://gitlab-runner-downloads.s3.amazonaws.com/v19.4.1/binaries/gitlab-runner-windows-amd64.exe",
+      "runnerExeSha256": "da964936521e8b763dcbfd2475eb172f1f77bd733f3cccbfa0c86644b2db533d",
+      "gitUrl": "https://github.com/git-for-windows/git/releases/download/v2.56.0.windows.1/Git-2.56.0-64-bit.exe",
+      "gitSha256": "bfe94e7b419b16eee9fecbd1253a98e3d4f49ba8f029630549052278ffe286a6",
+      "adminUser": "zetaadmin"
+    }
+  # Idempotent and safe on every boot. Never prints the token; the transcript is
+  # C:\ProgramData\zeta\bootstrap.log -- read it first when the runner does not appear.
+  #
+  # KEEPS THE SAME RUNNER ACROSS REBOOTS, REARMS AND EVALUATION-EXPIRY SHUTDOWNS: the runner's identity is the
+  # glrt- token in C:\GitLab-Runner\config.toml on the guest disk and the Windows service starts
+  # automatically, so a reboot brings the same runner back with no registration; the step that
+  # short-circuits on an existing token is what stops a reboot from registering again. If the DISK is
+  # rebuilt, the same Secret token registers a new MANAGER under the SAME runner record (GitLab 16+).
+  #
+  # Files are found by NAME on whichever drive carries them, not by volume label.
+  bootstrap.ps1: |
+    $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $zeta = 'C:\ProgramData\zeta'
+    New-Item -ItemType Directory -Force -Path $zeta | Out-Null
+    Start-Transcript -Path (Join-Path $zeta 'bootstrap.log') -Append | Out-Null
+
+    function Find-Drive([string]$File) {
+      for ($i = 0; $i -lt 60; $i++) {
+        $d = Get-PSDrive -PSProvider FileSystem | Where-Object { Test-Path (Join-Path $_.Root $File) } | Select-Object -First 1
+        if ($d) { return $d.Root }
+        Start-Sleep -Seconds 5
+      }
+      throw "no drive carries $File"
+    }
+
+    # Download to a temp file, verify the pinned sha256 BEFORE the file is moved anywhere it can run.
+    function Get-Pinned([string]$Url, [string]$Sha256, [string]$Dest) {
+      $tmp = "$Dest.download"
+      $ok = $false
+      for ($i = 1; $i -le 30 -and -not $ok; $i++) {
+        try { Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $tmp; $ok = $true }
+        catch { Write-Host "download attempt $i failed: $($_.Exception.Message)"; Start-Sleep -Seconds 20 }
+      }
+      if (-not $ok) { throw "could not download $Url" }
+      $actual = (Get-FileHash -Algorithm SHA256 -Path $tmp).Hash.ToLowerInvariant()
+      if ($actual -ne $Sha256.ToLowerInvariant()) {
+        Remove-Item $tmp -Force
+        throw "sha256 $actual does not match the pinned $Sha256 for $Url"
+      }
+      Move-Item $tmp $Dest -Force
+    }
+
+    $boot = Find-Drive 'settings.json'
+    $settings = Get-Content (Join-Path $boot 'settings.json') -Raw | ConvertFrom-Json
+    $dir = $settings.installDir
+    $exe = Join-Path $dir 'gitlab-runner.exe'
+    $config = Join-Path $dir 'config.toml'
+
+    # The evaluation account must not lock the guest out at 42 days: the OOBE creates it after this task
+    # first runs, so wait for it, and fail (the task stays and retries next boot) rather than skip.
+    function Set-AdminNeverExpires {
+      for ($i = 0; $i -lt 40; $i++) {
+        if (Get-LocalUser -Name $settings.adminUser -ErrorAction SilentlyContinue) {
+          Set-LocalUser -Name $settings.adminUser -PasswordNeverExpires $true
+          return
+        }
+        Start-Sleep -Seconds 15
+      }
+      throw "local user $($settings.adminUser) does not exist yet"
+    }
+
+    # Evaluation-expiry watchdog: REPORTS, never acts (see eval-watch.ps1).
+    $watch = Join-Path $boot 'eval-watch.ps1'
+    if (Test-Path $watch) {
+      Copy-Item $watch (Join-Path $zeta 'eval-watch.ps1') -Force
+      if (-not (Get-ScheduledTask -TaskName zeta-eval-watch -ErrorAction SilentlyContinue)) {
+        $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\eval-watch.ps1'
+        Register-ScheduledTask -TaskName zeta-eval-watch -Action $action -Trigger (New-ScheduledTaskTrigger -Daily -At 3am) -User 'SYSTEM' -RunLevel Highest | Out-Null
+      }
+    }
+
+    if ((Test-Path $config) -and (Select-String -Path $config -Pattern 'token = "glrt-' -Quiet)) {
+      Write-Host 'runner already registered; nothing to do'
+      Set-AdminNeverExpires
+      Unregister-ScheduledTask -TaskName zeta-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
+      Stop-Transcript | Out-Null
+      exit 0
+    }
+
+    $tokenFile = Join-Path (Find-Drive 'runner-token') 'runner-token'
+    $token = (Get-Content $tokenFile -Raw).Trim()
+    if ($token -notmatch '^glrt-') { throw 'runner-token is not a glrt- authentication token' }
+
+    # A network driver the installer did not inject would leave the guest with no adapter: install the
+    # virtio guest tools from the virtio-win CD, then fall through to the retried downloads.
+    if (-not (Get-NetAdapter -ErrorAction SilentlyContinue)) {
+      $virtio = Get-PSDrive -PSProvider FileSystem | Where-Object { Test-Path (Join-Path $_.Root 'virtio-win-gt-x64.msi') } | Select-Object -First 1
+      if ($virtio) {
+        Start-Process msiexec.exe -ArgumentList ('/i "' + $virtio.Root + 'virtio-win-gt-x64.msi" /qn /norestart') -Wait
+      }
+    }
+
+    # Git for Windows: the runner's job checkout needs `git`, and Windows 11 does not ship it. Installed
+    # BEFORE the runner service starts so the service's PATH already has it.
+    $git = 'C:\Program Files\Git\cmd\git.exe'
+    if (-not (Test-Path $git)) {
+      $gitInstaller = Join-Path $zeta 'Git-installer.exe'
+      Get-Pinned $settings.gitUrl $settings.gitSha256 $gitInstaller
+      $p = Start-Process -FilePath $gitInstaller -ArgumentList '/VERYSILENT /NORESTART /NOCANCEL /SP- /SUPPRESSMSGBOXES' -Wait -PassThru
+      if ($p.ExitCode -ne 0) { throw "git installer exited $($p.ExitCode)" }
+      Remove-Item $gitInstaller -Force
+    }
+
+    New-Item -ItemType Directory -Force -Path $dir | Out-Null
+    if (-not (Test-Path $exe)) { Get-Pinned $settings.runnerExeUrl $settings.runnerExeSha256 $exe }
+
+    # Authentication-token registration: the tags, run-untagged and locked settings live on the
+    # runner RECORD (set when the token was minted), not on this command line -- GitLab refuses
+    # them alongside a glrt- token.
+    & $exe register --non-interactive --config $config --url $settings.gitlabUrl --clone-url $settings.gitlabUrl --token $token --executor shell --shell powershell
+    if ($LASTEXITCODE -ne 0) { throw "gitlab-runner register exited $LASTEXITCODE" }
+    (Get-Content $config) -replace '^concurrent = \d+', "concurrent = $($settings.concurrent)" | Set-Content $config -Encoding ASCII
+
+    if (-not (Get-Service gitlab-runner -ErrorAction SilentlyContinue)) {
+      & $exe install --working-directory $dir --config $config
+      if ($LASTEXITCODE -ne 0) { throw "gitlab-runner install exited $LASTEXITCODE" }
+    }
+    & $exe start
+    if ($LASTEXITCODE -ne 0) { throw "gitlab-runner start exited $LASTEXITCODE" }
+
+    Set-AdminNeverExpires
+    Unregister-ScheduledTask -TaskName zeta-bootstrap -Confirm:$false -ErrorAction SilentlyContinue
+    Write-Host 'gitlab-runner registered and started'
+    Stop-Transcript | Out-Null
+  # Runs daily as SYSTEM. REPORTS the evaluation clock, and does nothing about it: it never runs
+  # `slmgr /rearm` or any licensing method. Whether to extend an evaluation is the operator's decision
+  # under Microsoft's terms, not something a script should do quietly. Output: eval-watch.log, and a
+  # Warning in the Application event log (source zeta-eval-watch, id 4101) inside 14 days of expiry.
+  eval-watch.ps1: |
+    $ErrorActionPreference = 'Stop'
+    $zeta = 'C:\ProgramData\zeta'
+    $lic = Get-CimInstance -ClassName SoftwareLicensingProduct -Filter "ApplicationId='55c92734-d682-4d71-983e-d6ec3f16059f' AND PartialProductKey IS NOT NULL" | Select-Object -First 1
+    $service = Get-CimInstance -ClassName SoftwareLicensingService
+    $caption = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+    $isEval = ($null -ne $lic) -and (($lic.Description -match 'EVAL') -or ($caption -match 'Evaluation'))
+    $days = if ($null -ne $lic) { [math]::Round(([int64]$lic.GracePeriodRemaining) / 1440, 1) } else { -1 }
+    Add-Content -Path (Join-Path $zeta 'eval-watch.log') -Value ('{0} os="{1}" evaluation={2} licenseStatus={3} daysRemaining={4} rearmsLeft={5}' -f (Get-Date -Format o), $caption, $isEval, $lic.LicenseStatus, $days, $service.RemainingWindowsReArmCount)
+    if ($isEval -and $days -ge 0 -and $days -lt 14) {
+      if (-not [System.Diagnostics.EventLog]::SourceExists('zeta-eval-watch')) { New-EventLog -LogName Application -Source 'zeta-eval-watch' }
+      Write-EventLog -LogName Application -Source 'zeta-eval-watch' -EventId 4101 -EntryType Warning -Message "The Windows evaluation on this CI runner expires in $days days. Plan a licensed image; see docs/ops/WINDOWS-11-VMS.md."
+    }
+---
+# The guest's root disk. Blank: the unattended install partitions it. Created ahead of time (Immediate
+# binding, below) so the Longhorn volume exists -- and its placement can be checked -- before any VM starts.
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: win11-ci-root
+  namespace: windows-vms
+  annotations:
+    cdi.kubevirt.io/storage.bind.immediate.requested: "true"
+spec:
+  source:
+    blank: {}
+  storage:
+    accessModes: [ ReadWriteOnce ]
+    volumeMode: Filesystem
+    storageClassName: zeta-block-replicated
+    resources:
+      requests:
+        storage: 80Gi
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: win11-ci
+  namespace: windows-vms
+  labels:
+    app.kubernetes.io/part-of: zeta-windows
+    zeta.io/windows-role: ci-runner
+spec:
+  # Manual: nothing boots until `virtctl start win11-ci -n windows-vms`. Once the runner is online and you
+  # want it back after a node reboot, set `Always` (bootstrap.ps1 is a no-op when already registered) --
+  # but never leave `Always` on an expired evaluation (it would flap hourly, see the runbook).
+  runStrategy: Manual
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: win11-ci
+        zeta.io/windows-role: ci-runner
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 4
+          model: host-passthrough
+        memory:
+          guest: 8Gi
+        resources:
+          # 4 vCPUs for the guest, but only 2 CPUs RESERVED on the node: this single node's CPU requests are
+          # ~90% taken by the platform (measured 2026-10-03: 19.1 of 21.25 CPUs), so a 4-CPU request per
+          # guest left the second VM unschedulable ("Insufficient cpu"). No CPU limit, so a guest still
+          # bursts to all four when the node is idle -- the platform's real use was ~11%.
+          requests:
+            cpu: "2"
+            memory: 8Gi
+          limits:
+            memory: 8Gi
+        firmware:
+          bootloader:
+            efi:
+              # Windows 11 needs Secure Boot (which needs SMM, below) and a TPM. `persistent` keeps the UEFI
+              # variables (Windows' boot entry) across restarts, in the same state claim as the TPM.
+              secureBoot: true
+              persistent: true
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: true
+          # The Hyper-V enlightenments Microsoft's guidance and KubeVirt's own Windows templates turn on:
+          # without them Windows spends its time in timer interrupts and a 4-vCPU guest idles at 30% host CPU.
+          hyperv:
+            relaxed: {}
+            vapic: {}
+            spinlocks:
+              spinlocks: 8191
+            vpindex: {}
+            runtime: {}
+            synic: {}
+            synictimer:
+              direct: {}
+            tlbflush: {}
+            ipi: {}
+            frequencies: {}
+            reset: {}
+        clock:
+          utc: {}
+          timer:
+            hpet:
+              present: false
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+            hyperv: {}
+        devices:
+          tpm:
+            persistent: true
+          # Six SATA slots are the most one AHCI controller offers; this uses five of them.
+          disks:
+            - name: root
+              bootOrder: 1
+              disk:
+                bus: virtio
+            - name: iso
+              bootOrder: 2
+              cdrom:
+                bus: sata
+            - name: virtio-win
+              cdrom:
+                bus: sata
+            - name: bootstrap
+              cdrom:
+                bus: sata
+            - name: runner-token
+              cdrom:
+                bus: sata
+            - name: sysprep
+              cdrom:
+                bus: sata
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+          inputs:
+            - type: tablet
+              bus: usb
+              name: tablet
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 300
+      volumes:
+        - name: root
+          dataVolume:
+            name: win11-ci-root
+        - name: iso
+          dataVolume:
+            name: win11-iso
+        - name: virtio-win
+          containerDisk:
+            image: quay.io/kubevirt/virtio-container-disk:v1.8.4
+        - name: bootstrap
+          configMap:
+            name: win11-ci-bootstrap
+            volumeLabel: ZETABOOT
+        - name: runner-token
+          secret:
+            secretName: win11-ci-runner-token
+            volumeLabel: ZETATOKEN
+        # Autounattend.xml (the evaluation-ISO install) and Unattend.xml (a prepared image), from the Secret
+        # windows-11-unattend-secrets.ts renders. The password is NOT in this file.
+        - name: sysprep
+          sysprep:
+            secret:
+              name: win11-ci-unattend

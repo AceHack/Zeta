@@ -1,0 +1,79 @@
+# The home of the two Windows 11 guests (docs/ops/WINDOWS-11-VMS.md): `win11-ci` (a GitLab runner)
+# and `win11-desktop` (an interactive desktop). Apply this file FIRST.
+#
+# THIS FILE IS NOT APPLIED BY ANY SYNC, AND IT IS DELIBERATELY NOT UNDER k8s/applications/ -- for the
+# reasons recorded in kubevirt-windows-vm.yaml (ArgoCD reads only applications/*/Application.yaml, and the
+# audits that price the cluster walk that tree for volume claims, so ~190Gi of VM disk inside it would be
+# priced as always-on demand that no sync provisions). OPT-IN: `kubectl apply -f` it when you mean it.
+#
+# THE STORAGE FENCE IS HERE, AND IT IS MECHANICAL. The node's ROOT filesystem is ~120 GB and the DEFAULT
+# StorageClass (`zeta-block-local`, local-path) is a directory on it, so one 80Gi claim there drives the
+# node into DiskPressure and the kubelet starts evicting pods (it did, 2026-10-02 07:53Z, ~150 pods).
+# Every claim in the Windows manifests names a Longhorn class explicitly, and this namespace REFUSES
+# any claim on the local-path class: a `persistentvolumeclaims: 0` quota scoped to that StorageClass.
+# So a forgotten `storageClassName` (which silently takes the default) is a rejected claim, not a full
+# root disk. CDI's scratch space and KubeVirt's TPM state claim obey it too: both are created in the
+# VM's own namespace, so each must be pointed at a Longhorn class (the CDI CR's `scratchSpaceStorageClass`, the
+# KubeVirt CR's `vmStateStorageClass`; both set LIVE on this cluster, see the runbook, step 0) or its import / TPM
+# fails loudly instead of landing on root.
+#
+# POD SECURITY. KubeVirt's virt-launcher pod is not `restricted`-compatible (it needs SYS_NICE and the
+# /dev/kvm + /dev/net/tun device plugins), so `restricted` cannot be enforced here. Measured on this
+# cluster (docs/ops/WINDOWS-11-VMS.md, "What was measured"): see the label below for what it admits.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: windows-vms
+  labels:
+    app.kubernetes.io/part-of: zeta-windows
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: restricted
+---
+# A CEILING, not a reservation and not a measurement (unmetered): it stops a mistake here from starving
+# the platform that shares this node. Two guests of 4 vCPU / 8Gi each, plus KubeVirt's per-VM memory
+# overhead and CDI's importer pods, plus headroom for one throwaway test VM.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: windows-vms
+  namespace: windows-vms
+spec:
+  hard:
+    pods: "12"
+    requests.cpu: "8"
+    requests.memory: 24Gi
+    limits.memory: 28Gi
+    requests.ephemeral-storage: 4Gi
+    limits.ephemeral-storage: 32Gi
+    # Steady state: 80Gi + 100Gi of guest disk (each +6% CDI filesystem overhead) + the 8Gi ISO + two 12Mi
+    # TPM-state claims, ~205Gi. CDI's populator ALSO creates a transient "prime" claim of the same size as the
+    # volume it is filling, plus a scratch claim for an HTTP import (measured: a quota of 240Gi refused the
+    # prime claim of the second 100Gi disk with ErrCreatingPVCPrime). So the ceiling is steady state + the
+    # largest transient (~110Gi) + slack, not steady state alone.
+    persistentvolumeclaims: "12"
+    requests.storage: 400Gi
+    # THE FENCE: nothing in this namespace may land on the node's root disk. See the header.
+    zeta-block-local.storageclass.storage.k8s.io/persistentvolumeclaims: "0"
+    zeta-block-local.storageclass.storage.k8s.io/requests.storage: "0"
+---
+# Defaults for containers that declare nothing: a quota on `limits.memory` / `requests.ephemeral-storage`
+# REFUSES a pod that declares none (measured: a bare helper pod here was rejected with "must specify
+# limits.memory"). KubeVirt's launcher declares CPU and memory from the VM spec and CDI's importer
+# declares its own (cdi-cr.yaml podResourceRequirements); what this covers is every other pod, plus the
+# ephemeral storage nobody declares -- the launcher's sidecars hold sysprep / ConfigMap / Secret disk
+# images there (small).
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: windows-vms
+  namespace: windows-vms
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+        cpu: 10m
+        memory: 32Mi
+        ephemeral-storage: 64Mi
+      default:
+        memory: 512Mi
+        ephemeral-storage: 2Gi

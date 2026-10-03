@@ -1,0 +1,14 @@
+{
+  "id": "080d07fc35173810a01300084e2e75c6",
+  "at": "2026-10-03T02:10:08.743Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M3ZRD8Q6087G0R000CE85YD",
+    "type": "task",
+    "title": "Windows 11 VMs on KubeVirt: CI runner VM + interactive desktop VM (prepared, ISO-gated)",
+    "slug": "windows-11-vms-on-kubevirt-ci-runner-vm-interactive-desktop",
+    "priority": "P2",
+    "filename": "081M3ZRD8Q6087G0R000CE85YD-windows-11-vms-on-kubevirt-ci-runner-vm-interactive-desktop.md"
+  }
+}

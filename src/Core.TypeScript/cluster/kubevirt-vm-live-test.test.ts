@@ -14,6 +14,10 @@ import {
   templateKinds,
   templateNamespaces,
   templateRequiredNamespaces,
+  WINDOWS_11_CI_PATH,
+  WINDOWS_11_DESKTOP_PATH,
+  WINDOWS_11_ISO_PATH,
+  WINDOWS_11_NAMESPACE_PATH,
   WINDOWS_RUNNER_TOKEN_PATH,
   WINDOWS_RUNNER_VM_PATH,
   WINDOWS_TEMPLATE_PATH,
@@ -95,7 +99,15 @@ describe("the Windows template the dry-run is judged against", () => {
   });
 
   test("the Windows GitLab-runner examples are dry-run too, and each still declares what makes its dry-run mean something", () => {
-    expect(DRY_RUN_TEMPLATE_PATHS).toEqual([WINDOWS_TEMPLATE_PATH, WINDOWS_RUNNER_VM_PATH, WINDOWS_RUNNER_TOKEN_PATH]);
+    expect(DRY_RUN_TEMPLATE_PATHS).toEqual([
+      WINDOWS_TEMPLATE_PATH,
+      WINDOWS_RUNNER_VM_PATH,
+      WINDOWS_RUNNER_TOKEN_PATH,
+      WINDOWS_11_NAMESPACE_PATH,
+      WINDOWS_11_ISO_PATH,
+      WINDOWS_11_CI_PATH,
+      WINDOWS_11_DESKTOP_PATH,
+    ]);
     for (const path of DRY_RUN_TEMPLATE_PATHS) {
       const kinds = templateKinds(readFileSync(join(REPO_ROOT, path), "utf8"));
       for (const need of REQUIRED_KINDS[path] ?? []) expect(kinds).toContain(need);

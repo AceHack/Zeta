@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Unattended install of WINDOWS 11 ENTERPRISE EVALUATION onto the blank virtio root disk of
+  win11-ci / win11-desktop (examples/windows-11/20-win11-ci.yaml, 30-win11-desktop.yaml), then hands the
+  finished guest to that VM's own bootstrap.ps1. Runbook: docs/ops/WINDOWS-11-VMS.md.
+
+  NOT APPLIED AS-IS. It carries two placeholders (the administrator's password, never in git because the
+  OWNER types it; and the computer name, WIN11-CI or WIN11-DESK) that only
+  `bun src/Core.TypeScript/cluster/windows-11-unattend-secrets.ts` fills, into one Secret per VM. Each appears
+  exactly once, in the element that uses it, and the renderer refuses a template where that is not so - which
+  is why this comment does not spell them.
+  Nothing else differs between the two guests: what each one BECOMES (a GitLab runner, or a desktop with
+  RDP) is its bootstrap.ps1, not this file.
+
+  WHAT IS SPECIFIC TO EVALUATION MEDIA
+    * NO ProductKey element. Evaluation editions install without one; a key written here would be refused.
+    * AcceptEula=true is YOUR acceptance of the Windows licence terms, made on the Microsoft Evaluation
+      Center page you downloaded the ISO from and again by leaving this value true. Do not render or apply
+      the Secret until you have read and accepted those terms.
+    * The value 1 under /IMAGE/INDEX selects the edition inside the ISO's install.wim. The Windows 11
+      Enterprise Evaluation ISO is believed to carry ONE image (index 1) - VERIFY on your ISO before the
+      first start: double-click the ISO in Explorer to mount it, then
+          dism /Get-WimInfo /WimFile:DRIVE:\sources\install.wim
+      and edit this value if it lists several. A wrong index installs the wrong edition; it is not an error.
+
+  WINDOWS 11 SPECIFICS
+    * Secure Boot + TPM 2.0 are PROVIDED by the VM (firmware.efi.secureBoot, devices.tpm), so this file does
+      NOT carry the LabConfig Bypass* registry keys people use to dodge Setup's requirements check. If Setup
+      refuses the machine, the VM is wrong - fix the VM, not the check.
+    * Disk: GPT with an EFI System Partition, MSR and one NTFS partition (Setup puts WinRE inside it).
+    * Drivers: the virtio-win CD is loaded in WinPE so Setup can SEE the virtio disk (viostor), AND injected
+      into the installed image in the offlineServicing pass so the installed system can boot from it and has
+      a network adapter (NetKVM) and the virtio-serial driver the guest agent needs. Folder `w11`
+      (Windows 11); the CD's drive letter is not knowable here, so every plausible letter is listed and the
+      paths that do not exist are skipped. MEASURED against virtio-win 0.1.266 (the CD inside
+      quay.io/kubevirt/virtio-container-disk:v1.8.4): the folders viostor, vioscsi, NetKVM, vioserial,
+      Balloon, viorng, vioinput and pvpanic each hold a w11\amd64 directory.
+    * OOBE: the Microsoft-account and network screens are skipped with the supported Hide* settings and a
+      local account created here. A local administrator `zetaadmin` is created (the built-in Administrator
+      stays disabled, as on every Windows client). UNPROVEN on a real ISO: Windows 11 changes its OOBE
+      between builds; if a screen still appears, the console shows it and the runbook says what to do.
+
+  UNPROVEN: this has never been executed against a real Windows image (none exists in CI or on the cluster).
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <SetupUILanguage>
+        <UILanguage>en-US</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>en-US</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>en-US</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-PnpCustomizationsWinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <DriverPaths>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="1"><Path>D:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="3"><Path>F:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="4"><Path>G:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="5"><Path>H:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="6"><Path>D:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="7"><Path>E:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="8"><Path>F:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="9"><Path>G:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="10"><Path>H:\NetKVM\w11\amd64</Path></PathAndCredentials>
+      </DriverPaths>
+    </component>
+    <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <DiskConfiguration>
+        <WillShowUI>OnError</WillShowUI>
+        <Disk wcm:action="add">
+          <DiskID>0</DiskID>
+          <WillWipeDisk>true</WillWipeDisk>
+          <CreatePartitions>
+            <CreatePartition wcm:action="add"><Order>1</Order><Type>EFI</Type><Size>260</Size></CreatePartition>
+            <CreatePartition wcm:action="add"><Order>2</Order><Type>MSR</Type><Size>16</Size></CreatePartition>
+            <CreatePartition wcm:action="add"><Order>3</Order><Type>Primary</Type><Extend>true</Extend></CreatePartition>
+          </CreatePartitions>
+          <ModifyPartitions>
+            <ModifyPartition wcm:action="add"><Order>1</Order><PartitionID>1</PartitionID><Format>FAT32</Format><Label>System</Label></ModifyPartition>
+            <ModifyPartition wcm:action="add"><Order>2</Order><PartitionID>2</PartitionID></ModifyPartition>
+            <ModifyPartition wcm:action="add"><Order>3</Order><PartitionID>3</PartitionID><Format>NTFS</Format><Label>Windows</Label><Letter>C</Letter></ModifyPartition>
+          </ModifyPartitions>
+        </Disk>
+      </DiskConfiguration>
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add">
+              <Key>/IMAGE/INDEX</Key>
+              <Value>1</Value>
+            </MetaData>
+          </InstallFrom>
+          <InstallTo>
+            <DiskID>0</DiskID>
+            <PartitionID>3</PartitionID>
+          </InstallTo>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+      </UserData>
+    </component>
+  </settings>
+  <!-- The same virtio-win folders, injected into the INSTALLED image (the WinPE pass above only lets Setup
+       see the disk). viostor makes the installed system bootable from the virtio disk, NetKVM gives it a
+       network adapter, vioserial is the channel the QEMU guest agent talks over. -->
+  <settings pass="offlineServicing">
+    <component name="Microsoft-Windows-PnpCustomizationsNonWinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <DriverPaths>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="1"><Path>D:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="2"><Path>E:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="3"><Path>F:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="4"><Path>G:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="5"><Path>H:\viostor\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="6"><Path>D:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="7"><Path>E:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="8"><Path>F:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="9"><Path>G:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="10"><Path>H:\NetKVM\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="11"><Path>D:\vioserial\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="12"><Path>E:\vioserial\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="13"><Path>F:\vioserial\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="14"><Path>G:\vioserial\w11\amd64</Path></PathAndCredentials>
+        <PathAndCredentials wcm:action="add" wcm:keyValue="15"><Path>H:\vioserial\w11\amd64</Path></PathAndCredentials>
+      </DriverPaths>
+    </component>
+  </settings>
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <ComputerName>@COMPUTER_NAME@</ComputerName>
+      <TimeZone>UTC</TimeZone>
+    </component>
+    <!-- The network is not up in the specialize pass, so this only copies bootstrap.ps1 to local disk and
+         schedules it at every startup as SYSTEM (it retries its own downloads, and removes the task once
+         it has finished). It finds the script by FILE NAME on whichever drive carries it, not by volume
+         label: the label is a property of how KubeVirt builds the CD-ROM, the file is the contract.
+         The BypassNRO value is harmless where unused: it only enables the offline-account path in OOBE. -->
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>zeta: allow the offline-account OOBE path</Description>
+          <Path>reg.exe add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Description>zeta: schedule this VM's bootstrap</Description>
+          <Path>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$d = Get-PSDrive -PSProvider FileSystem | Where-Object { Test-Path (Join-Path $_.Root 'bootstrap.ps1') } | Select-Object -First 1; New-Item -ItemType Directory -Force C:\ProgramData\zeta | Out-Null; Copy-Item (Join-Path $d.Root 'bootstrap.ps1') C:\ProgramData\zeta\bootstrap.ps1 -Force; schtasks /create /f /ru SYSTEM /sc onstart /tn zeta-bootstrap /tr 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\ProgramData\zeta\bootstrap.ps1'"</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <InputLocale>en-US</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>en-US</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideLocalAccountScreen>true</HideLocalAccountScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Name>zetaadmin</Name>
+            <DisplayName>zetaadmin</DisplayName>
+            <Group>Administrators</Group>
+            <Password>
+              <Value>@ADMIN_PASSWORD@</Value>
+              <PlainText>true</PlainText>
+            </Password>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+    </component>
+  </settings>
+</unattend>
