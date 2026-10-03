@@ -1,0 +1,10 @@
+# Kustomize base of the OPT-IN `flowdent-web` Application (Application.yaml beside this file).
+# NO Deployment here, on purpose: the workload references a private Flowdent image, and the public Zeta
+# tree must not (image-source-provenance.ts). It is applied from fd-webclient -- docs/ops/AZURE-EXIT.md.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - service.yaml
+  - pdb.yaml
+  - httproute.yaml

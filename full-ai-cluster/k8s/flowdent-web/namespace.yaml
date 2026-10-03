@@ -1,0 +1,35 @@
+# The public website's namespace. `restricted` is ENFORCED, not warned: this is a stateless Next.js
+# server with no reason to ask for anything the profile forbids, and an enforced profile is what makes
+# that claim checkable (the kubelet refuses a pod that does not satisfy it). The Deployment is applied
+# from fd-webclient, not from this tree -- see Application.yaml.
+#
+# The ResourceQuota is a CEILING, not a reservation and not a measurement (unmetered): it stops a bad
+# rollout from starving the platform that shares this node. EPHEMERAL STORAGE is in it for the reason
+# written in ../flowdent/namespaces.yaml (one disk; DiskPressure at 07:53Z on 2026-10-02): a pod without
+# a declared request is refused, and a pod within its request is not the one the kubelet evicts first.
+# No PVC at all -- the site is stateless; its only writable paths are two bounded emptyDirs.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flowdent-web
+  labels:
+    app.kubernetes.io/part-of: flowdent
+    zeta.io/flowdent-environment: web
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: flowdent-web
+  namespace: flowdent-web
+spec:
+  hard:
+    requests.cpu: "500m"
+    requests.memory: 1Gi
+    limits.memory: 2Gi
+    requests.ephemeral-storage: 512Mi
+    limits.ephemeral-storage: 2Gi
+    pods: "10"
+    persistentvolumeclaims: "0"

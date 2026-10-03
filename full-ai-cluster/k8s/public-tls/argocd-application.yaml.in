@@ -60,6 +60,11 @@ spec:
         # that attach to them ship with the app.
         - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
           patch: '[{"op":"add","path":"/spec/listeners/5/hostname","value":"api.@ZETA_PUBLIC_DOMAIN@"},{"op":"add","path":"/spec/listeners/6/hostname","value":"api-staging.@ZETA_PUBLIC_DOMAIN@"}]'
+        # The flowdent public website (docs/ops/AZURE-EXIT.md): the apex and www.<domain>, listeners 7
+        # and 8. Only the LISTENERS and their certificates are owned here; the routes ship with
+        # k8s/flowdent-web/.
+        - target: { group: gateway.networking.k8s.io, kind: Gateway, name: zeta-public-gateway }
+          patch: '[{"op":"add","path":"/spec/listeners/7/hostname","value":"@ZETA_PUBLIC_DOMAIN@"},{"op":"add","path":"/spec/listeners/8/hostname","value":"www.@ZETA_PUBLIC_DOMAIN@"}]'
         - target: { group: gateway.networking.k8s.io, kind: HTTPRoute, name: forgejo-public }
           patch: '[{"op":"add","path":"/spec/hostnames","value":["git.@ZETA_PUBLIC_DOMAIN@"]}]'
         - target: { version: v1, kind: ConfigMap, name: forgejo-public-hosts }

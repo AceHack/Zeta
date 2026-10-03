@@ -422,7 +422,16 @@ describe("E. public TLS: api.<domain> and api-staging.<domain>", () => {
   test("SET: the earlier listeners did not move (portal 1, gitlab 2, registry 3, forgejo 4)", () => {
     const ls = listeners(publicTlsObjects(SET));
     expect(ls.slice(0, 5).map((l) => l["hostname"])).toEqual([undefined, "portal.zeta-cluster-fixture.net", "gitlab.zeta-cluster-fixture.net", "registry.zeta-cluster-fixture.net", "git.zeta-cluster-fixture.net"]);
-    expect(ls.length).toBe(7);
+    expect(ls.length).toBe(9);
+  });
+
+  test("SET: listeners 7 and 8 carry the apex and www.<domain> for the public website, each with its OWN certificate Secret", () => {
+    const ls = listeners(publicTlsObjects(SET));
+    expect(ls[7]).toMatchObject({ name: "https-flowdent-web", hostname: "zeta-cluster-fixture.net", protocol: "HTTPS", port: 443 });
+    expect(ls[8]).toMatchObject({ name: "https-flowdent-web-www", hostname: "www.zeta-cluster-fixture.net", protocol: "HTTPS", port: 443 });
+    expect(ls[7]!["tls"]["certificateRefs"]).toEqual([{ kind: "Secret", name: "flowdent-web-tls" }]);
+    expect(ls[8]!["tls"]["certificateRefs"]).toEqual([{ kind: "Secret", name: "flowdent-web-www-tls" }]);
+    for (const i of [7, 8]) expect(ls[i]!["allowedRoutes"]).toEqual({ namespaces: { from: "All" } });
   });
 
   test("the api listeners admit routes from any namespace, which is how flowdent-prod / flowdent-staging attach", () => {
@@ -435,6 +444,8 @@ describe("E. public TLS: api.<domain> and api-staging.<domain>", () => {
     const ls = ((kinds(base, "Gateway")[0]!["spec"] as any).listeners as Array<Record<string, any>>);
     expect(ls[5]!["hostname"]).toBeUndefined();
     expect(ls[6]!["hostname"]).toBeUndefined();
+    expect(ls[7]!["hostname"]).toBeUndefined();
+    expect(ls[8]!["hostname"]).toBeUndefined();
     const routes = kinds(base, "HTTPRoute").map(name);
     expect(routes.filter((r) => r.includes("flowdent") || r.includes("api"))).toEqual([]);
   });

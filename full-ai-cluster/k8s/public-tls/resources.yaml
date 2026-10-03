@@ -190,6 +190,28 @@ spec:
           - { kind: Secret, name: flowdent-api-staging-tls }
       allowedRoutes:
         namespaces: { from: All }
+    # :443 for the flowdent public website, index 7 -> <domain> (the apex) and index 8 -> www.<domain>.
+    # Same rule again: its OWN certificate per name. The routes live in namespace `flowdent-web`
+    # (k8s/flowdent-web/, an opt-in Application); until they exist each listener serves nothing.
+    # docs/ops/AZURE-EXIT.md.
+    - name: https-flowdent-web
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: flowdent-web-tls }
+      allowedRoutes:
+        namespaces: { from: All }
+    - name: https-flowdent-web-www
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - { kind: Secret, name: flowdent-web-www-tls }
+      allowedRoutes:
+        namespaces: { from: All }
 ---
 # The public portal route. `hostnames` is added by the Application's patch.
 apiVersion: gateway.networking.k8s.io/v1

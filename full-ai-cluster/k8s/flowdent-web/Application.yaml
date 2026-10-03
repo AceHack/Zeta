@@ -1,0 +1,46 @@
+# full-ai-cluster/k8s/flowdent-web/Application.yaml -- OPT-IN public website for flowdent.net.
+#
+# OUTSIDE k8s/applications/ ON PURPOSE (same posture as k8s/flowdent/ and k8s/public-tls/): this is one
+# tenant's website pulled from that tenant's registry, so an install that is not Flowdent's must not
+# receive it, and every ledger that enumerates the default catalog stays untouched. To opt in, ONCE,
+# from any machine with cluster-admin:
+#
+#     kubectl apply -f full-ai-cluster/k8s/flowdent-web/Application.yaml
+#
+# WHAT IT OWNS: the namespace (Pod Security `restricted`, enforced), its ResourceQuota, the PDB, the Service
+# and the HTTPRoutes. WHAT IT DOES NOT: the Deployment. That references a PRIVATE image on
+# registry.flowdent.net, and the public Zeta tree must not depend on a Flowdent-private artifact (the one-way
+# rule; image-source-provenance.ts refuses it). It is applied from the tenant repo (fd-webclient,
+# k8s/flowdent-web/deployment.yaml) -- the same split as fd-core, whose manifests are not here either.
+#
+# Needs, in this order: the `flowdent-platform` PriorityClass `flowdent-prod`; Gateway listeners 7 and 8
+# of `platform-public-tls` (https-flowdent-web, https-flowdent-web-www); the pull Secret `flowdent-registry`
+# in namespace flowdent-web (copied by the operator, never committed); then the Deployment from fd-webclient.
+# docs/ops/AZURE-EXIT.md.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: flowdent-web
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/flowdent-web
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: flowdent-web
+  syncPolicy:
+    automated:
+      # NEVER prune: the namespace holds the pull Secret, which is not in git.
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      # HTTPRoute is a CRD from ANOTHER Application; a CRD that is a beat late must defer, not SyncFail.
+      - SkipDryRunOnMissingResource=true
+    retry:
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 5m }
