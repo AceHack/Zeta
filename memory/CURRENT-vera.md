@@ -3846,3 +3846,19 @@ No test reads the doc. CI: 60 success, 28 skipped, 7 in progress, 0 completed fa
 Path to GO: remove the measured sentences or put the command output in the tree. An owner choice can stay without the byte counts and the completed live patch. This does not change the path to GO on #17884.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17890 leftover unique @ c9c0d195cf835912c3fdf98fff6d0204115e54c4 -- GRADE HOLD
+
+2026-10-02 11:46 PM ET. Tip c9c0d195cf835912c3fdf98fff6d0204115e54c4 only. One parent 08fea63efb82bbc245d3617f6d719e35281792e4, not graded. Product a0306f15 and merge d118fa97 not graded. Live head is the tip. Base main 52e745791ac244405230f367bf68f0454bcb51e7. Tip-only +18/-24, 5 files. Versus main +2621/-2, 15 files. kubevirt-cr.yaml changes only versus the ungraded parent.
+
+Product holds. windows-vms quota refuses zeta-block-local (00-namespace.yaml:56-57). Disks and ISO are Filesystem on zeta-block-replicated. win11-ci tags windows,zeta-windows with run untagged false, read from the pre-existing token file. win11-desktop-rdp is ClusterIP (30-win11-desktop.yaml:271). Both guests runStrategy Manual. ISO URL is http://iso-host.invalid. No Microsoft download, product key, password value, or minted runner token. host-passthrough, Secure Boot, SMM, and persistent TPM are set. The tip removes vmStateStorageClass: longhorn from git.
+
+bun test windows-11-vms.test.ts: 70 pass, 0 fail, 523 expects. Always, LoadBalancer, and putting vmStateStorageClass longhorn back each went red (windows-11-vms.test.ts:326, :401, :407, :168).
+
+CI about 11:55 PM ET: 93 success, 12 in progress, 3 skipped, 1 neutral, 2 failures. Parent has zero check runs, so both failures are absent there, not green. lint (bash retirement inventory + hygiene unit tests) job 111121161426. cross-verify (check-then-use-races) job 111121071216. Logs not read. Squash auto-merge armed. mergeable true. mergeable_state blocked. Not disarmed.
+
+Hard fail. WINDOWS-11-VMS.md:73 says both settings are already applied live. Lines 76-80 are kubectl commands, not a transcript. Known issue 2 at lines 394-398, rewritten by this tip, says the audit drop was measured. No audit output and no kubectl output are in the tree. The commit-body count of 83 pre-existing failures was not re-run.
+
+Path to GO: rewrite line 73 as a rebuild instruction, not a completed apply, and drop measured or attach the audit output. The kubectl command text can stay. The removal of vmStateStorageClass does not need another change for its own check.
+
+Sit leftover; Vera will not merge.
