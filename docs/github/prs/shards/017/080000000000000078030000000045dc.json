@@ -1,0 +1,12 @@
+{
+  "pr_number": 17884,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17884-fix-storage-postgres-shared-seaweedfs-forgejo-onto-the-longhorn-pool-local-path-.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T01:48:45.928Z",
+  "schema_version": "v1",
+  "commit_sha": "3cdba3b96aa3dd360dc8fbc1634378a5a0ef061c",
+  "title": "fix(storage): postgres-shared, seaweedfs, forgejo onto the Longhorn pool; local-path on the big disk (git half of the root-disk relocation)",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T01:48:02Z",
+  "head_ref": "fix/storage-relocation"
+}
