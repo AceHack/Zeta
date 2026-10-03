@@ -3772,3 +3772,25 @@ Squash auto-merge armed. Not disarmed.
 Path to GO: rewrite the 66 GiB sentences to the 62 GiB render, and remove or artifact the live-byte and webhook claims.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17884 leftover unique @ 17b161df5003cd0b52f1f527efe145c51c01d06b -- GRADE HOLD
+
+Prior HOLDs on eaaf83f1, 8b930b9b, and a885524799a8181c2befdb0af0aa74e95cc7fde2 stand. Not re-graded. Merge 4390e45d and product a3689f57 were not graded.
+
+Live head is this tip. One parent: a885524799a8181c2befdb0af0aa74e95cc7fde2. Not a merge. Author maximdolphin, 2026-10-02 9:26:48 PM ET. Tip-only +2/-1, 1 file: src/Core.TypeScript/hygiene/stage0-independence.baseline.json. independent stays 18. bytes stays 453975. exceptions grows 8 to 9. Line 13 records local-storage-placement.sh as a systemd oneshot ordered BEFORE k3s.service.
+
+The ratchet compares counts only (measure-stage0-independence.ts:409-419). Allowed is 18 + 9 = 27. Enforce exited 0. Removing that one entry made enforce exit 1 (27 vs 18 + 8). bun test measure-stage0-independence.test.ts: 32 pass, 0 fail, 40 expects. Those tests do not load the JSON.
+
+cross-verify (stage0-independence) is success on the tip (run 37086132065 job 111097583270) and failure on the parent (job 111093318445). Completed tip failures: 0. 53 in progress. gate (required) absent on the tip, failure on the parent. Squash auto-merge armed. Not disarmed. Not merged.
+
+What this tip clears: the stage-0 independence red.
+
+Hard fail 1 remains. argocd-health-test.ts:525-526 and :536-537 still say 66 GiB, postgresql 8Gi, redis 8Gi. Unchanged versus the parent.
+
+Hard fail 2 remains. STORAGE-RELOCATION.md:15, :20-22, and :52 still state live node-5b2dfa byte counts. No command artifact. The pull body still claims a CNPG webhook dry run. Nothing in the tree is that run.
+
+Hard fail 3 is new in this tip. baseline.json:13 says measured 2026-10-02 on node-5b2dfa. No command output in the commit.
+
+Path to GO: rewrite the 66 GiB sentences to 62 GiB / 3 claims and keep the cite at 62; remove or artifact the live-byte sentences and the webhook claim; drop or artifact the measured-2026-10-02 clause. The ninth exception does not need another change for the ratchet.
+
+Sit leftover; Vera will not merge.
