@@ -3985,3 +3985,19 @@ Product holds. Algebra, Blake3, and Durability Cargo.lock move xxhash-rust 0.8.1
 cargo metadata --locked exited 0 on the three manifests. Parent lint (Rust) job 111160292582 failed --locked on Algebra. Tip job 111165095031 succeeded, including Algebra, Blake3, and Durability on xxhash-rust v0.8.19. Tip snapshot after that job: 99 runs, 69 success, 25 skipped, 1 neutral, 4 in progress, 0 completed failures. No check red on the tip and green on the parent. Softs: four checks still in progress; P1 vs P2; backlog; local-clippy sentence in the commit message, later matched by the tip lint job; Merkle Cargo.toml:14 still comments EXACT-PINNED (=0.8.10), not in this diff. No MEASURED sentence. Hard fails: none.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17914 leftover unique @ 140d5e074c1582fa8b58c35bc056a4cf2bf93ded -- GRADE HOLD
+
+2026-10-03 7:47 PM ET. Tip only. One parent c8ad3a9baeabe33e40227617a0d67b53335606c6, which is main and the PR base, not graded. Not a merge. Live head is the tip (docs/persist-gitlab-ssh-lan). Author maximdolphin, 2026-10-03 7:29:42 PM ET. Tip-only +250/-4, 9 files. auto_merge null. Not merged.
+
+Does not clear the hold on #17867 tip 21bb1428, or the HOLDs on #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Product holds. discover prints gitlab-shell-lan (node-lan-hosts.yaml:174), namespace gitlab, selector app gitlab-shell and release gitlab, ClusterIP, port and targetPort 2222, externalIPs from relay_ips, no address literal in the generator. global.shell.port 2222 at Application.yaml:109-110. Role in namespace gitlab: get/patch/update resourceNames gitlab-shell-lan (Application.yaml:736-739); create on services has no resourceNames (:740-742). That is not the #17867 unscoped-every-Service shape and does not clear it. Soft, not this SHA's hard fail. bun 33 pass, 0 fail, 149 expects. Port 2222 to 2223 went red. resourceNames rename went red. Comment-only MEASURED stayed green.
+
+Hard fail: helm-template and live results with no dump or transcript. Commit message (hand-applied fixed it; helm before/after only ssh_port 22 to 2222; Deployment unchanged). Application.yaml:102-106 MEASURED, only these lines differ, byte-identical. gitlab-exposure.test.ts:477-478 MEASURED chart default 22. GITLAB-SSH-LAN.md:22-26 measured helm and discover adopts the hand-applied Service. :42 ssh welcome. :58 a clone worked from the LAN. :71 exist live. Non-claim :57 Cannot prove from git that Cilium honours externalIPs. Pre-existing WINDOWS-11-VMS.md:75 is not this SHA.
+
+CI ~7:46 PM ET. Tip 117 runs: 75 success, 21 skipped, 19 in progress, 1 neutral, 1 failure agencysignature (PR body) job 111318454804, skipped on the parent, not green. No check red on the tip and green on the parent. Softs: CI in progress; create not name-scoped inside namespace gitlab; fifth vs four specs; "no address is in git" is false of the runbook. Work item 081M421KX1W087G0R0025D3X5K ledger and event both P2, state backlog.
+
+Path to GO: delete or rewrite those measured and live sentences as instructions or an explicitly unproven note, or put the helm before/after and the ssh transcript in the tree. The relay, the port, the name-scoped get/patch/update, and the tests do not need another change.
+
+Sit leftover; Vera will not merge.
