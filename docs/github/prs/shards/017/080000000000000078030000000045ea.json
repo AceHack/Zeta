@@ -1,0 +1,12 @@
+{
+  "pr_number": 17898,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17898-fix-cluster-pin-remaining-windows-11-vms-password-searches.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-03T07:03:33.365Z",
+  "schema_version": "v1",
+  "commit_sha": "3b8ea6b1e5bbfb42f43ba79f8c43c66cb4e75b1d",
+  "title": "fix(cluster): pin remaining windows-11-vms PASSWORD searches",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T07:02:43Z",
+  "head_ref": "cursor/windows-vms-arity-r5b-27c5"
+}
