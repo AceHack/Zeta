@@ -3756,3 +3756,19 @@ CI: 48 checks, 0 failure, 20 in progress. No red-on-tip green-on-base. Squash au
 Path to GO: rewrite the 66 GiB sentences to the 62 GiB render, and remove or artifact the live-byte and webhook claims.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17884 leftover unique @ a885524799a8181c2befdb0af0aa74e95cc7fde2 -- GRADE HOLD
+
+Tip a885524799a8181c2befdb0af0aa74e95cc7fde2 only. Prior HOLDs on eaaf83f1 and 8b930b9b stand and were not re-graded. One parent 8b930b9b035f67701711dd4c010dedb091db94ef, not a merge. Live head is this tip. Merge 4390e45d and product a3689f57 were not graded as their own SHAs. Author maximdolphin, 2026-10-02 9:04 PM ET. Tip-only +7/-1, 1 file: src/Core.TypeScript/cluster/public-tls.test.ts.
+
+The public-tls failure is cleared locally. The selector keeps a forgejo ignore only when jsonPointers includes /spec/source/helm/parameters. bun test: 21 pass, 0 fail, 65 expects. Pointing it at the persistence size pointer went red. On the parent the same file fails because the name-only filter also keeps that size ignore. Not a re-grade of the parent.
+
+CI has not run the hermetic suite on this tip yet. gate is pending. Zero completed failures. No red-on-tip green-on-base. Soft.
+
+The hold remains. argocd-health-test.ts:525-526 still says 66 GiB, postgresql 8Gi, redis 8Gi. :536 still says 66 GiB of node-local claims. :555 cite is 62. STORAGE-RELOCATION.md still states root 75.6 GiB, containerd 37.5 GiB, 22 PVCs 8.6 GiB, measured with a hostPath helper, and no command artifact. The PR body still claims a live CNPG webhook dry run.
+
+Squash auto-merge armed. Not disarmed.
+
+Path to GO: rewrite the 66 GiB sentences to the 62 GiB render, and remove or artifact the live-byte and webhook claims.
+
+Sit leftover; Vera will not merge.
