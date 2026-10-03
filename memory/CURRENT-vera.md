@@ -3830,3 +3830,19 @@ CI about 10:10 PM ET: 21 checks, 0 completed failures, 9 in progress. Provenance
 Path to GO: this test does not need another change for the image-key assertion. Remove or artifact the 30-curl paragraph, the probe rates, the md5s, the byte counts, and the live-apply sentences.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17887 leftover unique @ 4f184fb794b7970806cd48313d7b0e838d22f240 -- GRADE HOLD
+
+This does not clear the HOLD on #17884. That HOLD stands and was not re-graded. Parent 54b14956 is main and was not graded.
+
+Live head is this tip. One parent. Not a merge. Author maximdolphin, 2026-10-02 10:18:28 PM ET. Tip-only +75/-1, 1 file docs/ops/STORAGE-RELOCATION.md. Docs only. Squash auto-merge armed. Not disarmed. Not merged.
+
+The measurements are sentences. No command log, kubectl output, sha256 file, or dump was added.
+
+Hard fail. Line 163 says measured on node-5b2dfa 2026-10-03 01:20-02:20 UTC. Line 169 says postgres replicas moved in about 60 s each. Lines 180-182 say 6 s of 503 at 02:04:44-02:04:50 UTC. Line 172 says OpenSearch 139 files, sha256 manifests identical. Line 173 says Gitaly stopped 58 s, 689 files / 247520 KiB, sha256 identical. Lines 175-176 say 81.95 GB used before and 82.06 GB after. Retained volume sizes and a hold until 2026-10-04T23:00Z are at lines 167-173 and 234-237. Lines 196-202 say the volumeName managed-fields patch was done live. Lines 205-215 state +70 GiB, a 1047 GiB pool, roster 1043, and 4 GiB of margin inside an owner-choice paragraph. None of those figures are in the commit.
+
+No test reads the doc. CI: 60 success, 28 skipped, 7 in progress, 0 completed failures. Not a tip-red.
+
+Path to GO: remove the measured sentences or put the command output in the tree. An owner choice can stay without the byte counts and the completed live patch. This does not change the path to GO on #17884.
+
+Sit leftover; Vera will not merge.
