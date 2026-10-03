@@ -1,0 +1,15 @@
+{
+  "pr_number": 17885,
+  "archive_path": "docs/history/pr-reviews/2026/10/03/PR-17885-feat-flowdent-the-flowdent-net-website-runs-on-the-cluster-azure-exit-md-records.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM74oGZ-",
+    "thread:PRRT_kwDOSF9kNM6oi4YH"
+  ],
+  "fetched_at": "2026-10-03T02:40:09.238Z",
+  "schema_version": "v1",
+  "commit_sha": "fa54fd769ab8b5270101f126aac4888fcfcebe40",
+  "title": "feat(flowdent): the flowdent.net website runs on the cluster; AZURE-EXIT.md records what is left on Azure",
+  "state": "MERGED",
+  "merged_at": "2026-10-03T02:39:15Z",
+  "head_ref": "feat/azure-exit"
+}
