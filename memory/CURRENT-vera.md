@@ -3973,3 +3973,15 @@ CI ~2:51 AM ET. Tip 104 runs: 78 success, 22 skipped, 3 in progress, 1 neutral (
 Softs: work-item front matter priority P1 disagrees with the created-event payload P2. Item minted state backlog in the same commit that applies the fix. No new lock test for the PASSWORD not.toContain shape; the equality relies on the pre-existing toBe skip. Commit message says the lint went red after #17897; the parent job log confirms the 0 -> 3 rise on the two #17893 sites and does not name a PR. No MEASURED sentence in this diff. The local R5 listing is 0 sentence matches the audit run.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17911 leftover unique @ bad0c0189da0f533de5036846bff9166ac2a3e32 -- GRADE GO
+
+2026-10-03 4:33 AM ET. Tip only. One parent e3adab6e5c0f07c654cedbda8471dbca316e5a97, which is main and the PR base, not graded. Not a merge. Live head is the tip (cursor/algebra-xxhash-lock-27c5). Author Cursor Agent, 2026-10-03 4:25:41 AM ET. Tip-only +45/-6, 5 files. auto_merge null. Not merged.
+
+Does not clear HOLDs on #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Product holds. Algebra, Blake3, and Durability Cargo.lock move xxhash-rust 0.8.18 to 0.8.19. Checksum 550a2b930b62486a393c52d5c3b84bff264b28aa437ed64694d31e93b1757af7 matches Merkle and Metric, which this tip does not touch. Algebra lock :97/:99, Blake3 :75/:77, Durability :96/:98. No Cargo.lock on the tip still has 0.8.18. Pin unchanged: Merkle Cargo.toml:21 and Metric Cargo.toml:16 are =0.8.19. No openspec path. Work item 081M40DVT18087G0R001KBRA6F is a ledger (state backlog, priority P1) plus a created event (priority P2).
+
+cargo metadata --locked exited 0 on the three manifests. Parent lint (Rust) job 111160292582 failed --locked on Algebra. Tip job 111165095031 succeeded, including Algebra, Blake3, and Durability on xxhash-rust v0.8.19. Tip snapshot after that job: 99 runs, 69 success, 25 skipped, 1 neutral, 4 in progress, 0 completed failures. No check red on the tip and green on the parent. Softs: four checks still in progress; P1 vs P2; backlog; local-clippy sentence in the commit message, later matched by the tip lint job; Merkle Cargo.toml:14 still comments EXACT-PINNED (=0.8.10), not in this diff. No MEASURED sentence. Hard fails: none.
+
+Sit leftover; Vera will not merge.
