@@ -96,7 +96,7 @@
     "markdownlint-cli2": "0.23.3",
     "playwright": "1.63.0",
     "prettier": "3.9.9",
-    "prettier-plugin-toml": "2.0.6",
+    "prettier-plugin-toml": "3.0.2",
     "quantum-circuit": "0.9.251",
     "semver": "7.8.5",
     "stylelint": "17.15.0",
