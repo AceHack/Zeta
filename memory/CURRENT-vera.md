@@ -3720,3 +3720,21 @@ Softs: 16 checks still running. Squash auto-merge armed. Not disarmed. mergeable
 Path to GO: allowlist the placement script, change the gitlab citation from 66 to 62, and remove or artifact the live-byte sentences.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17885 leftover unique @ 44555c0b538a6207f12f4565a21638acf662f481 -- GRADE HOLD
+
+Tip 44555c0b538a6207f12f4565a21638acf662f481 only. One parent 92f7aea6c14c5634702dfc555582aed963344279. Not a merge. That parent was not graded. Ancestor merge 892d6b87e48a01ea9a770b5eed88d44c65316195 (product 957a22c46adf92a09a1795708ad2d9d588c8d89b plus main b1a052eaf714d2f52ece5a3483f101a7e16069fc) was not graded. Product 957a22c4 was not graded as its own SHA. Live head is the tip. Author maximdolphin, 2026-10-02 8:44:35 PM ET. Tip-only +271/-0, 1 file: docs/ops/AZURE-EXIT.md. Product versus main: +737/-2, 15 files.
+
+The website manifests match the structural claims. Namespace enforce restricted. Quota PVC ceiling 0. Replicas 2. PDB minAvailable 1. Opt-in, outside the app-of-apps root. Digest pin at deployment.yaml:59. Read-only root, two bounded emptyDirs. Port 80 redirect. Listeners 7 and 8, nine listeners locked. Secret-reference audit skips directory name flowdent-web only. NEXT_PUBLIC_API_URL is only in the doc. Keep-two accounts and never-delete flowdent-containerapp-rg are in the doc. Deletion order is marked not run.
+
+Tests: 68 pass, 0 fail, 522 expects. Replica floor, digest shape, port-80 redirect, listener 8, and the audit skip go red. Exact digest, replicas 2 to 3, and the doc URL stay green.
+
+Hard fail 1. image-source-provenance and image-source-provenance-tests are red at the tip and green on base b1a052ea. ledger-entry-missing for registry.flowdent.net/flowdent/fd-webclient/flowdent-webapp.
+
+Hard fail 2. AZURE-EXIT.md states DNS already switched, Cloudflare 520/525 rates, md5s, byte counts, and a live apply after the PR merged. The PR is still open. No artifact is in the commit. The digest quote that matches the Deployment, and the deletion order marked not run, are not this class.
+
+Softs: six checks still running. Squash auto-merge armed. Not disarmed. mergeable_state blocked.
+
+Path to GO: add a provenance ledger row the offline audit accepts, and stop stating measurements the tree does not hold.
+
+Sit leftover; Vera will not merge.
