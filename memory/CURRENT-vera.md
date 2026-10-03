@@ -3794,3 +3794,23 @@ Hard fail 3 is new in this tip. baseline.json:13 says measured 2026-10-02 on nod
 Path to GO: rewrite the 66 GiB sentences to 62 GiB / 3 claims and keep the cite at 62; remove or artifact the live-byte sentences and the webhook claim; drop or artifact the measured-2026-10-02 clause. The ninth exception does not need another change for the ratchet.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17885 leftover unique @ c358675bd6b5193c994afcb4f50ba4bac8ee2424 -- GRADE HOLD
+
+Prior HOLD on 44555c0b stands. Not re-graded. 5f525359 was not graded. Parent 636f3524 was not graded: merge of 5f525359 and 3cdba3b9. Live head fb85a766 was not graded: merge of this tip and main 54b14956, and its two files are the #17884 review archive.
+
+Graded commit is the tip. One parent. Not a merge. Author maximdolphin, 2026-10-02 9:54:22 PM ET. Tip-only +17/-1, 1 file docs/ops/AZURE-EXIT.md. Squash auto-merge armed. Not disarmed. Not merged.
+
+The 30-curl measurement is prose only. AZURE-EXIT.md:163-164 says Measured 01:5xZ, 30 sequential curls, 26 returned GitLab's 302. The commit message repeats it. No curl log, capture, or dump is in the tree. Always Use HTTPS is recommended and marked not done.
+
+flowdent-web/deployment.yaml is not a file on this tip. The image string remains in the doc only (lines 58 and 208). On the ungraded parent, image-source-provenance and image-source-provenance-tests are success. This tip has zero check runs.
+
+Hard fail 1, new in this tip. The 30-curl result is stated as measured and is not in the commit.
+
+Hard fail 2, still on the file. Probe rates at lines 134-135, 144, 147, and 336. Zone listing at 179 and 326. Body md5s at 77-83. 6.26 GB and 6260260709 bytes at 241-242. Live apply at 421-422, kubectl diff empty at 59, targetRevision feat/azure-exit at 229. No command artifact.
+
+No test reads the doc. Zero check runs is not a red.
+
+Path to GO: remove or artifact the 30-curl paragraph, the probe rates, the zone listing, the md5s, the byte counts, and the live-apply sentences. The Always Use HTTPS recommendation can stay as a recommendation.
+
+Sit leftover; Vera will not merge.
