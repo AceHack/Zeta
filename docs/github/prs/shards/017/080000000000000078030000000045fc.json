@@ -1,0 +1,12 @@
+{
+  "pr_number": 17916,
+  "archive_path": "docs/history/pr-reviews/2026/10/04/PR-17916-feat-windows-vms-gui-recipe-proven-rdp-login-golden-image-capture-restore-helper.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-04T08:10:16.984Z",
+  "schema_version": "v1",
+  "commit_sha": "db4c14708e87dc133e066713c7238381305cfb22",
+  "title": "feat(windows-vms): GUI recipe, proven RDP login, golden-image capture/restore helper",
+  "state": "MERGED",
+  "merged_at": "2026-10-04T08:09:35Z",
+  "head_ref": "feat/windows-vm-gui-and-golden-image"
+}
