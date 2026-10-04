@@ -82,6 +82,9 @@ const OWN_FILES = [
   join(REPO_ROOT, "src/Core.TypeScript/cluster/windows-11-unattend-secrets.ts"),
   join(REPO_ROOT, "src/Core.TypeScript/cluster/copy-secret.ts"),
   join(REPO_ROOT, "src/Core.TypeScript/cluster/windows-11-vm.ts"),
+  join(REPO_ROOT, "src/Core.TypeScript/cluster/windows-11-rdp-check.ts"),
+  join(REPO_ROOT, "src/Core.TypeScript/cluster/windows-vm-golden-image.ts"),
+  join(REPO_ROOT, "docs/ops/WINDOWS-VM-GOLDEN-IMAGE.md"),
   RUNBOOK,
 ];
 
@@ -425,7 +428,11 @@ describe("D. RDP is reached through an SSH tunnel to a ClusterIP, never publishe
     const np = loadDocs(join(DIR, "40-network-policy.yaml"))[0]!;
     expect(np.kind).toBe("CiliumNetworkPolicy");
     expect(np.metadata.namespace).toBe("windows-vms");
-    expect(np.spec.endpointSelector.matchExpressions[0].values.sort()).toEqual(["win11-ci", "win11-desktop"]);
+    // by ROLE, not by VM name: a desktop restored from a golden image carries role `desktop` and is fenced from its first minute
+    expect(np.spec.endpointSelector.matchExpressions[0].key).toBe("zeta.io/windows-role");
+    expect(np.spec.endpointSelector.matchExpressions[0].values.sort()).toEqual(["ci-runner", "desktop"]);
+    expect(vmCi.spec.template.metadata.labels["zeta.io/windows-role"]).toBe("ci-runner");
+    expect(vmDesktop.spec.template.metadata.labels["zeta.io/windows-role"]).toBe("desktop");
     expect(np.spec.ingress).toEqual([{ fromEntities: ["host"] }, { fromEndpoints: [{}] }]);
     expect(np.spec.egress).toBeUndefined();
     expect(np.spec.ingressDeny).toBeUndefined();

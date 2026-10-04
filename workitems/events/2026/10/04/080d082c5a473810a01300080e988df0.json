@@ -1,0 +1,14 @@
+{
+  "id": "080d082c5a473810a01300080e988df0",
+  "at": "2026-10-04T06:12:56.679Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M42RPJ72087G0R0031Q6T77",
+    "type": "task",
+    "title": "Windows VM desktop GUI recipe and golden-image capture/restore for win11-desktop",
+    "slug": "windows-vm-desktop-gui-recipe-and-golden-image-capture-resto",
+    "priority": "P2",
+    "filename": "081M42RPJ72087G0R0031Q6T77-windows-vm-desktop-gui-recipe-and-golden-image-capture-resto.md"
+  }
+}

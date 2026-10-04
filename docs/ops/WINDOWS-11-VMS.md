@@ -25,6 +25,8 @@ token Job, tag contract and "prepared image" mode are reused here). Storage cont
 | Runner record + `glrt-` token (Job, in namespace `gitlab`) | `full-ai-cluster/k8s/examples/gitlab-windows-runner-token.yaml` | you, once |
 | The token, copied into `windows-vms` as Secret `win11-ci-runner-token` | `src/Core.TypeScript/cluster/copy-secret.ts` | you |
 | Screenshot / one-key helper (no `virtctl`, no VNC client needed) | `src/Core.TypeScript/cluster/windows-11-vm.ts` | you |
+| A real RDP login proved from a pod, password never shown ("Using the desktop") | `src/Core.TypeScript/cluster/windows-11-rdp-check.ts` | you |
+| Golden image: guard, capture, restore, selftest ("Capture and reuse the disk") | `src/Core.TypeScript/cluster/windows-vm-golden-image.ts`, [`WINDOWS-VM-GOLDEN-IMAGE.md`](WINDOWS-VM-GOLDEN-IMAGE.md) | you, on the node |
 
 The manifests live beside, not under, `k8s/applications/`: ArgoCD's root reads only `applications/*/Application.yaml` (so nothing syncs
 them), and the audits that price the cluster walk that tree for volume claims, so ~190Gi of VM disk inside it would be counted as always-on
@@ -323,6 +325,76 @@ To read it deliberately: `kubectl -n windows-vms get secret win11-desktop-unatte
 (do this in a private terminal; the output is the secret). To choose your own, re-run step 4 with your own `read -rs` password and restart the guest
 only if you want it applied to a fresh install; to change it on a running guest use `net user zetaadmin *` over SSH.
 
+## Using the desktop (RDP/VNC from a Mac or Windows)
+
+Everything here needs only `ssh` and an RDP client on your own computer: **no `kubectl`, no `virtctl`, no checkout**. The cluster commands run on the node, through
+`ssh zeta@ssh.flowdent.net '...'` (from the LAN use `zeta@192.168.1.79`; from the LAN PC `ssh.flowdent.net` timed out on 2 of 5 attempts on 2026-10-04 and answered on the
+others, so retry before suspecting anything else). Nothing is published: 3389 is a ClusterIP, reached only through the node's key-only sshd.
+
+**1. Read the password, privately.** It is generated at random and lives only in Secret `win11-desktop-unattend`. This puts it on the **Mac clipboard without ever showing it**
+(use a terminal nobody is watching; on Windows drop the last stage and read it from the terminal instead):
+
+```bash
+ssh zeta@ssh.flowdent.net 'kubectl -n windows-vms get secret win11-desktop-unattend -o "jsonpath={.data.Autounattend\.xml}" | base64 -d | sed -n "/<Password>/,/<\/Password>/ s:.*<Value>\(.*\)</Value>.*:\1:p" | head -1' | tr -d '\r\n' | pbcopy
+```
+
+Paste it into the RDP password prompt, then empty the clipboard: `pbcopy < /dev/null`. (The `sed` range matters: the file's first `<Value>` is the Windows image index, `1`.
+The current password contains no `&`, `<` or `>`; a password you typed yourself with one of those is stored XML-escaped, e.g. `&amp;`.)
+
+**2. Open the tunnel** (Terminal window 1; it prints nothing; keep it open). It looks the guest's ClusterIP up on the node, so you never need `kubectl`:
+
+```bash
+ssh -N -o ExitOnForwardFailure=yes -L 13389:$(ssh zeta@ssh.flowdent.net 'kubectl -n windows-vms get svc win11-desktop-rdp -o jsonpath={.spec.clusterIP}'):3389 zeta@ssh.flowdent.net
+```
+
+Local port **13389**, not 3389 (a Windows PC with its own Remote Desktop server already listens on 3389). Measured through exactly this command, from this repository's PC: an RDP
+X.224 connection request to `localhost:13389` was answered with a connection confirm selecting the CredSSP/NLA protocol.
+
+**3. Connect** (Terminal window 2 is free for other things):
+
+- **Mac, Windows App** (Microsoft's, from the App Store; formerly Microsoft Remote Desktop): *Add PC*, PC name `localhost:13389`, User account `zetaadmin` (the password from step 1);
+  under *Display* turn on "update the session resolution on resize", under *Devices & Audio* keep Clipboard on and set Sound to play on this Mac. The first connection warns about the
+  guest's self-signed certificate: accept it (the SSH tunnel is what authenticates the path). *The menu names are from memory of the app: there is no Mac on the preparation PC.*
+- **Windows:** `mstsc /v:localhost:13389`, user `.\zetaadmin`.
+
+**4. When there is no network in the guest, or you want the console: VNC through the same SSH door.** `virtctl vnc win11-desktop -n windows-vms` needs `virtctl` and a kubeconfig, which
+the node and your Mac do not have. The launcher's console is a Unix socket inside the `virt-launcher` pod, and its `compute` container carries `ncat`, so the node can bridge it. In a
+terminal (keep it open; `-t` makes closing it stop the bridge):
+
+```bash
+ssh -t -L 5900:/run/user/1000/zeta-vnc.sock zeta@ssh.flowdent.net 'POD=$(kubectl -n windows-vms get pod -l kubevirt.io/domain=win11-desktop -o jsonpath={.items[0].metadata.name}); U=$(kubectl -n windows-vms get vmi win11-desktop -o jsonpath={.metadata.uid}); S=$XDG_RUNTIME_DIR/zeta-vnc.sock; rm -f $S; exec ncat -l -U $S --keep-open --sh-exec "kubectl -n windows-vms exec -i $POD -c compute -- ncat -U /var/run/kubevirt-private/$U/virt-vnc"'
+```
+
+then point any VNC (RFB) viewer at `localhost:5900` (`open vnc://localhost:5900` opens macOS Screen Sharing; TigerVNC or RealVNC viewers also work). **Measured:** through this exact command the first bytes
+on `localhost:5900` were `RFB 003.008` and the server offered one security type, **None**, which is why the socket is a Unix socket in `zeta`'s `0700` runtime directory and the only way
+to it is your SSH key. **Not exercised:** a real viewer (macOS Screen Sharing in particular has been unreliable against servers that offer no VNC password; if it refuses, use TigerVNC).
+While an RDP session is signed in, the console shows the lock screen: it is the same console `virtctl vnc` shows.
+
+**5. Proving a real login without a human** (from any machine with `kubectl` on this cluster, **not** your Mac):
+
+```bash
+bun src/Core.TypeScript/cluster/windows-11-rdp-check.ts                 # NLA login; --sec tls | rdp to probe the weaker layers; --keep keeps the helper pod
+```
+
+It runs a short-lived pod in `windows-vms` (the network policy admits its own namespace) with FreeRDP (`/auth-only`: the whole connection and credential check, no session) and feeds
+the password to it on **stdin**, read in memory from the Secret: never argv, never an environment variable, never a file or a second Secret, and the output is scrubbed of it before it is
+shown. Measured 2026-10-04 against `win11-desktop`:
+
+| Check | Result |
+|---|---|
+| Login as `zetaadmin`, security layer `nla` | **accepted** (`Authentication only, exit status 0`) |
+| Same, layer `tls` (no NLA) | refused: `HYBRID_REQUIRED_BY_SERVER` (so NLA is **required**) |
+| Same, legacy `rdp` layer | refused: connection reset |
+| Guest registry (over SSH, read-only) | `UserAuthentication = 1`, `SecurityLayer = 2`, `fDenyTSConnections = 0` |
+| Ports the guest **listens** on (all interfaces) | 22, 135, 445, 3389, 5040, 5357, 7680 and the dynamic RPC range 49664-49671 (Windows' own services); **none on loopback only**, so the Flowdent API's `127.0.0.1:5000` is not yet running |
+| Ports a pod in the namespace could **reach** (TCP connect) | **22, 3389, 5040, 7680** open; 135, 139, 445, 5357, 5985, 5986, 5000, 49664, 49667 refused or filtered |
+
+So the guest is not "only 22 and 3389" at the Windows firewall: 5040 (Connected Devices Platform) and 7680 (Delivery Optimization) are open to anything allowed to reach it. That is
+the node host and the namespace only (the network policy), never outside the cluster; closing them is `New-NetFirewallRule -Block` work inside the guest and was **not done**.
+
+**Not verified, because it needs a person looking at a real client:** the resolution you get, that the clipboard moves text both ways, and that audio plays. The guest has the Audio
+service running and no sound device is listed over SSH (Windows' RDP audio uses its own virtual endpoint); neither fact says whether sound works.
+
 ## Which step failed?
 
 | Symptom | Look at |
@@ -390,9 +462,32 @@ kubectl -n longhorn-system get snapshots.longhorn.io win11-desktop-before-update
 Stop the guest first for a clean snapshot (a running guest's snapshot is crash-consistent only). To roll back, use the Longhorn UI or revert the
 volume to that snapshot while the guest is stopped. **Deleting a snapshot can hang on a volume that has never carried a workload**: measured, the
 object stayed `markRemoved` with a stale "engine is upgrading" error for more than ten minutes even though the volume was attached and healthy,
-and had to be released by removing its finalizer. The `win11-iso` claim can be deleted once both guests are installed (they only need it to
+and had to be released by removing its finalizer (`kubectl -n longhorn-system patch snapshots.longhorn.io <name> --type merge -p '{"metadata":{"finalizers":null}}'`). **Reproduced 2026-10-04** on a throwaway volume that HAD carried workloads, attached and healthy, on engine v1.12.1: `markRemoved: true` and the same stale message for over two minutes; after the finalizer was removed the engine still listed the snapshot as `removed` until the volume itself was deleted. A snapshot is cheap to take (3 to 10 s) and expensive to be rid of: the golden-image procedure below takes one, so read its note first. The `win11-iso` claim can be deleted once both guests are installed (they only need it to
 install); the TPM and UEFI state claims (`persistent-state-for-*`, 12Mi, class `longhorn`) hold the BitLocker-relevant TPM state, so treat them as
 part of the VM: deleting the VM deletes its claim, and the `longhorn` class **retains** the volume, so remove an orphaned `Released` PV by hand.
+
+## Capture and reuse the disk (golden image)
+
+The short form; the full runbook is [`WINDOWS-VM-GOLDEN-IMAGE.md`](WINDOWS-VM-GOLDEN-IMAGE.md). **A golden image is a verified copy on the same node and disks: a rollback aid, not a backup.**
+The helper is one file that needs only `kubectl` and Node (the node has both), so it runs **on the node**, from your Mac, through `ssh`:
+
+```bash
+# once: put the helper on the node, and ask whether a copy would fit (read-only)
+ssh zeta@ssh.flowdent.net 'curl -fsSL https://raw.githubusercontent.com/Lucent-Financial-Group/Zeta/main/src/Core.TypeScript/cluster/windows-vm-golden-image.ts -o ~/windows-vm-golden-image.ts && node ~/windows-vm-golden-image.ts guard --vm win11-desktop --with-state'
+# when you are done installing: shut the guest down, snapshot, clone, verify, restart  (--yes = you agree to the shutdown)
+ssh zeta@ssh.flowdent.net 'nohup node ~/windows-vm-golden-image.ts capture --vm win11-desktop --label dental-ready --yes > ~/golden-capture.log 2>&1 &'
+ssh zeta@ssh.flowdent.net 'tail -n 20 ~/golden-capture.log'
+# later: a new VM from it (halted; start it yourself)
+ssh zeta@ssh.flowdent.net 'node ~/windows-vm-golden-image.ts restore --golden win11-golden-dental-ready-<yyyymmdd> --as win11-desktop-restored --with-state --apply'
+```
+
+What was **measured** on this cluster on 2026-10-04 with a 2Gi stand-in (the real disk was not touched; the owner is still installing): the default clone path doubles the quota use (a prime
+claim and the target at once), so the helper uses `usePopulator: "false"` and is 1x; the copy of a sparse `disk.img` is byte-identical (full sha256) and stays sparse; KubeVirt adopts a
+state claim labelled `persistent-state-for=<vm>`; TPM and NVRAM carry over only to a VM with the same name and the same `firmware.uuid`; a Longhorn snapshot is created in seconds and its
+deletion hangs (see "Snapshots and backups"). **Capacity today (`guard --vm win11-desktop --with-state`):** the 106 GiB claim really occupies 19.4 GiB; a capture fits (307.4 of 400 GiB
+quota); a restore next to it does **not** (413.4 GiB > 400), and a third running guest does not fit the memory quota. **Off-node:** there is no target; Azure Blob with a scoped token
+is the recommendation and needs **your** credential (page above, "Off-node copy"). **Unproven:** booting a clone of the real, in-use Windows disk; a restored VM with a different name carrying the TPM;
+generalising (`sysprep /generalize`) and its first-run screens. `C:` was **BitLocker-encrypted with protection off** when checked: read the BitLocker row of the page's step 2 before you capture.
 
 ## Storage placement: how to prove it
 
@@ -458,11 +553,27 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
   CAUTION when verifying: `POST /api/v4/runners/verify` itself makes the runner read `online`; trust `version` / `platform` being filled in, which only
   a real runner contact sets.
 
+### Proven on this node, 2026-10-04 (GUI access and the golden-image mechanism)
+
+- **A real RDP login**: FreeRDP `/auth-only` from a pod in `windows-vms` logged in as `zetaadmin` on the NLA layer (exit 0); the TLS-only layer is refused with
+  `HYBRID_REQUIRED_BY_SERVER`, the legacy layer resets the connection; `UserAuthentication = 1`. The password went over stdin only. See "Using the desktop".
+- **The exact Mac tunnel one-liner** (the ClusterIP looked up over ssh, `-L 13389:<ClusterIP>:3389`) was answered by an RDP connection confirm selecting NLA, through `ssh.flowdent.net`
+  (the tunnel took ~9 s to come up) and through `192.168.1.79`; **the VNC console bridge** (`ssh -L 5900:<socket>`, `ncat` in the launcher's `compute` container) delivered `RFB 003.008` with security type None.
+- **The password read** (`sed` range over the Secret, over ssh) returns the 23-character password; its length matched the in-memory extraction.
+- **Cloning the way a golden image is made** on a 2Gi stand-in (repeated by `windows-vm-golden-image.ts selftest --with-vm`): byte-identical full sha256 and preserved sparseness; the legacy clone
+  path is 1x quota (the default path is 2x); restore is a clone of the golden; the pattern read back through a pod; TPM and NVRAM carried to a same-name, same-`firmware.uuid` VM; a different
+  name starts with fresh NVRAM and a new TPM directory. Every throwaway object was deleted, including the `Retain` volume the stand-in VM's own state claim left.
+- **Longhorn snapshot deletion still hangs** on a volume that has carried workloads and is attached and healthy (the object stays `markRemoved` with a stale "engine is upgrading" message); the
+  finalizer removal in "Snapshots and backups" is still the way out.
+- Read over ssh, read-only: `C:` is **BitLocker `FullyEncrypted`, protection Off**; the EFI partition carries both `\EFI\Microsoft\Boot\bootmgfw.efi` and the fallback `\EFI\BOOT\BOOTX64.EFI`;
+  the evaluation expires 1/1/2027.
+
 ### Still UNPROVEN, stated plainly
 
 - A CI **job** on `win11-ci` (the runner registered and heartbeats; no pipeline was run on it), and the untagged-job contract end to end.
-- RDP with a real client (mstsc / Windows App) and a real login; only the protocol handshake through the tunnel was exercised.
-- The `ssh.flowdent.net` leg from outside the LAN (the jump was exercised through the node's LAN address, `192.168.1.79`).
+- A graphical RDP session in a real client (mstsc / Windows App): the login is proven (2026-10-04, FreeRDP `/auth-only`), but nobody watched a screen, so resolution, clipboard and audio are unverified.
+- Booting a clone of the real, in-use Windows disk, a restore that carries the TPM into a renamed VM, `sysprep /generalize` and the first-run screens of a generalised copy ("Capture and reuse the disk").
+- The `ssh.flowdent.net` leg from OUTSIDE the LAN: it was exercised from the LAN PC (it answered 3 of 5 attempts on 2026-10-04 and timed out on 2, so it is flaky from there); a Mac on another network was not tried.
 - Open Dental and the Flowdent API (not installed here; the guest is only prepared for them).
 - The upload path (`virtctl image-upload`), `virtctl vnc`.
 
@@ -525,6 +636,14 @@ were still schedulable, ~394 GiB in all. Windows disks are thin, so real use sta
     call; not done here.
 13b. **Which SSH keys.** The node's `/etc/ssh/authorized_keys.d/zeta` holds one key today, not the two the request described; see "SSH, the jump and
     the API" for what was included and what was left out.
+
+13d. **The network policy now selects guests by role, and that change is in git only.** `40-network-policy.yaml` matches `zeta.io/windows-role` in (`ci-runner`, `desktop`) instead of two VM
+    names, so a desktop restored from a golden image is fenced from its first minute (a policy only restricts the endpoints it selects). The two live guests carry those labels
+    (measured on their launcher pods) but the live policy still lists names: `kubectl apply -f full-ai-cluster/k8s/examples/windows-11/40-network-policy.yaml` before the first restore.
+13e. **`ssh.flowdent.net` is flaky from the LAN PC**: 2 of 5 attempts timed out on 2026-10-04 (one A record, 66.10.240.234, so not a DNS split); the same command succeeded on the others, and
+    `zeta@192.168.1.79` never failed. Whether a Mac outside the network sees the same is not known.
+13f. **Git Bash on Windows rewrites a leading `/` in a `kubectl --raw /apis/...` argument into a Windows path** (the start/stop subresource calls then fail "the server could not find the requested
+    resource"): `MSYS_NO_PATHCONV=1` fixes it. Not an issue on the node or a Mac.
 
 ## Uninstall
 

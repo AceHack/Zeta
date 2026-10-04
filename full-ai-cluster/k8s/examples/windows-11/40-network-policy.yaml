@@ -9,8 +9,11 @@
 # (every Service here is ClusterIP). EGRESS is not restricted: a guest must reach GitLab, the runner download
 # bucket and the Windows update endpoints.
 #
-# Deliberately selects the guests by their KubeVirt domain label and not the whole namespace, so CDI's importer
-# and upload pods (which the cdi namespace's upload proxy must reach) are not cut off.
+# Deliberately selects the guests by their `zeta.io/windows-role` label (stamped on the launcher pod by the VM's
+# template) and not the whole namespace, so CDI's importer and upload pods (which the cdi namespace's upload proxy
+# must reach) are not cut off. By ROLE and not by VM name so a desktop RESTORED from a golden image
+# (docs/ops/WINDOWS-VM-GOLDEN-IMAGE.md; `restoredVm` stamps role `desktop`) is fenced the day it is created: a
+# CiliumNetworkPolicy only restricts the endpoints it selects, so a guest it missed would accept every connection.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -19,9 +22,9 @@ metadata:
 spec:
   endpointSelector:
     matchExpressions:
-      - key: kubevirt.io/domain
+      - key: zeta.io/windows-role
         operator: In
-        values: [ win11-ci, win11-desktop ]
+        values: [ ci-runner, desktop ]
   ingress:
     - fromEntities:
         - host
