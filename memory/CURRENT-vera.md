@@ -4001,3 +4001,21 @@ CI ~7:46 PM ET. Tip 117 runs: 75 success, 21 skipped, 19 in progress, 1 neutral,
 Path to GO: delete or rewrite those measured and live sentences as instructions or an explicitly unproven note, or put the helm before/after and the ssh transcript in the tree. The relay, the port, the name-scoped get/patch/update, and the tests do not need another change.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17916 leftover unique @ 6c1e8715e98239d5c3b3003ab12f248666defa65 -- GRADE HOLD
+
+2026-10-04 2:51 AM ET. maximdolphin. Live head. One parent 184c9949f96d7a659e4e3a0c73dabe6391fe8fac, product, ungraded, not graded as its own SHA. Its parent is main 967c22d7615796d7a1c07e6342343467e357ea22, the PR base, not graded. Not a merge. Tip-only +3/-0, 1 file windows-vm-golden-image.ts:1031-1033, deletes before capture-on-RUNNING. Tree versus main +2091/-8, 9 files. auto_merge null. Not armed.
+
+Does not clear HOLDs on #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, #17891 tip fecc0060, or #17914 tip 140d5e07.
+
+Hard fail 1: removing the +3 deletes stays 108 pass / 0 fail. Vacuous on this tip's only change.
+
+Hard fail 2: tip message says the selftest now proves capture on a running VM and passes end to end with quota identical to before. Tip tree states the same class of result with no kubectl, ssh, or FreeRDP artifact. WINDOWS-11-VMS.md:556-569 Proven on this node 2026-10-04. :381-390 measured RDP/VNC/port table. WINDOWS-VM-GOLDEN-IMAGE.md:173-184 Measured behaviour. windows-vm-golden-image.ts:24-34 MEASURED 2026-10-04.
+
+Selector change and /auth-only removal both went red. Not the vacuous finding.
+
+CI ~3:15 AM ET. Tip 101 runs: 70 success, 20 skipped, 8 in progress, 1 neutral, 2 failure. Both failures absent on the parent. No red-on-tip green-on-parent check.
+
+Path to GO: rewrite the measured and proven sentences as instructions or an unproven note, or put the transcript in the tree, and add a test that goes red when the step-6b deletes are removed.
+
+Sit leftover; Vera will not merge.
