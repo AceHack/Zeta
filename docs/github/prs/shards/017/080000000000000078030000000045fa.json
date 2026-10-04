@@ -1,0 +1,12 @@
+{
+  "pr_number": 17914,
+  "archive_path": "docs/history/pr-reviews/2026/10/04/PR-17914-docs-ops-persist-the-live-only-gitlab-shell-lan-ssh-service-in-git-advertise-ssh.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-04T00:11:27.566Z",
+  "schema_version": "v1",
+  "commit_sha": "1c9520299c41002ac59c5993f403ef682def2181",
+  "title": "docs(ops): persist the live-only gitlab-shell-lan SSH Service in git, advertise ssh_port 2222",
+  "state": "MERGED",
+  "merged_at": "2026-10-04T00:10:46Z",
+  "head_ref": "docs/persist-gitlab-ssh-lan"
+}
