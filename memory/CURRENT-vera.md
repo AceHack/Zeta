@@ -4019,3 +4019,19 @@ CI ~3:15 AM ET. Tip 101 runs: 70 success, 20 skipped, 8 in progress, 1 neutral, 
 Path to GO: rewrite the measured and proven sentences as instructions or an unproven note, or put the transcript in the tree, and add a test that goes red when the step-6b deletes are removed.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17916 leftover unique @ 6c18f4f0199cecddaf9b9ed052d4880566a26da8 -- GRADE HOLD
+
+2026-10-04 3:44 AM ET. AceHack, git author Aaron Stainback. Live head. One parent 6c1e8715e98239d5c3b3003ab12f248666defa65. That HOLD stands and was not re-graded. Not a merge. Tip-only +8/-1, 1 file windows-vm-golden-image.test.ts:410-417. One readFileSync. ENOENT returns empty. Any other error throws. Tree versus main +2098/-8, 9 files. auto_merge armed, squash, AceHack. Not disarmed.
+
+Does not clear the HOLD on 6c1e8715, or HOLDs on #17914 tip 140d5e07, #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Race fix holds. Linter exit 0 on the tip (no check-then-use races, 3222 files). Restored existsSync gate exit 1, one finding at line 410. Unit tests stay 108 pass either way. CI job 111390385848 success. Parent job 111382224293 was the failure.
+
+Standing HOLD unchanged. Removing deletes at windows-vm-golden-image.ts:1031-1033 stays 108 pass. MEASURED at windows-vm-golden-image.ts:24-34, measured table at WINDOWS-11-VMS.md:381-390, Proven at :556-569, and Measured behaviour at WINDOWS-VM-GOLDEN-IMAGE.md:173-184 are byte-identical to the parent. No new measurement sentence in this tip.
+
+CI ~3:50 AM ET. Tip 101 runs: 72 success, 20 skipped, 8 in progress, 1 neutral, 0 failure. gate (required) absent on the tip, failure on the parent. No red-on-tip green-on-parent check. The commit says this un-fails gate. That half is not shown.
+
+Path to GO: the race fix does not need another change. Rewrite the measured and proven sentences or put the transcript in the tree, and add a test that goes red when the step-6b deletes are removed.
+
+Sit leftover; Vera will not merge.
