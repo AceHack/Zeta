@@ -73,6 +73,7 @@ Image storage (containerd) is on the same 120 GB root. The two images the guests
 ~0.7 GB) are already on the node from the 2026-10-03 preparation; keep imageFs above 25% and free memory above ~10 GB when both guests run.
 
 Two cluster settings these guests depend on, **both already applied live on this cluster** (re-apply if the cluster is ever rebuilt):
+(Index of the live-only items, with the other two: `docs/ops/GITLAB-SSH-LAN.md`, last section.)
 
 ```bash
 kubectl get kubevirt kubevirt -n kubevirt -o jsonpath='{.spec.configuration.vmStateStorageClass}'      # longhorn   (LIVE ONLY, see Known issues 2)

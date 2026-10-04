@@ -35,6 +35,10 @@ describe("render", () => {
     const rules = (roles[0] as Doc)["rules"] as Doc[];
     expect(rules.find((r) => (r["verbs"] as string[]).includes("patch"))?.["resourceNames"]).toEqual(["https-relay", "ssh-relay", "http-relay"]);
   });
+
+  test("gitlab-shell-lan's Role is NOT here: namespace gitlab does not exist at wave 20 (it is in the gitlab Application)", () => {
+    expect(docs.filter((d) => ((d["metadata"] as Doc)["namespace"] as string) === "gitlab")).toEqual([]);
+  });
 });
 
 // Fixture rows are `<LB ips>|<ports>` exactly as the kubectl jsonpath prints them.
@@ -106,6 +110,32 @@ describe("discover script, executed", () => {
     expect(http).toContain("selector: { app: node-lan-hosts }");
   });
 
+  test("gitlab-shell-lan: EVERY LB address, :2222 -> the gitlab-shell pods, in namespace gitlab (no address in git)", () => {
+    const gl = svcOf(run({ services: SERVICES }).applied, "gitlab-shell-lan");
+    expect(gl).toBeDefined();
+    expect(gl).toContain("namespace: gitlab\n");
+    expect(gl).toContain('externalIPs: ["192.168.1.240","192.168.1.241","192.168.1.242","192.168.1.250"]');
+    expect(gl).toContain("port: 2222, targetPort: 2222");
+    expect(gl).toContain("selector: { app: gitlab-shell, release: gitlab }"); // the chart's own selector (pinned in gitlab-exposure.test.ts (j))
+    expect(gl).toContain("app.kubernetes.io/part-of: gitlab-ssh-lan");
+    expect(gl).toContain("type: ClusterIP");
+    // It must not follow the node relays' selector: those target the hostNetwork pod, i.e. the node's own sshd.
+    expect(gl).not.toContain("node-lan-hosts");
+  });
+
+  test("the same discovery follows ANOTHER network's addresses (nothing is pinned to this one)", () => {
+    const gl = svcOf(run({ services: "10.20.30.200|80\n10.20.30.201|80 443\n" }).applied, "gitlab-shell-lan");
+    expect(gl).toContain('externalIPs: ["10.20.30.200","10.20.30.201"]');
+    expect(gl).not.toContain("192.168.");
+  });
+
+  test("an address that already serves :2222 is left alone; a failed listing applies nothing", () => {
+    const gl = svcOf(run({ services: SERVICES + "192.168.1.250|2222\n" }).applied, "gitlab-shell-lan");
+    expect(gl).not.toContain("192.168.1.250");
+    expect(gl).toContain("192.168.1.240");
+    expect(svcOf(run({ services: "", failServices: true }).applied, "gitlab-shell-lan")).toBeUndefined();
+  });
+
   test("an address that already serves :22 is left alone", () => {
     const ssh = svcOf(run({ services: SERVICES + "192.168.1.250|22\n" }).applied, "ssh-relay");
     expect(ssh).not.toContain("192.168.1.250");
@@ -116,6 +146,6 @@ describe("discover script, executed", () => {
   });
 
   test("nothing to cover (every address already serves both ports) applies nothing", () => {
-    expect(run({ services: "192.168.1.240|22 80 443\n" }).applied).toBeNull();
+    expect(run({ services: "192.168.1.240|22 80 443 2222\n" }).applied).toBeNull();
   });
 });

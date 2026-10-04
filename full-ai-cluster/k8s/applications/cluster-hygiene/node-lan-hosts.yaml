@@ -49,6 +49,17 @@
 # this: only the node's own address answered :22, the gateway addresses timed out. sshd is key-only (passwords
 # disabled, root prohibit-password, 0 failed logins in 24h); `apply` adds a per-source new-connection rate limit.
 #
+# FIFTH JOB -- Git over SSH to GitLab. GitLab's own `gitlab-gitlab-shell` Service is ClusterIP-only, and :22 on the node
+# and on every LB address is the NODE's sshd (key-only, `zeta` user), never GitLab -- so `git clone git@<gitlab>:...` had
+# no route at all. `gitlab-shell-lan` (namespace `gitlab`) is the same externalIPs trick one more time: :2222 -> the
+# gitlab-shell pods' own :2222 (the chart's `service.internalPort`), over EVERY LoadBalancer address that does not
+# already serve :2222, so it needs no address in git and follows a changed pool. It lives HERE and not in the gitlab
+# Application because the address set is what `discover` already computes (the gitlab-exposure hook only knows the one
+# `global.zeta.lanAddress`); the Role that lets `discover` write it is declared in the gitlab Application
+# (`gitlab-runner.extraObjects`), because this Application syncs at wave 20, BEFORE namespace `gitlab` exists, and a Role
+# in a missing namespace would hold the wave. Until GitLab is installed the apply simply fails and is retried every
+# 30s. LAN only: the router does not forward :2222 unless the owner adds that. Runbook: docs/ops/GITLAB-SSH-LAN.md.
+#
 # DELIBERATELY NOT PINNED: api.<domain> and api-staging.<domain>. Until the production cutover those
 # resolve to the Azure container apps; pinning them on the node would silently reroute host-side callers.
 #
@@ -159,14 +170,21 @@ spec:
                 # sshd). Each lists every LoadBalancer address that does not already serve that port. An empty
                 # listing means the probe failed or there is nothing to cover; only a NON-empty one is applied
                 # (a failed probe must never strip the node's reachability).
-                for spec in https-relay:443:https ssh-relay:22:ssh http-relay:80:http; do
+                # A fourth, `gitlab-shell-lan` (:2222 -> the gitlab-shell pods), is the same shape aimed at GitLab.
+                for spec in https-relay:443:https ssh-relay:22:ssh http-relay:80:http gitlab-shell-lan:2222:ssh; do
                   svc=${spec%%:*}; rest=${spec#*:}; port=${rest%%:*}; pname=${rest#*:}
+                  # The node relays target THIS pod (hostNetwork: the pod IS the node). `gitlab-shell-lan` targets the
+                  # gitlab-shell pods in namespace `gitlab` (the chart's own selector labels) and is labelled as GitLab's.
+                  case "$svc" in
+                    gitlab-shell-lan) ns=gitlab; sel='{ app: gitlab-shell, release: gitlab }'; part=gitlab-ssh-lan ;;
+                    *) ns=zeta-node-hosts; sel='{ app: node-lan-hosts }'; part=node-lan-hosts ;;
+                  esac
                   if ips=$(relay_ips "$port") && [ -n "$ips" ]; then
                     list=$(printf '%s\n' "$ips" | sed 's/.*/"&"/' | paste -sd, -)
                     {
                       printf '%s\n' 'apiVersion: v1' 'kind: Service' 'metadata:' "  name: $svc" \
-                        '  namespace: zeta-node-hosts' '  labels: { app.kubernetes.io/part-of: node-lan-hosts }' \
-                        'spec:' '  type: ClusterIP' '  selector: { app: node-lan-hosts }' "  externalIPs: [$list]" \
+                        "  namespace: $ns" "  labels: { app.kubernetes.io/part-of: $part }" \
+                        'spec:' '  type: ClusterIP' "  selector: $sel" "  externalIPs: [$list]" \
                         '  ports:' "    - { name: $pname, port: $port, targetPort: $port, protocol: TCP }"
                     } | kubectl apply --server-side --force-conflicts --field-manager=node-lan-hosts-relay -f - >/dev/null
                   fi

@@ -472,4 +472,46 @@ describe.skipIf(!HELM)("gitlab Application -- exposure, runner, external URL", (
     expect(flags.length).toBeGreaterThanOrEqual(5);
     expect(flags.filter((f) => f !== "true")).toEqual([]);
   }, T);
+
+  test("(j) GitLab advertises the SSH port the LAN serves it on (2222), and says so everywhere the chart renders it", () => {
+    // MEASURED: the chart default (22) put `git@<host>:` clone URLs in the UI that reach the NODE's sshd, never GitLab. The
+    // one coordinate in chart 10.4.1 is global.shell.port; it feeds gitlab.yml `ssh_port` of webservice, sidekiq and toolbox.
+    const values = readAppSource(readFileSync(GITLAB_APP, "utf8")).valuesObject as Record<string, any>;
+    expect(values.global?.shell?.port).toBe(2222);
+    const { docs, text } = renderGitlab();
+    const ports = [...text.matchAll(/^\s*ssh_port:\s*(\S+)\s*$/gm)].map((m) => m[1]);
+    expect(ports.length).toBeGreaterThanOrEqual(3); // webservice, sidekiq, toolbox
+    expect(ports.filter((p) => p !== "2222")).toEqual([]);
+    // The chart's own ClusterIP Service follows (port 2222 -> the pod's 2222), and its selector is what `gitlab-shell-lan` copies.
+    const shell = ofKind(docs, "Service").find((s) => nameOf(s) === "gitlab-gitlab-shell");
+    expect(shell).toBeDefined();
+    const spec = shell!["spec"] as { ports: Array<Record<string, unknown>>; selector: Record<string, string> };
+    expect(spec.ports.map((p) => [p["port"], p["targetPort"]])).toEqual([[2222, 2222]]);
+    expect(spec.selector).toEqual({ app: "gitlab-shell", release: "gitlab" });
+    // ...and the pods the selector picks really do listen on that targetPort.
+    const dep = ofKind(docs, "Deployment").find((d) => nameOf(d) === "gitlab-gitlab-shell") as Record<string, any>;
+    expect(dep.spec.template.metadata.labels).toMatchObject({ app: "gitlab-shell", release: "gitlab" });
+    const containerPorts = (dep.spec.template.spec.containers as Array<Record<string, any>>).flatMap((c) => (c["ports"] ?? []) as Array<Record<string, unknown>>);
+    expect(containerPorts.map((p) => p["containerPort"])).toContain(2222);
+  }, T);
+
+  test("(j) the discover loop may write Service gitlab-shell-lan in namespace gitlab -- and nothing else there", () => {
+    // `gitlab-shell-lan` is applied by node-lan-hosts' `discover` (cluster-hygiene, wave 20, ServiceAccount node-lan-hosts in
+    // zeta-node-hosts) over every LB address. Its Role is declared HERE: namespace gitlab does not exist when cluster-hygiene
+    // syncs, and a Role in a missing namespace would hold that wave.
+    const { docs } = renderGitlab();
+    const role = ofKind(docs, "Role").find((r) => nameOf(r) === "node-lan-hosts-gitlab-shell-lan");
+    expect(role).toBeDefined();
+    expect((role!["metadata"] as Record<string, unknown>)["namespace"]).toBe("gitlab");
+    expect(role!["rules"]).toEqual([
+      { apiGroups: [""], resources: ["services"], resourceNames: ["gitlab-shell-lan"], verbs: ["get", "patch", "update"] },
+      { apiGroups: [""], resources: ["services"], verbs: ["create"] },
+    ]);
+    const binding = ofKind(docs, "RoleBinding").find((r) => nameOf(r) === "node-lan-hosts-gitlab-shell-lan") as Record<string, any> | undefined;
+    expect(binding?.roleRef).toMatchObject({ kind: "Role", name: "node-lan-hosts-gitlab-shell-lan" });
+    expect(binding?.subjects).toEqual([{ kind: "ServiceAccount", name: "node-lan-hosts", namespace: "zeta-node-hosts" }]);
+    // The Service itself is NOT rendered by this release: its addresses are per-network and are never in git.
+    expect(ofKind(docs, "Service").map(nameOf)).not.toContain("gitlab-shell-lan");
+    expect(renderGitlab().text).not.toMatch(/externalIPs/);
+  }, T);
 });

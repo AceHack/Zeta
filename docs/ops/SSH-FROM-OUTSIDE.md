@@ -34,4 +34,5 @@
 ## Pointers
 
 - `docs/ops/CLOUDFLARE-DNS01-CERTS.md`, `docs/ops/GITLAB-REGISTRY-PULLS.md` — the sibling node-edge runbooks.
+- `docs/ops/GITLAB-SSH-LAN.md` — Git-over-SSH to **GitLab** (port 2222, LAN). `:22` here is the node's sshd, never GitLab.
 - `src/Core.TypeScript/cluster/node-lan-hosts-relay.test.ts` — the falsifiers (the `ssh-relay` cases, and the firewall rules in `node-lan-hosts.test.ts`).

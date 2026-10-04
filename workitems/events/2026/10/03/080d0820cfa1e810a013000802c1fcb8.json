@@ -1,0 +1,14 @@
+{
+  "id": "080d0820cfa1e810a013000802c1fcb8",
+  "at": "2026-10-03T23:29:32.221Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M421KX1W087G0R0025D3X5K",
+    "type": "task",
+    "title": "Persist the live-only gitlab-shell-lan SSH Service and advertise ssh_port 2222 in git",
+    "slug": "persist-the-live-only-gitlab-shell-lan-ssh-service-and-adver",
+    "priority": "P2",
+    "filename": "081M421KX1W087G0R0025D3X5K-persist-the-live-only-gitlab-shell-lan-ssh-service-and-adver.md"
+  }
+}

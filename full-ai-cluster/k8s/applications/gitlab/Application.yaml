@@ -95,6 +95,19 @@ spec:
           # Read by the `gitlab-lan` Gateway below through the runner subchart's `tpl`.
           zeta:
             lanAddress: "192.0.2.250"            # sentinel; the resolved LB range replaces it
+          # GIT-OVER-SSH PORT: 2222, THE PORT THE LAN ACTUALLY SERVES IT ON. Chart default 22 made the UI advertise
+          # `git@<host>:` clone URLs that reach the NODE's own sshd (key-only, `zeta` user), never GitLab -- port 22 on
+          # the node and on every LB address is the node's. `node-lan-hosts` (cluster-hygiene) keeps Service
+          # `gitlab-shell-lan` exposing the gitlab-shell pods' :2222 on every LB address; this value makes GitLab say so.
+          # MEASURED (helm template, chart 10.4.1, against this valuesObject; ONLY these lines differ -- plus the one
+          # Role/RoleBinding added below, everything else byte-identical): `ssh_port: 22 -> 2222` in the webservice, sidekiq and toolbox ConfigMaps (so those three
+          # pods roll ONCE, on the existing maxSurge-0 strategy, via their config checksum), the ClusterIP Service
+          # `gitlab-gitlab-shell` port 22 -> 2222 (targetPort stays 2222), and the inert nginx tcp-services ConfigMap key.
+          # The gitlab-shell Deployment itself is unchanged (no restart). `global.shell.port` is the only coordinate in 10.4.1
+          # (`gitlab-shell.service.externalPort` does not exist). Runbook: docs/ops/GITLAB-SSH-LAN.md.
+          # Falsifier: gitlab-exposure.test.ts (j).
+          shell:
+            port: 2222
           # KAS (GitLab agent for Kubernetes) is OFF: its only exposure was the unserved
           # `gitlab-kas` Ingress, nothing in this cluster registers an agent, and it was two more
           # always-on pods. Re-enable together with a route for it.
@@ -707,6 +720,39 @@ spec:
                               kubectl -n gitlab annotate "$r" argocd.argoproj.io/tracking-id- >/dev/null 2>&1 || true
                             done
                             echo "exposure applied at $ADDR"
+            # --- Git over SSH on the LAN (see global.shell.port above) ---------------------------------------------
+            # Service `gitlab-shell-lan` is written by `node-lan-hosts`' `discover` loop (cluster-hygiene), because it needs
+            # the set of EVERY LB address, which only that loop computes -- no address belongs in git. It runs as
+            # ServiceAccount `node-lan-hosts` in `zeta-node-hosts`, so the Role lives HERE, beside the namespace it grants
+            # in: cluster-hygiene syncs at wave 20, before namespace `gitlab` exists, and a Role in a missing namespace
+            # would hold that wave. Least privilege: create (no name exists to restrict on), and get/patch/update on that
+            # one name only. Falsifier: gitlab-exposure.test.ts (j).
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: node-lan-hosts-gitlab-shell-lan
+                namespace: gitlab
+              rules:
+                - apiGroups: [""]
+                  resources: [services]
+                  resourceNames: [gitlab-shell-lan]
+                  verbs: [get, patch, update]
+                - apiGroups: [""]
+                  resources: [services]
+                  verbs: [create]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: node-lan-hosts-gitlab-shell-lan
+                namespace: gitlab
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: node-lan-hosts-gitlab-shell-lan
+              subjects:
+                - kind: ServiceAccount
+                  name: node-lan-hosts
+                  namespace: zeta-node-hosts
             # --- leftover migrations Jobs ---------------------------------------------------
             # PostSync, after everything is Healthy: delete every migrations Job except the current one. The
             # Jobs from before `global.job.nameSuffixOverride` carry a hash in their name and nothing in the
