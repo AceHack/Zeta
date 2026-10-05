@@ -4059,3 +4059,9 @@ Brace scan finds the first systemd.services.k3s block. Removing requires = [ mou
 Does not clear HOLDs on #17918 tip c6d2c0f9, #17916 tips 6c18f4f0 and 6c1e8715, #17914 tip 140d5e07, #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17918 leftover unique @ 237de01db02f93fdea3c349955e523789e99d7ee -- GRADE HOLD
+
+2026-10-04 10:39 PM ET. One parent 2b5c3702fc2ff230fa4d05b22b34bb61545e880e (HOLD stands, not re-graded). HOLD on c6d2c0f9 stands. Not a merge. Tip-only +10/-1, 1 file, lint-containerd-move.test.ts. auto_merge null. Standing node-5b2dfa sentences still at CONTAINERD-ON-BIG-DISK.md:16 and :21, containerd-on-data-disk.nix:6-8, containerd-store.sh:5-6. This diff does not touch them. state() :450-458 is try/readFileSync/catch-ENOENT. safe-io-ok at :895. bun 62 pass, 0 fail, 348 expects. existsSync restored stayed green. No check red on this tip and green on the parent. Three linters green. test (TS hermetic) in progress. gate (required) absent.
+
+Sit leftover; Vera will not merge.
