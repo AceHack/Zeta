@@ -85,6 +85,7 @@ const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recov
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
+  "full-ai-cluster/nixos/modules/containerd-store.sh",
   "full-ai-cluster/nixos/modules/k3s-agent-tls-self-heal.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-recovery.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-bootstrap-sentinel-write.sh",
@@ -94,6 +95,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   "full-ai-cluster/nixos/modules/local-storage-placement.sh",
   "full-ai-cluster/nixos/modules/zeta-dev-toolchain.sh",
   "full-ai-cluster/nixos/modules/zeta-virt-first-sync.sh",
+  "full-ai-cluster/scripts/move-containerd-to-data-disk.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "githooks/pre-push",
@@ -197,6 +199,18 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // an ExecStart cannot wait for one. A tracked `.sh` (not an inline Nix string) so
   // `lint-local-storage-placement.test.ts` EXECUTES every branch of it in CI.
   "full-ai-cluster/nixos/modules/local-storage-placement.sh": "host-service wrappers",
+  // 081M44HD9T2087G0R000G9NR1N: the prepare/assert pair around the bind mount that puts k3s's container store on
+  // a data disk. `prepare` is the ExecStart of a oneshot ordered before the mount unit; `assert` is k3s.service's
+  // FIRST ExecStartPre and exists to make k3s REFUSE to start on a bare root directory. Same boot-path edge as its
+  // siblings (no bun in the node's closure, and an ExecStartPre cannot wait for one). A tracked `.sh` so
+  // `lint-containerd-store.test.ts` EXECUTES every branch of both modes in CI.
+  "full-ai-cluster/nixos/modules/containerd-store.sh": "host-service wrappers",
+  // 081M44HD9T2087G0R000G9NR1N: the live-node cut-over kit. It runs as root, DETACHED (a transient systemd unit),
+  // WHILE k3s is stopped -- the cluster, and with it any bun-based tooling that lives in a pod or a dev toolchain
+  // under /home, may not be there -- so it can only be what the host's own base system carries. A tracked `.sh` so
+  // `lint-containerd-move.test.ts` EXECUTES its preflight refusals, the cut-over order, every rollback path and
+  // the reclaim device guard against a stubbed world in CI.
+  "full-ai-cluster/scripts/move-containerd-to-data-disk.sh": "host-service wrappers",
   // 081M3K23YCP087G0R003BVDS1P: zeta-dev-toolchain.service's ExecStart. It is
   // the unit that INSTALLS bun (tools/setup/install.sh), so it cannot be bun;
   // it moved the dev toolchain out of zeta-install.sh (already retained, same

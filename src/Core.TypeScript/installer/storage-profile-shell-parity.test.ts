@@ -399,7 +399,8 @@ describe("NEVER SHRINKS, through the real function: a re-install over an existin
 
 function writerText(): string {
   const begin = SRC.indexOf('if [ "${ZETA_ROLE:-}" = "joiner" ]; then\n  # The cluster\'s sizes are the FOUNDER\'s');
-  const endMarker = "# ── Step 6.65: persist the node ZetaId";
+  // Step 6.64d (the container-store disk, 081M44HD9T2087G0R000G9NR1N) now sits between this writer and Step 6.65.
+  const endMarker = "# ── Step 6.64d: put the container store on a data disk";
   const end = SRC.indexOf(endMarker);
   if (begin < 0 || end < 0 || end < begin) throw new Error("Step 6.64c writer not found");
   return SRC.slice(begin, end);

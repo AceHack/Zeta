@@ -645,6 +645,25 @@
               echo "$status" | tee "$out"
             '';
 
+          # EVAL-ONLY: the k3s container store on a big data disk (081M44HD9T2087G0R000G9NR1N).
+          # Resolves the SHIPPING control-plane host with and without a data disk and asserts that
+          # k3s.service REQUIRES the bind mount (Requires= + RequiresMountsFor= + a first ExecStartPre
+          # assert), that nothing is pulled into local-fs.target, that the module is inert with no
+          # /etc/zeta/containerd-data-disk, and that a disk the host does not declare is refused at
+          # evaluation. It is an EVAL because k3s-wait-for-address.nix mkForce-overrides
+          # `systemd.services.k3s.after`: only the resolved config shows what k3s actually depends on.
+          # No VM; `nix flake check --no-build` evaluates it.
+          containerd-on-data-disk-eval =
+            let
+              report = import ./nixos/tests/containerd-on-data-disk-eval-test.nix {
+                inherit pkgs;
+                nixosConfig = self.nixosConfigurations.control-plane;
+              };
+            in
+            pkgs.runCommand "containerd-on-data-disk-eval" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Hermetic VM of the same default path: a node that only imports
           # common.nix (+ k3s-server) and never sets dataDisks. Proves the
           # annotator unit and the node label exist on disk, not only in

@@ -1,0 +1,14 @@
+{
+  "id": "080d0848b53a2810a013000811a22290",
+  "at": "2026-10-04T22:44:01.989Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M44HD9T2087G0R000G9NR1N",
+    "type": "task",
+    "title": "Put the k3s containerd store on a data disk (installer fix + live-node cut-over kit)",
+    "slug": "put-the-k3s-containerd-store-on-a-data-disk-installer-fix-li",
+    "priority": "P2",
+    "filename": "081M44HD9T2087G0R000G9NR1N-put-the-k3s-containerd-store-on-a-data-disk-installer-fix-li.md"
+  }
+}

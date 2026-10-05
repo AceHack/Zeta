@@ -141,6 +141,42 @@ left (noisy, not harmful, and the signal that the root is undersized); collectin
 can be re-pulled at its first sync. Pinned by `src/Core.TypeScript/cluster/installer-parity.test.ts` (static) and the CI eval check
 `installer-parity-model` (the real hosts); **not run on a node**.
 
+## Update 2026-10-05 -- option A is implemented: the container store goes on a data disk, and k3s refuses to start without it
+
+Work item `081M44HD9T2087G0R000G9NR1N`; full write-up, runbook and numbers: [`CONTAINERD-ON-BIG-DISK.md`](CONTAINERD-ON-BIG-DISK.md).
+
+**Re-measured on the same node three days later** (the problem did not go away -- it is the steady state):
+
+| Signal | 2026-10-02 | 2026-10-05 |
+| --- | --- | --- |
+| Root `/dev/nvme0n1p2` | 85.6 GB used at the peak | **91 GiB used, 22 GiB free**; free space swung 16.5 -> 36 GiB inside 30 s while CI ran |
+| Container store | imagefs 36.8 GB (37.5 GiB in STORAGE-RELOCATION) | **48 GiB**: snapshots 35, content 14, **132 images**, 534,573 entries |
+| Data disks | nearly empty | `longhorn-disk1` 797 GiB (707 free), `longhorn-disk2` 916 GiB (**766 free**) |
+| What evicts | `imagefs.available<15%` (~17.7 GiB free on root) | the same line, still on root |
+
+**Layout, fresh installs.** `zeta-install.sh` (Step 6.64d) writes `/etc/zeta/containerd-data-disk` naming the largest mounted
+`/var/lib/longhorn-disk*` of at least 200 GiB; `nixos/modules/containerd-on-data-disk.nix` binds `<disk>/containerd` onto
+`/var/lib/rancher/k3s/agent/containerd` before k3s starts, and **k3s refuses to start** if that mount is missing (it would
+otherwise silently re-pull every image onto root). A disk under 200 GiB (a QEMU lane) writes nothing and the store stays on root.
+`/var/lib/kubelet` (2.6 GiB measured) is deliberately not moved.
+
+**The caution in option A's "Cons" column -- measured, and it does not bite here.** Longhorn schedules against
+`storageMaximum - storageReserved` and refuses a replica only when `storageAvailable` would drop under 25% of the disk. The
+store consumes `storageAvailable`: on `longhorn-disk2`, 48 GiB takes it from 872 GB to 821 GB against a floor of 246 GB. The
+installer's capacity check already discounts 25% of raw (`ZETA_LONGHORN_USABLE_PERCENT=75`), so the store sits inside space
+Longhorn was never going to schedule. No Longhorn setting changes. The residual hazard is a data disk near the 200 GiB floor,
+which is why that is the floor. The "dedicated partition" advice stays the better design when a spare disk exists; it was not
+available here, and a bind mount plus a refusal to start is the cheaper way to get the same property.
+
+**Two thresholds move.** `imagefs` now reads the data disk, so `imagefs.available<15%` means 137 GiB free of 916 (it fires at 85%
+used, after Longhorn's 75% line) and image GC (75/65) starts at 75% used of that disk. `nodefs` stays root, so the line that
+evicts for root pressure drops from ~17.7 GiB to 10% = 11.9 GiB free.
+
+**The live node is not fixed by this change alone.** It was installed before the module existed and its store is 48 GiB on
+root. `CONTAINERD-ON-BIG-DISK.md` is the copy-first cut-over (`full-ai-cluster/scripts/move-containerd-to-data-disk.sh`:
+dry-run, online pre-copy, a window of roughly 12-20 minutes, explicit rollback, guarded reclaim). **It has been tested against
+stubs and has never been run.**
+
 ## What is proven and what is unproven
 
 **Proven (offline, in tests that fail without the change):**

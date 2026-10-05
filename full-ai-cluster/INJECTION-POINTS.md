@@ -589,6 +589,31 @@ the profile that install ran, and the node-side module ratchets
 **Not verified here:** nothing in §12 has been booted; see `docs/ops/INSTALL-TIME-CONFIG.md` row 29 and
 "Not verified".
 
+### 13. Container-store disk (docs/ops/INSTALL-TIME-CONFIG.md row 35, 081M44HD9T2087G0R000G9NR1N)
+
+k3s's container store (`/var/lib/rancher/k3s/agent/containerd`: images, snapshots) used to live on the root
+filesystem the installer sizes at a computed 120 GiB floor — 48 GiB of it on the measured node, on a root the
+kubelet evicts pods from, while the data disks beside it were 88% free. It is now **bound onto a data disk
+before k3s starts, and k3s refuses to start without that mount**. Not a zflash option: the installer measures
+the disks it just mounted and decides.
+
+| Property                | Value                                                                                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | automatic: Step 6.64d, after Step 5 has mounted `/mnt/var/lib/longhorn-disk{1..N}`                                                                          |
+| **Content class**       | Public identifier (a mount-point path)                                                                                                                      |
+| **Backed by file**      | `/mnt/etc/zeta/containerd-data-disk` = one mount point, e.g. `/var/lib/longhorn-disk2` (written **only** when a disk of >= 200 GiB exists; symlinked to `/etc/zeta/`) |
+| **Choice**              | `zeta_containerd_disk_pick`: the **largest** mounted `/var/lib/longhorn-disk*`, ties to the lowest number, at least `ZETA_CONTAINERD_MIN_GIB` (200). Below it: nothing written, the store stays on root |
+| **NixOS reader module** | `full-ai-cluster/nixos/modules/containerd-on-data-disk.nix` (every role: a joiner's k3s agent has a containerd too); option `zeta.containerdStore.dataDisk`   |
+| **Reaches the node**    | a `systemd.mounts` bind `<disk>/containerd` → the store path; `k3s.service` `Requires=` it, has `RequiresMountsFor=` it, and its first `ExecStartPre` asserts it (`containerd-store.sh`) |
+| **Failure mode**        | **fail closed**: a missing disk / directory / wrong source keeps k3s down (silent fallback would re-pull every image onto root). Absent file = module inert    |
+| **Validation**          | evaluation asserts the disk is a declared `fileSystems` entry (a plain directory would keep the store on root); `lint-containerd-store.test.ts` executes the script; flake check `containerd-on-data-disk-eval` resolves the shipping host |
+
+Adding it after install: write the mount point to `/etc/zeta/containerd-data-disk` and `nixos-rebuild switch --impure` **only
+on a node whose store is still empty** — on a populated one the prepare unit **refuses** (a mount would hide the 48 GiB), and
+the copy-first path is `docs/ops/CONTAINERD-ON-BIG-DISK.md`.
+
+**Not verified here:** nothing in §13 has been booted; the eval and the script are tested, the systemd ordering on a real boot is not.
+
 ## Operator-driven `zflash` flag inventory (current)
 
 Allowlist from `zflash.ts`:

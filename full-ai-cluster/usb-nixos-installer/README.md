@@ -92,6 +92,20 @@ sync
    target-machine hosts live in `../full-ai-cluster/flake.nix`.)
 8. Reboot.
 
+### Where the disks go (what `zeta-install` lays out)
+
+| Mount | Device | Holds |
+| --- | --- | --- |
+| `/boot` | ESP, 1 GiB | bootloader |
+| `/` | root, a computed **120 GiB** floor | the OS, the Nix store, `/home`, the kubelet's `emptyDir`s |
+| `/var/lib/longhorn-disk1` | the rest of the boot disk | Longhorn replicas, and (on a one-disk machine) the container store |
+| `/var/lib/longhorn-disk{2..N}` | every other internal disk, whole | Longhorn replicas; the **largest** of these holds the container store |
+
+**The container store (`/var/lib/rancher/k3s/agent/containerd`, ~48 GiB on a real node) is not on root.** Step 6.64d of `zeta-install`
+binds `<largest data disk>/containerd` onto it, when that disk is at least 200 GiB, and k3s refuses to start if the bind is ever
+missing (rather than silently re-pulling every image onto the 120 GiB root). On a disk under 200 GiB (a QEMU test lane) nothing is
+written and the store stays on root. Details: [`docs/ops/CONTAINERD-ON-BIG-DISK.md`](../../docs/ops/CONTAINERD-ON-BIG-DISK.md).
+
 ## Re-installing on a machine that already has Zeta on it
 
 `zeta-install.sh` recognises its own prior installs. Before anything

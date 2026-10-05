@@ -359,6 +359,9 @@ jobs:
           # the EVALUATED /iso device. #17751's pin read as correct in source and was
           # discarded by the module system; only an eval can see that, and this step is
           # its only evaluator, so a green here that never reached it would re-open it.
+          # `containerd-on-data-disk-eval` added 2026-10-05 (081M44HD9T2087G0R000G9NR1N): k3s must REQUIRE the
+          # container store's bind mount; the ordering is on this module's own units because k3s's `after` is
+          # mkForce-overridden elsewhere, so only an eval of the resolved host shows the edge.
           # `installer-parity-model` added 2026-10-02 (081M3YY6TWX087G0R003HZTVWQ): the runtime
           # fixes made on node-5b2dfa (443 firewall, GC below the eviction line, key-based sudo
           # off by default) now carried natively; an eval is the only thing that sees them.
@@ -369,14 +372,14 @@ jobs:
                    cilium-wireguard-preflight gpu-node-label-preflight \
                    k3s-registry-mirrors-model k8s-node-tunables-model \
                    k3s-etcd-peers-model install-medium-device-eval \
-                   installer-parity-model; do
+                   installer-parity-model containerd-on-data-disk-eval; do
             grep -q "$c" /tmp/aic-flake-check.log || missing="$missing $c"
           done
           if [ -n "$missing" ]; then
             echo "::error title=Eval-only checks were not among the outputs evaluated::nix flake check never mentioned:$missing. These checks are named by no other step in any workflow, so this step is their only coverage. Either they were renamed or removed, or --all-systems omitted the system they live on. Either way this lane is green about something else."
             exit 1
           fi
-          echo "all thirteen eval-only checks were evaluated."
+          echo "all fourteen eval-only checks were evaluated."
 
       # Regression test for the k3s --cluster-init token deadlock
       # (k3s-server.nix). Boots the control-plane k3s module in a QEMU VM

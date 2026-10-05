@@ -81,6 +81,13 @@
     # whose Jobs resize the PVCs that rung governs. Absent -> adds nothing: the committed rung
     # applies. It never shrinks (/var/lib/zeta/storage-profile-high-water ratchets).
     ./injected-storage-profile.nix
+    # 081M44HD9T2087G0R000G9NR1N: the k3s container store on a big data disk, not the 120 GiB root.
+    # With /etc/zeta/containerd-data-disk present (a mounted /var/lib/longhorn-disk*, written by
+    # zeta-install.sh only when the largest such filesystem is >= 200 GiB), a systemd bind mount puts
+    # /var/lib/rancher/k3s/agent/containerd on it and k3s REFUSES to start if that mount is missing,
+    # instead of silently re-pulling every image onto root. Absent -> adds nothing: root keeps the store.
+    # Needs `--impure` evaluation like every injected-*.nix (lint-nixos-rebuild-needs-impure.ts).
+    ./containerd-on-data-disk.nix
     ./login-banner.nix
     # 081M00KTH58087G0R00120WT6F: the option surface for Secure Boot desired
     # state. At its default phase ("off") it sets NO boot option and contributes

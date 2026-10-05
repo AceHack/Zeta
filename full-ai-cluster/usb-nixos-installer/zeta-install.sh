@@ -579,6 +579,50 @@ zeta_storage_profile_decide() {
 }
 # ZETA-STORAGE-PROFILE-END ---------------------------------------
 
+# ZETA-CONTAINERD-DISK-BEGIN -------------------------------------
+# 081M44HD9T2087G0R000G9NR1N -- which data disk holds k3s's container store. Pure, no I/O; the
+# call site (Step 6.64d) reads the sizes. Executed by src/Core.TypeScript/hygiene/lint-containerd-store.test.ts.
+#
+# THE DEFECT: nothing here ever chose. The installer gave root a computed 120 GiB floor and left
+# /var/lib/rancher/k3s/agent/containerd on it, so on the measured node (2026-10-05) 48 GiB of images and
+# snapshots sat on a root that the kubelet evicts pods from at ~17.7 GiB free, while the two Longhorn data
+# disks (797 + 916 GiB) were 88% free. The fix is nixos/modules/containerd-on-data-disk.nix; THIS decides
+# which disk, by the rule nixos/modules/local-storage-placement.sh already uses for local-path volumes:
+# the LARGEST mounted /var/lib/longhorn-disk* filesystem, ties to the lowest number, and only if it is at
+# least ZETA_CONTAINERD_MIN_GIB. Below that the store stays on root -- a QEMU lane's 1 GiB tail cannot hold
+# 73 GiB of images, and a 200 GiB disk's 25% Longhorn slack (the part Longhorn never schedules) is 50 GiB,
+# so 200 is where the store stops fitting inside space Longhorn was already not going to use.
+# The write is the whole interface: absent file = the module is inert = root keeps the store.
+ZETA_CONTAINERD_MIN_GIB=200
+
+# zeta_containerd_disk_pick <min_gib> [<mountpoint>:<bytes> ...]
+# Prints the chosen mount point, or NOTHING. Entries are considered in the order given (the caller passes
+# them disk1, disk2, ...), and only a STRICTLY larger one displaces the current best, so a tie keeps the
+# lowest number. A junk size is skipped, never trusted: a bad reading must not choose a disk.
+zeta_containerd_disk_pick() {
+  local min_gib="$1" min_bytes best="" best_bytes=0 entry mp bytes
+  shift
+  case "$min_gib" in
+    '' | *[!0-9]*) return 0 ;;
+  esac
+  min_bytes=$(( min_gib * 1073741824 ))
+  for entry in "$@"; do
+    mp="${entry%:*}"
+    bytes="${entry##*:}"
+    case "$mp" in /*) ;; *) continue ;; esac
+    case "$bytes" in '' | *[!0-9]*) continue ;; esac
+    if [ "$bytes" -gt "$best_bytes" ]; then
+      best="$mp"
+      best_bytes="$bytes"
+    fi
+  done
+  if [ -n "$best" ] && [ "$best_bytes" -ge "$min_bytes" ]; then
+    echo "$best"
+  fi
+  return 0
+}
+# ZETA-CONTAINERD-DISK-END ---------------------------------------
+
 # ZETA-PUBLIC-TLS-BEGIN ------------------------------------------
 # 081M3JG74G0087G0R001XJC837 — the two public-TLS settings, resolved at the START
 # of the install. Pure functions plus one resolver; checked for parity against
@@ -4481,6 +4525,29 @@ else
   echo "[storage-profile] the committed '${ZETA_STORAGE_PROFILE_COMMITTED}' profile applies — no /mnt/etc/zeta/storage-profile written"
 fi
 
+# ── Step 6.64d: put the container store on a data disk (081M44HD9T2087G0R000G9NR1N) ──
+# nixos/modules/containerd-on-data-disk.nix binds <disk>/containerd onto /var/lib/rancher/k3s/agent/containerd
+# and makes k3s REFUSE to start if that mount is missing. This step is its only input: one bare mount-point
+# path, chosen by zeta_containerd_disk_pick from what Step 5 actually mounted (sizes measured with df on the
+# mounted filesystems, not restated). Written ONLY when a data disk of >= ZETA_CONTAINERD_MIN_GIB exists; its
+# absence IS the "store stays on root" state, so nothing is written for a small disk. EVERY role gets it
+# (a joiner's k3s agent has a containerd too), unlike the storage profile, which is the founder's.
+ZETA_CONTAINERD_ENTRIES=()
+for mp in "${LONGHORN_MOUNTS[@]}"; do
+  # `|| bytes=0`: under pipefail a failing df must read as "unknown size" (skipped), never abort the install.
+  bytes="$(df -P -B1 "/mnt${mp}" 2>/dev/null | awk 'NR==2 {print $2}')" || bytes=0
+  ZETA_CONTAINERD_ENTRIES+=("${mp}:${bytes:-0}")
+done
+ZETA_CONTAINERD_DISK="$(zeta_containerd_disk_pick "$ZETA_CONTAINERD_MIN_GIB" "${ZETA_CONTAINERD_ENTRIES[@]}")"
+if [ -n "$ZETA_CONTAINERD_DISK" ]; then
+  sudo mkdir -p /mnt/etc/zeta
+  printf '%s\n' "$ZETA_CONTAINERD_DISK" | sudo tee /mnt/etc/zeta/containerd-data-disk >/dev/null
+  sudo chmod 0644 /mnt/etc/zeta/containerd-data-disk
+  echo "[containerd-store] wrote /mnt/etc/zeta/containerd-data-disk (${ZETA_CONTAINERD_DISK}): k3s's container store will live on that disk, not the root filesystem"
+else
+  echo "[containerd-store] no mounted /var/lib/longhorn-disk* of >= ${ZETA_CONTAINERD_MIN_GIB} GiB — the container store stays on the root filesystem (nothing written)"
+fi
+
 # ── Step 6.65: persist the node ZetaId (2026-08-23) ───────────────
 #
 # Aaron 2026-08-22: "yes we should move this to a zetaid."
@@ -5225,6 +5292,9 @@ maybe_symlink /mnt/etc/zeta/lb-pool /etc/zeta/lb-pool
 # storage-profile Application would silently not render and the committed (larger) PVC sizes
 # would apply to a pool that cannot hold them.
 maybe_symlink /mnt/etc/zeta/storage-profile /etc/zeta/storage-profile
+# containerd-on-data-disk.nix readFile's this at evaluation time; without the symlink the bind mount
+# would silently not be declared and k3s would put its container store on the root filesystem.
+maybe_symlink /mnt/etc/zeta/containerd-data-disk /etc/zeta/containerd-data-disk
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).
