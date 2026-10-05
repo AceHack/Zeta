@@ -4047,3 +4047,15 @@ Hard fail: node-5b2dfa readings stated as fact with no transcript (tip message; 
 Does not clear HOLDs on #17916 tips 6c18f4f0 and 6c1e8715, #17914 tip 140d5e07, #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17918 leftover unique @ 2b5c3702fc2ff230fa4d05b22b34bb61545e880e -- GRADE HOLD
+
+2026-10-04 8:47 PM ET. Live head. One parent c6d2c0f9 (HOLD stands, not re-graded). Not a merge. Tip-only +20/-3, 1 file lint-containerd-store.test.ts. auto_merge null. Not merged.
+
+Standing hold carries. This diff does not touch the measured files. CONTAINERD-ON-BIG-DISK.md:16 and containerd-on-data-disk.nix:6 still state node-5b2dfa readings with no transcript. The disk2 versus disk10 tie is not in this diff.
+
+Brace scan finds the first systemd.services.k3s block. Removing requires = [ mountUnit ] went red at line 349. An earlier decoy stayed green, so the scan is not a unique lock. Significant soft, not the hold. bun 39 pass, 0 fail, 117 expects. No check is red here and green on the parent.
+
+Does not clear HOLDs on #17918 tip c6d2c0f9, #17916 tips 6c18f4f0 and 6c1e8715, #17914 tip 140d5e07, #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Sit leftover; Vera will not merge.
