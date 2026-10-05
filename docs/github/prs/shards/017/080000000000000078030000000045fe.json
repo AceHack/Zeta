@@ -1,0 +1,15 @@
+{
+  "pr_number": 17918,
+  "archive_path": "docs/history/pr-reviews/2026/10/05/PR-17918-fix-installer-keep-the-k3s-container-store-off-the-120-gib-root-add-the-live-nod.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM75JTk7",
+    "thread:PRRT_kwDOSF9kNM6o4EQ2"
+  ],
+  "fetched_at": "2026-10-05T03:18:11.754Z",
+  "schema_version": "v1",
+  "commit_sha": "9012de332ea9382ddb5360844f9173acae04d4d4",
+  "title": "fix(installer): keep the k3s container store off the 120 GiB root; add the live-node cut-over kit",
+  "state": "MERGED",
+  "merged_at": "2026-10-05T03:17:24Z",
+  "head_ref": "fix/containerd-on-data-disk"
+}
