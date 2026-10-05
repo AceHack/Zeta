@@ -4035,3 +4035,15 @@ CI ~3:50 AM ET. Tip 101 runs: 72 success, 20 skipped, 8 in progress, 1 neutral, 
 Path to GO: the race fix does not need another change. Rewrite the measured and proven sentences or put the transcript in the tree, and add a test that goes red when the step-6b deletes are removed.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17918 leftover unique @ c6d2c0f9ddf741080d83b6098de99ae8c534f80c -- GRADE HOLD
+
+2026-10-04 8:37 PM ET. Live head. One parent 5da32b28 (not graded). Its parent 1623af12 is the product (not graded). Main 6b743b4d not graded. Not a merge. Tip-only +109/-22, 4 files. Tree versus main +3558/-6, 21 files. auto_merge null. Not merged.
+
+The fail-closed mount, the 200 GiB floor, and the cut-over guards hold. Mutations of the refusal, the assert, the reclaim device guard, and dry-run went red. bun 138 pass, 0 fail, 830 expects.
+
+Hard fail: node-5b2dfa readings stated as fact with no transcript (tip message; CONTAINERD-ON-BIG-DISK.md:16-36 and :113-120; containerd-on-data-disk.nix:6-12). The cut-over window "never executed" is a non-claim. Four tip CI failures are absent on the parent, so they are softs. The disk10 versus disk2 tie-break is a soft.
+
+Does not clear HOLDs on #17916 tips 6c18f4f0 and 6c1e8715, #17914 tip 140d5e07, #17896 tip 2d4825a2, #17893 tip ff0f9e89, #17890 tips 017bdaeb and c9c0d195, #17885 tip 0076be63, #17887 tip 4f184fb7, #17884 tip 17b161df, or #17891 tip fecc0060.
+
+Sit leftover; Vera will not merge.
