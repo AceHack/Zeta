@@ -1,0 +1,38 @@
+{
+  "$comment": [
+    "WHICH HA CHARTS THE MULTI-NODE LANE ASSERTS, AND WHICH IT DOES NOT (081M48Z020C087G0R001E6M83V).",
+    "",
+    "An 'HA chart' is DERIVED, not listed by hand: every Application the single-node readiness",
+    "auditor's extractReplicaClaims() reports with replicas > 1 at nodeCount = 1, UNION every",
+    "entry of k8s/single-node-budget.json `acknowledgedFalseRedundancy`. The union is needed",
+    "because each side misses something the other has: the extractor does not read a CNPG",
+    "Cluster's `instances` (postgres-shared is only in the ledger), and the ledger is hand-kept.",
+    "",
+    "src/Core.TypeScript/cluster/multinode-ha-lane-coverage.test.ts fails when an HA chart is in",
+    "none of the three lists below, when a `covered` entry names a phase the lane does not run,",
+    "or when a `staleLedgerEntries` entry stops being stale. Moving an app from notCovered to",
+    "covered is the work this file tracks; it is done by adding its phase to",
+    "k3s-multinode-ha-agents.nix, never by editing this file alone."
+  ],
+  "lane": "full-ai-cluster/nixos/tests/k3s-multinode-ha-agents.nix",
+  "covered": {
+    "full-ai-cluster/postgres-shared": {
+      "phase": "postgres failed over; pre-crash row present, new write committed",
+      "what": "metal rung (instances 3, enablePDB, preferred anti-affinity) derived from cluster.yaml: 3 instances on 3 distinct nodes, 2 streaming replicas, PDB present; the agent holding the primary is hard-killed; CNPG fails over, the pre-crash row is read and a new write commits. Barman plugin and 20Gi size removed (named in the lane)."
+    },
+    "full-ai-cluster/longhorn": {
+      "phase": "longhorn data intact on agent2, volume degraded",
+      "what": "not an acknowledgedFalseRedundancy entry but the storage every HA chart stands on: prod chart values unmodified, a disk registered on each of 3 nodes (2 of them agents), a zeta-block-replicated-derived class at numberOfReplicas 3 places 3 replicas on 3 distinct nodes, and the data survives hard-killing an agent that held one."
+    }
+  },
+  "notCovered": {
+    "full-ai-cluster/cockroachdb": "3 Raft members, chart soft anti-affinity. Not deployed in the lane: three CockroachDB pods are the heaviest HA workload in the tree and the lane has not yet measured headroom for them beside postgres-shared on 3 x ~3 GiB guests. Next candidate.",
+    "full-ai-cluster/nats": "JetStream config.cluster.replicas 3, no anti-affinity. Not deployed in the lane yet; light enough to be the next addition after cockroachdb's headroom is measured.",
+    "full-ai-cluster/redis": "replica.replicas 2, async replication (no quorum). Not deployed in the lane; its node-loss behaviour has no failover claim to assert without Sentinel, which this tree does not enable.",
+    "full-ai-cluster/kubevirt": "virt-operator replicas 2 from the vendored upstream manifest. Not deployed: KubeVirt needs nested virtualisation inside a QEMU guest on a hosted runner, which the lane does not provide.",
+    "full-ai-cluster/platform": "examples/gmod-server.yaml replicas 2, a sample workload, not on the critical path. Not deployed."
+  },
+  "staleLedgerEntries": {
+    "full-ai-cluster/vault": "acknowledgedFalseRedundancy names it, but no k8s/applications/vault directory exists (openbao is the secrets store and serves replicas: 1). The acknowledgement is dead; removing it from single-node-budget.json is the fix, and this entry then goes red so it is removed here too."
+  }
+}

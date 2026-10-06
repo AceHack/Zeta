@@ -807,6 +807,18 @@
           k3s-ha-longhorn-cluster =
             import ./nixos/tests/k3s-ha-longhorn-cluster.nix { inherit pkgs; };
 
+          # THE MULTI-NODE LANE FOR HA CHARTS: one server + two AGENTS (no
+          # second apiserver/etcd, so it fits a hosted 4-vCPU runner). Longhorn
+          # and postgres-shared (CNPG, metal rung: 3 instances) DERIVED from the
+          # shipped Application/Cluster files; an agent holding the Postgres
+          # primary + a Longhorn replica is hard-killed; failover + both data
+          # paths asserted. Coverage of every HA chart is stated in
+          # nixos/tests/multinode-ha-coverage.json.
+          # REQUIRES internet -> build with `--option sandbox false`.
+          # See nixos/tests/k3s-multinode-ha-agents.nix.
+          k3s-multinode-ha-agents =
+            import ./nixos/tests/k3s-multinode-ha-agents.nix { inherit pkgs; };
+
           # THE ONLY CHECK THAT APPLIES THE REAL FIRST-BOOT ROSTER. Every
           # other VM test above overrides `services.k3s.manifests` away, so
           # the declared boot sequence had never run anywhere. This one boots

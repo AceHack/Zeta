@@ -119,6 +119,14 @@ on:
         description: "Run only the 3-node HA cluster + replicated Longhorn job"
         type: boolean
         default: false
+      # Run ONLY the multi-node lane for HA charts (1 server + 2 agents;
+      # 081M48Z020C087G0R001E6M83V). Same reason as only_cluster_ha: a plain
+      # dispatch would also pay for every dispatch-only step of `build`.
+      #   gh workflow run build-ai-cluster-iso.yml --ref <branch> -F only_cluster_multinode=true
+      only_cluster_multinode:
+        description: "Run only the multi-node HA-charts lane (1 k3s server + 2 agents, Longhorn + postgres-shared, lose an agent). Pass with -F, not -f"
+        type: boolean
+        default: false
       # Symmetric to only_cluster_ha, for the same reason: a plain dispatch runs
       # every dispatch-only scenario (3/4, wifi ESP, keyfile, WP11), several of
       # them 90-100 min, so iterating on ONE of them costs hours of unrelated
@@ -198,9 +206,10 @@ concurrency:
 jobs:
   build:
     name: build-iso
-    # Skipped only by an explicit `only_cluster_ha` dispatch; `inputs` is empty
-    # on every other event, so PR/push/schedule/plain dispatch are unchanged.
-    if: ${{ !inputs.only_cluster_ha }}
+    # Skipped only by an explicit `only_cluster_ha` / `only_cluster_multinode`
+    # dispatch; `inputs` is empty on every other event, so PR/push/schedule/plain
+    # dispatch are unchanged.
+    if: ${{ !inputs.only_cluster_ha && !inputs.only_cluster_multinode }}
     runs-on: ubuntu-24.04
     # Cold-cache PR runs can exceed the old 90-minute budget while still
     # actively compiling Nix dependencies in `Build installer ISO` (run
@@ -1604,7 +1613,7 @@ jobs:
   # Skips the k3s nixosTest checks (x86_64-gated in the flake).
   build-aarch64:
     name: build-iso-aarch64 + qemu-boot
-    if: ${{ !inputs.only_cluster_ha }}
+    if: ${{ !inputs.only_cluster_ha && !inputs.only_cluster_multinode }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 120
     permissions:
@@ -1892,7 +1901,7 @@ jobs:
     # short-circuits, and that input is orthogonal), and PR/push never reached
     # this job at all. Trigger condition only; what the step asserts is
     # unchanged.
-    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.only_wp11 }}
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.only_wp11 && !inputs.only_cluster_multinode }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     permissions:
@@ -1961,4 +1970,106 @@ jobs:
             echo "| samples (10 s) | ${samples} |"
           } >> "$GITHUB_STEP_SUMMARY"
           echo "peak used ${peak} MiB of ${total} MiB over ${samples} samples"
+          df -h /
+
+  # THE MULTI-NODE LANE FOR HA CHARTS (081M48Z020C087G0R001E6M83V): one k3s
+  # server + two k3s AGENTS. Agents run no apiserver/etcd, so this is sized for
+  # the hosted 4-vCPU / 16 GiB runner that `cluster-ha` (three full control
+  # planes) measurably does not fit -- see that job's header for runs
+  # 35920509908, 35926193063, 35930213010. It proves the WORKLOAD half: Longhorn
+  # (prod values, derived from its Application) registers a disk on every node
+  # including the agents and places 3 replicas on 3 nodes; postgres-shared at
+  # the METAL rung (3 CNPG instances, derived from cluster.yaml) spreads over 3
+  # nodes; then the agent holding the Postgres primary and a Longhorn replica is
+  # hard-killed and CNPG failover + both data paths are asserted. It does NOT
+  # prove control-plane HA (one server) -- that stays `cluster-ha`'s, and needs
+  # a bigger runner. Which HA charts it covers and which it does not is stated,
+  # and checked, in full-ai-cluster/nixos/tests/multinode-ha-coverage.json.
+  #
+  # MEASURED on ubuntu-24.04 (4 vCPU / 15988 MiB): run 37501573722 GREEN in
+  # 1161 s of test time, host RAM peak 12222 MiB, host load peak 7.13, one k3s
+  # PID throughout, zero `leaderelection lost`. Run 37493039430 is the same lane
+  # WITHOUT the longhorn-disks.nix agent fix: no Longhorn disk on either agent.
+  # Full per-phase table in the test file's header.
+  #
+  # TIER: workflow_dispatch + the daily schedule, NOT push/PR. One green run is
+  # thin evidence, and the runs measured a PRODUCT hazard that can turn it red
+  # on its own: zeta-block-replicated is 1 replica with dataLocality disabled,
+  # so a Postgres instance's disk can land on the node that is killed (two of
+  # the three runs that reached Postgres placed instances off-node). A
+  # scheduled red there is the lane
+  # reporting that, which is its job; a red on every full-ai-cluster PR would be
+  # the same fact as noise. Promote to push once the schedule has a record.
+  # No k3s/etcd timeout is changed to fit it.
+  cluster-multinode:
+    name: k3s multi-node HA charts (1 server + 2 agents)
+    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && !inputs.only_wp11 && !inputs.only_cluster_ha }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Free runner disk
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+
+      - name: Install Nix
+        # Same pinned installer and settings as the `build` job.
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          determinate: false
+
+      - name: Start host memory + load sampler
+        run: |
+          nproc
+          free -m
+          ls -l /dev/kvm || echo "no /dev/kvm: the nixosTest driver will fall back to TCG"
+          sample_host() {
+            while true; do
+              echo "$(date +%s) $(free -m | awk '/Mem:/{print $3}') $(cut -d' ' -f1 /proc/loadavg)" >> "$RUNNER_TEMP/host-mem.log"
+              sleep 10
+            done
+          }
+          sample_host >/dev/null 2>&1 &
+          disown
+
+      - name: NixOS test — 1 server + 2 agents, lose the agent holding the Postgres primary
+        timeout-minutes: 130
+        working-directory: full-ai-cluster
+        run: |
+          start=$(date +%s)
+          rc=0
+          nix build .#checks.x86_64-linux.k3s-multinode-ha-agents -L --print-build-logs --fallback --option sandbox false || rc=$?
+          echo "k3s-multinode-ha-agents: rc=$rc after $(( $(date +%s) - start )) s"
+          exit "$rc"
+
+      - name: Host resource budget (measured)
+        if: always()
+        run: |
+          log="$RUNNER_TEMP/host-mem.log"
+          if [ ! -s "$log" ]; then
+            echo "::warning::host sampler recorded nothing; no budget measurement for this run"
+            exit 0
+          fi
+          total=$(free -m | awk '/Mem:/{print $2}')
+          peak=$(sort -k2 -n "$log" | tail -n1 | awk '{print $2}')
+          peak_load=$(sort -k3 -g "$log" | tail -n1 | awk '{print $3}')
+          samples=$(wc -l < "$log")
+          {
+            echo "### k3s-multinode-ha-agents host budget"
+            echo ""
+            echo "| metric | value |"
+            echo "|---|---|"
+            echo "| host vCPUs | $(nproc) |"
+            echo "| host RAM total | ${total} MiB |"
+            echo "| host RAM used, peak | ${peak} MiB |"
+            echo "| host 1-min load, peak | ${peak_load} |"
+            echo "| samples (10 s) | ${samples} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "peak used ${peak} MiB of ${total} MiB, peak load ${peak_load} on $(nproc) vCPUs, over ${samples} samples"
           df -h /
