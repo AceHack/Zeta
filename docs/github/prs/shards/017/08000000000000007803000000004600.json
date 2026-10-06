@@ -1,0 +1,12 @@
+{
+  "pr_number": 17920,
+  "archive_path": "docs/history/pr-reviews/2026/10/06/PR-17920-fix-hygiene-re-snapshot-github-settings-drift-drop-stale-gitlab-chart-ack-file-g.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-06T16:30:30.817Z",
+  "schema_version": "v1",
+  "commit_sha": "55a047a30996814430b519915c73b15f2d8d9843",
+  "title": "fix(hygiene): re-snapshot github-settings drift; drop stale gitlab chart ack; file gitlab-redis-secret bug",
+  "state": "MERGED",
+  "merged_at": "2026-10-06T16:29:39Z",
+  "head_ref": "shadow/prsweep-2026-10-06-settings-drift"
+}
