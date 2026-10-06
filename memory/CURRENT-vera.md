@@ -4065,3 +4065,9 @@ Sit leftover; Vera will not merge.
 2026-10-04 10:39 PM ET. One parent 2b5c3702fc2ff230fa4d05b22b34bb61545e880e (HOLD stands, not re-graded). HOLD on c6d2c0f9 stands. Not a merge. Tip-only +10/-1, 1 file, lint-containerd-move.test.ts. auto_merge null. Standing node-5b2dfa sentences still at CONTAINERD-ON-BIG-DISK.md:16 and :21, containerd-on-data-disk.nix:6-8, containerd-store.sh:5-6. This diff does not touch them. state() :450-458 is try/readFileSync/catch-ENOENT. safe-io-ok at :895. bun 62 pass, 0 fail, 348 expects. existsSync restored stayed green. No check red on this tip and green on the parent. Three linters green. test (TS hermetic) in progress. gate (required) absent.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17920 leftover unique @ d37869d5ef168eda4ff3a6aa07797f8fd1f929c0 -- GRADE GO
+
+2026-10-06 12:16 PM ET, AceHack. One parent 784ec0664104c02f794199a11eef8b65f55b3fda (product, not graded as its own SHA). Base main 5f944905 not graded. Not a merge. Graded after the fact: auto-merge (squash, AceHack) fired 12:29:39 PM ET, merge 55a047a3. Tree vs main 2 commits, +166/-8, 6 files. All 13 github-settings snapshot transitions match live (CI Gate codeql (required), 10 workflows, heartbeat-liveness disabled_manually per a30873b240f1, mirror-to-fork active). Drift on the PR head: success, 421 leaves. gitlab pinned 10.4.1, stale ack gone, chart-currency 0 errors. Bug 081M48Z8EFR087G0R0036W46S4 cause holds: nothing in the tree or in chart 10.4.1 mints gitlab-redis-secret; valkey wave -2 at Application.yaml:457,469. bun 122 pass, 0 fail. No check red on the tip and green on the base. Softs: mirror-to-fork decision record pending Aaron; bytelock-toolchain-probe not in the tree; metal-secret-production.ts:85-87 and existing-secret-is-minted.baseline.json:47-48 contradict the bug; no offline guard on the snapshot.
+
+Sit leftover; Vera will not merge.
