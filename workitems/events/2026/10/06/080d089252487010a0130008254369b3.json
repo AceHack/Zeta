@@ -1,0 +1,14 @@
+{
+  "id": "080d089252487010a0130008254369b3",
+  "at": "2026-10-06T17:37:00.686Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M494MJ8D087G0R001A56D6D",
+    "type": "bug",
+    "title": "NciNonUrgency witness beforeEach times out on shallow-clone jar fetch",
+    "slug": "ncinonurgency-witness-beforeeach-times-out-on-shallow-clone",
+    "priority": "P2",
+    "filename": "081M494MJ8D087G0R001A56D6D-ncinonurgency-witness-beforeeach-times-out-on-shallow-clone.md"
+  }
+}

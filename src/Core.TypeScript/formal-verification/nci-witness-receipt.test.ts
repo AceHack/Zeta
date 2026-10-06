@@ -1,5 +1,5 @@
 // nci-witness-receipt.test.ts — byte-pinned finite formal-witness controls only.
-import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+import { afterEach, beforeAll, beforeEach, describe, expect, test } from "bun:test";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -38,21 +38,41 @@ const HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3";
  * CI run after the de-vendoring, which is the only place that could have shown
  * it. Fetching that one commit brings the blob with it, and GitHub serves a
  * fetch by explicit sha.
+ *
+ * That fetch is a one-time cost. bun's default hook timeout is 5s (see
+ * `audit-scan-floor-routes.test.ts`); paying it in `beforeEach` on a
+ * shallow clone timed out the first test at 5008ms. Cache the bytes, fetch
+ * from `beforeAll` with a 30s budget, and kill a hung `git` at 25s so the
+ * job cap is not the first timeout that fires. This is not a WP11 / apt
+ * budget raise.
  */
 const HISTORICAL_JAR_COMMIT = "c6f83e35e20f8648a8a408d23f13ea3e42927264";
 
-function git(args: readonly string[]): { status: number | null; stdout: Buffer } {
-  const result = spawnSync("git", args, { cwd: LIVE_ROOT, maxBuffer: 64 * 1024 * 1024 });
-  return { status: result.status, stdout: result.stdout };
+function git(args: readonly string[], timeoutMs = 25_000): { status: number | null; stdout: Buffer } {
+  const result = spawnSync("git", args, {
+    cwd: LIVE_ROOT,
+    maxBuffer: 64 * 1024 * 1024,
+    timeout: timeoutMs,
+  });
+  return { status: result.status, stdout: result.stdout ?? Buffer.alloc(0) };
 }
 
+let jarBytes: Buffer | undefined;
+
 function historicalJarBytes(): Buffer {
+  if (jarBytes !== undefined) return jarBytes;
   const direct = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
-  if (direct.status === 0) return direct.stdout;
+  if (direct.status === 0) {
+    jarBytes = direct.stdout;
+    return jarBytes;
+  }
   // Shallow clone: deepen by exactly the one commit that carries the blob.
   git(["fetch", "--depth", "1", "--no-tags", "origin", HISTORICAL_JAR_COMMIT]);
   const retry = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
-  if (retry.status === 0) return retry.stdout;
+  if (retry.status === 0) {
+    jarBytes = retry.stdout;
+    return jarBytes;
+  }
   // RAISE rather than skip. A silently-skipped historical witness is the exact
   // vacuity this file exists to prevent -- a check that did not run reading as
   // one that passed. What this cannot distinguish is "the bytes are wrong" from
@@ -106,6 +126,10 @@ function copiedSubject(
 }
 
 describe("finite NciNonUrgency witness receipt", () => {
+  beforeAll(() => {
+    historicalJarBytes();
+  }, 30_000);
+
   beforeEach(() => {
     historicalSubject = copiedSubject();
   });
