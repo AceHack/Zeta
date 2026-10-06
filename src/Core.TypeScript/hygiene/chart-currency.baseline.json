@@ -22,12 +22,6 @@
   ],
   "acknowledged": [
     {
-      "chart": "gitlab",
-      "reason": "162 releases behind, 8.7.0 -> 10.3.1, MAJOR. Measured 2026-09-04: 10.x requires THREE external dependencies we do not run (external object storage among them), and gitlab is already the single largest Application in the tree at 2525m -- over what one hosted runner can hold (2125m). The bump is a migration with a prerequisite list, not a version change.",
-      "liftsWhen": "the three external dependencies exist and gitlab has governed resourceClaims so a dev rung can size it. Both are filed.",
-      "observed": "2026-09-05"
-    },
-    {
       "chart": "temporal",
       "reason": "26 releases behind, 0.59.0 -> 1.6.0, MAJOR, and measured rather than assumed: `sql.driver` is renamed `sql.pluginName` (a bump that left the key alone would render, deploy, and point Temporal at no datastore), five bundled subcharts are removed upstream, and appVersion 1.27.2 -> 1.31.2 is a SERVER upgrade whose schema job runs versioned SQL migrations against CockroachDB that do not roll back cleanly. `numHistoryShards` is immutable after first deploy.",
       "liftsWhen": "the migration is done as its own change with its own testing -- and it is now on the critical path, because OpenSearch-backed visibility needs Temporal server >= 1.30.1.",

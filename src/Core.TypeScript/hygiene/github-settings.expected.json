@@ -101,6 +101,9 @@
               {
                 "context": "gate (required)",
                 "integration_id": 15368
+              },
+              {
+                "context": "codeql (required)"
               }
             ],
             "strict_required_status_checks_policy": false
@@ -356,6 +359,11 @@
       "state": "active"
     },
     {
+      "name": "bytelock-toolchain-probe",
+      "path": ".github/workflows/bytelock-toolchain-probe.yml",
+      "state": "active"
+    },
+    {
       "name": "chart-version-refresh",
       "path": ".github/workflows/chart-version-refresh.yml",
       "state": "active"
@@ -374,6 +382,11 @@
       "name": "context-cost-trend-cadence",
       "path": ".github/workflows/context-cost-trend-cadence.yml",
       "state": "disabled_manually"
+    },
+    {
+      "name": "control-plane-host-boots-k3s-vm",
+      "path": ".github/workflows/control-plane-host-boots-k3s-vm.yml",
+      "state": "active"
     },
     {
       "name": "docker-nixos-install-sh-test",
@@ -426,6 +439,11 @@
       "state": "active"
     },
     {
+      "name": "first-boot-replica",
+      "path": ".github/workflows/first-boot-replica.yml",
+      "state": "active"
+    },
+    {
       "name": "gate",
       "path": ".github/workflows/gate.yml",
       "state": "active"
@@ -446,9 +464,14 @@
       "state": "active"
     },
     {
+      "name": "gitlab-live-proof",
+      "path": ".github/workflows/gitlab-live-proof.yml",
+      "state": "active"
+    },
+    {
       "name": "heartbeat-liveness",
       "path": ".github/workflows/heartbeat-liveness.yml",
-      "state": "active"
+      "state": "disabled_manually"
     },
     {
       "name": "helm-validate",
@@ -491,8 +514,18 @@
       "state": "active"
     },
     {
+      "name": "k3s-first-boot-roster-vm",
+      "path": ".github/workflows/k3s-first-boot-roster-vm.yml",
+      "state": "active"
+    },
+    {
       "name": "k8s-argocd-health-test",
       "path": ".github/workflows/k8s-argocd-health-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "k8s-cnpg-live",
+      "path": ".github/workflows/k8s-cnpg-live.yml",
       "state": "active"
     },
     {
@@ -503,6 +536,11 @@
     {
       "name": "keyring 1000x DST",
       "path": ".github/workflows/keyring-dst1000.yml",
+      "state": "active"
+    },
+    {
+      "name": "lean-cslib",
+      "path": ".github/workflows/lean-cslib.yml",
       "state": "active"
     },
     {
@@ -518,6 +556,11 @@
     {
       "name": "lint-autofix-apply",
       "path": ".github/workflows/lint-autofix-apply.yml",
+      "state": "active"
+    },
+    {
+      "name": "lock-cross-os-stability",
+      "path": ".github/workflows/lock-cross-os-stability.yml",
       "state": "active"
     },
     {
@@ -563,7 +606,7 @@
     {
       "name": "mirror-to-fork",
       "path": ".github/workflows/mirror-to-fork.yml",
-      "state": "disabled_manually"
+      "state": "active"
     },
     {
       "name": "multiboot-qemu-uefi-smoke",
@@ -706,8 +749,18 @@
       "state": "active"
     },
     {
+      "name": "verify-mise-lock",
+      "path": ".github/workflows/verify-mise-lock.yml",
+      "state": "active"
+    },
+    {
       "name": "verify-ollama-pin",
       "path": ".github/workflows/verify-ollama-pin.yml",
+      "state": "active"
+    },
+    {
+      "name": "verify-rustup-pin",
+      "path": ".github/workflows/verify-rustup-pin.yml",
       "state": "active"
     },
     {
