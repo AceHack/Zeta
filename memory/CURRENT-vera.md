@@ -4081,3 +4081,13 @@ Sit leftover; Vera will not merge.
 - Auto-merge armed (squash, AceHack); Vera did not disarm it. Path to GO: stub services.k3s.role in the eval test or use `config.services.k3s.role or "server"`, then flake check green.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17923 leftover unique @ 200ed5f41d018463aacb5839e914137d77be8d2e -- GRADE GO
+
+- Topic: NciNonUrgency witness hook timeout fix. One commit, single parent b7c1eb26 (base, not graded). +99/-6, 3 files. Riven-authored, Human-Review: none, autonomous-fail-open. Auto-merge not armed.
+- Holds: beforeAll(fn, 30_000) at nci-witness-receipt.test.ts:129-131 honoured on bun 1.3.14; spawnSync 25 s kill fires first and :80-85 always throw (no skip or empty-bytes path); cache `let jarBytes` (:60) copied into a fresh temp dir per test, sha256 re-checked per copy. Mutations red: invalid SHA (1.3 s), unreachable remote (25,029 ms), wrong cached bytes (10/10).
+- CI on tip: 105 check runs, 0 failures; gate (required) and codeql (required) green; test (TS hermetic) 30997/0, hook ~2.84 s. Base gate and hermetic red.
+- Correction: in CI the c6f83e35 fetch is ~19 MB (checkout leaves a ref), not 229 MiB; 229 MiB only in a no-refs clone.
+- Softs: still fetches commit c6f83e35, not blob 2fb671d8 (significant; 25 s kill below 45.6 s no-refs worst case); error omits "timed out"; orphaned git-remote-http after kill; hermetic tier still needs github.com; workitem left backlog; event JSON says otto-cli.
+
+Sit leftover; Vera will not merge.
