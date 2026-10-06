@@ -1,0 +1,12 @@
+{
+  "pr_number": 17924,
+  "archive_path": "docs/history/pr-reviews/2026/10/06/PR-17924-chore-deps-bump-the-uv-group-across-2-directories-with-3-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-06T18:40:02.777Z",
+  "schema_version": "v1",
+  "commit_sha": "07f2f9e69a4d446b5c0d711595087af99d3d580b",
+  "title": "chore(deps): Bump the uv group across 2 directories with 3 updates",
+  "state": "MERGED",
+  "merged_at": "2026-10-06T18:39:18Z",
+  "head_ref": "dependabot/uv/src/Arc.Python/uv-b34261f0a2"
+}

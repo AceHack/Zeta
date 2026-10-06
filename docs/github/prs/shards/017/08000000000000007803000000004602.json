@@ -1,0 +1,12 @@
+{
+  "pr_number": 17922,
+  "archive_path": "docs/history/pr-reviews/2026/10/06/PR-17922-test-cluster-multi-node-lane-for-ha-charts-1-server-2-agents-longhorn-disk-annot.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-06T18:19:35.842Z",
+  "schema_version": "v1",
+  "commit_sha": "fd40c87750030827980ce5102a9ca7ad1c25fb40",
+  "title": "test(cluster): multi-node lane for HA charts (1 server + 2 agents) + Longhorn disk annotator fix for agents",
+  "state": "MERGED",
+  "merged_at": "2026-10-06T18:07:36Z",
+  "head_ref": "shadow/multinode-ha-lane-agentdisk"
+}
