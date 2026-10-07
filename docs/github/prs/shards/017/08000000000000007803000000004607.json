@@ -1,0 +1,12 @@
+{
+  "pr_number": 17927,
+  "archive_path": "docs/history/pr-reviews/2026/10/07/PR-17927-fix-longhorn-default-k3s-role-so-iso-flake-eval-can-read-the-annotator.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-07T06:29:56.990Z",
+  "schema_version": "v1",
+  "commit_sha": "7147fab8c995697b357c5c2fd35519ce758d93dd",
+  "title": "fix(longhorn): default k3s.role so ISO flake eval can read the annotator",
+  "state": "MERGED",
+  "merged_at": "2026-10-07T06:29:10Z",
+  "head_ref": "cursor/longhorn-role-or-27c5"
+}
