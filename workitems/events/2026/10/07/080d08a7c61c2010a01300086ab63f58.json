@@ -1,0 +1,14 @@
+{
+  "id": "080d08a7c61c2010a01300086ab63f58",
+  "at": "2026-10-07T06:06:49.732Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M4AFHGW3087G0R00023K35E",
+    "type": "bug",
+    "title": "Longhorn disk annotator reads k3s.role on hosts that have no k3s module",
+    "slug": "longhorn-disk-annotator-reads-k3s-role-on-hosts-that-have-no",
+    "priority": "P2",
+    "filename": "081M4AFHGW3087G0R00023K35E-longhorn-disk-annotator-reads-k3s-role-on-hosts-that-have-no.md"
+  }
+}

@@ -208,10 +208,19 @@ in
       # lets a kubelet get and patch its own Node object (NodeRestriction
       # limits it to that one object and to non-restricted labels;
       # annotations are allowed), which is exactly and only what this needs.
+      #
+      # `or "server"` is load-bearing. This module is imported from common.nix
+      # and from the registration eval stub, both of which can expose
+      # `services.k3s.extraFlags` without ever importing nixpkgs' k3s module,
+      # so `config.services.k3s.role` does not exist. #17922 read `.role`
+      # directly; scheduled `nix flake check --all-systems` on eb6879f0 then
+      # died with `attribute 'role' missing` at this interpolation. Missing
+      # role keeps the server path, which is what this unit used before that
+      # PR. Do not lengthen WP11.
       script = ''
         set -euo pipefail
         export KUBECONFIG=${
-          if config.services.k3s.role == "agent"
+          if (config.services.k3s.role or "server") == "agent"
           then "/var/lib/rancher/k3s/agent/kubelet.kubeconfig"
           else "/etc/rancher/k3s/k3s.yaml"
         }

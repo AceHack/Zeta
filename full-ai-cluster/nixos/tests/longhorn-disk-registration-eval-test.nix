@@ -201,6 +201,31 @@ let
       ];
     }).config;
 
+  # The default stub declares services.k3s.extraFlags and NOT services.k3s.role,
+  # which is the ISO / flake-check shape #17922 missed: attribute 'role' missing.
+  # A second stub adds the option so the agent and server paths can be pinned.
+  stubK3sRole =
+    { lib, ... }:
+    {
+      options.services.k3s.role = lib.mkOption {
+        type = lib.types.str;
+        default = "server";
+      };
+    };
+
+  resolveWithRole =
+    role: hostModule:
+    (lib.evalModules {
+      modules = [
+        stubOptions
+        stubK3sRole
+        disksFile
+        { services.k3s.role = role; }
+        hostModule
+        { _module.args.pkgs = pkgs; }
+      ];
+    }).config;
+
   # ---------------------------------------------------------------------------
   # Hosts, in the shapes that actually exist in this tree.
   # ---------------------------------------------------------------------------
@@ -476,15 +501,39 @@ let
       # dataDisks falls back to [ "/var/lib/longhorn" ], and the three-part
       # mechanism must still arm. An empty default would drop the label and
       # silently starve the node once createDefaultDiskLabeledNodes=true.
+      #
+      # Also the ISO / flake-check path: this stub has extraFlags and no
+      # services.k3s.role. Forcing `.script` is what went red on eb6879f0
+      # (`attribute 'role' missing`). Missing role must keep the server
+      # kubeconfig, not throw.
       let
         c = resolve { fileSystems = noLonghorn; };
         unit = c.systemd.services.zeta-longhorn-node-disks or null;
+        script = unit.script or "";
       in
       builtins.elem "--node-label=node.longhorn.io/create-default-disk=config" c.services.k3s.extraFlags
       && unit != null
-      && builtins.isString (unit.script or "")
-      && lib.hasInfix "/var/lib/longhorn" (unit.script or "")
-      && lib.hasInfix "default-disks-config" (unit.script or "")
+      && builtins.isString script
+      && lib.hasInfix "/var/lib/longhorn" script
+      && lib.hasInfix "default-disks-config" script
+      && lib.hasInfix "/etc/rancher/k3s/k3s.yaml" script
+      && !(lib.hasInfix "kubelet.kubeconfig" script)
+    ))
+    (check "an agent annotator uses the kubelet kubeconfig, not the admin kubeconfig" (
+      let
+        c = resolveWithRole "agent" { fileSystems = noLonghorn; };
+        script = (c.systemd.services.zeta-longhorn-node-disks or { }).script or "";
+      in
+      lib.hasInfix "/var/lib/rancher/k3s/agent/kubelet.kubeconfig" script
+      && !(lib.hasInfix "/etc/rancher/k3s/k3s.yaml" script)
+    ))
+    (check "a server annotator keeps the admin kubeconfig" (
+      let
+        c = resolveWithRole "server" { fileSystems = noLonghorn; };
+        script = (c.systemd.services.zeta-longhorn-node-disks or { }).script or "";
+      in
+      lib.hasInfix "/etc/rancher/k3s/k3s.yaml" script
+      && !(lib.hasInfix "kubelet.kubeconfig" script)
     ))
 
     # -- P6 reachability, measured rather than assumed -----------------------
