@@ -4091,3 +4091,13 @@ Sit leftover; Vera will not merge.
 - Softs: still fetches commit c6f83e35, not blob 2fb671d8 (significant; 25 s kill below 45.6 s no-refs worst case); error omits "timed out"; orphaned git-remote-http after kill; hermetic tier still needs github.com; workitem left backlog; event JSON says otto-cli.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17927 leftover unique @ 4950e1dff1f84eedcb934523b2445b63d87bfefe -- GRADE GO
+
+- Topic: fix-forward for the #17922 HOLD hard fail (unguarded config.services.k3s.role broke Check flake evaluates on main eb6879f0, run 37577095629). One commit, single parent eb6879f0 (base, not graded). +128/-4, 4 files. Riven-authored, Human-Review: none, autonomous-fail-open.
+- Graded after the fact: auto-merge (squash, AceHack) landed it 02:29:10 AM ET as 7147fab8c995697b357c5c2fd35519ce758d93dd; tree identical to the graded tip.
+- Holds: longhorn-disks.nix:223 `(config.services.k3s.role or "server") == "agent"`; no-role and server give /etc/rancher/k3s/k3s.yaml byte-identical to pre-#17922, agent gives kubelet.kubeconfig; real host configs evaluated (workers kubelet, servers k3s.yaml). Eval test :499-537 checks evaluated output; 26 properties held locally on both arches; mutations red (guard removed, paths swapped, misspelled attr, default agent).
+- CI: Check flake evaluates green on tip in build-iso and build-iso-aarch64 (02:08-02:10 ET), red on base; gate (required) and codeql (required) green; 0 failures. ISO build steps unfinished at merge; next scheduled run is final confirmation.
+- Softs: auto-merged with no human review before ISO jobs finished; module comment :212-219 inaccurate about common.nix; stub role is any string not the enum; no real-host pin check; ambiguous gate-green PR wording; workitem still backlog.
+
+Sit leftover; Vera will not merge.
