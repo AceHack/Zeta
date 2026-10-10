@@ -1,0 +1,12 @@
+{
+  "pr_number": 17931,
+  "archive_path": "docs/history/pr-reviews/2026/10/10/PR-17931-deps-bump-sympy-from-1-14-0rc1-to-1-14-0-in-src-core-python.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-10T07:30:52.655Z",
+  "schema_version": "v1",
+  "commit_sha": "583d05ab5455a5123b0b77e7f319f41c0e510f8d",
+  "title": "deps: Bump sympy from 1.14.0rc1 to 1.14.0 in /src/Core.Python",
+  "state": "MERGED",
+  "merged_at": "2026-10-10T07:30:09Z",
+  "head_ref": "dependabot/uv/src/Core.Python/sympy-1.14.0"
+}
