@@ -1,0 +1,12 @@
+{
+  "pr_number": 17930,
+  "archive_path": "docs/history/pr-reviews/2026/10/10/PR-17930-deps-bump-the-uv-minor-patch-group-in-src-core-python-with-3-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-10T07:30:59.326Z",
+  "schema_version": "v1",
+  "commit_sha": "e9ebc789d812e7967c7097040f0cadbec91f77de",
+  "title": "deps: Bump the uv-minor-patch group in /src/Core.Python with 3 updates",
+  "state": "MERGED",
+  "merged_at": "2026-10-10T07:30:12Z",
+  "head_ref": "dependabot/uv/src/Core.Python/uv-minor-patch-00359f9450"
+}

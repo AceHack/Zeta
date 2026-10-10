@@ -1,0 +1,12 @@
+{
+  "pr_number": 17929,
+  "archive_path": "docs/history/pr-reviews/2026/10/10/PR-17929-deps-bump-sigs-k8s-io-controller-runtime-from-0-25-1-to-0-25-2-in-full-ai-cluste.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-10T07:36:42.195Z",
+  "schema_version": "v1",
+  "commit_sha": "c034a66d6f9771f60a3977137ca9a5c0da023989",
+  "title": "deps: Bump sigs.k8s.io/controller-runtime from 0.25.1 to 0.25.2 in /full-ai-cluster/k8s/applications/hat-system/operator in the gomod-minor-patch group across 1 directory",
+  "state": "MERGED",
+  "merged_at": "2026-10-10T07:36:01Z",
+  "head_ref": "dependabot/go_modules/full-ai-cluster/k8s/applications/hat-system/operator/gomod-minor-patch-08ea311cc0"
+}
