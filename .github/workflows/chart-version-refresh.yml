@@ -143,7 +143,7 @@ jobs:
       # Always uploaded, including on the failing path — the diff IS the output.
       - name: Upload the refreshed snapshot
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: published-chart-versions-${{ github.run_id }}
           path: src/Core.TypeScript/hygiene/published-chart-versions.json
@@ -185,7 +185,7 @@ jobs:
       # committed report is stale, THIS is the file that replaces it.
       - name: Upload the currency report and the publish-date snapshot
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: chart-currency-${{ github.run_id }}
           path: |
@@ -242,7 +242,7 @@ jobs:
       # file that replaces it.
       - name: Upload the refreshed image-provenance snapshot
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: image-source-provenance-${{ github.run_id }}
           path: full-ai-cluster/k8s/image-source-provenance.json

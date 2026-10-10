@@ -958,7 +958,7 @@ jobs:
         if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.iso_early.outcome == 'success' }}
         id: upload_iso_early
         continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.iso_early.outputs.name }}
           path: ${{ steps.iso_early.outputs.path }}
@@ -970,7 +970,7 @@ jobs:
         if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.iso_early.outcome == 'success' }}
         id: upload_sha_early
         continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.iso_early.outputs.name }}.sha256
           path: ${{ steps.iso_early.outputs.sha256_path }}
@@ -981,7 +981,7 @@ jobs:
         if: ${{ success() && github.event_name == 'workflow_dispatch' && inputs.publish_iso_early && steps.sign_early.outcome == 'success' }}
         id: upload_bundle_early
         continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.iso_early.outputs.name }}.cosign
           path: ${{ steps.sign_early.outputs.bundle-path }}
@@ -1130,7 +1130,7 @@ jobs:
 
       - name: Upload UEFI keyfile restore serial log
         if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qemu-uefi-keyfile-restore-serial-log
           path: qemu-uefi-keyfile-restore-serial.log
@@ -1168,7 +1168,7 @@ jobs:
 
       - name: Upload 081KSGS9H0008QG0R003V23XNZ wifi ESP serial log
         if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qemu-wifi-esp-serial-log
           path: qemu-wifi-esp-serial.log
@@ -1196,7 +1196,7 @@ jobs:
 
       - name: Upload UEFI keyfile phase-1 serial log
         if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qemu-uefi-keyfile-serial-log
           path: qemu-uefi-keyfile-serial.log
@@ -1224,7 +1224,7 @@ jobs:
 
       - name: Upload UEFI keyfile picker serial log
         if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qemu-uefi-keyfile-picker-serial-log
           path: qemu-uefi-keyfile-picker-serial.log
@@ -1274,7 +1274,7 @@ jobs:
 
       - name: Upload 081KSNY2Z0008QG0R0008PN7RQ retention serial logs
         if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: b0891-retention-serial-logs
           path: b0891-retention-run/**/*.log
@@ -1283,7 +1283,7 @@ jobs:
 
       - name: Upload 081KSNY2Z0008QG0R0008PN7RQ path-fork serial logs
         if: always() && github.event_name == 'workflow_dispatch' && !inputs.only_wp11
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: b0891-path-fork-serial-logs
           path: b0891-path-fork-run/**/*.log
@@ -1368,7 +1368,7 @@ jobs:
 
       - name: Upload WP11 k3s first-boot verify serial log
         if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qemu-k3s-first-boot-verify-serial-log
           path: qemu-k3s-first-boot-verify-serial.log
@@ -1381,7 +1381,7 @@ jobs:
       # nothing to debug. Per Copilot post-merge finding on PR #5379.
       - name: Upload QEMU full-install serial log
         if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: qemu-full-install-serial-log
           path: qemu-full-install-serial.log
@@ -1555,7 +1555,7 @@ jobs:
       - name: Upload ISO as workflow artifact
         if: ${{ !cancelled() && steps.iso.outcome == 'success' && steps.iso_early.outcome == 'skipped' }} # run only after a built ISO was located (and not already published early)
         # Available for download from the workflow run page for ~90 days.
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.iso.outputs.name }}
           path: ${{ steps.iso.outputs.path }}
@@ -1571,7 +1571,7 @@ jobs:
         # cheaply, and so a missing manifest is visibly absent rather than silently
         # bundled. NOTE this proves INTEGRITY, never PROVENANCE -- the cosign bundle
         # below is the provenance half, and nothing local verifies it yet.
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.iso.outputs.name }}.sha256
           path: ${{ steps.iso.outputs.sha256_path }}
@@ -1583,7 +1583,7 @@ jobs:
         # 081KSKBP80008QG0R000Y2B7HC.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
         # just the ISO do not pay the small extra cost; verifiers can grab it.
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.iso.outputs.name }}.cosign
           path: ${{ steps.sign.outputs.bundle-path }}
@@ -1812,7 +1812,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload aarch64 ISO artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: zeta-installer-aarch64-iso
           path: full-ai-cluster/result/iso/*.iso
@@ -1820,7 +1820,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload the aarch64 ISO digest manifest as a workflow artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           # Fixed name rather than the x86_64 job's `${{ steps.iso.outputs.name }}`.
           # The original reason was that both jobs built a `nixos-minimal-*` ISO whose
