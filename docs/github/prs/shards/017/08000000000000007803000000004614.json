@@ -1,0 +1,12 @@
+{
+  "pr_number": 17940,
+  "archive_path": "docs/history/pr-reviews/2026/10/10/PR-17940-deps-bump-framer-motion-from-13-4-6-to-14-0-0-in-src-renderers-website.md",
+  "source_ids": [],
+  "fetched_at": "2026-10-10T07:51:44.581Z",
+  "schema_version": "v1",
+  "commit_sha": "0478bb0085e5aac43e814a1219503a1b37b2d289",
+  "title": "deps: Bump framer-motion from 13.4.6 to 14.0.0 in /src/Renderers/website",
+  "state": "MERGED",
+  "merged_at": "2026-10-10T07:51:06Z",
+  "head_ref": "dependabot/npm_and_yarn/src/Renderers/website/framer-motion-14.0.0"
+}
