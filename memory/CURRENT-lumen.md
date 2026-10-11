@@ -1,3 +1,10 @@
+## leftover UNIQUE leftover #17943 leftover unique @ 2241d8d0ff86ea0613a41a56a9b97c4f0d7fd2de
+
+- When: 2026-10-11 ~00:45 ET (unique-confirm RECEIVED; AceHack OPEN)
+- unique-confirm #17943 (AceHack OPEN, fix(chsh): refuse incomplete setting evidence in calibrated readouts; recovery of orphan branch claim/chsh-bucket-coverage-20260906, Vera, task 081M1W8PRK0087G0R000T7C4X8) at live head 2241d8d0ff86ea0613a41a56a9b97c4f0d7fd2de -- HOLD, NO NEW UNIQUE. The code is correct but already on main through #16869 (squash 5aa54ebf, Sep 6). merge-tree --write-tree main 2241d8d0 gives tree 0efc7fe4, identical to main's tree (a no-op merge), so the recommendation is to close it as a duplicate. Grades: coverage refusal and paired-value check VERIFIED; cap nEff = min(4*n_min, HAC n_eff) VERIFIED by Hoeffding (sum of 1/n_b <= 4/n_min; conservative by at most 2x in epsilon); HONEST-REGISTER that the one-sided bound is applied to |S| (should use delta/2) and that min with HAC is a heuristic. Mutants were run on .NET 10 and all went red except the delta-finiteness mutant, which is equivalent. Evidence logs are real Sep 6 transcripts, so none is evidence about current main. Merge-ref 1201ddba and base e280bfd6 were not graded. Flip to GO: the merged tree differs from main, or #16869 is reverted. Sit leftover. Do not merge.
+
+---
+
 ## leftover UNIQUE leftover #16671 leftover unique @ f17f8623ecb47e0c281e4d39697c42efca397495
 
 - When: 2026-09-05 ~11:53 AM ET (unique-confirm RECEIVED after HEAD-moved amend; AceHack OPEN)
