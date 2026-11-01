@@ -1,0 +1,12 @@
+{
+  "pr_number": 17977,
+  "archive_path": "docs/history/pr-reviews/2026/11/01/PR-17977-deps-dotnet-sync-mise-toml-mise-lock-to-10-0-403-companion-to-17965.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-01T06:52:24.981Z",
+  "schema_version": "v1",
+  "commit_sha": "1c1e772fe64e85e5442bc45ea5aeb0cf58d51990",
+  "title": "deps(dotnet): sync .mise.toml + mise.lock to 10.0.403 (companion to #17965)",
+  "state": "MERGED",
+  "merged_at": "2026-11-01T06:51:37Z",
+  "head_ref": "deps-dotnet-mise-parity-10.0.403"
+}
