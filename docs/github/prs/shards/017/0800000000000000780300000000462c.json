@@ -1,0 +1,12 @@
+{
+  "pr_number": 17964,
+  "archive_path": "docs/history/pr-reviews/2026/11/01/PR-17964-deps-bump-github-com-nats-io-nats-go-from-1-54-0-to-1-55-0-in-full-ai-cluster-k8.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-01T00:16:26.482Z",
+  "schema_version": "v1",
+  "commit_sha": "5adf00b70f91d59650d669b863ae8c1dd29a076f",
+  "title": "deps: Bump github.com/nats-io/nats.go from 1.54.0 to 1.55.0 in /full-ai-cluster/k8s/applications/hat-system/operator in the gomod-minor-patch group across 1 directory",
+  "state": "MERGED",
+  "merged_at": "2026-11-01T00:15:31Z",
+  "head_ref": "dependabot/go_modules/full-ai-cluster/k8s/applications/hat-system/operator/gomod-minor-patch-e31ef6a2b9"
+}

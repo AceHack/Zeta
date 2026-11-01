@@ -1,0 +1,12 @@
+{
+  "pr_number": 17966,
+  "archive_path": "docs/history/pr-reviews/2026/11/01/PR-17966-deps-bump-the-uv-minor-patch-group-across-1-directory-with-6-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-01T00:14:58.827Z",
+  "schema_version": "v1",
+  "commit_sha": "e41e63e3babd92008bcbad29ac5e4439d00eaba1",
+  "title": "deps: Bump the uv-minor-patch group across 1 directory with 6 updates",
+  "state": "MERGED",
+  "merged_at": "2026-11-01T00:14:15Z",
+  "head_ref": "dependabot/uv/src/Core.Python/uv-minor-patch-5bfeb35744"
+}

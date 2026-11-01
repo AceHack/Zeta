@@ -1,0 +1,12 @@
+{
+  "pr_number": 17955,
+  "archive_path": "docs/history/pr-reviews/2026/11/01/PR-17955-chore-deps-bump-aiohttp-from-3-14-3-to-3-14-4-in-src-interp-python-in-the-uv-gro.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-01T00:15:04.515Z",
+  "schema_version": "v1",
+  "commit_sha": "bd525d7ba7eb951715b5f8ba96298d7dbfb6821d",
+  "title": "chore(deps): Bump aiohttp from 3.14.3 to 3.14.4 in /src/Interp.Python in the uv group across 1 directory",
+  "state": "MERGED",
+  "merged_at": "2026-11-01T00:14:22Z",
+  "head_ref": "dependabot/uv/src/Interp.Python/uv-4d825ab99f"
+}

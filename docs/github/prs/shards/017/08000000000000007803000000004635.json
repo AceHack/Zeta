@@ -1,0 +1,12 @@
+{
+  "pr_number": 17973,
+  "archive_path": "docs/history/pr-reviews/2026/11/01/PR-17973-chore-deps-bump-the-uv-group-across-5-directories-with-5-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-01T01:16:55.611Z",
+  "schema_version": "v1",
+  "commit_sha": "c6d2f1ea56dd559095dc3a01065c4b2c03bc9c57",
+  "title": "chore(deps): Bump the uv group across 5 directories with 5 updates",
+  "state": "MERGED",
+  "merged_at": "2026-11-01T01:16:09Z",
+  "head_ref": "dependabot/uv/docs/research/2026-09-08-character-evolution/reconstruction-sources/uv-4e4e33d7c4"
+}
