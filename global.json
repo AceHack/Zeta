@@ -1,7 +1,7 @@
 {
   "//": "SDK version is DERIVED from .mise.toml's `dotnet` pin, which is the single declared source (mise is the only one of the two that ACQUIRES an SDK). Kept in agreement by src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts. rollForward stays latestPatch for the no-mise clone-at-a-tag path: it selects among ALREADY-INSTALLED SDKs and never downloads one, so it is tolerance, not an update mechanism.",
   "sdk": {
-    "version": "10.0.401",
+    "version": "10.0.403",
     "rollForward": "latestPatch"
   },
   "//test": "`dotnet test` runs in Microsoft.Testing.Platform (MTP) mode, not VSTest mode. xunit.v3 4.x ships MTP v2, which refuses VSTest mode on the .NET 10 SDK (https://aka.ms/dotnet-test-mtp-error); xunit.v3 3.x ships MTP v1 1.9, which supports this mode too (needs >= 1.7). Consequences: pass `--solution X.sln` / `--project X.csproj` (never a positional path), and the VSTest flags (--blame-*, --logger, --filter, --collect) do not exist. See docs: https://learn.microsoft.com/dotnet/core/testing/unit-testing-with-dotnet-test#mtp-mode-of-dotnet-test",

@@ -154,7 +154,7 @@ checksum = "sha256:538f9c846355d9e847b2671bc00c47da4229a0befb24df3282b739770f3b4
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-windows-x64-baseline.zip"
 
 [[tools.dotnet]]
-version = "10.0.401"
+version = "10.0.403"
 backend = "core:dotnet"
 
 [[tools.go]]

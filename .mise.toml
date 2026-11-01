@@ -92,7 +92,7 @@ min_version = "2026.6.12"
 # then copy the clean runtime payload into a newly-created version directory so
 # every dylib receives a new vnode. Do NOT revert the pin on either signature;
 # the SDK payload is fine and the local vnode cache is stale.
-dotnet = "10.0.401"
+dotnet = "10.0.403"
 go = "1.26.4"
 golangci-lint = "2.13.1"
 # Rust stable. Edition 2024 requires >=1.85. The mise `core:rust`
