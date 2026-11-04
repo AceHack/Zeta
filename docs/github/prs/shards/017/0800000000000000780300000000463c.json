@@ -1,0 +1,12 @@
+{
+  "pr_number": 17980,
+  "archive_path": "docs/history/pr-reviews/2026/11/04/PR-17980-release-force-release-stale-claim-task-distributional-learning-20260908.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-04T07:48:09.328Z",
+  "schema_version": "v1",
+  "commit_sha": "f066945f5e5cfb795686d96e07fa53f987e773d8",
+  "title": "release: force-release stale claim task-distributional-learning-20260908",
+  "state": "MERGED",
+  "merged_at": "2026-11-04T07:47:24Z",
+  "head_ref": "release/stale-claim-distributional-learning-20260908"
+}
