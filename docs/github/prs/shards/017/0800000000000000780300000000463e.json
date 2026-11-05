@@ -1,0 +1,12 @@
+{
+  "pr_number": 17982,
+  "archive_path": "docs/history/pr-reviews/2026/11/05/PR-17982-fix-loop-tick-count-live-claims-from-origin-ls-remote-not-stale-cache.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-05T19:13:07.492Z",
+  "schema_version": "v1",
+  "commit_sha": "831d92586a4f662ab2d04d1cbbd0c9c7cb367b33",
+  "title": "fix(loop-tick): count live claims from origin ls-remote, not stale cache",
+  "state": "MERGED",
+  "merged_at": "2026-11-05T19:12:19Z",
+  "head_ref": "fix/loop-tick-claim-count-authoritative-ls-remote"
+}
