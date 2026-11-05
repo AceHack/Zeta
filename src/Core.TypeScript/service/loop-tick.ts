@@ -204,8 +204,16 @@ async function tick(): Promise<void> {
   const fetch = exec("git", ["fetch", "origin"], fetchTimeoutMs);
   const fetchOk = fetch.status === 0 ? "ok" : `exit-${fetch.status}`;
 
-  // Gather state
-  const claims = exec("git", ["branch", "-r", "--list", "origin/claim/*"], 10_000);
+  // Gather state.
+  //
+  // Count live claim branches from origin's authoritative ref advertisement,
+  // not the local remote-tracking cache. `git branch -r --list origin/claim/*`
+  // reports stale `origin/claim/*` refs that linger in a clone after the
+  // branch is deleted on origin (observed 2026-11-05: 8 phantom refs that
+  // `git ls-remote origin refs/heads/claim/*` reports as gone), over-counting
+  // retired claims as live. `ls-remote` queries origin directly, so a deleted
+  // claim stops being counted the moment it is gone on the server.
+  const claims = exec("git", ["ls-remote", "origin", "refs/heads/claim/*"], 10_000);
   const claimCount = lines(claims.stdout).length;
 
   const prs = exec("gh", ["pr", "list", "--state", "open", "--json", "number", "--jq", "length"], 30_000);
