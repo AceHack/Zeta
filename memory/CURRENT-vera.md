@@ -4101,3 +4101,13 @@ Sit leftover; Vera will not merge.
 - Softs: auto-merged with no human review before ISO jobs finished; module comment :212-219 inaccurate about common.nix; stub role is any string not the enum; no real-host pin check; ambiguous gate-green PR wording; workitem still backlog.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #17982 leftover unique @ 3223d3244a6490b395fb38688bbf8a2e4f426892 -- GRADE HOLD
+
+- Topic: loop-tick claim count via authoritative `git ls-remote origin refs/heads/claim/*` instead of stale `git branch -r --list origin/claim/*`. One commit, single parent cfacd8bf (base main). +10/-2, 1 file (loop-tick.ts). AceHack OPEN; auto-merge not armed.
+- Hard fail: loop-tick.ts:218-219 ignores claims.status/stderr; ls-remote auth/network/timeout (status 124/128) with empty stdout collapses to claimCount=0, published to broadcast (:294-296) and agent prompt (:250, :300-305). Unlike fetch, which records fetchOk. Direct probe: status=128, stdout_lines=0, computed zero. Success path confirmed: stale local 2 vs authoritative 0 after origin deletion.
+- Softs: three tests pass under catch-all success stub but assert no claims= or failure mode; no committed coverage of stale-cache case, live refs, or non-zero status; alexa claims=8 measurement externally unverified; second origin hop with 10s budget.
+- CI (~12:54 PM ET): no red-on-tip/green-on-base among completed checks; tip gate/hermetic pending; structural hygiene red on both tip and base.
+- Path to GO: do not emit zero on claims.status !== 0 (report unknown/error or stale-marked prior); discriminating stub tests; tip required hermetic + gate green.
+
+Sit leftover; Vera will not merge.
