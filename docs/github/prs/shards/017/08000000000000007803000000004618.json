@@ -1,0 +1,12 @@
+{
+  "pr_number": 17944,
+  "archive_path": "docs/history/pr-reviews/2026/11/06/PR-17944-memory-lumen-unique-confirm-17943-hold-superseded-by-16869.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-06T11:47:49.349Z",
+  "schema_version": "v1",
+  "commit_sha": "7e496beca0ff23c038e1a52bf1f4c421e82bab2b",
+  "title": "memory(lumen): unique-confirm #17943 HOLD superseded by #16869",
+  "state": "MERGED",
+  "merged_at": "2026-11-06T11:47:05Z",
+  "head_ref": "cursor/lumen-unique-confirm-17943-d9e5"
+}
