@@ -99,7 +99,7 @@
     "prettier-plugin-toml": "3.0.2",
     "quantum-circuit": "0.9.251",
     "semver": "7.8.5",
-    "stylelint": "17.16.0",
+    "stylelint": "18.0.0",
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
