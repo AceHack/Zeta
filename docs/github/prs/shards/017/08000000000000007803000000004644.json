@@ -1,0 +1,12 @@
+{
+  "pr_number": 17988,
+  "archive_path": "docs/history/pr-reviews/2026/11/07/PR-17988-deps-bump-types-pyyaml-from-6-0-12-20260906-to-6-0-12-20261103-in-src-core-pytho.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-07T07:24:24.965Z",
+  "schema_version": "v1",
+  "commit_sha": "185c27589d49e679980a345818d5cd87ce1ef764",
+  "title": "deps: Bump types-pyyaml from 6.0.12.20260906 to 6.0.12.20261103 in /src/Core.Python",
+  "state": "MERGED",
+  "merged_at": "2026-11-07T07:23:44Z",
+  "head_ref": "dependabot/uv/src/Core.Python/types-pyyaml-6.0.12.20261103"
+}
