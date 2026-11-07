@@ -1,0 +1,12 @@
+{
+  "pr_number": 17986,
+  "archive_path": "docs/history/pr-reviews/2026/11/07/PR-17986-deps-bump-mypy-from-2-4-0-to-2-4-1-in-src-core-python-in-the-uv-minor-patch-grou.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-07T07:22:47.082Z",
+  "schema_version": "v1",
+  "commit_sha": "8cd3e96696142387edd9f74e6e49d76d103d45be",
+  "title": "deps: Bump mypy from 2.4.0 to 2.4.1 in /src/Core.Python in the uv-minor-patch group",
+  "state": "MERGED",
+  "merged_at": "2026-11-07T07:22:07Z",
+  "head_ref": "dependabot/uv/src/Core.Python/uv-minor-patch-6fc60bd542"
+}
