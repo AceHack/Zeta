@@ -1,0 +1,12 @@
+{
+  "pr_number": 18003,
+  "archive_path": "docs/history/pr-reviews/2026/11/09/PR-18003-hygiene-refresh-published-chart-snapshot.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-09T23:50:19.711Z",
+  "schema_version": "v1",
+  "commit_sha": "e21daf95ac936a4e565cdb11f2a142b9d86f555c",
+  "title": "hygiene: refresh published-chart snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-11-09T23:49:31Z",
+  "head_ref": "alexa/chart-snapshot-refresh-20261109"
+}
