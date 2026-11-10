@@ -1,0 +1,12 @@
+{
+  "pr_number": 17998,
+  "archive_path": "docs/history/pr-reviews/2026/11/10/PR-17998-deps-bump-hookform-resolvers-from-5-9-1-to-7-0-2-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-10T15:37:34.312Z",
+  "schema_version": "v1",
+  "commit_sha": "577ccad51435628902812e663a090336d5713677",
+  "title": "deps: Bump @hookform/resolvers from 5.9.1 to 7.0.2 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-11-10T15:36:45Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/hookform/resolvers-7.0.2"
+}
