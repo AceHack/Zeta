@@ -1,0 +1,12 @@
+{
+  "pr_number": 17999,
+  "archive_path": "docs/history/pr-reviews/2026/11/10/PR-17999-deps-bump-hookform-resolvers-from-5-9-1-to-7-0-2-in-src-renderers-website.md",
+  "source_ids": [],
+  "fetched_at": "2026-11-10T15:35:56.752Z",
+  "schema_version": "v1",
+  "commit_sha": "d82117aeef6d8463594cef4b7f9122a1311d2c39",
+  "title": "deps: Bump @hookform/resolvers from 5.9.1 to 7.0.2 in /src/Renderers/website",
+  "state": "MERGED",
+  "merged_at": "2026-11-10T15:35:10Z",
+  "head_ref": "dependabot/npm_and_yarn/src/Renderers/website/hookform/resolvers-7.0.2"
+}
