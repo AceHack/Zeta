@@ -68,7 +68,7 @@
           "FSharp.Core": "[10.1.403, )",
           "FsPickler": "[5.3.2, )",
           "MessagePack": "[3.1.12, )",
-          "System.IO.Hashing": "[10.0.14, )",
+          "System.IO.Hashing": "[11.0.0, )",
           "System.Numerics.Tensors": "[10.0.14, )",
           "System.Reactive": "[7.0.0, )",
           "Zeta.Core.Abstractions": "[2.0.0, )",
@@ -133,9 +133,9 @@
       },
       "System.IO.Hashing": {
         "type": "CentralTransitive",
-        "requested": "[10.0.14, )",
-        "resolved": "10.0.14",
-        "contentHash": "lVqovhCt3HlZe7ONG5ydaj6BYwYI004gldVfMMkJl/lR5ueeCtWNpW4nejOX75sPmzm8vXCxB69GqwHaYCnyUQ=="
+        "requested": "[11.0.0, )",
+        "resolved": "11.0.0",
+        "contentHash": "U+Bv2qCYt6eONi+arSP0QIp4uTO6os6uceBsqiAwruZ+Wo2HrRhO/0tj38M9URJtS+4DhAtT3ka2TGNFYsnhyQ=="
       },
       "System.Numerics.Tensors": {
         "type": "CentralTransitive",

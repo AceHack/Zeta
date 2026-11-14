@@ -56,7 +56,7 @@
     <PackageVersion Include="coverlet.collector" Version="10.1.0" />
     <PackageVersion Include="coverlet.msbuild" Version="10.1.0" />
     <PackageVersion Include="Microsoft.Z3" Version="4.12.2" />
-    <PackageVersion Include="System.IO.Hashing" Version="10.0.14" />
+    <PackageVersion Include="System.IO.Hashing" Version="11.0.0" />
     <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
     <!-- Google.Protobuf: TEST-ONLY (Tests.FSharp) — the vendored protobuf lib used to prove our
          hand-rolled wire codec is byte-identical (the hexagonal swap conformance). NOT a production
