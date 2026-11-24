@@ -363,6 +363,7 @@ sh ${CONTAINER_SCRIPT}; echo "REPAIR_EXIT=$?"
 start; wait_up || { echo "REPAIRED_SERVER_DID_NOT_START"; exit 4; }
 echo "DBSIZE=$(valkey-cli dbsize | tr -dc '0-9')"
 valkey-cli shutdown nosave >/dev/null 2>&1
+echo "BACKUPS=$(ls "$DATA_DIR/${OnDisk.backupRoot}" | wc -l | tr -dc '0-9')"
 `;
 
 describe.skipIf(!DOCKER)("the repair script on a real Valkey 7.2 AOF", () => {
@@ -388,7 +389,8 @@ describe.skipIf(!DOCKER)("the repair script on a real Valkey 7.2 AOF", () => {
       expect(out).toContain("UNREPAIRED_SERVER_REFUSED");
       expect(out).toContain("REPAIR_EXIT=0");
       expect(out).toContain(`DBSIZE=${KEY_COUNT}`);
-      expect(readdirSync(join(data, OnDisk.backupRoot))).toHaveLength(1);
+      // Counted inside the container: the backup root belongs to the pod's uid, which the host's cannot read.
+      expect(out).toContain("BACKUPS=1");
     } finally {
       // The container wrote as the pod's uid, which the runner's uid cannot delete: empty the data
       // directory as that same uid first, then the host-owned remainder removes cleanly.
