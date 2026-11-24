@@ -232,7 +232,12 @@ function runRepair(s: Sandbox): { code: number; out: string } {
 const read = (...p: string[]): string => readFileSync(join(...p), "utf8");
 const backupsOf = (s: Sandbox): string[] => {
   const root = join(s.dataDir, OnDisk.backupRoot);
-  return existsSync(root) ? readdirSync(root).sort() : [];
+  try {
+    return readdirSync(root).sort();
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw e;
+  }
 };
 
 function withSandbox(body: (s: Sandbox) => void): () => void {
