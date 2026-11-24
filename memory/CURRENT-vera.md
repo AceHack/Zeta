@@ -4111,3 +4111,17 @@ Sit leftover; Vera will not merge.
 - Path to GO: do not emit zero on claims.status !== 0 (report unknown/error or stale-marked prior); discriminating stub tests; tip required hermetic + gate green.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #18023 leftover unique @ 89765f080132531a53f995c500996590198461f3 -- GRADE HOLD
+
+- Date: 2026-11-24. Topic: gitlab-valkey aof-repair init container (check; on error back up to aof-repair-backups/<stamp>, keep 3, valkey-check-aof --fix; unrepairable: rm AOF dir, start empty), pinned durability flags, 60s grace. Graded commit only, single parent 20678947 (base main 2026-11-10, not graded). +572/-1, 5 files. maximdolphin OPEN.
+- Head moved to ced1a28c7bed8a2ed2047988342988f2e6ca81c3 (TOCTOU test fix), UNGRADED. Auto-merge ARMED (squash, maximdolphin).
+- Holds (real valkey 7.2.14 binaries from the image, unshare chroot): 682-NUL incr tail refused unrepaired, repaired to DBSIZE=200; second run no-op; healthy no-op; --save/appendfsync pins parse at runtime; ENOSPC mid-copy exits 1 with AOF byte-identical. Falsifier executes the script: tip 12 pass/1 skip(docker)/0 fail; tip test vs parent yaml 0 pass/12 fail/1 skip.
+- Hard fail 1: red on tip. cross-verify (check-then-use-races) flags the PR's own test.ts:235 existsSync->readdirSync, so gate (required) red; codeql (required) red only from cancelled analyze.
+- Hard fail 2: new silent fail-open. Application.yaml:545-547 rm -rf appendonlydir, exit 0, empty server passes readiness; only an init-log line, no event/metric/alert/marker. Also reached by a NUL tail on a NON-last incr (real --fix: "not the last file") -> DBSIZE=0 with intact base; dump.rdb never backed up and overwritten after the empty start.
+- Hard fail 3: unbacked claim. No transcript of the scratch-pod proof on the live AOF copy (PR body sentence only); 682-byte measurement also prose only; 631-test claim unverified.
+- Q1 none. Q2 fail-open; one Valkey holds all GitLab roles (Sidekiq queues, sessions, shared state/CI trace chunks, leases, cache); not acceptable as written. Q3 valkey PVC measured 61 MB; 2Gi on local-path is not enforced; worst case at maxmemory 512mb ~4-5 GB; ENOSPC fails closed but crash-loops (rotation after copy, partial dirs pile up). Q4 file shared redis separately; not a blocker.
+- Softs: stub check-aof fixes non-last files unlike the real tool; any non-zero check exit treated as corruption; unbounded backup size; same-second stamp collision; docs understate loss; docker half skipped in CI.
+- Path to GO: grade ced1a28+ with cross-verify and gate (required) green; unrepairable path fails closed (keep backup, exit 1), or back up and recover dump.rdb plus durable marker surfaced loudly, docs fixed, non-last-incr test; transcript pasted or claim dropped; separate work item for shared redis.
+
+Sit leftover; Vera will not merge.
