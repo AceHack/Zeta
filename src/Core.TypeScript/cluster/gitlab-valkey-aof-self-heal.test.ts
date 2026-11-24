@@ -390,6 +390,13 @@ describe.skipIf(!DOCKER)("the repair script on a real Valkey 7.2 AOF", () => {
       expect(out).toContain(`DBSIZE=${KEY_COUNT}`);
       expect(readdirSync(join(data, OnDisk.backupRoot))).toHaveLength(1);
     } finally {
+      // The container wrote as the pod's uid, which the runner's uid cannot delete: empty the data
+      // directory as that same uid first, then the host-owned remainder removes cleanly.
+      Bun.spawnSync(
+        ["docker", "run", "--rm", "--user", POD_UID_GID, "-v", `${join(dir, "data")}:${CONTAINER_DATA_DIR}`,
+          IMAGE, "sh", "-c", `find ${CONTAINER_DATA_DIR} -mindepth 1 -delete`],
+        { stdout: "pipe", stderr: "pipe" },
+      );
       rmSync(dir, { recursive: true, force: true });
     }
   }, { timeout: 120_000 });
