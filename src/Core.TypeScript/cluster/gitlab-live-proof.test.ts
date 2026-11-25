@@ -36,6 +36,9 @@ import {
   routeAccepted,
   runnerOnline,
   runnerTokenPrefix,
+  ADMIN_TOKEN_MARKER,
+  adminTokenFromRailsOutput,
+  MINT_ADMIN_TOKEN_RUBY,
   totalRestarts,
   tracePodName,
   traceShowsKubernetesExecutor,
@@ -420,5 +423,36 @@ describe("wiring", () => {
     expect(wf).toContain("workflow_dispatch");
     expect(wf).toContain("src/Core.TypeScript/cluster/gitlab-live-proof.test.ts");
     expect(wf).toContain("src/Core.TypeScript/cluster/gitlab-live-proof.ts");
+  });
+});
+
+describe("(b) root admin API access -- minted through the toolbox, never through the removed OAuth password grant", () => {
+  // GitLab 19.4 answered `POST /oauth/token grant_type=password` with 400 `unsupported_grant_type` (gitlab-live-proof,
+  // 2026-11-25): the password flow is gone, so (b) can no longer be a login. The proof only needs an admin credential.
+  const routable = "glpat-AbC_dEf-123.01.2k0n3x9qz";
+
+  test("the token is read from the marker line, dots included, and from nothing else", () => {
+    expect(adminTokenFromRailsOutput(`DEPRECATION noise\n\n${ADMIN_TOKEN_MARKER}${routable}\n`)).toBe(routable);
+    expect(adminTokenFromRailsOutput(`${ADMIN_TOKEN_MARKER}first\nnoise\n${ADMIN_TOKEN_MARKER}${routable}`)).toBe(routable);
+  });
+
+  test("no marker, an empty value or a non-token value is null, never a guess", () => {
+    expect(adminTokenFromRailsOutput("")).toBeNull();
+    expect(adminTokenFromRailsOutput(`noise ${routable} with no marker`)).toBeNull();
+    expect(adminTokenFromRailsOutput(`${ADMIN_TOKEN_MARKER}`)).toBeNull();
+    expect(adminTokenFromRailsOutput(`${ADMIN_TOKEN_MARKER}has space and junk`)).toBeNull();
+  });
+
+  test("the Ruby mints a short-lived api-scope PAT for root and prints it behind the marker", () => {
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("User.find_by_username('root')");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("personal_access_tokens.create!");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("scopes: [:api]");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain("expires_at:");
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain(ADMIN_TOKEN_MARKER);
+  });
+
+  test("the lane no longer asks for an OAuth password grant", () => {
+    const source = readFileSync(join(resolve(import.meta.dir, "../../.."), "src/Core.TypeScript/cluster/gitlab-live-proof.ts"), "utf8");
+    expect(source).not.toContain('grant_type: "password"');
   });
 });

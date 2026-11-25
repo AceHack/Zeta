@@ -11,7 +11,8 @@
 //
 // WHAT IT ASSERTS -- each a separately named check that ends `passed`, `failed` or `did-not-run`:
 //   (a) webservice / sidekiq / gitaly / registry / shell are each Ready;
-//   (b) the root admin can log in (OAuth password flow against the live API, then `GET /user`);
+//   (b) root has admin API access (a short-lived api-scope token minted through the toolbox, then `GET /user`;
+//       GitLab 19 removed the OAuth password grant this used to log in with);
 //   (c) Job `gitlab-runner-token` completed AND Secret `gitlab-gitlab-runner-secret` holds a glrt- token
 //       (the Job exits 0 on its own failure by design, so `Complete` alone proves nothing);
 //   (d) the runner pod is Running, has NOT restarted, and `GET /runners/all` reports it `online`;
@@ -58,7 +59,26 @@ export const INSTALL_TIME_LB_APPLICATION_PATH = "full-ai-cluster/k8s/lb-ipam/arg
 export const GITLAB_NAMESPACE = "gitlab";
 export const RUNNER_SECRET = "gitlab-gitlab-runner-secret";
 export const RUNNER_TOKEN_JOB = "gitlab-runner-token";
-export const ROOT_PASSWORD_SECRET = "gitlab-initial-root-password";
+export const TOOLBOX_DEPLOYMENT = "deploy/gitlab-toolbox";
+export const TOOLBOX_CONTAINER = "toolbox";
+/** Prefixes the one line of `gitlab-rails runner` output that carries the admin token, so noise around it never parses. */
+export const ADMIN_TOKEN_MARKER = "ZETA-PROOF-ADMIN-TOKEN=";
+/**
+ * Mints the credential the proof drives the API with: a one-day `api` personal access token for root, on the throwaway
+ * lane cluster only. The OAuth password grant used to provide this and is gone in GitLab 19 (`400 unsupported_grant_type`).
+ */
+export const MINT_ADMIN_TOKEN_RUBY = [
+  "root = User.find_by_username('root') || raise('no root user')",
+  "pat = root.personal_access_tokens.create!(name: 'zeta-live-proof', scopes: [:api], expires_at: 1.day.from_now)",
+  `print "\\n${ADMIN_TOKEN_MARKER}" + pat.token.to_s`,
+].join("\n");
+
+/** The admin token from `gitlab-rails runner` stdout: the LAST marker line's value, or null (never a guess). Dots are part of a routable token. */
+export function adminTokenFromRailsOutput(stdout: string): string | null {
+  const line = stdout.split("\n").map((l) => l.trim()).reverse().find((l) => l.startsWith(ADMIN_TOKEN_MARKER));
+  const value = line?.slice(ADMIN_TOKEN_MARKER.length) ?? "";
+  return /^[A-Za-z0-9_.-]{8,}$/.test(value) ? value : null;
+}
 export const RUNNER_DESCRIPTION = "zeta-cluster";
 /**
  * The roster the lane's ROOT catalogue applies: GitLab's object store, and the CloudNativePG operator that reconciles the
@@ -101,7 +121,7 @@ export const CHECKS: readonly CheckSpec[] = [
   { id: "a5-shell-ready", name: "(a) gitlab-shell Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a6-argocd-application", name: "(a+) ArgoCD Application gitlab reaches Synced AND Healthy after the pin's re-render (judged last)", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a7-resync-stays-synced", name: "(a+) a second sync that changes the migrations Job's spec still syncs (no immutable-field error), leaves no stale Job, and STAYS Synced+Healthy", dependsOn: ["a6-argocd-application"], blocking: true },
-  { id: "b1-root-login", name: "(b) root admin login (OAuth password flow) and GET /user is_admin", dependsOn: ["a1-webservice-ready"], blocking: true },
+  { id: "b1-root-login", name: "(b) root admin API access (token minted through the toolbox) and GET /user is_admin", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c1-token-job-complete", name: "(c) Job gitlab-runner-token completed", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c2-runner-secret-token", name: "(c) Secret gitlab-gitlab-runner-secret holds a glrt- token", dependsOn: ["c1-token-job-complete"], blocking: true },
   { id: "d1-runner-pod-running", name: "(d) runner pod Running and Ready", dependsOn: ["c2-runner-secret-token"], blocking: true },
@@ -939,26 +959,20 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
     }
     if (forwardError !== null) report.record("b1-root-login", "failed", `no route to the GitLab API from the runner host: ${forwardError}`);
 
-    // ---- (b) root login ----------------------------------------------------------------------
+    // ---- (b) root admin API access -----------------------------------------------------------
     if (report.statusOf("b1-root-login") === "unrecorded" && report.blockedBy("b1-root-login") === null) {
-      const secret = kubectlJson<{ data?: Record<string, string> }>(["get", "secret", ROOT_PASSWORD_SECRET, "-n", GITLAB_NAMESPACE]);
-      const pw = secret?.data?.["password"] === undefined ? null : Buffer.from(secret.data["password"], "base64").toString("utf8");
-      if (pw === null) {
-        report.record("b1-root-login", "failed", `Secret ${ROOT_PASSWORD_SECRET} is missing or has no password key`);
-      } else {
-        const r = await pollUntil(Date.now() + opts.phaseSec * 1000, 15_000, async () => {
-          const t = await proxy.request("POST", "/oauth/token", { form: { grant_type: "password", username: "root", password: pw } });
-          const token = (t.json as { access_token?: string } | null)?.access_token;
-          if (t.status !== 200 || token === undefined) return { done: false, detail: `POST /oauth/token -> ${String(t.status)} ${t.text.slice(0, 160)}` };
-          const u = await proxy.request("GET", "/api/v4/user", { token });
-          const me = u.json as { username?: string; is_admin?: boolean; admin?: boolean } | null;
-          if (u.status !== 200 || me?.username !== "root") return { done: false, detail: `GET /api/v4/user -> ${String(u.status)} ${u.text.slice(0, 160)}` };
-          if (me.is_admin !== true && me.admin !== true) return { done: false, detail: "logged in as root but the account is not an administrator" };
-          accessToken = token;
-          return { done: true, detail: "OAuth password grant accepted; GET /api/v4/user => root, is_admin" };
-        });
-        report.record("b1-root-login", r.done ? "passed" : "failed", r.detail);
-      }
+      const r = await pollUntil(Date.now() + opts.phaseSec * 1000, 15_000, async () => {
+        const minted = kubectl(["exec", "-n", GITLAB_NAMESPACE, TOOLBOX_DEPLOYMENT, "-c", TOOLBOX_CONTAINER, "--", "gitlab-rails", "runner", MINT_ADMIN_TOKEN_RUBY], { timeoutMs: 150_000 });
+        const token = adminTokenFromRailsOutput(minted.stdout);
+        if (token === null) return { done: false, detail: `no admin token from ${TOOLBOX_DEPLOYMENT} (exit ${String(minted.code)}): ${minted.stderr.replace(/glpat-\S+/g, "glpat-<redacted>").slice(-200)}` };
+        const u = await proxy.request("GET", "/api/v4/user", { token });
+        const me = u.json as { username?: string; is_admin?: boolean; admin?: boolean } | null;
+        if (u.status !== 200 || me?.username !== "root") return { done: false, detail: `GET /api/v4/user -> ${String(u.status)} ${u.text.slice(0, 160)}` };
+        if (me.is_admin !== true && me.admin !== true) return { done: false, detail: "token belongs to root but the account is not an administrator" };
+        accessToken = token;
+        return { done: true, detail: "admin token minted through the toolbox; GET /api/v4/user => root, is_admin" };
+      });
+      report.record("b1-root-login", r.done ? "passed" : "failed", r.detail);
     }
 
     // ---- (c) token job + secret --------------------------------------------------------------
