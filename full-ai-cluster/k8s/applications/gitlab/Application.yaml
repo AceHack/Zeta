@@ -457,19 +457,24 @@ spec:
             # `aof-load-truncated yes` (the default, pinned below) forgives ONLY a cut-off final command; NUL padding
             # after a complete one is "bad file format" and the server refuses to start. Nothing in the pod repaired it.
             #
-            # THE FIX IS LEVEL-TRIGGERED, NOT A RUNBOOK: init container `aof-repair` reads the state of the volume on
-            # EVERY start and acts on that state alone. FRESH (/data/appendonlydir absent or empty): change nothing.
+            # THE FIX IS LEVEL-TRIGGERED ON EVERY START OF THE VALKEY CONTAINER, NOT A RUNBOOK AND NOT POD CREATION:
+            # the container's own startup script reads the state of the volume before it execs the server and acts on
+            # that state alone. (An init container ran only when the POD was created; the kubelet restarts a crashed
+            # app container in place without rerunning it, so the server would retry the same corrupt AOF forever.)
+            # FRESH (/data/appendonlydir absent or empty): change nothing.
             # VALID (a manifest exists and `valkey-check-aof` accepts it): change nothing. Anything else is
             # UNSAFE for the server and is copied first to /data/aof-repair-backups/<UTC stamp> (newest KEEP_BACKUPS
             # kept): REPAIRABLE (a manifest exists and `valkey-check-aof --fix` makes it valid, cutting the file at the
             # last good command) or UNREPAIRABLE (still invalid after one `--fix`, a corrupt base or manifest, OR files
             # present with NO manifest, which Valkey 7.2 reads as an empty manifest and abandons for a new empty AOF):
             # keep the copy, move the AOF aside and let the server start empty -- the queue it held is lost, the
-            # service is up. Same image as the server, so `valkey-check-aof` is exactly the server's own version.
-            # Backup space is the one thing it cannot conjure: a full volume fails the init container loudly rather
-            # than repairing with no copy. The server flags pin what bounds the loss: fsync once a second, AOF rewrite
-            # thresholds, the RDB-preamble base, and periodic RDB snapshots. Falsifier:
-            # gitlab-valkey-aof-self-heal.test.ts, which RUNS this script over a real corrupt AOF. Runbook:
+            # service is up. The server container's own image supplies `valkey-check-aof`, so it is exactly the
+            # server's version. Backup space is the one thing it cannot conjure: a full volume fails the container
+            # loudly (the server is never exec'd) rather than repairing with no copy. The server flags pin what bounds
+            # the loss: fsync once a second, AOF rewrite thresholds, the RDB-preamble base, and periodic RDB
+            # snapshots. The repair adds start-up time on a big AOF; the liveness budget (20 x 10s) covers repair plus
+            # load for a volume capped at 2Gi. Falsifier: gitlab-valkey-aof-self-heal.test.ts, which RUNS this script
+            # over a real corrupt AOF, including an in-place container restart. Runbook:
             # docs/ops/GITLAB-VALKEY-HARD-SHUTDOWN.md.
             - apiVersion: v1
               kind: Service
@@ -511,11 +516,24 @@ spec:
                     # A graceful stop flushes the AOF and writes a last RDB: 60s, twice the default, so a busy queue
                     # finishes that before the kubelet's SIGKILL.
                     terminationGracePeriodSeconds: 60
-                    initContainers:
-                      - name: aof-repair
+                    containers:
+                      - name: valkey
                         image: docker.io/valkey/valkey:7.2.14-alpine3.24
                         command: ["/bin/sh", "-c"]
                         args:
+                          # ONE startup script: repair the volume, then become the server. It runs on EVERY start of this
+                          # container, including the kubelet restarting it in place inside a retained pod (an init
+                          # container would not rerun then, and the server would retry the same corrupt AOF forever).
+                          # Everything above the `aof-repair:end` line is the repair, and
+                          # gitlab-valkey-aof-self-heal.test.ts runs exactly that text; everything below it is the server.
+                          # `set -eu` and a plain call (never `heal_aof || ...`) mean a failed repair step, above all a
+                          # backup that cannot be made, ends the script non-zero and the server is never exec'd: the
+                          # container fails loudly with the AOF untouched.
+                          #
+                          # Durability flags are PINNED, not left to the image's defaults, so a Valkey bump cannot loosen
+                          # them unseen. fsync every second bounds a crash to ~1s of writes; the others are the defaults
+                          # today (AOF rewrite at +100% and >=64mb, RDB-preamble base, forgive a cut-off last command,
+                          # keep fsyncing while a rewrite runs, RDB snapshot at 1h/1, 5m/100, 1m/10000).
                           - |
                             set -eu
                             AOF_DIR="$DATA_DIR/appendonlydir"
@@ -528,65 +546,48 @@ spec:
                             # abandon for a new empty AOF) and takes the one path below.
                             valid() { [ -f "$MANIFEST" ] && valkey-check-aof "$MANIFEST" >/dev/null 2>&1; }
 
-                            if [ -z "$(ls -A "$AOF_DIR" 2>/dev/null)" ]; then
-                              echo "aof-repair: no AOF under $AOF_DIR, nothing to verify"
-                              exit 0
-                            fi
-                            cd "$AOF_DIR"
-                            if valid; then
-                              echo "aof-repair: AOF is valid, leaving it untouched"
-                              exit 0
-                            fi
+                            heal_aof() {
+                              if [ -z "$(ls -A "$AOF_DIR" 2>/dev/null)" ]; then
+                                echo "aof-repair: no AOF under $AOF_DIR, nothing to verify"
+                                return 0
+                              fi
+                              cd "$AOF_DIR"
+                              if valid; then
+                                echo "aof-repair: AOF is valid, leaving it untouched"
+                                return 0
+                              fi
 
-                            backup="$BACKUP_ROOT/$(date -u +%Y%m%dT%H%M%SZ)"
-                            echo "aof-repair: AOF is not valid, keeping a copy in $backup before repairing"
-                            mkdir -p "$BACKUP_ROOT"
-                            mkdir "$backup"
-                            cp -a "$AOF_DIR/." "$backup/"
-                            ls -1 "$BACKUP_ROOT" | sort -r | tail -n +$((KEEP_BACKUPS + 1)) | while read -r old; do
-                              rm -rf "${BACKUP_ROOT:?}/$old"
-                            done
+                              backup="$BACKUP_ROOT/$(date -u +%Y%m%dT%H%M%SZ)"
+                              echo "aof-repair: AOF is not valid, keeping a copy in $backup before repairing"
+                              mkdir -p "$BACKUP_ROOT"
+                              mkdir "$backup"
+                              cp -a "$AOF_DIR/." "$backup/"
+                              ls -1 "$BACKUP_ROOT" | sort -r | tail -n +$((KEEP_BACKUPS + 1)) | while read -r old; do
+                                rm -rf "${BACKUP_ROOT:?}/$old"
+                              done
 
-                            # --fix needs a manifest to name the files; without one there is nothing to cut, so the
-                            # re-check below fails and the unrepairable path applies.
-                            [ ! -f "$MANIFEST" ] || echo y | valkey-check-aof --fix "$MANIFEST" || true
-                            if valid; then
-                              echo "aof-repair: AOF repaired"
-                              exit 0
-                            fi
-                            echo "aof-repair: AOF cannot be repaired; moving it aside so the server starts empty (copy kept in $backup)"
-                            cd "$DATA_DIR"
-                            rm -rf "$AOF_DIR"
+                              # --fix needs a manifest to name the files; without one there is nothing to cut, so the
+                              # re-check below fails and the unrepairable path applies.
+                              [ ! -f "$MANIFEST" ] || echo y | valkey-check-aof --fix "$MANIFEST" || true
+                              if valid; then
+                                echo "aof-repair: AOF repaired"
+                                return 0
+                              fi
+                              echo "aof-repair: AOF cannot be repaired; moving it aside so the server starts empty (copy kept in $backup)"
+                              cd "$DATA_DIR"
+                              rm -rf "$AOF_DIR"
+                            }
+                            heal_aof
+                            # aof-repair:end
+                            exec valkey-server --requirepass "$REDIS_PASSWORD" --dir "$DATA_DIR" \
+                              --maxmemory 512mb --maxmemory-policy volatile-lru \
+                              --appendonly yes --appendfsync everysec --aof-use-rdb-preamble yes \
+                              --aof-load-truncated yes --no-appendfsync-on-rewrite no \
+                              --auto-aof-rewrite-percentage 100 --auto-aof-rewrite-min-size 64mb \
+                              --save "3600 1 300 100 60 10000"
                         env:
                           - { name: DATA_DIR, value: /data }
                           - { name: KEEP_BACKUPS, value: "3" }
-                        securityContext:
-                          allowPrivilegeEscalation: false
-                          readOnlyRootFilesystem: true
-                          capabilities: { drop: [ALL] }
-                        resources:
-                          requests: { cpu: 10m, memory: 32Mi }
-                          limits: { memory: 256Mi }
-                        volumeMounts:
-                          - { name: data, mountPath: /data }
-                    containers:
-                      - name: valkey
-                        image: docker.io/valkey/valkey:7.2.14-alpine3.24
-                        command: ["/bin/sh", "-c"]
-                        args:
-                          # Durability flags are PINNED, not left to the image's defaults, so a Valkey bump cannot loosen
-                          # them unseen. fsync every second bounds a crash to ~1s of writes; the others are the defaults
-                          # today (AOF rewrite at +100% and >=64mb, RDB-preamble base, forgive a cut-off last command,
-                          # keep fsyncing while a rewrite runs, RDB snapshot at 1h/1, 5m/100, 1m/10000).
-                          - >-
-                            exec valkey-server --requirepass "$REDIS_PASSWORD" --dir "$DATA_DIR"
-                            --maxmemory 512mb --maxmemory-policy volatile-lru
-                            --appendonly yes --appendfsync everysec --aof-use-rdb-preamble yes
-                            --aof-load-truncated yes --no-appendfsync-on-rewrite no
-                            --auto-aof-rewrite-percentage 100 --auto-aof-rewrite-min-size 64mb
-                            --save "3600 1 300 100 60 10000"
-                        env:
-                          - { name: DATA_DIR, value: /data }
                           - name: REDIS_PASSWORD
                             valueFrom:
                               secretKeyRef: { name: gitlab-redis-secret, key: secret }

@@ -20,7 +20,7 @@ Measured 2026-11-24 on the owner's node after a hard power cut: `gitlab-valkey-0
 `Bad file format reading the append only file appendonly.aof.447.incr.aof` (the file ended in 682 NUL bytes), so all of
 GitLab stayed down until `valkey-check-aof --fix` was run by hand.
 
-Fixed in `full-ai-cluster/k8s/applications/gitlab/Application.yaml`: init container `aof-repair` (level-triggered,
+Fixed in `full-ai-cluster/k8s/applications/gitlab/Application.yaml`: a repair step in the Valkey container's own startup command, run on every container start (level-triggered,
 backup-then-fix, bounded backups), pinned durability flags, `terminationGracePeriodSeconds: 60`. Falsifier
 `src/Core.TypeScript/cluster/gitlab-valkey-aof-self-heal.test.ts`; runbook `docs/ops/GITLAB-VALKEY-HARD-SHUTDOWN.md`.
 

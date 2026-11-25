@@ -4,7 +4,7 @@
 > the pod reads it on every start and either leaves it alone or cuts it back to the last good command, keeping a copy.
 
 Where it lives: StatefulSet `gitlab-valkey` in `gitlab-runner.extraObjects` of
-`full-ai-cluster/k8s/applications/gitlab/Application.yaml` (init container `aof-repair`). Falsifier:
+`full-ai-cluster/k8s/applications/gitlab/Application.yaml` (the `valkey` container's own startup script, before it execs the server). Falsifier:
 `src/Core.TypeScript/cluster/gitlab-valkey-aof-self-heal.test.ts`.
 
 ## What happened (2026-11-24, hard power cut on the owner's node)
@@ -20,7 +20,10 @@ repaired it.
 
 ## The algorithm
 
-The init container is level-triggered: it reads the volume's state at every start and acts on that state alone.
+The repair is level-triggered on every start of the Valkey container: its startup script reads the volume's state before
+it execs `valkey-server` and acts on that state alone. It runs on a pod's first start and also when the kubelet restarts
+a crashed container inside a retained pod. An init container would not do that, because Kubernetes does not rerun a
+completed init container for an in-place app-container restart, so the server would keep retrying the same corrupt AOF.
 
 | state of `/data/appendonlydir` | action |
 |---|---|
@@ -33,7 +36,7 @@ Only a fresh volume skips the repair. Files with no manifest are never fresh: Va
 empty one and starts a new AOF, silently abandoning the persisted dataset (and a later rewrite may delete the orphan
 files), so that state is backed up and moved aside like any other unrepairable one.
 
-If the copy cannot be made (volume full) the init container fails and the AOF is left exactly as found: it never repairs
+If the copy cannot be made (volume full) the container exits non-zero without starting the server and the AOF is left exactly as found: it never repairs
 with no copy. Lost state in the last row is the Sidekiq queue and sessions; GitLab itself comes up.
 
 ## What bounds the loss
@@ -44,10 +47,17 @@ about a second of writes), `--aof-use-rdb-preamble yes`, `--aof-load-truncated y
 AOF on, the RDB snapshot is not read at start; it is a second copy for a human. `terminationGracePeriodSeconds: 60` gives
 a graceful stop time to flush.
 
+## Start-up time
+
+The repair runs before the server, so a large AOF adds check and copy time to the start. The liveness probe has no initial
+delay and tolerates 20 failures at a 10 s period (200 s) from container start, which covers repair plus the AOF load for
+this volume (2Gi cap, AOF rewritten at 64 MB and +100%, so tens of MB in practice). No `startupProbe` is added; if the
+AOF ever grows enough for repair plus load to approach 200 s, add one rather than loosening liveness.
+
 ## After a restart that repaired something
 
 ```bash
-kubectl -n gitlab logs gitlab-valkey-0 -c aof-repair      # "AOF repaired" or "cannot be repaired"
+kubectl -n gitlab logs gitlab-valkey-0 -c valkey --previous   # "AOF repaired" or "cannot be repaired" (drop --previous on the first start)
 kubectl -n gitlab exec gitlab-valkey-0 -- ls -la /data/aof-repair-backups
 ```
 

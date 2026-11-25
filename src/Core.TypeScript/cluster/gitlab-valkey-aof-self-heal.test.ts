@@ -7,10 +7,11 @@
  * the append only file"). `aof-load-truncated yes` forgives only a cut-off final COMMAND, not padding after a
  * complete one. Nothing in the pod repaired it, so GitLab stayed down until a human ran `valkey-check-aof --fix`.
  *
- *   A. DECLARED SHAPE -- no tools. The repair init container exists, shares the server's image, volume and data
- *      directory, is as locked down as the server, and the durability flags are pinned.
- *   B. THE SCRIPT, EXECUTED -- needs `sh` only. The init container's own script is pulled out of the Application and
- *      RUN against a stub `valkey-check-aof` (same contract: exit 1 on a NUL tail or a broken base, `--fix` cuts the
+ *   A. DECLARED SHAPE -- no tools. The repair is the server container's own startup script (it runs on EVERY
+ *      container start, not once at pod creation), there is no separate init container, the container is locked
+ *      down, and the durability flags are pinned.
+ *   B. THE SCRIPT, EXECUTED -- needs `sh` only. The repair text (everything above the marker line in the server
+ *      container's startup command) is pulled out of the Application and RUN against a stub `valkey-check-aof` (same contract: exit 1 on a NUL tail or a broken base, `--fix` cuts the
  *      tail after a `y` on stdin) and a counting `date`, over every state the volume can be in:
  *        (a) no AOF yet                 -> nothing created, exit 0;
  *        (b) healthy AOF                -> byte-identical, no backup directory (idempotent no-op);
@@ -20,15 +21,21 @@
  *        (f) many repairs               -> only the newest KEEP_BACKUPS backups remain, nothing else is touched;
  *        (g) the backup cannot be made  -> exit non-zero and the AOF is untouched (never repair with no copy);
  *        (j) files but NO manifest      -> the dataset is abandoned by the server, so it is backed up and moved aside;
- *        (k) an existing but empty dir  -> a fresh volume: untouched, no backup.
+ *        (k) an existing but empty dir  -> a fresh volume: untouched, no backup;
+ *        (o) the whole startup command  -> execs the server after a repair, and never when the backup fails.
  *   C. THE REAL IMAGE -- needs `docker`. A real Valkey 7.2.14 writes a real AOF, the tail is NUL-padded, and:
  *        (h) the server WITHOUT the repair refuses to start with the measured message (the fixture is the failure);
  *        (i) the script as the pod runs it (uid 999) makes the same volume load every key;
  *        (l) real files but the manifest missing -> backed up byte-for-byte, moved aside, the server starts.
+ *   D. THE LIFECYCLE -- needs `docker`. The kubelet restarts a crashed app container IN PLACE and does not rerun
+ *      completed init containers; `docker start` of the same container models that:
+ *        (m) the real startup command over a killed, NUL-padded volume -> serving again, every key back, a backup kept;
+ *        (n) control: the server command alone (what a restart ran under the old init-container layout) refuses it.
  *
  * WHAT THIS CANNOT PROVE: that a particular filesystem produces NUL padding on a given power cut (the live file did;
- * the same repair also covers any garbage tail `valkey-check-aof` can cut), nor Kubernetes' init-container ordering
- * (a platform guarantee). The first live restart after this lands is the proof of the rollout.
+ * the same repair also covers any garbage tail `valkey-check-aof` can cut), nor that the kubelet restarts the app
+ * container in place the way `docker start` does (a platform guarantee). The first live restart after this lands is
+ * the proof of the rollout.
  */
 
 import { describe, expect, test } from "bun:test";
@@ -43,7 +50,7 @@ const GITLAB_APP = resolve(REPO_ROOT, "full-ai-cluster/k8s/applications/gitlab/A
 const Declared = {
   statefulSet: "gitlab-valkey",
   serverContainer: "valkey",
-  repairContainer: "aof-repair",
+  repairEndMarker: "# aof-repair:end",
   dataVolume: "data",
   dataDirEnv: "DATA_DIR",
   keepBackupsEnv: "KEEP_BACKUPS",
@@ -91,9 +98,9 @@ function podSpec(): Doc {
   return dig(valkeyStatefulSet(), "spec", "template", "spec") as Doc;
 }
 
-function containerNamed(kind: "containers" | "initContainers", name: string): Doc {
-  const found = ((podSpec()[kind] ?? []) as Doc[]).find((c) => c["name"] === name);
-  if (found === undefined) throw new Error(`no ${kind} entry named ${name} in StatefulSet/${Declared.statefulSet}`);
+function containerNamed(name: string): Doc {
+  const found = ((podSpec()["containers"] ?? []) as Doc[]).find((c) => c["name"] === name);
+  if (found === undefined) throw new Error(`no container named ${name} in StatefulSet/${Declared.statefulSet}`);
   return found;
 }
 
@@ -107,44 +114,57 @@ function serverFlags(commandLine: string): Record<string, string> {
   return out;
 }
 
-const repairScript = (): string => String((containerNamed("initContainers", Declared.repairContainer)["args"] as unknown[])[0]);
+const serverContainer = (): Doc => containerNamed(Declared.serverContainer);
+
+/** The server container's whole startup command: the repair, then the server. */
+const startupScript = (): string => String((serverContainer()["args"] as unknown[])[0]);
+
+/** The startup command split at the one marker line that is itself part of the manifest text: the real text, never a copy. */
+function splitStartup(): { repair: string; server: string } {
+  const lines = startupScript().split("\n");
+  const at = lines.flatMap((l, i) => (l.trim() === Declared.repairEndMarker ? [i] : []));
+  if (at.length !== 1) throw new Error(`the startup command must hold exactly one "${Declared.repairEndMarker}" line, found ${at.length}`);
+  return { repair: `${lines.slice(0, at[0]).join("\n")}\n`, server: lines.slice(at[0]! + 1).join("\n") };
+}
+const repairScript = (): string => splitStartup().repair;
+const serverCommand = (): string => splitStartup().server;
+const keepBackups = (): string => envOf(serverContainer())[Declared.keepBackupsEnv]!;
 
 // ---------------------------------------------------------------------------
 // A. Declared shape
 // ---------------------------------------------------------------------------
 
 describe("gitlab-valkey declares its own repair", () => {
-  test("an init container runs the server's own image, on the server's own volume and data directory", () => {
-    const init = containerNamed("initContainers", Declared.repairContainer);
-    const server = containerNamed("containers", Declared.serverContainer);
-    expect(init["image"]).toBe(server["image"]);
-    const mountPath = (c: Doc) =>
-      ((c["volumeMounts"] ?? []) as Doc[]).find((m) => m["name"] === Declared.dataVolume)?.["mountPath"];
-    expect(mountPath(init)).toBeDefined();
-    expect(mountPath(init)).toBe(mountPath(server));
-    expect(envOf(init)[Declared.dataDirEnv]).toBe(mountPath(server) as string);
-    expect(envOf(server)[Declared.dataDirEnv]).toBe(mountPath(server) as string);
-    expect(String((server["args"] as unknown[])[0])).toContain(`--dir "$${Declared.dataDirEnv}"`);
+  test("the repair is the server container's own startup, not an init container that a restart would skip", () => {
+    expect(podSpec()["initContainers"]).toBeUndefined();
+    const server = serverContainer();
+    const mountPath = ((server["volumeMounts"] ?? []) as Doc[]).find((m) => m["name"] === Declared.dataVolume)?.["mountPath"];
+    expect(mountPath).toBeDefined();
+    expect(envOf(server)[Declared.dataDirEnv]).toBe(mountPath as string);
+    expect(serverCommand().trimStart()).toStartWith("exec valkey-server ");
+    expect(serverCommand()).toContain(`--dir "$${Declared.dataDirEnv}"`);
+    expect(repairScript()).toContain("set -eu");
+    // a failing repair must never fall through to the server: nothing may soak up the exit status of the call
+    expect(repairScript()).not.toMatch(/heal_aof\s*(\|\||;|&&)/);
   });
 
-  test("the repair is as locked down as the server: non-root, read-only root, no capabilities, bounded", () => {
-    const init = containerNamed("initContainers", Declared.repairContainer);
-    const sc = init["securityContext"] as Doc;
+  test("the container is locked down: non-root, read-only root, no capabilities, bounded", () => {
+    const sc = serverContainer()["securityContext"] as Doc;
     expect(sc["allowPrivilegeEscalation"]).toBe(false);
     expect(sc["readOnlyRootFilesystem"]).toBe(true);
     expect(dig(sc, "capabilities", "drop")).toEqual(["ALL"]);
     expect(dig(podSpec(), "securityContext", "runAsNonRoot")).toBe(true);
-    expect(dig(init, "resources", "requests", "memory")).toBeDefined();
-    expect(dig(init, "resources", "limits", "memory")).toBeDefined();
-    expect(Number(envOf(init)[Declared.keepBackupsEnv])).toBeGreaterThan(0);
+    expect(dig(serverContainer(), "resources", "requests", "memory")).toBeDefined();
+    expect(dig(serverContainer(), "resources", "limits", "memory")).toBeDefined();
+    expect(Number(keepBackups())).toBeGreaterThan(0);
   });
 
   test("the script carries no Helm template syntax (extraObjects pass through `tpl`)", () => {
-    expect(repairScript()).not.toContain("{{");
+    expect(startupScript()).not.toContain("{{");
   });
 
   test("the durability flags are pinned, not left to the image's defaults", () => {
-    const flags = serverFlags(String((containerNamed("containers", Declared.serverContainer)["args"] as unknown[])[0]));
+    const flags = serverFlags(serverCommand());
     for (const [name, value] of Object.entries(PinnedServerFlags)) expect(flags[name]).toBe(value);
   });
 
@@ -189,6 +209,12 @@ echo "$n" > "$STUB_DATE_STATE"
 printf '20261124T%06dZ\\n' "$n"
 `;
 
+/** A server that only records it was exec'd: the startup command's `exec valkey-server` lands here. */
+const SERVER_STARTED_FILE = "server-started";
+const STUB_SERVER = `#!/bin/sh
+echo started > "$DATA_DIR/${SERVER_STARTED_FILE}"
+`;
+
 interface Sandbox {
   dataDir: string;
   bin: string;
@@ -201,7 +227,7 @@ function sandbox(): Sandbox {
   const bin = join(root, "bin");
   mkdirSync(dataDir);
   mkdirSync(bin);
-  for (const [name, body] of [["valkey-check-aof", STUB_CHECK_AOF], ["date", STUB_DATE]] as const) {
+  for (const [name, body] of [["valkey-check-aof", STUB_CHECK_AOF], ["date", STUB_DATE], ["valkey-server", STUB_SERVER]] as const) {
     writeFileSync(join(bin, name), body, "utf8");
     chmodSync(join(bin, name), 0o755);
   }
@@ -217,13 +243,14 @@ function seedAof(s: Sandbox, opts: { incr?: string; base?: string; manifest?: bo
   return dir;
 }
 
-function runRepair(s: Sandbox): { code: number; out: string } {
-  const keep = envOf(containerNamed("initContainers", Declared.repairContainer))[Declared.keepBackupsEnv]!;
-  const r = Bun.spawnSync(["sh", "-c", repairScript()], {
+function runRepair(s: Sandbox, script: string = repairScript()): { code: number; out: string } {
+  const keep = keepBackups();
+  const r = Bun.spawnSync(["sh", "-c", script], {
     env: {
       PATH: `${s.bin}${delimiter}${process.env["PATH"] ?? ""}`,
       [Declared.dataDirEnv]: s.dataDir,
       [Declared.keepBackupsEnv]: keep,
+      REDIS_PASSWORD: "stub",
       STUB_DATE_STATE: join(s.dataDir, "..", "date-state"),
     },
     stdout: "pipe",
@@ -301,7 +328,7 @@ describe("the repair script, executed", () => {
   }));
 
   test("(f) only the newest KEEP_BACKUPS backups remain, and files outside the backup root are untouched", withSandbox((s) => {
-    const keep = Number(envOf(containerNamed("initContainers", Declared.repairContainer))[Declared.keepBackupsEnv]);
+    const keep = Number(keepBackups());
     const foreign = join(s.dataDir, "aof-backup-by-hand");
     mkdirSync(foreign);
     writeFileSync(join(foreign, "keep-me"), "x", "utf8");
@@ -324,6 +351,18 @@ describe("the repair script, executed", () => {
     const r = runRepair(s);
     expect(r.code).not.toBe(0);
     expect(read(dir, OnDisk.incr)).toBe(GOOD_AOF + NUL_TAIL);
+  }));
+
+  test("(o) the whole startup command execs the server after a repair, and never when the backup cannot be made", withSandbox((s) => {
+    seedAof(s, { incr: GOOD_AOF + NUL_TAIL });
+    expect(runRepair(s, startupScript()).code).toBe(0);
+    expect(read(s.dataDir, SERVER_STARTED_FILE)).toBe("started\n");
+    rmSync(join(s.dataDir, SERVER_STARTED_FILE));
+    rmSync(join(s.dataDir, OnDisk.backupRoot), { recursive: true });
+    writeFileSync(join(s.dataDir, OnDisk.backupRoot), "a file where the directory belongs", "utf8");
+    writeFileSync(join(s.dataDir, OnDisk.aofDir, OnDisk.incr), GOOD_AOF + NUL_TAIL, "utf8");
+    expect(runRepair(s, startupScript()).code).not.toBe(0);
+    expect(existsSync(join(s.dataDir, SERVER_STARTED_FILE))).toBe(false);
   }));
 
   test("(j) base and incr files with no manifest are backed up and moved aside, never left for the server to abandon", withSandbox((s) => {
@@ -364,7 +403,7 @@ function dockerAndImage(image: string): boolean {
   }
 }
 
-const IMAGE = String(containerNamed("containers", Declared.serverContainer)["image"]);
+const IMAGE = String(serverContainer()["image"]);
 const DOCKER = dockerAndImage(IMAGE);
 if (!DOCKER) console.warn(`gitlab-valkey-aof-self-heal.test: docker or ${IMAGE} unavailable -- the real-image half is SKIPPED, not passed`);
 
@@ -431,7 +470,7 @@ function runInPodContainer(session: string): string {
       [
         "docker", "run", "--rm", "--user", POD_UID_GID,
         "-e", `${Declared.dataDirEnv}=${CONTAINER_DATA_DIR}`,
-        "-e", `${Declared.keepBackupsEnv}=${envOf(containerNamed("initContainers", Declared.repairContainer))[Declared.keepBackupsEnv]}`,
+        "-e", `${Declared.keepBackupsEnv}=${keepBackups()}`,
         "-v", `${data}:${CONTAINER_DATA_DIR}`, "-v", `${scriptFile}:${CONTAINER_SCRIPT}:ro`,
         IMAGE, "sh", "-c", session,
       ],
@@ -469,4 +508,98 @@ describe.skipIf(!DOCKER)("the repair script on a real Valkey 7.2 AOF", () => {
     expect(out).toContain("LIVE_AOF_ENTRIES=0");
     expect(out).toContain("DBSIZE=0");
   }, { timeout: 120_000 });
+});
+
+// ---------------------------------------------------------------------------
+// D. The lifecycle: the app container restarts INSIDE a retained pod
+// ---------------------------------------------------------------------------
+
+const LIFECYCLE_PASSWORD = "lifecycle-password";
+const LIFECYCLE_POLL = { tries: 150, intervalMs: 200 } as const;
+const AUTH_ENV = `REDISCLI_AUTH=${LIFECYCLE_PASSWORD}`;
+
+function docker(...args: string[]): { code: number; out: string } {
+  const r = Bun.spawnSync(["docker", ...args], { stdout: "pipe", stderr: "pipe" });
+  return { code: r.exitCode, out: r.stdout.toString() + r.stderr.toString() };
+}
+
+function pollUntil(done: () => boolean): boolean {
+  for (let i = 0; i < LIFECYCLE_POLL.tries; i++) {
+    if (done()) return true;
+    Bun.sleepSync(LIFECYCLE_POLL.intervalMs);
+  }
+  return false;
+}
+
+/** Runs `body` over a fresh pod-owned data dir, then empties it as the pod uid before the host removes it. */
+function withPodDataDir<T>(body: (dataDir: string) => T): T {
+  const dir = mkdtempSync(join(tmpdir(), "valkey-aof-real-"));
+  try {
+    const data = join(dir, "data");
+    mkdirSync(data);
+    chmodSync(data, 0o777);
+    return body(data);
+  } finally {
+    docker("run", "--rm", "--user", POD_UID_GID, "-v", `${join(dir, "data")}:${CONTAINER_DATA_DIR}`,
+      IMAGE, "sh", "-c", `find ${CONTAINER_DATA_DIR} -mindepth 1 -delete`);
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+interface Lifecycle {
+  servedAfterRestart: boolean;
+  dbsizeAfterRestart: string;
+  backupsAfterRestart: string;
+  logsAfterRestart: string;
+}
+
+/**
+ * The kubelet restarts a crashed app container in place and does NOT rerun a completed init container. Model that:
+ * start a container with `startup` as its command over a valid AOF, kill it hard, NUL-pad the AOF tail as the pod
+ * uid, then `docker start` THE SAME container again and report what the second start did.
+ */
+function inPlaceRestartAfterNulTail(startup: string): Lifecycle {
+  return withPodDataDir((data) => {
+    const name = `zeta-valkey-lifecycle-${process.pid}-${Date.now()}`;
+    const ping = () => docker("exec", "-e", AUTH_ENV, name, "valkey-cli", "ping").out.includes("PONG");
+    const sh = (script: string) => docker("exec", "-e", AUTH_ENV, name, "sh", "-c", script).out.trim();
+    try {
+      docker("run", "-d", "--name", name, "--user", POD_UID_GID,
+        "-e", `${Declared.dataDirEnv}=${CONTAINER_DATA_DIR}`,
+        "-e", `${Declared.keepBackupsEnv}=${keepBackups()}`,
+        "-e", `REDIS_PASSWORD=${LIFECYCLE_PASSWORD}`,
+        "-v", `${data}:${CONTAINER_DATA_DIR}`, IMAGE, "sh", "-c", startup);
+      expect(pollUntil(ping)).toBe(true);
+      sh(`i=0; while [ $i -lt ${KEY_COUNT} ]; do i=$((i+1)); echo "SET key$i value$i"; done | valkey-cli >/dev/null; sleep 2`);
+      docker("kill", name);
+      // the next hard shutdown: the filesystem extended the incr file but never wrote its data
+      docker("run", "--rm", "--user", POD_UID_GID, "-v", `${data}:${CONTAINER_DATA_DIR}`, IMAGE, "sh", "-c",
+        `INCR=$(ls ${CONTAINER_DATA_DIR}/${OnDisk.aofDir}/*.incr.aof); head -c 700 /dev/zero >> "$INCR"`);
+      docker("start", name);
+      const served = pollUntil(ping);
+      return {
+        servedAfterRestart: served,
+        dbsizeAfterRestart: served ? sh("valkey-cli dbsize | tr -dc '0-9'") : "",
+        backupsAfterRestart: served ? sh(`ls ${CONTAINER_DATA_DIR}/${OnDisk.backupRoot} | wc -l | tr -dc '0-9'`) : "",
+        logsAfterRestart: docker("logs", name).out,
+      };
+    } finally {
+      docker("rm", "-f", name);
+    }
+  });
+}
+
+describe.skipIf(!DOCKER)("the Valkey container restarting in place inside a retained pod", () => {
+  test("(m) the startup command repairs a NUL-padded AOF on the in-place restart: serving, every key back, a backup kept", () => {
+    const r = inPlaceRestartAfterNulTail(startupScript());
+    expect(r.servedAfterRestart).toBe(true);
+    expect(r.dbsizeAfterRestart).toBe(String(KEY_COUNT));
+    expect(r.backupsAfterRestart).toBe("1");
+  }, { timeout: 180_000 });
+
+  test("(n) control: the server command alone refuses the same volume on the in-place restart", () => {
+    const r = inPlaceRestartAfterNulTail(serverCommand());
+    expect(r.servedAfterRestart).toBe(false);
+    expect(r.logsAfterRestart).toContain("Bad file format reading the append only file");
+  }, { timeout: 180_000 });
 });
