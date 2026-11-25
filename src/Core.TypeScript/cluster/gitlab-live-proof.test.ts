@@ -37,6 +37,8 @@ import {
   runnerOnline,
   runnerTokenPrefix,
   ADMIN_TOKEN_MARKER,
+  ADMIN_TOKEN_NAME,
+  REVOKE_ADMIN_TOKENS_RUBY,
   stayedSynced,
   adminTokenFromRailsOutput,
   MINT_ADMIN_TOKEN_RUBY,
@@ -450,6 +452,21 @@ describe("(b) root admin API access -- minted through the toolbox, never through
     expect(MINT_ADMIN_TOKEN_RUBY).toContain("scopes: [:api]");
     expect(MINT_ADMIN_TOKEN_RUBY).toContain("expires_at:");
     expect(MINT_ADMIN_TOKEN_RUBY).toContain(ADMIN_TOKEN_MARKER);
+  });
+
+  test("one owner for the token's name: minting sweeps earlier tokens of that name, and a separate script revokes them all", () => {
+    expect(MINT_ADMIN_TOKEN_RUBY).toContain(`name: '${ADMIN_TOKEN_NAME}'`);
+    // minting first revokes any earlier token of the name, so a retained (`--existing`) cluster never accumulates live ones
+    expect(MINT_ADMIN_TOKEN_RUBY.indexOf("revoke!")).toBeGreaterThanOrEqual(0);
+    expect(MINT_ADMIN_TOKEN_RUBY.indexOf("revoke!")).toBeLessThan(MINT_ADMIN_TOKEN_RUBY.indexOf("create!"));
+    expect(REVOKE_ADMIN_TOKENS_RUBY).toContain(`where(name: '${ADMIN_TOKEN_NAME}')`);
+    expect(REVOKE_ADMIN_TOKENS_RUBY).toContain("revoke!");
+    expect(REVOKE_ADMIN_TOKENS_RUBY).not.toContain("create!");
+  });
+
+  test("the proof revokes the token on every way out of runProof, not only when it passes", () => {
+    const source = readFileSync(join(resolve(import.meta.dir, "../../.."), "src/Core.TypeScript/cluster/gitlab-live-proof.ts"), "utf8");
+    expect(source).toMatch(/async function runProof\([^)]*\)[^{]*\{\s*try \{\s*await runChecks\(opts, report\);\s*\} finally \{\s*revokeAdminTokens\(\);/);
   });
 
   test("the lane no longer asks for an OAuth password grant", () => {

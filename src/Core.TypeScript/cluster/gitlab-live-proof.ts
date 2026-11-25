@@ -67,11 +67,17 @@ export const ADMIN_TOKEN_MARKER = "ZETA-PROOF-ADMIN-TOKEN=";
  * Mints the credential the proof drives the API with: a one-day `api` personal access token for root, on the throwaway
  * lane cluster only. The OAuth password grant used to provide this and is gone in GitLab 19 (`400 unsupported_grant_type`).
  */
+export const ADMIN_TOKEN_NAME = "zeta-live-proof";
+const ROOT_USER_RUBY = "root = User.find_by_username('root') || raise('no root user')";
+/** Revokes every token of the proof's name: the mint script starts with it, and the proof ends with it. */
+const REVOKE_NAMED_TOKENS_RUBY = `root.personal_access_tokens.where(name: '${ADMIN_TOKEN_NAME}').each(&:revoke!)`;
 export const MINT_ADMIN_TOKEN_RUBY = [
-  "root = User.find_by_username('root') || raise('no root user')",
-  "pat = root.personal_access_tokens.create!(name: 'zeta-live-proof', scopes: [:api], expires_at: 1.day.from_now)",
+  ROOT_USER_RUBY,
+  REVOKE_NAMED_TOKENS_RUBY,
+  `pat = root.personal_access_tokens.create!(name: '${ADMIN_TOKEN_NAME}', scopes: [:api], expires_at: 1.day.from_now)`,
   `print "\\n${ADMIN_TOKEN_MARKER}" + pat.token.to_s`,
 ].join("\n");
+export const REVOKE_ADMIN_TOKENS_RUBY = [ROOT_USER_RUBY, REVOKE_NAMED_TOKENS_RUBY].join("\n");
 
 export interface AppSample {
   readonly sync: string;
@@ -797,7 +803,22 @@ function liveAddressLeaves(): readonly (string | undefined)[] {
   });
 }
 
+/** Revokes the admin tokens the proof minted. A failure is logged, never silent: a live root credential must not be left unannounced. */
+function revokeAdminTokens(): void {
+  const r = kubectl(["exec", "-n", GITLAB_NAMESPACE, TOOLBOX_DEPLOYMENT, "-c", TOOLBOX_CONTAINER, "--", "gitlab-rails", "runner", REVOKE_ADMIN_TOKENS_RUBY], { timeoutMs: 150_000 });
+  log(r.code === 0 ? `revoked the proof's admin tokens (${ADMIN_TOKEN_NAME})` : `COULD NOT revoke the proof's admin tokens (exit ${String(r.code)}): ${r.stderr.slice(-200)}`);
+}
+
+/** The proof, and on every way out of it the revocation of the credential it minted. */
 async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> {
+  try {
+    await runChecks(opts, report);
+  } finally {
+    revokeAdminTokens();
+  }
+}
+
+async function runChecks(opts: ProofOptions, report: ProofReport): Promise<void> {
   const range = kindPoolRange(readFileSync(join(REPO_ROOT, KIND_LB_POOL_MANIFEST_PATH), "utf8"));
   const address = range.stop;
   const committedApplication = readFileSync(join(REPO_ROOT, GITLAB_APPLICATION_PATH), "utf8");
@@ -980,10 +1001,15 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
 
     // ---- (b) root admin API access -----------------------------------------------------------
     if (report.statusOf("b1-root-login") === "unrecorded" && report.blockedBy("b1-root-login") === null) {
+      // Minted ONCE per run: a retry re-asks GitLab about the same token, it never mints another.
+      let minted: string | null = null;
       const r = await pollUntil(Date.now() + opts.phaseSec * 1000, 15_000, async () => {
-        const minted = kubectl(["exec", "-n", GITLAB_NAMESPACE, TOOLBOX_DEPLOYMENT, "-c", TOOLBOX_CONTAINER, "--", "gitlab-rails", "runner", MINT_ADMIN_TOKEN_RUBY], { timeoutMs: 150_000 });
-        const token = adminTokenFromRailsOutput(minted.stdout);
-        if (token === null) return { done: false, detail: `no admin token from ${TOOLBOX_DEPLOYMENT} (exit ${String(minted.code)}): ${minted.stderr.replace(/glpat-\S+/g, "glpat-<redacted>").slice(-200)}` };
+        if (minted === null) {
+          const out = kubectl(["exec", "-n", GITLAB_NAMESPACE, TOOLBOX_DEPLOYMENT, "-c", TOOLBOX_CONTAINER, "--", "gitlab-rails", "runner", MINT_ADMIN_TOKEN_RUBY], { timeoutMs: 150_000 });
+          minted = adminTokenFromRailsOutput(out.stdout);
+          if (minted === null) return { done: false, detail: `no admin token from ${TOOLBOX_DEPLOYMENT} (exit ${String(out.code)}): ${out.stderr.replace(/glpat-\S+/g, "glpat-<redacted>").slice(-200)}` };
+        }
+        const token = minted;
         const u = await proxy.request("GET", "/api/v4/user", { token });
         const me = u.json as { username?: string; is_admin?: boolean; admin?: boolean } | null;
         if (u.status !== 200 || me?.username !== "root") return { done: false, detail: `GET /api/v4/user -> ${String(u.status)} ${u.text.slice(0, 160)}` };
