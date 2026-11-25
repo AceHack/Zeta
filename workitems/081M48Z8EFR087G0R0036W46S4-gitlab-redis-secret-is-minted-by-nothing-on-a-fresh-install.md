@@ -51,3 +51,12 @@ comment at "reuses the password the chart already minted" should say what mints 
 Falsifier: `gitlab-live-proof` reaches the (a) checks (any gitlab Deployment exists) on a fresh kind cluster.
 
 Origin: #17875 (2e324b03ab, datastores M1) / #17880. Composes with 081M3VKM164087G0R001RJFB2Z.
+
+## Fix landed (PR 18023)
+
+Shape chosen: the release ENSURES the Secret. Job `gitlab-redis-secret` (gitlab/Application.yaml extraObjects, Sync hook,
+wave -3, ahead of the Valkey StatefulSet at wave -2) attempts one atomic `kubectl create` (an existing Secret is refused,
+so a live node keeps its inherited password) and then requires the Secret to hold the key, failing the sync loudly
+otherwise. Secret name and key come from `global.redis.auth` alone (the Valkey container, the Job and its Role template
+them). Falsifier: `src/Core.TypeScript/cluster/gitlab-redis-secret-mint.test.ts`. This item closes when
+`gitlab-live-proof` reaches the (a) checks on a fresh kind cluster.

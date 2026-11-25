@@ -1,0 +1,14 @@
+{
+  "id": "080d107c0a596810a0130008ebd28c13",
+  "at": "2026-11-24T21:41:01.357Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M87R2JSC087G0R003QE561M",
+    "type": "bug",
+    "title": "GitLab Valkey cannot restart after a hard shutdown: NUL-padded AOF tail, no self-repair in the pod",
+    "slug": "gitlab-valkey-cannot-restart-after-a-hard-shutdown-nul-padde",
+    "priority": "P2",
+    "filename": "081M87R2JSC087G0R003QE561M-gitlab-valkey-cannot-restart-after-a-hard-shutdown-nul-padde.md"
+  }
+}

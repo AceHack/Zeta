@@ -84,7 +84,7 @@ export const METAL_NOT_SEEDED: ReadonlyMap<string, string> = new Map([
   ],
   [
     "gitlab|gitlab-redis-secret",
-    "CHART-MINTED: the gitlab chart's shared-secrets Job (a Helm pre-install/pre-upgrade hook, run by every ArgoCD sync) generates it; the dedicated Valkey in gitlab/Application.yaml reads the same password the chart's `global.redis.auth` does.",
+    "RELEASE-MINTED: Job gitlab-redis-secret (gitlab/Application.yaml extraObjects, Sync hook, wave -3) creates it if absent and requires it to hold the key, ahead of the Valkey StatefulSet and `global.redis.auth` that read it. The chart's shared-secrets Job has no redis branch (workitem 081M48Z8EFR087G0R0036W46S4). Not seeded: there is no second credential.",
   ],
   [
     "gitlab|gitlab-rails-db-app",
