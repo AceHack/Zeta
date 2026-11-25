@@ -56,6 +56,8 @@ const Declared = {
   dataDirEnv: "DATA_DIR",
   keepBackupsEnv: "KEEP_BACKUPS",
   minGraceSeconds: 60,
+  // Repair copies and checks up to the 2Gi volume cap before the server loads it; a slow, CPU-starved node can take minutes.
+  minStartupBudgetSeconds: 900,
 } as const;
 
 const OnDisk = {
@@ -167,6 +169,17 @@ describe("gitlab-valkey declares its own repair", () => {
   test("the durability flags are pinned, not left to the image's defaults", () => {
     const flags = serverFlags(serverCommand());
     for (const [name, value] of Object.entries(PinnedServerFlags)) expect(flags[name]).toBe(value);
+  });
+
+  test("liveness cannot kill the container while the repair and the AOF load are still running: a startup probe owns that window", () => {
+    const server = serverContainer();
+    const startup = server["startupProbe"] as Doc | undefined;
+    expect(startup, "no startupProbe: liveness (20 x 10s) would kill a slow repair and restart it forever").toBeDefined();
+    // The same ping as liveness and readiness: the one definition of "the server answers".
+    expect(dig(startup, "exec", "command")).toEqual(dig(server, "livenessProbe", "exec", "command"));
+    expect(dig(startup, "exec", "command")).toEqual(dig(server, "readinessProbe", "exec", "command"));
+    const budget = Number(startup!["periodSeconds"]) * Number(startup!["failureThreshold"]);
+    expect(budget).toBeGreaterThanOrEqual(Declared.minStartupBudgetSeconds);
   });
 
   test("a graceful stop has time to flush", () => {

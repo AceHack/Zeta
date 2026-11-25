@@ -472,8 +472,8 @@ spec:
             # server's version. Backup space is the one thing it cannot conjure: a full volume fails the container
             # loudly (the server is never exec'd) rather than repairing with no copy. The server flags pin what bounds
             # the loss: fsync once a second, AOF rewrite thresholds, the RDB-preamble base, and periodic RDB
-            # snapshots. The repair adds start-up time on a big AOF; the liveness budget (20 x 10s) covers repair plus
-            # load for a volume capped at 2Gi. Falsifier: gitlab-valkey-aof-self-heal.test.ts, which RUNS this script
+            # snapshots. The repair adds start-up time on a big AOF; the startup probe (5s x 240 = 20 minutes) owns that
+            # window, so liveness (20 x 10s) only judges a server that has already come up. Falsifier: gitlab-valkey-aof-self-heal.test.ts, which RUNS this script
             # over a real corrupt AOF, including an in-place container restart. Runbook:
             # docs/ops/GITLAB-VALKEY-HARD-SHUTDOWN.md.
             - apiVersion: v1
@@ -597,6 +597,15 @@ spec:
                           allowPrivilegeEscalation: false
                           readOnlyRootFilesystem: true
                           capabilities: { drop: [ALL] }
+                        # The start-up window belongs to this probe: while it has not succeeded the kubelet runs neither
+                        # liveness nor readiness, so a slow repair (a copy and check of up to the 2Gi volume, then the load)
+                        # is never killed by the 200s liveness budget and restarted from scratch. 5s x 240 = 20 minutes.
+                        startupProbe:
+                          exec:
+                            command: ["/bin/sh", "-c", "REDISCLI_AUTH=\"$REDIS_PASSWORD\" valkey-cli ping | grep -q PONG"]
+                          periodSeconds: 5
+                          timeoutSeconds: 3
+                          failureThreshold: 240
                         readinessProbe:
                           exec:
                             command: ["/bin/sh", "-c", "REDISCLI_AUTH=\"$REDIS_PASSWORD\" valkey-cli ping | grep -q PONG"]

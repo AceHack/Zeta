@@ -49,10 +49,11 @@ a graceful stop time to flush.
 
 ## Start-up time
 
-The repair runs before the server, so a large AOF adds check and copy time to the start. The liveness probe has no initial
-delay and tolerates 20 failures at a 10 s period (200 s) from container start, which covers repair plus the AOF load for
-this volume (2Gi cap, AOF rewritten at 64 MB and +100%, so tens of MB in practice). No `startupProbe` is added; if the
-AOF ever grows enough for repair plus load to approach 200 s, add one rather than loosening liveness.
+The repair runs before the server, so a large AOF adds check and copy time to the start (a copy and check of up to the 2Gi
+volume cap, then the load). A `startupProbe` (the same `valkey-cli ping` as liveness and readiness, every 5 s, 240 failures
+= 20 minutes) owns that window: until it succeeds the kubelet runs neither liveness nor readiness, so a slow repair on a
+starved node is never killed by the liveness budget (20 x 10 s = 200 s) and restarted from scratch. After it succeeds,
+liveness judges only a server that has already come up.
 
 ## After a restart that repaired something
 
