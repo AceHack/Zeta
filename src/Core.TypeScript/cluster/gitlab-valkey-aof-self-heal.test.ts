@@ -43,6 +43,7 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSyn
 import { tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { waitUntil } from "../testing/deterministic-async";
 
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const GITLAB_APP = resolve(REPO_ROOT, "full-ai-cluster/k8s/applications/gitlab/Application.yaml");
@@ -515,7 +516,8 @@ describe.skipIf(!DOCKER)("the repair script on a real Valkey 7.2 AOF", () => {
 // ---------------------------------------------------------------------------
 
 const LIFECYCLE_PASSWORD = "lifecycle-password";
-const LIFECYCLE_POLL = { tries: 150, intervalMs: 200 } as const;
+// An upper bound on PATIENCE (150 x 200ms of the old fixed-interval poll), never a synchronization step.
+const LIFECYCLE_PATIENCE_MS = 30_000;
 const AUTH_ENV = `REDISCLI_AUTH=${LIFECYCLE_PASSWORD}`;
 
 function docker(...args: string[]): { code: number; out: string } {
@@ -523,22 +525,24 @@ function docker(...args: string[]): { code: number; out: string } {
   return { code: r.exitCode, out: r.stdout.toString() + r.stderr.toString() };
 }
 
-function pollUntil(done: () => boolean): boolean {
-  for (let i = 0; i < LIFECYCLE_POLL.tries; i++) {
-    if (done()) return true;
-    Bun.sleepSync(LIFECYCLE_POLL.intervalMs);
+/** True once `done` holds; false if the container never gets there within the patience bound (control cases expect that). */
+async function pollUntil(done: () => boolean, describe: string): Promise<boolean> {
+  try {
+    await waitUntil(done, { timeoutMs: LIFECYCLE_PATIENCE_MS, describe });
+    return true;
+  } catch {
+    return false;
   }
-  return false;
 }
 
 /** Runs `body` over a fresh pod-owned data dir, then empties it as the pod uid before the host removes it. */
-function withPodDataDir<T>(body: (dataDir: string) => T): T {
+async function withPodDataDir<T>(body: (dataDir: string) => Promise<T>): Promise<T> {
   const dir = mkdtempSync(join(tmpdir(), "valkey-aof-real-"));
   try {
     const data = join(dir, "data");
     mkdirSync(data);
     chmodSync(data, 0o777);
-    return body(data);
+    return await body(data);
   } finally {
     docker("run", "--rm", "--user", POD_UID_GID, "-v", `${join(dir, "data")}:${CONTAINER_DATA_DIR}`,
       IMAGE, "sh", "-c", `find ${CONTAINER_DATA_DIR} -mindepth 1 -delete`);
@@ -558,8 +562,8 @@ interface Lifecycle {
  * start a container with `startup` as its command over a valid AOF, kill it hard, NUL-pad the AOF tail as the pod
  * uid, then `docker start` THE SAME container again and report what the second start did.
  */
-function inPlaceRestartAfterNulTail(startup: string): Lifecycle {
-  return withPodDataDir((data) => {
+async function inPlaceRestartAfterNulTail(startup: string): Promise<Lifecycle> {
+  return withPodDataDir(async (data) => {
     const name = `zeta-valkey-lifecycle-${process.pid}-${Date.now()}`;
     const ping = () => docker("exec", "-e", AUTH_ENV, name, "valkey-cli", "ping").out.includes("PONG");
     const sh = (script: string) => docker("exec", "-e", AUTH_ENV, name, "sh", "-c", script).out.trim();
@@ -569,14 +573,14 @@ function inPlaceRestartAfterNulTail(startup: string): Lifecycle {
         "-e", `${Declared.keepBackupsEnv}=${keepBackups()}`,
         "-e", `REDIS_PASSWORD=${LIFECYCLE_PASSWORD}`,
         "-v", `${data}:${CONTAINER_DATA_DIR}`, IMAGE, "sh", "-c", startup);
-      expect(pollUntil(ping)).toBe(true);
+      expect(await pollUntil(ping, "the first start answering PING")).toBe(true);
       sh(`i=0; while [ $i -lt ${KEY_COUNT} ]; do i=$((i+1)); echo "SET key$i value$i"; done | valkey-cli >/dev/null; sleep 2`);
       docker("kill", name);
       // the next hard shutdown: the filesystem extended the incr file but never wrote its data
       docker("run", "--rm", "--user", POD_UID_GID, "-v", `${data}:${CONTAINER_DATA_DIR}`, IMAGE, "sh", "-c",
         `INCR=$(ls ${CONTAINER_DATA_DIR}/${OnDisk.aofDir}/*.incr.aof); head -c 700 /dev/zero >> "$INCR"`);
       docker("start", name);
-      const served = pollUntil(ping);
+      const served = await pollUntil(ping, "the in-place restart answering PING");
       return {
         servedAfterRestart: served,
         dbsizeAfterRestart: served ? sh("valkey-cli dbsize | tr -dc '0-9'") : "",
@@ -590,15 +594,15 @@ function inPlaceRestartAfterNulTail(startup: string): Lifecycle {
 }
 
 describe.skipIf(!DOCKER)("the Valkey container restarting in place inside a retained pod", () => {
-  test("(m) the startup command repairs a NUL-padded AOF on the in-place restart: serving, every key back, a backup kept", () => {
-    const r = inPlaceRestartAfterNulTail(startupScript());
+  test("(m) the startup command repairs a NUL-padded AOF on the in-place restart: serving, every key back, a backup kept", async () => {
+    const r = await inPlaceRestartAfterNulTail(startupScript());
     expect(r.servedAfterRestart).toBe(true);
     expect(r.dbsizeAfterRestart).toBe(String(KEY_COUNT));
     expect(r.backupsAfterRestart).toBe("1");
   }, { timeout: 180_000 });
 
-  test("(n) control: the server command alone refuses the same volume on the in-place restart", () => {
-    const r = inPlaceRestartAfterNulTail(serverCommand());
+  test("(n) control: the server command alone refuses the same volume on the in-place restart", async () => {
+    const r = await inPlaceRestartAfterNulTail(serverCommand());
     expect(r.servedAfterRestart).toBe(false);
     expect(r.logsAfterRestart).toContain("Bad file format reading the append only file");
   }, { timeout: 180_000 });
