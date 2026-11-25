@@ -458,15 +458,19 @@ spec:
             # after a complete one is "bad file format" and the server refuses to start. Nothing in the pod repaired it.
             #
             # THE FIX IS LEVEL-TRIGGERED, NOT A RUNBOOK: init container `aof-repair` reads the state of the volume on
-            # EVERY start and acts on that state alone -- no AOF yet or a valid AOF: change nothing; an invalid AOF:
-            # copy it to /data/aof-repair-backups/<UTC stamp> (newest KEEP_BACKUPS kept), then `valkey-check-aof --fix`
-            # (cuts the file at the last good command); one `--fix` cannot repair (a corrupt base or manifest): keep the
-            # copy, move the AOF aside and let the server start empty -- the queue it held is lost, the service is up.
-            # Same image as the server, so `valkey-check-aof` is exactly the server's own version. Backup space is the
-            # one thing it cannot conjure: a full volume fails the init container loudly rather than repairing with
-            # no copy. The server flags pin what bounds the loss: fsync once a second, AOF rewrite thresholds, the
-            # RDB-preamble base, and periodic RDB snapshots. Falsifier: gitlab-valkey-aof-self-heal.test.ts, which
-            # RUNS this script over a real corrupt AOF. Runbook: docs/ops/GITLAB-VALKEY-HARD-SHUTDOWN.md.
+            # EVERY start and acts on that state alone. FRESH (/data/appendonlydir absent or empty): change nothing.
+            # VALID (a manifest exists and `valkey-check-aof` accepts it): change nothing. Anything else is
+            # UNSAFE for the server and is copied first to /data/aof-repair-backups/<UTC stamp> (newest KEEP_BACKUPS
+            # kept): REPAIRABLE (a manifest exists and `valkey-check-aof --fix` makes it valid, cutting the file at the
+            # last good command) or UNREPAIRABLE (still invalid after one `--fix`, a corrupt base or manifest, OR files
+            # present with NO manifest, which Valkey 7.2 reads as an empty manifest and abandons for a new empty AOF):
+            # keep the copy, move the AOF aside and let the server start empty -- the queue it held is lost, the
+            # service is up. Same image as the server, so `valkey-check-aof` is exactly the server's own version.
+            # Backup space is the one thing it cannot conjure: a full volume fails the init container loudly rather
+            # than repairing with no copy. The server flags pin what bounds the loss: fsync once a second, AOF rewrite
+            # thresholds, the RDB-preamble base, and periodic RDB snapshots. Falsifier:
+            # gitlab-valkey-aof-self-heal.test.ts, which RUNS this script over a real corrupt AOF. Runbook:
+            # docs/ops/GITLAB-VALKEY-HARD-SHUTDOWN.md.
             - apiVersion: v1
               kind: Service
               metadata:
@@ -518,12 +522,18 @@ spec:
                             MANIFEST=appendonly.aof.manifest
                             BACKUP_ROOT="$DATA_DIR/aof-repair-backups"
 
-                            if [ ! -f "$AOF_DIR/$MANIFEST" ]; then
-                              echo "aof-repair: no AOF manifest under $AOF_DIR, nothing to verify"
+                            # ONE predicate owns the volume's state. FRESH: the directory is absent or holds no entry at
+                            # all. VALID: it has a manifest and the checker accepts it. Everything else is not safe to
+                            # hand to the server (invalid, or files with no manifest, which the server would silently
+                            # abandon for a new empty AOF) and takes the one path below.
+                            valid() { [ -f "$MANIFEST" ] && valkey-check-aof "$MANIFEST" >/dev/null 2>&1; }
+
+                            if [ -z "$(ls -A "$AOF_DIR" 2>/dev/null)" ]; then
+                              echo "aof-repair: no AOF under $AOF_DIR, nothing to verify"
                               exit 0
                             fi
                             cd "$AOF_DIR"
-                            if valkey-check-aof "$MANIFEST" >/dev/null 2>&1; then
+                            if valid; then
                               echo "aof-repair: AOF is valid, leaving it untouched"
                               exit 0
                             fi
@@ -537,8 +547,10 @@ spec:
                               rm -rf "${BACKUP_ROOT:?}/$old"
                             done
 
-                            echo y | valkey-check-aof --fix "$MANIFEST" || true
-                            if valkey-check-aof "$MANIFEST" >/dev/null 2>&1; then
+                            # --fix needs a manifest to name the files; without one there is nothing to cut, so the
+                            # re-check below fails and the unrepairable path applies.
+                            [ ! -f "$MANIFEST" ] || echo y | valkey-check-aof --fix "$MANIFEST" || true
+                            if valid; then
                               echo "aof-repair: AOF repaired"
                               exit 0
                             fi

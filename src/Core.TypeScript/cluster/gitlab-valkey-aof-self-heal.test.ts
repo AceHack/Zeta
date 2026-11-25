@@ -18,10 +18,13 @@
  *        (d) repair, then run again     -> the second run changes nothing (idempotence);
  *        (e) a base `--fix` cannot mend -> backup kept, AOF moved aside, exit 0 (the server can start);
  *        (f) many repairs               -> only the newest KEEP_BACKUPS backups remain, nothing else is touched;
- *        (g) the backup cannot be made  -> exit non-zero and the AOF is untouched (never repair with no copy).
+ *        (g) the backup cannot be made  -> exit non-zero and the AOF is untouched (never repair with no copy);
+ *        (j) files but NO manifest      -> the dataset is abandoned by the server, so it is backed up and moved aside;
+ *        (k) an existing but empty dir  -> a fresh volume: untouched, no backup.
  *   C. THE REAL IMAGE -- needs `docker`. A real Valkey 7.2.14 writes a real AOF, the tail is NUL-padded, and:
  *        (h) the server WITHOUT the repair refuses to start with the measured message (the fixture is the failure);
- *        (i) the script as the pod runs it (uid 999) makes the same volume load every key.
+ *        (i) the script as the pod runs it (uid 999) makes the same volume load every key;
+ *        (l) real files but the manifest missing -> backed up byte-for-byte, moved aside, the server starts.
  *
  * WHAT THIS CANNOT PROVE: that a particular filesystem produces NUL padding on a given power cut (the live file did;
  * the same repair also covers any garbage tail `valkey-check-aof` can cut), nor Kubernetes' init-container ordering
@@ -205,10 +208,10 @@ function sandbox(): Sandbox {
   return { dataDir, bin, dispose: () => rmSync(root, { recursive: true, force: true }) };
 }
 
-function seedAof(s: Sandbox, opts: { incr?: string; base?: string } = {}): string {
+function seedAof(s: Sandbox, opts: { incr?: string; base?: string; manifest?: boolean } = {}): string {
   const dir = join(s.dataDir, OnDisk.aofDir);
   mkdirSync(dir);
-  writeFileSync(join(dir, OnDisk.manifest), MANIFEST_TEXT, "utf8");
+  if (opts.manifest !== false) writeFileSync(join(dir, OnDisk.manifest), MANIFEST_TEXT, "utf8");
   writeFileSync(join(dir, OnDisk.base), opts.base ?? "REDIS-BASE", "utf8");
   writeFileSync(join(dir, OnDisk.incr), opts.incr ?? GOOD_AOF, "utf8");
   return dir;
@@ -322,6 +325,29 @@ describe("the repair script, executed", () => {
     expect(r.code).not.toBe(0);
     expect(read(dir, OnDisk.incr)).toBe(GOOD_AOF + NUL_TAIL);
   }));
+
+  test("(j) base and incr files with no manifest are backed up and moved aside, never left for the server to abandon", withSandbox((s) => {
+    seedAof(s, { manifest: false });
+    const r = runRepair(s);
+    expect(r.code).toBe(0);
+    expect(existsSync(join(s.dataDir, OnDisk.aofDir))).toBe(false);
+    const [stamp, ...rest] = backupsOf(s);
+    expect(rest).toEqual([]);
+    expect(read(s.dataDir, OnDisk.backupRoot, stamp!, OnDisk.base)).toBe("REDIS-BASE");
+    expect(read(s.dataDir, OnDisk.backupRoot, stamp!, OnDisk.incr)).toBe(GOOD_AOF);
+    // the volume is now fresh: a second run changes nothing
+    expect(runRepair(s).code).toBe(0);
+    expect(backupsOf(s)).toEqual([stamp!]);
+  }));
+
+  test("(k) an existing but empty AOF directory is a fresh volume: untouched, no backup", withSandbox((s) => {
+    const dir = join(s.dataDir, OnDisk.aofDir);
+    mkdirSync(dir);
+    const r = runRepair(s);
+    expect(r.code).toBe(0);
+    expect(readdirSync(dir)).toEqual([]);
+    expect(readdirSync(s.dataDir)).toEqual([OnDisk.aofDir]);
+  }));
 });
 
 // ---------------------------------------------------------------------------
@@ -366,40 +392,81 @@ valkey-cli shutdown nosave >/dev/null 2>&1
 echo "BACKUPS=$(ls "$DATA_DIR/${OnDisk.backupRoot}" | wc -l | tr -dc '0-9')"
 `;
 
+/** The AOF files as `cksum` sees them, name-sorted: byte-for-byte identity as one comparable string. */
+const REAL_SESSION_FILE_SUMS = `sums() { (cd "$1" && cksum * | sort); }`;
+
+/** Same, but the manifest is deleted before the repair: base and incr files remain, nothing names them. */
+const REAL_SESSION_NO_MANIFEST = `
+set -u
+${REAL_SESSION_FILE_SUMS}
+start() { valkey-server --daemonize yes --appendonly yes --dir "$DATA_DIR" --logfile "$DATA_DIR/server.log" >/dev/null; }
+wait_up() { i=0; until valkey-cli ping >/dev/null 2>&1; do i=$((i+1)); [ $i -gt 50 ] && return 1; sleep 0.1; done; }
+start; wait_up || { echo "FIXTURE_SERVER_DID_NOT_START"; exit 3; }
+i=0; while [ $i -lt ${KEY_COUNT} ]; do i=$((i+1)); echo "SET key$i value$i"; done | valkey-cli >/dev/null
+valkey-cli shutdown nosave >/dev/null 2>&1; sleep 0.5
+AOF="$DATA_DIR/${OnDisk.aofDir}"
+rm "$AOF/${OnDisk.manifest}"
+BEFORE=$(sums "$AOF")
+echo "FILES_BEFORE=$(echo "$BEFORE" | wc -l | tr -dc '0-9')"
+sh ${CONTAINER_SCRIPT}; echo "REPAIR_EXIT=$?"
+echo "LIVE_AOF_ENTRIES=$(ls -A "$AOF" 2>/dev/null | wc -l | tr -dc '0-9')"
+echo "BACKUPS=$(ls "$DATA_DIR/${OnDisk.backupRoot}" | wc -l | tr -dc '0-9')"
+BACKUP=$(ls -d "$DATA_DIR/${OnDisk.backupRoot}"/*)
+[ "$(sums "$BACKUP")" = "$BEFORE" ] && echo "BACKUP_BYTE_IDENTICAL" || echo "BACKUP_DIFFERS"
+start; wait_up || { echo "SERVER_DID_NOT_START"; exit 4; }
+echo "DBSIZE=$(valkey-cli dbsize | tr -dc '0-9')"
+valkey-cli shutdown nosave >/dev/null 2>&1
+`;
+
+/** Runs one session script as the pod's user in the real image with the repair script mounted; returns its output. */
+function runInPodContainer(session: string): string {
+  const dir = mkdtempSync(join(tmpdir(), "valkey-aof-real-"));
+  try {
+    const data = join(dir, "data");
+    mkdirSync(data);
+    chmodSync(data, 0o777);
+    const scriptFile = join(dir, "aof-repair.sh");
+    writeFileSync(scriptFile, repairScript(), "utf8");
+    const r = Bun.spawnSync(
+      [
+        "docker", "run", "--rm", "--user", POD_UID_GID,
+        "-e", `${Declared.dataDirEnv}=${CONTAINER_DATA_DIR}`,
+        "-e", `${Declared.keepBackupsEnv}=${envOf(containerNamed("initContainers", Declared.repairContainer))[Declared.keepBackupsEnv]}`,
+        "-v", `${data}:${CONTAINER_DATA_DIR}`, "-v", `${scriptFile}:${CONTAINER_SCRIPT}:ro`,
+        IMAGE, "sh", "-c", session,
+      ],
+      { stdout: "pipe", stderr: "pipe" },
+    );
+    return r.stdout.toString() + r.stderr.toString();
+  } finally {
+    // The container wrote as the pod's uid, which the runner's uid cannot delete: empty the data
+    // directory as that same uid first, then the host-owned remainder removes cleanly.
+    Bun.spawnSync(
+      ["docker", "run", "--rm", "--user", POD_UID_GID, "-v", `${join(dir, "data")}:${CONTAINER_DATA_DIR}`,
+        IMAGE, "sh", "-c", `find ${CONTAINER_DATA_DIR} -mindepth 1 -delete`],
+      { stdout: "pipe", stderr: "pipe" },
+    );
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 describe.skipIf(!DOCKER)("the repair script on a real Valkey 7.2 AOF", () => {
   test("(h)(i) the unrepaired server refuses the padded AOF; after the repair every key loads", () => {
-    const dir = mkdtempSync(join(tmpdir(), "valkey-aof-real-"));
-    try {
-      const data = join(dir, "data");
-      mkdirSync(data);
-      chmodSync(data, 0o777);
-      const scriptFile = join(dir, "aof-repair.sh");
-      writeFileSync(scriptFile, repairScript(), "utf8");
-      const r = Bun.spawnSync(
-        [
-          "docker", "run", "--rm", "--user", POD_UID_GID,
-          "-e", `${Declared.dataDirEnv}=${CONTAINER_DATA_DIR}`,
-          "-e", `${Declared.keepBackupsEnv}=${envOf(containerNamed("initContainers", Declared.repairContainer))[Declared.keepBackupsEnv]}`,
-          "-v", `${data}:${CONTAINER_DATA_DIR}`, "-v", `${scriptFile}:${CONTAINER_SCRIPT}:ro`,
-          IMAGE, "sh", "-c", REAL_SESSION,
-        ],
-        { stdout: "pipe", stderr: "pipe" },
-      );
-      const out = r.stdout.toString() + r.stderr.toString();
-      expect(out).toContain("UNREPAIRED_SERVER_REFUSED");
-      expect(out).toContain("REPAIR_EXIT=0");
-      expect(out).toContain(`DBSIZE=${KEY_COUNT}`);
-      // Counted inside the container: the backup root belongs to the pod's uid, which the host's cannot read.
-      expect(out).toContain("BACKUPS=1");
-    } finally {
-      // The container wrote as the pod's uid, which the runner's uid cannot delete: empty the data
-      // directory as that same uid first, then the host-owned remainder removes cleanly.
-      Bun.spawnSync(
-        ["docker", "run", "--rm", "--user", POD_UID_GID, "-v", `${join(dir, "data")}:${CONTAINER_DATA_DIR}`,
-          IMAGE, "sh", "-c", `find ${CONTAINER_DATA_DIR} -mindepth 1 -delete`],
-        { stdout: "pipe", stderr: "pipe" },
-      );
-      rmSync(dir, { recursive: true, force: true });
-    }
+    const out = runInPodContainer(REAL_SESSION);
+    expect(out).toContain("UNREPAIRED_SERVER_REFUSED");
+    expect(out).toContain("REPAIR_EXIT=0");
+    expect(out).toContain(`DBSIZE=${KEY_COUNT}`);
+    // Counted inside the container: the backup root belongs to the pod's uid, which the host's cannot read.
+    expect(out).toContain("BACKUPS=1");
+  }, { timeout: 120_000 });
+
+  test("(l) real AOF files with the manifest missing are backed up byte-for-byte and moved aside; the server starts", () => {
+    const out = runInPodContainer(REAL_SESSION_NO_MANIFEST);
+    expect(Number(/FILES_BEFORE=(\d+)/.exec(out)?.[1])).toBeGreaterThanOrEqual(2);
+    expect(out).toContain("REPAIR_EXIT=0");
+    expect(out).toContain("BACKUPS=1");
+    expect(out).toContain("BACKUP_BYTE_IDENTICAL");
+    expect(out).toContain("LIVE_AOF_ENTRIES=0");
+    expect(out).toContain("DBSIZE=0");
   }, { timeout: 120_000 });
 });

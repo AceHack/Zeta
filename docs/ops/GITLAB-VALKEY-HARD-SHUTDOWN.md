@@ -24,10 +24,14 @@ The init container is level-triggered: it reads the volume's state at every star
 
 | state of `/data/appendonlydir` | action |
 |---|---|
-| no manifest (fresh volume) | nothing |
-| `valkey-check-aof` says valid | nothing, and nothing is written |
-| invalid | copy the directory to `/data/aof-repair-backups/<UTC stamp>` (newest `KEEP_BACKUPS`, 3, kept), then `valkey-check-aof --fix` |
-| still invalid after `--fix` (corrupt base or manifest) | the copy is already kept; the AOF directory is removed so the server starts empty |
+| fresh: the directory is absent or holds no entry at all | nothing |
+| valid: a manifest exists and `valkey-check-aof` accepts it | nothing, and nothing is written |
+| repairable: unsafe, but a manifest exists and `--fix` makes it valid | copy the directory to `/data/aof-repair-backups/<UTC stamp>` (newest `KEEP_BACKUPS`, 3, kept), then `valkey-check-aof --fix` |
+| unrepairable: still invalid after `--fix` (corrupt base or manifest), or files present with no manifest | the copy is already kept; the AOF directory is removed so the server starts empty |
+
+Only a fresh volume skips the repair. Files with no manifest are never fresh: Valkey 7.2 reads a missing manifest as an
+empty one and starts a new AOF, silently abandoning the persisted dataset (and a later rewrite may delete the orphan
+files), so that state is backed up and moved aside like any other unrepairable one.
 
 If the copy cannot be made (volume full) the init container fails and the AOF is left exactly as found: it never repairs
 with no copy. Lost state in the last row is the Sidekiq queue and sessions; GitLab itself comes up.
