@@ -1,0 +1,22 @@
+{
+  "pr_number": 18023,
+  "archive_path": "docs/history/pr-reviews/2026/11/25/PR-18023-fix-gitlab-valkey-self-repairs-its-aof-on-start-after-a-hard-shutdown.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM8AAAABF-PcRQ",
+    "comment:PRRC_kwDOSF9kNM8AAAABF2NgsA",
+    "comment:PRRC_kwDOSF9kNM8AAAABF4cP5g",
+    "comment:PRRC_kwDOSF9kNM8AAAABF4ea-g",
+    "comment:PRRC_kwDOSF9kNM8AAAABF5PkwQ",
+    "comment:PRRC_kwDOSF9kNM8AAAABF_iUlw",
+    "thread:PRRT_kwDOSF9kNM677N93",
+    "thread:PRRT_kwDOSF9kNM67nw91",
+    "thread:PRRT_kwDOSF9kNM67tKxC"
+  ],
+  "fetched_at": "2026-11-25T16:32:28.284Z",
+  "schema_version": "v1",
+  "commit_sha": "581bdc226a7a16fed2f9e150e4889489e53a1815",
+  "title": "fix(gitlab): Valkey self-repairs its AOF on start after a hard shutdown",
+  "state": "MERGED",
+  "merged_at": "2026-11-25T16:31:40Z",
+  "head_ref": "fix/gitlab-valkey-aof-self-heal-after-hard-shutdown"
+}
