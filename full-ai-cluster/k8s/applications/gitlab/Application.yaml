@@ -1282,7 +1282,10 @@ spec:
                             while [ -z "$token" ]; do
                               attempt=$((attempt + 1))
                               out=$(run_rails -n gitlab exec deploy/gitlab-toolbox -c toolbox -- gitlab-rails runner "$RUBY" 2>/tmp/rails.err)
-                              token=$(printf '%s\n' "$out" | grep -o 'glrt-[A-Za-z0-9_-]*' | tail -n 1)
+                              # The whole token, dots included: GitLab 19 mints ROUTABLE runner tokens, `glrt-<base64url>.<version>.<length><crc>`
+                              # (lib/authn/token_field/generator/routable_token.rb). A pattern without `.` cut it at the first dot and the runner then
+                              # read "Verifying runner... is not valid" on every fresh install (gitlab-live-proof, 2026-11-25).
+                              token=$(printf '%s\n' "$out" | grep -o 'glrt-[A-Za-z0-9_.-]*' | tail -n 1)
                               [ -n "$token" ] && break
                               if [ "$attempt" -ge "$MAX_ATTEMPTS" ] || [ "$SECONDS" -ge "$GIVE_UP_AFTER" ]; then
                                 tail -n 5 /tmp/rails.err

@@ -220,7 +220,10 @@ function mintScript(docs: readonly unknown[]): string {
 // C. The script, executed against stubs
 // ---------------------------------------------------------------------------
 
-const TOKEN = "glrt-t3_aBcD-123_xyz";
+// A ROUTABLE runner token, the format GitLab 19 mints (lib/authn/token_field/generator/routable_token.rb:
+// `<prefix><base64url payload>.<version>.<length><crc>`): it carries two dots. A token pattern without `.` cuts it
+// at the first one and the runner then reads "Verifying runner... is not valid" (gitlab-live-proof, 2026-11-25).
+const TOKEN = "glrt-t3_aBcD-123_xyz.01.2k0n3x9qz";
 
 interface Scenario {
   /** Value `kubectl get secret -o jsonpath` prints for .data.runner-token. */

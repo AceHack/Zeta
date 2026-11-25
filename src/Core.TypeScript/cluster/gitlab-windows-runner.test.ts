@@ -146,7 +146,9 @@ const probe = (cmd: string[]): boolean => {
 const BASH = probe(["bash", "-c", "exit 0"]);
 if (!BASH) console.warn("gitlab-windows-runner.test: bash not on PATH -- section B is SKIPPED, not passed");
 
-const TOKEN = "glrt-t3_WinTok-123_xyz";
+// A ROUTABLE runner token (GitLab 19: `<prefix><base64url payload>.<version>.<length><crc>`, two dots): a token
+// pattern without `.` cuts it at the first one and the runner is then "not valid".
+const TOKEN = "glrt-t3_WinTok-123_xyz.01.2k0n3x9qz";
 
 const KUBECTL_STUB = `#!/usr/bin/env bash
 state="$STUB_DIR"
