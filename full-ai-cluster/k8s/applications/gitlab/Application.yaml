@@ -143,7 +143,7 @@ spec:
             tls: { enabled: false }   # turn on after cert-manager
           # EXTERNAL DATASTORES -- the CNPG Cluster and Valkey declared in `gitlab-runner.extraObjects` below.
           # `gitlab-rails-db-app` is the Secret the CNPG operator mints with the `gitlab` role (key `password`);
-          # `gitlab-redis-secret` is the chart's own Redis password (its default key is `secret`).
+          # `gitlab-redis-secret` is the Valkey password (key `secret`, the chart's default), ensured by Job `gitlab-redis-secret` below.
           psql:
             host: gitlab-rails-db-rw.gitlab.svc
             port: 5432
@@ -443,9 +443,9 @@ spec:
                   storageClass: zeta-block-local
                   size: 10Gi
             # Valkey 7.2 is GitLab's documented minimum AND recommended line (docs.gitlab.com/install/requirements,
-            # "Redis or Valkey"); the shared `redis` Application runs 9.1, which GitLab does not name. It reuses the
-            # password the chart already minted (`gitlab-redis-secret`, key `secret`, the chart's own default for `global.redis.auth.key`), so `global.redis.auth`
-            # needs no new Secret. `volatile-lru`: cache keys carry a TTL and may be evicted under pressure; queue and
+            # "Redis or Valkey"); the shared `redis` Application runs 9.1, which GitLab does not name. Its password is the
+            # Secret `global.redis.auth` names (`gitlab-redis-secret`, key `secret`), which Job `gitlab-redis-secret`
+            # below ensures exists, so `global.redis.auth` and this container read one value. `volatile-lru`: cache keys carry a TTL and may be evicted under pressure; queue and
             # lock keys carry none and never are (`allkeys-lru` would drop Sidekiq jobs, `noeviction` would turn a full
             # cache into write errors). AOF on: a restart must not lose the queue.
             #
@@ -631,6 +631,110 @@ spec:
                       resources:
                         requests:
                           storage: 2Gi
+            # --- the Redis password: ENSURED here, because nothing else mints it --------------------------
+            # `global.redis.auth` (and the Valkey container above) read Secret `gitlab-redis-secret`, key `secret`. Chart
+            # 10 has no bundled Redis and its shared-secrets Job has no redis branch, so on a FRESH install -- a rebuilt
+            # node, disaster recovery, the gitlab-live-proof kind cluster -- the Secret did not exist: `gitlab-valkey-0`
+            # sat in CreateContainerConfigError (`secret "gitlab-redis-secret" not found`) for 45 minutes and the whole
+            # release stalled at wave -2 (workitem 081M48Z8EFR087G0R0036W46S4). A node upgraded from the bundled-Redis era
+            # only worked because it inherited the Secret.
+            #
+            # The Job ENSURES the postcondition instead of guessing the install state: it attempts one `create` (the API
+            # server's own atomic create-if-absent: an existing Secret is refused and never overwritten, so the inherited
+            # password of a live node survives and two racing runs cannot diverge), then requires the Secret to hold the
+            # key. Sync hook, wave -3, ahead of Valkey (wave -2). The name and key are `global.redis.auth`'s; every literal copy of
+            # them below (Valkey env, this Job's name, env and Role) is pinned equal to it by the falsifier, and the secret-reference
+            # audits read the Valkey reference as a literal (they do not render templates).
+            # Falsifier: gitlab-redis-secret-mint.test.ts.
+            - apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                name: gitlab-redis-secret
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-4"
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: gitlab-redis-secret
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-4"
+              rules:
+                # Read back only the one Secret; `create` cannot be restricted by name, and the Job never lists, updates or deletes.
+                - apiGroups: [""]
+                  resources: [secrets]
+                  resourceNames: [gitlab-redis-secret]
+                  verbs: [get]
+                - apiGroups: [""]
+                  resources: [secrets]
+                  verbs: [create]
+            - apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: gitlab-redis-secret
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/sync-wave: "-4"
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name: gitlab-redis-secret
+              subjects:
+                - kind: ServiceAccount
+                  name: gitlab-redis-secret
+                  namespace: gitlab
+            - apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gitlab-redis-secret
+                namespace: gitlab
+                annotations:
+                  argocd.argoproj.io/hook: Sync
+                  argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+                  argocd.argoproj.io/sync-wave: "-3"
+              spec:
+                backoffLimit: 2
+                activeDeadlineSeconds: 300
+                template:
+                  spec:
+                    serviceAccountName: gitlab-redis-secret
+                    restartPolicy: Never
+                    securityContext:
+                      runAsNonRoot: true
+                      runAsUser: 65534
+                      seccompProfile: { type: RuntimeDefault }
+                    volumes:
+                      - name: tmp
+                        emptyDir: { medium: Memory }
+                    containers:
+                      - name: ensure
+                        image: '{{ include "gitlab.kubectl.image" . }}'
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          readOnlyRootFilesystem: true
+                          capabilities: { drop: [ALL] }
+                        env:
+                          - { name: HOME, value: /tmp }
+                          - { name: SECRET_NAME, value: gitlab-redis-secret }
+                          - { name: SECRET_KEY, value: secret }
+                        volumeMounts:
+                          - { name: tmp, mountPath: /tmp }
+                        resources:
+                          requests: { cpu: 10m, memory: 32Mi }
+                        command: ["/bin/bash", "-c"]
+                        args:
+                          - |
+                            set -uo pipefail
+                            # 256 bits from the kernel, hex: alphanumeric, so it is safe in a Redis URL and on a command line.
+                            PASSWORD=$(od -An -N32 -tx1 /dev/urandom | tr -d ' \n')
+                            [ -n "$PASSWORD" ] || { echo "no random bytes to mint $SECRET_NAME from"; exit 1; }
+                            # The refusal of an existing Secret is the expected answer on every run but the first; the
+                            # postcondition below is what decides success, not this call's exit status.
+                            kubectl -n gitlab create secret generic "$SECRET_NAME" --from-literal="$SECRET_KEY=$PASSWORD" >/dev/null 2>&1
+                            HELD=$(kubectl -n gitlab get secret "$SECRET_NAME" -o "jsonpath={.data.$SECRET_KEY}" 2>/dev/null)
+                            [ -n "$HELD" ] || { echo "Secret $SECRET_NAME holds no key $SECRET_KEY and could not be created: Valkey cannot start"; exit 1; }
+                            echo "Secret $SECRET_NAME holds key $SECRET_KEY"
             # --- LAN exposure (see global.hosts above) ------------------------------------
             # EXPOSURE IS CREATED BY A POSTSYNC HOOK FROM THE LIVE ADDRESS -- IT IS NOT RENDERED BY THIS RELEASE.
             #
