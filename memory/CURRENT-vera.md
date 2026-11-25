@@ -4125,3 +4125,20 @@ Sit leftover; Vera will not merge.
 - Path to GO: grade ced1a28+ with cross-verify and gate (required) green; unrepairable path fails closed (keep backup, exit 1), or back up and recover dump.rdb plus durable marker surfaced loudly, docs fixed, non-last-incr test; transcript pasted or claim dropped; separate work item for shared redis.
 
 Sit leftover; Vera will not merge.
+
+## leftover UNIQUE leftover #18025 leftover unique @ 1b4945bb8e8ecf4366fd65721adfea425444794d -- GRADE HOLD
+
+- Date: 2026-11-25. Topic: gitlab-live-proof green on a fresh install (whole glrt- runner token in both copies, check (b) via toolbox-minted root PAT, check (a+) "stays Synced" judge). Tip is a merge of main 53b1ca16 into d6efa4c3; graded tip only, head not moved. +141/-32, 6 files. maximdolphin OPEN, auto-merge NOT armed.
+- Hard fail 1: new fail-open. stayedSynced (gitlab-live-proof.ts:87-93) checks sync every poll but health only at the end: H,Degraded,H / Missing / Unknown / Suspended / unreadable mid-window all PASS (old judge failed them); only Progressing is claimed; HPA scale-up assumed, never evidenced; no test pins Degraded-mid-window -> fail.
+- Hard fail 2: unbacked claim. test.ts:462-463 says run 45655574372 went Progressing then Healthy; log shows old loop stopped at 30s, last state Synced/Progressing, scale-up sidekiq pod Pending "1 Insufficient cpu", Healthy never seen. PR run 45660742120 passed a7 in 8 polls with no rescale, so the new tolerance was never exercised.
+- Hard fail 3: required check agencysignature (PR body) red on tip (no Agency-Signature-Version trailer). drift (loud) main-wide and lane-3 registry quota are not this PR.
+- A: truth table in review; OutOfSync-then-back, endless Progressing (28 polls) and zero polls fail closed; mid-window non-Healthy health is hidden.
+- B: PAT scopes [:api] only, harness-only, argv via spawnSync (no shell), kept in memory, 0 glpat- in both run logs (no leak). Expiry is date-granular (00:00 UTC, 0-24h not 1 day); not revoked; fixed name re-minted per retry (softs).
+- C: both copies byte-identical grep -o 'glrt-[A-Za-z0-9_.-]*'; 2000 tokens from GitLab routable_token.rb format x 4 output shapes (LF, CRLF+noise, junk line, trailing blanks): 0/8000 mismatches; old regex truncated 2000/2000. Falsifier non-vacuous: old regex fails bringup (e) and windows B.
+- D: #17920 softs fixed in #18023 (581bdc22): metal-secret-production.ts:86-87 and existing-secret-is-minted.baseline.json:47-49 now say RELEASE-minted by Job gitlab-redis-secret; this PR does not touch them.
+- E: tip CI 97 ok/25 skip/3 fail; gitlab-live-proof pull_request run all 21 rows PASSED incl a+; TS hermetic + env-dependent green; local tip 119 pass/0 fail. Run 45655574372 claims confirmed (20 PASSED, only a7 FAILED) except "then Healthy".
+- #18023 follow-up: :235 check-then-use fixed by ced1a28; unrepairable AOF still echo + rm -rf, no alert (Application.yaml:576-578); still no scratch-pod transcript.
+- Softs: live nodes keep a truncated token (Job exits on "already present"); c2 accepts truncated glrt-; sidekiq HPA max 2 does not fit lane node (contradicts bringup test (h)); adminTokenFromRailsOutput should require ^glpat-.
+- Path to GO: tolerate only Progressing mid-window plus tests for Degraded/Missing/? -> fail (or fix lane HPA sizing and keep the strict judge); correct test.ts:462-463 or cite an exercised extended window; add PR-body agency trailers.
+
+Sit leftover; Vera will not merge.
