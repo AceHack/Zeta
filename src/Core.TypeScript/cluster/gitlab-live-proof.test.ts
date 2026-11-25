@@ -37,6 +37,7 @@ import {
   runnerOnline,
   runnerTokenPrefix,
   ADMIN_TOKEN_MARKER,
+  stayedSynced,
   adminTokenFromRailsOutput,
   MINT_ADMIN_TOKEN_RUBY,
   totalRestarts,
@@ -454,5 +455,33 @@ describe("(b) root admin API access -- minted through the toolbox, never through
   test("the lane no longer asks for an OAuth password grant", () => {
     const source = readFileSync(join(resolve(import.meta.dir, "../../.."), "src/Core.TypeScript/cluster/gitlab-live-proof.ts"), "utf8");
     expect(source).not.toContain('grant_type: "password"');
+  });
+});
+
+describe("(a+) a second sync STAYS synced -- a rollout in progress is not a flap", () => {
+  // Run 45655574372 (2026-11-25): the second sync made the CPU-hot single node scale sidekiq 1 -> 2 (HPA max 2), so
+  // the Application read Progressing for a while and then Healthy. The old judge failed on ANY non-Healthy poll.
+  const synced = (health: string) => ({ sync: "Synced", health });
+
+  test("Synced and Healthy throughout stays synced", () => {
+    expect(stayedSynced([synced("Healthy"), synced("Healthy")])).toBeNull();
+  });
+
+  test("a transient Progressing that ends Healthy is a rollout, not a flap", () => {
+    expect(stayedSynced([synced("Healthy"), synced("Progressing"), synced("Progressing"), synced("Healthy")])).toBeNull();
+  });
+
+  test("leaving Synced at any poll is a flap, even when it came back", () => {
+    const flap = stayedSynced([synced("Healthy"), { sync: "OutOfSync", health: "Healthy" }, synced("Healthy")]);
+    expect(flap).toContain("OutOfSync");
+  });
+
+  test("ending anything but Healthy is not settled", () => {
+    expect(stayedSynced([synced("Healthy"), synced("Progressing")])).toContain("Progressing");
+    expect(stayedSynced([synced("Healthy"), synced("Degraded")])).toContain("Degraded");
+  });
+
+  test("no samples is unknown, never a pass", () => {
+    expect(stayedSynced([])).not.toBeNull();
   });
 });

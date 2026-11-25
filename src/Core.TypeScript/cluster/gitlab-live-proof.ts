@@ -73,6 +73,25 @@ export const MINT_ADMIN_TOKEN_RUBY = [
   `print "\\n${ADMIN_TOKEN_MARKER}" + pat.token.to_s`,
 ].join("\n");
 
+export interface AppSample {
+  readonly sync: string;
+  readonly health: string;
+}
+
+/**
+ * Did the Application STAY synced across these polls? null when it did, else why not. The Application must be Synced at
+ * EVERY poll (leaving Synced is the flap this check exists for: a stale Job "requiring pruning") and must END Healthy.
+ * A Progressing poll between is a workload rollout -- on the one CPU-hot lane node the HPAs scale sidekiq 1 -> 2 right
+ * after a sync (run 45655574372) -- not the Application flapping, so it is not judged on its own.
+ */
+export function stayedSynced(samples: readonly AppSample[]): string | null {
+  if (samples.length === 0) return "no polls were taken, so nothing is known";
+  const left = samples.findIndex((x) => x.sync !== "Synced");
+  if (left >= 0) return `sync=${samples[left]!.sync} at poll ${String(left + 1)} of ${String(samples.length)}`;
+  const last = samples[samples.length - 1]!;
+  return last.health === "Healthy" ? null : `ended health=${last.health} after ${String(samples.length)} polls`;
+}
+
 /** The admin token from `gitlab-rails runner` stdout: the LAST marker line's value, or null (never a guess). Dots are part of a routable token. */
 export function adminTokenFromRailsOutput(stdout: string): string | null {
   const line = stdout.split("\n").map((l) => l.trim()).reverse().find((l) => l.startsWith(ADMIN_TOKEN_MARKER));
@@ -120,7 +139,7 @@ export const CHECKS: readonly CheckSpec[] = [
   { id: "a4-registry-ready", name: "(a) registry Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a5-shell-ready", name: "(a) gitlab-shell Ready", dependsOn: ["a0-lane-up"], blocking: true },
   { id: "a6-argocd-application", name: "(a+) ArgoCD Application gitlab reaches Synced AND Healthy after the pin's re-render (judged last)", dependsOn: ["a0-lane-up"], blocking: true },
-  { id: "a7-resync-stays-synced", name: "(a+) a second sync that changes the migrations Job's spec still syncs (no immutable-field error), leaves no stale Job, and STAYS Synced+Healthy", dependsOn: ["a6-argocd-application"], blocking: true },
+  { id: "a7-resync-stays-synced", name: "(a+) a second sync that changes the migrations Job's spec still syncs (no immutable-field error), leaves no stale Job, and STAYS Synced (ends Healthy)", dependsOn: ["a6-argocd-application"], blocking: true },
   { id: "b1-root-login", name: "(b) root admin API access (token minted through the toolbox) and GET /user is_admin", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c1-token-job-complete", name: "(c) Job gitlab-runner-token completed", dependsOn: ["a1-webservice-ready"], blocking: true },
   { id: "c2-runner-secret-token", name: "(c) Secret gitlab-gitlab-runner-secret holds a glrt- token", dependsOn: ["c1-token-job-complete"], blocking: true },
@@ -1215,14 +1234,16 @@ async function runProof(opts: ProofOptions, report: ProofReport): Promise<void> 
         dumpArgoState();
         report.record("a7-resync-stays-synced", "failed", r.detail);
       } else {
-        // STAYS: a sync that is Synced for one poll and flaps afterwards is not Synced.
-        let flapped: string | null = null;
-        for (let i = 0; i < 8 && flapped === null; i++) {
+        // STAYS: Synced at every poll of a 120s window, and Healthy at the end -- the window extends (up to 5 minutes) while a
+        // rollout the sync triggered (HPA scale-up) is still Progressing. See stayedSynced.
+        const samples: AppSample[] = [];
+        for (let i = 0; i < 8 || (i < 28 && samples[samples.length - 1]?.health !== "Healthy" && samples[samples.length - 1]?.sync === "Synced"); i++) {
           await sleep(15_000);
           const snap = argoSnapshot();
-          if (snap.sync !== "Synced" || snap.health !== "Healthy") flapped = `sync=${snap.sync} health=${snap.health} after ${String((i + 1) * 15)}s`;
+          samples.push({ sync: snap.sync, health: snap.health });
         }
-        report.record("a7-resync-stays-synced", flapped === null ? "passed" : "failed", flapped === null ? `${r.detail}; stayed Synced+Healthy for 120s` : `Synced, then left it: ${flapped}`);
+        const flapped = stayedSynced(samples);
+        report.record("a7-resync-stays-synced", flapped === null ? "passed" : "failed", flapped === null ? `${r.detail}; stayed Synced and ended Healthy (${String(samples.length)} polls)` : `Synced, then left it: ${flapped}`);
       }
     }
   }
