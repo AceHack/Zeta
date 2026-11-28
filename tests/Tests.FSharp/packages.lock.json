@@ -102,9 +102,9 @@
       },
       "System.Numerics.Tensors": {
         "type": "Direct",
-        "requested": "[10.0.14, )",
-        "resolved": "10.0.14",
-        "contentHash": "88DUO9lZZ/PfBwO51YKTd5TdVb+Cl31kd6imLKHUZxNXjnPU2V4mHIVT4f8rVK3T+sXXfDbHInzclnOHrK4azw=="
+        "requested": "[11.0.0, )",
+        "resolved": "11.0.0",
+        "contentHash": "thx6y1hMzB6LumB/aLcZoLHWq8wr+dbldk/FiNghyT+4ynxo9u2oCTFfb5iDMDG6hykDXLorXuaf4EPEij2BBg=="
       },
       "System.Reactive": {
         "type": "Direct",
@@ -566,7 +566,7 @@
           "FsPickler": "[5.3.2, )",
           "MessagePack": "[3.1.12, )",
           "System.IO.Hashing": "[10.0.14, )",
-          "System.Numerics.Tensors": "[10.0.14, )",
+          "System.Numerics.Tensors": "[11.0.0, )",
           "System.Reactive": "[7.0.0, )",
           "Zeta.Core.Abstractions": "[2.0.0, )",
           "Zeta.Core.FSharp.Yaml": "[1.0.0, )",
